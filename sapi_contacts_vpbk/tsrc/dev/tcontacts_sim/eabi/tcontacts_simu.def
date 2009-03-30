@@ -1,0 +1,6 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZN16CContactCallBack4NewLEP5RFile @ 2 NONAME
+	_ZTI16CContactCallBack @ 3 NONAME ; #<TI>#
+	_ZTV16CContactCallBack @ 4 NONAME ; #<VT>#
+

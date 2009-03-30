@@ -1,0 +1,71 @@
+/*
+* Copyright (c) 2006-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   ?Description
+*
+*/
+
+
+
+
+#include <data_caging_paths.hrh>
+#include <bldvariant.hrh>
+
+#include <platform_paths.hrh>
+
+MW_LAYER_SYSTEMINCLUDE
+
+TARGET          tmsg_sendmessageiter1.dll
+TARGETTYPE      dll
+UID             0x1000008D 0xE01FB709
+
+#if defined(EKA2)
+CAPABILITY      ALL -TCB
+#endif
+
+//TARGETPATH      ?target_path
+DEFFILE         tmsg_sendmessageiter1.def
+
+SOURCEPATH      ../src
+SOURCE          sendmessage.cpp
+SOURCE          send_messageblocks.cpp
+SOURCE					sendmessage1.cpp
+SOURCE          sendmessage2.cpp
+SOURCE          sendmessage3.cpp
+SOURCE          sendmessage4.cpp
+SOURCE          sendmessage5.cpp
+SOURCE          sendmessage6.cpp
+SOURCE          sendmessage7.cpp
+SOURCE          sendmessage8.cpp
+SOURCE          sendmessage9.cpp
+SOURCE          sendmessage10.cpp
+
+
+//RESOURCE        resource_file
+//RESOURCE        resource_file2
+
+USERINCLUDE     ../inc 
+
+
+
+LIBRARY         euser.lib
+LIBRARY         stiftestinterface.lib
+LIBRARY         messagingservice.lib
+LIBRARY	     	bafl.lib 	
+LIBRARY           efsrv.lib
+LIBRARY           msgs.lib
+
+LANG            SC
+
+
+// End of File

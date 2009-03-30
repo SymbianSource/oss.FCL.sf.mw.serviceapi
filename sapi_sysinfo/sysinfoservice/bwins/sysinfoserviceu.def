@@ -1,0 +1,58 @@
+EXPORTS
+	??0CSysInfoService@@AAE@XZ @ 1 NONAME ; CSysInfoService::CSysInfoService(void)
+	??ACAccList@@QBEPBVCAccessoryInfo@@H@Z @ 2 NONAME ; class CAccessoryInfo const * CAccList::operator[](int) const
+	??ACConnectionList@@QBEPBVCConnectionInfo@@H@Z @ 3 NONAME ; class CConnectionInfo const * CConnectionList::operator[](int) const
+	??ACDriveList@@QBEHH@Z @ 4 NONAME ; int CDriveList::operator[](int) const
+	??ACLanguageList@@QBEHH@Z @ 5 NONAME ; int CLanguageList::operator[](int) const
+	??ACStringList@@QBE?AVTPtrC16@@H@Z @ 6 NONAME ; class TPtrC16 CStringList::operator[](int) const
+	?AccessoryType@CAccessoryInfo@@QBEHXZ @ 7 NONAME ; int CAccessoryInfo::AccessoryType(void) const
+	?At@CConnectionList@@QBEHHAAPBVCConnectionInfo@@@Z @ 8 NONAME ; int CConnectionList::At(int, class CConnectionInfo const * &) const
+	?At@CDriveList@@QBEHHAAH@Z @ 9 NONAME ; int CDriveList::At(int, int &) const
+	?At@CLanguageList@@QBEHHAAH@Z @ 10 NONAME ; int CLanguageList::At(int, int &) const
+	?At@CStringList@@QBEHHAAVTPtrC16@@@Z @ 11 NONAME ; int CStringList::At(int, class TPtrC16 &) const
+	?AtL@CAccList@@QBEHHAAPBVCAccessoryInfo@@@Z @ 12 NONAME ; int CAccList::AtL(int, class CAccessoryInfo const * &) const
+	?BatteryState@CDriveInfo@@QBEHXZ @ 13 NONAME ; int CDriveInfo::BatteryState(void) const
+	?BearerType@CConnectionInfo@@QBEHXZ @ 14 NONAME ; int CConnectionInfo::BearerType(void) const
+	?Cancel@CSysInfoService@@QAEXJ@Z @ 15 NONAME ; void CSysInfoService::Cancel(long)
+	?CellId@CNetworkInfo@@QBEIXZ @ 16 NONAME ; unsigned int CNetworkInfo::CellId(void) const
+	?ConnectionName@CConnectionInfo@@QBE?AVTPtrC16@@XZ @ 17 NONAME ; class TPtrC16 CConnectionInfo::ConnectionName(void) const
+	?ConnectionState@CAccessoryInfo@@QBEHXZ @ 18 NONAME ; int CAccessoryInfo::ConnectionState(void) const
+	?ConnectionState@CConnectionInfo@@QBE?AW4TConnectionState@1@XZ @ 19 NONAME ; enum CConnectionInfo::TConnectionState CConnectionInfo::ConnectionState(void) const
+	?Count@CAccList@@QBEHXZ @ 20 NONAME ; int CAccList::Count(void) const
+	?Count@CConnectionList@@QBEHXZ @ 21 NONAME ; int CConnectionList::Count(void) const
+	?Count@CDriveList@@QBEHXZ @ 22 NONAME ; int CDriveList::Count(void) const
+	?Count@CLanguageList@@QBEHXZ @ 23 NONAME ; int CLanguageList::Count(void) const
+	?Count@CStringList@@QBEHXZ @ 24 NONAME ; int CStringList::Count(void) const
+	?CountryCode@CNetworkInfo@@QBE?AVTPtrC16@@XZ @ 25 NONAME ; class TPtrC16 CNetworkInfo::CountryCode(void) const
+	?CriticalSpace@CDriveInfo@@QBEHXZ @ 26 NONAME ; int CDriveInfo::CriticalSpace(void) const
+	?DataType@CSysData@@QBE?AW4TDataType@1@XZ @ 27 NONAME ; enum CSysData::TDataType CSysData::DataType(void) const
+	?DriveName@CDriveInfo@@QBEXAAVTPtrC16@@@Z @ 28 NONAME ; void CDriveInfo::DriveName(class TPtrC16 &) const
+	?DriveNumber@CDriveInfo@@QBEHXZ @ 29 NONAME ; int CDriveInfo::DriveNumber(void) const
+	?FreeSpace@CDriveInfo@@QBE_JXZ @ 30 NONAME ; long long CDriveInfo::FreeSpace(void) const
+	?GetInfoL@CSysInfoService@@QAEXABVTDesC16@@0AAPAVCSysData@@PBV3@@Z @ 31 NONAME ; void CSysInfoService::GetInfoL(class TDesC16 const &, class TDesC16 const &, class CSysData * &, class CSysData const *)
+	?GetInfoL@CSysInfoService@@QAEXABVTDesC16@@0JPAVISystemObserver@@PBVCSysData@@@Z @ 32 NONAME ; void CSysInfoService::GetInfoL(class TDesC16 const &, class TDesC16 const &, long, class ISystemObserver *, class CSysData const *)
+	?GetNotificationL@CSysInfoService@@QAEXABVTDesC16@@0JPAVISystemObserver@@PBVCSysData@@@Z @ 33 NONAME ; void CSysInfoService::GetNotificationL(class TDesC16 const &, class TDesC16 const &, long, class ISystemObserver *, class CSysData const *)
+	?IAPId@CConnectionInfo@@QBEIXZ @ 34 NONAME ; unsigned int CConnectionInfo::IAPId(void) const
+	?IAPName@CConnectionInfo@@QBE?AVTPtrC16@@XZ @ 35 NONAME ; class TPtrC16 CConnectionInfo::IAPName(void) const
+	?LocationAreaCode@CNetworkInfo@@QBEIXZ @ 36 NONAME ; unsigned int CNetworkInfo::LocationAreaCode(void) const
+	?MajorVersion@CVersion@@QBEHXZ @ 37 NONAME ; int CVersion::MajorVersion(void) const
+	?MediaType@CDriveInfo@@QBEHXZ @ 38 NONAME ; int CDriveInfo::MediaType(void) const
+	?MinorVersion@CVersion@@QBEHXZ @ 39 NONAME ; int CVersion::MinorVersion(void) const
+	?NetworkCode@CNetworkInfo@@QBE?AVTPtrC16@@XZ @ 40 NONAME ; class TPtrC16 CNetworkInfo::NetworkCode(void) const
+	?NetworkMode@CNetworkInfo@@QBEHXZ @ 41 NONAME ; int CNetworkInfo::NetworkMode(void) const
+	?NetworkName@CConnectionInfo@@QBE?AVTPtrC16@@XZ @ 42 NONAME ; class TPtrC16 CConnectionInfo::NetworkName(void) const
+	?NetworkName@CNetworkInfo@@QBE?AVTPtrC16@@XZ @ 43 NONAME ; class TPtrC16 CNetworkInfo::NetworkName(void) const
+	?NetworkStatus@CNetworkInfo@@QBEHXZ @ 44 NONAME ; int CNetworkInfo::NetworkStatus(void) const
+	?NewL@CConnectionInfo@@SAPAV1@IIHW4TConnectionState@1@ABVTDesC16@@11@Z @ 45 NONAME ; class CConnectionInfo * CConnectionInfo::NewL(unsigned int, unsigned int, int, enum CConnectionInfo::TConnectionState, class TDesC16 const &, class TDesC16 const &, class TDesC16 const &)
+	?NewL@CDriveInfo@@SAPAV1@HH@Z @ 46 NONAME ; class CDriveInfo * CDriveInfo::NewL(int, int)
+	?NewL@CStatus@@SAPAV1@H@Z @ 47 NONAME ; class CStatus * CStatus::NewL(int)
+	?NewL@CStringData@@SAPAV1@ABVTDesC16@@@Z @ 48 NONAME ; class CStringData * CStringData::NewL(class TDesC16 const &)
+	?NewL@CSysInfoService@@SAPAV1@XZ @ 49 NONAME ; class CSysInfoService * CSysInfoService::NewL(void)
+	?SetInfoL@CSysInfoService@@QAEXABVTDesC16@@0PBVCSysData@@@Z @ 50 NONAME ; void CSysInfoService::SetInfoL(class TDesC16 const &, class TDesC16 const &, class CSysData const *)
+	?Status@CStatus@@QBEHXZ @ 51 NONAME ; int CStatus::Status(void) const
+	?StringData@CStringData@@QBEXAAVTPtrC16@@@Z @ 52 NONAME ; void CStringData::StringData(class TPtrC16 &) const
+	?TotalSpace@CDriveInfo@@QBE_JXZ @ 53 NONAME ; long long CDriveInfo::TotalSpace(void) const
+	?ValidLocationAreaCode@CNetworkInfo@@QBEHXZ @ 54 NONAME ; int CNetworkInfo::ValidLocationAreaCode(void) const
+	?XPixels@CResolution@@QBEHXZ @ 55 NONAME ; int CResolution::XPixels(void) const
+	?YPixels@CResolution@@QBEHXZ @ 56 NONAME ; int CResolution::YPixels(void) const
+

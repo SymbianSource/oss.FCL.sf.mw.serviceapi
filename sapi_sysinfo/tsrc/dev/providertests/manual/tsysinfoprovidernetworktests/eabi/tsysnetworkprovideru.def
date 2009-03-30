@@ -1,0 +1,13 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZTI11CWatchTimer @ 2 NONAME ; #<TI>#
+	_ZTI13CHomeNetAsync @ 3 NONAME ; #<TI>#
+	_ZTI15CSignalStrAsync @ 4 NONAME ; #<TI>#
+	_ZTI16CSignalStrNotify @ 5 NONAME ; #<TI>#
+	_ZTI17CCurrentNetNotify @ 6 NONAME ; #<TI>#
+	_ZTV11CWatchTimer @ 7 NONAME ; #<VT>#
+	_ZTV13CHomeNetAsync @ 8 NONAME ; #<VT>#
+	_ZTV15CSignalStrAsync @ 9 NONAME ; #<VT>#
+	_ZTV16CSignalStrNotify @ 10 NONAME ; #<VT>#
+	_ZTV17CCurrentNetNotify @ 11 NONAME ; #<VT>#
+

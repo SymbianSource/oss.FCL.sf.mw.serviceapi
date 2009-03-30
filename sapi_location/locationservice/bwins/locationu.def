@@ -1,0 +1,13 @@
+EXPORTS
+	??0CLocationService@@IAE@XZ @ 1 NONAME ; CLocationService::CLocationService(void)
+	??1CLocationService@@UAE@XZ @ 2 NONAME ; CLocationService::~CLocationService(void)
+	?CancelOnGoingService@CLocationService@@QAEHH@Z @ 3 NONAME ; int CLocationService::CancelOnGoingService(int)
+	?DoInitialiseL@CLocationService@@IAEXXZ @ 4 NONAME ; void CLocationService::DoInitialiseL(void)
+	?GetLocationL@CLocationService@@QAEHPAVMLocationCallBack@@HQAGPBVTPositionUpdateOptions@@@Z @ 5 NONAME ; int CLocationService::GetLocationL(class MLocationCallBack *, int, unsigned short * const, class TPositionUpdateOptions const *)
+	?GetLocationL@CLocationService@@QAEHPAVTPositionInfoBase@@PBVTPositionUpdateOptions@@@Z @ 6 NONAME ; int CLocationService::GetLocationL(class TPositionInfoBase *, class TPositionUpdateOptions const *)
+	?GetModuleInfo@CLocationService@@QBEHAAVTPositionModuleInfoBase@@@Z @ 7 NONAME ; int CLocationService::GetModuleInfo(class TPositionModuleInfoBase &) const
+	?MathOperation@CLocationService@@QAEHAAU_INPPARM@@@Z @ 8 NONAME ; int CLocationService::MathOperation(struct _INPPARM &)
+	?NewL@CGetLoc@@SAPAV1@AAVRPositionServer@@QAGHH@Z @ 9 NONAME ; class CGetLoc * CGetLoc::NewL(class RPositionServer &, unsigned short * const, int, int)
+	?NewL@CLocationService@@SAPAV1@XZ @ 10 NONAME ; class CLocationService * CLocationService::NewL(void)
+	?TraceL@CLocationService@@QAEHPAVMLocationCallBack@@HQAGPBVTPositionUpdateOptions@@@Z @ 11 NONAME ; int CLocationService::TraceL(class MLocationCallBack *, int, unsigned short * const, class TPositionUpdateOptions const *)
+

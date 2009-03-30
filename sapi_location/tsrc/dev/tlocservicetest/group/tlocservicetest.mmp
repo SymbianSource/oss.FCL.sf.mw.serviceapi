@@ -1,0 +1,67 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   ?Description
+*
+*/
+
+
+
+#include  "../../../../../group/sapiincludes.mmpi"
+TARGET          tlocservicetest.dll
+TARGETTYPE      dll
+UID             0x1000008D 0x101FB3E3
+
+#if defined(EKA2)
+CAPABILITY      ALL -TCB
+/* Remove comments and replace 0x00000000 with correct vendor id */
+// VENDORID     0x00000000
+/* Remove comments and replace 0x00000000 with correct secure id */
+// SECUREID     0x00000000
+#endif
+
+//TARGETPATH      ?target_path
+DEFFILE         TLocTest.def
+
+SOURCEPATH      ../src
+SOURCE          TLocTest.cpp
+SOURCE          TLocTestBlocks.cpp
+SOURCE			tfunctionthread.cpp
+SOURCE 			tstraysignaltest.cpp
+SOURCE 			tstraygetlocationtest.cpp
+SOURCE      loccancel.cpp
+
+//RESOURCE        resource_file
+//RESOURCE        resource_file2
+
+USERINCLUDE     ../inc 
+
+
+
+USERINCLUDE   ../../../../locationservice/inc
+
+
+LIBRARY         stiftestinterface.lib
+LIBRARY         euser.lib
+LIBRARY    efsrv.lib
+LIBRARY     lbs.lib         // Location acquisition API
+LIBRARY      locationservice.lib
+LIBRARY         lIWServiceHandler.lib
+
+
+EPOCSTACKSIZE 0x5000
+#ifndef WINSCW
+EPOCALLOWDLLDATA
+#endif 
+LANG            SC
+

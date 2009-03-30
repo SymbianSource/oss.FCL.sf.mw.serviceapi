@@ -1,0 +1,70 @@
+/*
+* Copyright (c) 2006-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project specification file for contactprovider dll.
+*
+*/
+
+#include "../../group/sapiincludes.mmpi"
+
+TARGET          contactprovider.dll
+TARGETTYPE      PLUGIN
+
+CAPABILITY      CAP_ECOM_PLUGIN
+
+UID             0x10009D8D 0x102833A7
+		
+VERSION		1.0
+							
+//Source files directory
+SOURCEPATH      ../src
+
+//Source files
+SOURCE          contactprovider.cpp
+SOURCE          contactinterface.cpp
+SOURCE          contactinterfacecallback.cpp
+SOURCE 			contactiterator.cpp
+
+
+//User includes directory
+USERINCLUDE     ../inc
+USERINCLUDE    	../../inc
+USERINCLUDE     ../contactservice/inc
+
+
+SOURCEPATH      ../data
+
+//Resource specificatiopns
+START RESOURCE  0x102833A7.rss
+TARGET          contactprovider.rsc
+END
+
+//Libraries to be linked
+LIBRARY       euser.lib
+LIBRARY       contactservice.lib
+LIBRARY       liwServiceHandler.lib
+LIBRARY       ecom.lib
+LIBRARY       vpbkeng.lib
+LIBRARY       vpbkvcardEng.lib
+
+#if defined(WINS)
+    deffile ../bwins/contactproviderwinscw.def
+#elif defined(EABI)
+    deffile ../eabi/contactproviderarm.def
+#endif
+
+nostrictdef
+
+paged
+
+//End of File

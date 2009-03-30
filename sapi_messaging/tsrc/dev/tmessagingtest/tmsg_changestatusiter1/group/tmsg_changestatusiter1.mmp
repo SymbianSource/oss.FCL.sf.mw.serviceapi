@@ -1,0 +1,60 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   
+*
+*/
+
+
+
+
+#include <data_caging_paths.hrh>
+#include <bldvariant.hrh>
+
+#include <platform_paths.hrh>
+
+MW_LAYER_SYSTEMINCLUDE
+
+TARGET          tmsg_changestatusiter1.dll
+TARGETTYPE      dll
+UID             0x1000008D 0xE01FB706
+
+#if defined(EKA2)
+CAPABILITY      ALL -TCB
+#endif
+
+//TARGETPATH      ?target_path
+DEFFILE         tmsg_changestatusiter1.def
+
+SOURCEPATH      ../src
+SOURCE          tchangestatustest.cpp
+SOURCE          tchangestatustestblocks.cpp
+//SOURCE			tfunctionthread.cpp
+
+//RESOURCE        resource_file
+//RESOURCE        resource_file2
+
+USERINCLUDE     ../inc 
+
+
+
+LIBRARY         bafl.lib
+LIBRARY         stiftestinterface.lib
+LIBRARY         euser.lib
+LIBRARY     		messagingservice.lib
+
+
+
+LANG            SC
+
+

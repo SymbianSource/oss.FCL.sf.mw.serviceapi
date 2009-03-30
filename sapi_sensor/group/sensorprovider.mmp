@@ -1,0 +1,53 @@
+/*
+* Copyright (c) 2006-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project specification file for sensorprovider dll.
+*
+*/
+
+
+#include "../../group/sapiincludes.mmpi"
+
+TARGET          	sensorprovider.dll
+TARGETTYPE      	PLUGIN
+
+CAPABILITY      	CAP_ECOM_PLUGIN
+
+UID             	0x10009D8D 0x2000CFB6
+
+DEFFILE				sensorprovider.def
+
+VERSION		1.0
+
+USERINCLUDE     	../inc
+USERINCLUDE     	../../inc
+USERINCLUDE     	../sensorservice/inc
+
+SOURCEPATH      	../src
+SOURCE          	sensorprovider.cpp
+SOURCE          	sensorinterface.cpp
+SOURCE				sensorcallback.cpp
+SOURCE				storeasyncinfo.cpp
+
+SOURCEPATH      	../data
+START RESOURCE  	2000CFB6.rss
+TARGET          	sensorprovider.rsc
+END
+
+LIBRARY       		sensrvclient.lib
+LIBRARY       		sensrvutil.lib
+LIBRARY       		euser.lib
+LIBRARY       		sensorservice.lib
+LIBRARY       		liwservicehandler.lib
+LIBRARY				charconv.lib
+LIBRARY      		ecom.lib

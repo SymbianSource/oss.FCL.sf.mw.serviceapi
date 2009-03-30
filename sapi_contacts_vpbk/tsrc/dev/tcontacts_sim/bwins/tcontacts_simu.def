@@ -1,0 +1,4 @@
+EXPORTS
+	?LibEntryL@@YAPAVCScriptBase@@AAVCTestModuleIf@@@Z @ 1 NONAME ; class CScriptBase * LibEntryL(class CTestModuleIf &)
+	?NewL@CContactCallBack@@SAPAV1@PAVRFile@@@Z @ 2 NONAME ; class CContactCallBack * CContactCallBack::NewL(class RFile *)
+

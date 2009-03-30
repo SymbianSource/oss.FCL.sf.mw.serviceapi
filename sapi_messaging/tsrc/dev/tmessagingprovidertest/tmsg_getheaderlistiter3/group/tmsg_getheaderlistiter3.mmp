@@ -1,0 +1,69 @@
+/*
+* Copyright (c) 2006-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   ?Description
+*
+*/
+
+
+
+
+#include <data_caging_paths.hrh>
+#include <bldvariant.hrh>
+
+#include <platform_paths.hrh>
+
+MW_LAYER_SYSTEMINCLUDE
+
+TARGET          tmsg_getheaderlistiter3.dll
+TARGETTYPE      dll
+UID             0x1000008D 0xE01FB703
+
+#if defined(EKA2)
+CAPABILITY      ALL -TCB
+#endif
+
+//TARGETPATH      ?target_path
+DEFFILE         tmsg_getheaderlistiter3.def
+
+SOURCEPATH      ../src
+SOURCE          getheader.cpp
+SOURCE          get_headerblocks.cpp
+
+SOURCE          tgetheaderlist1.cpp
+SOURCE          tgetheaderlist2.cpp
+SOURCE          tgetheaderlist3.cpp
+SOURCE          tgetheaderlist4.cpp
+SOURCE          tgetheaderlist5.cpp
+SOURCE          tgetheaderlist6.cpp
+SOURCE          tgetheaderlist7.cpp
+
+//RESOURCE        resource_file
+//RESOURCE        resource_file2
+
+USERINCLUDE     ../inc 
+
+
+
+
+LIBRARY         euser.lib
+LIBRARY         stiftestinterface.lib
+LIBRARY         messagingservice.lib
+//LIBRARY			messagingprovider.lib
+LIBRARY 		     bafl.lib 	
+LIBRARY          efsrv.lib
+LIBRARY			LiwServiceHandler.lib
+LANG	           SC
+
+
+// End of File

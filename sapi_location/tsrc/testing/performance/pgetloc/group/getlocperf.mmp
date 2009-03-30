@@ -1,0 +1,66 @@
+/*
+* Copyright (c) 2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   getlocperf mmp file
+*
+*/
+
+
+
+TARGET          getlocperf.exe
+TARGETTYPE      exe
+UID             0x0 0x101FB3F8
+
+
+#if defined(EKA2)
+CAPABILITY      ALL -TCB
+// VENDORID     0x00000000
+// SECUREID     0x00000000
+#endif
+
+SOURCEPATH      ../src
+SOURCE          getlocperf.cpp
+
+USERINCLUDE     ../inc
+
+SYSTEMINCLUDE   /epoc32/include 
+
+SYSTEMINCLUDE	/epoc32/include/sapi/location
+
+
+
+LIBRARY         euser.lib
+LIBRARY         efsrv.lib
+LIBRARY         commdb.lib
+LIBRARY         esock.lib
+LIBRARY         insock.lib
+LIBRARY     	lbs.lib 
+LIBRARY			cliwbinding.lib
+LIBRARY         libc.lib
+LIBRARY         libpthread.lib 
+LIBRARY			libglib.lib
+LIBRARY 		libgobject.lib 
+LIBRARY         locationprovider.lib
+LIBRARY         locationservice.lib
+
+DEBUGLIBRARY	libclogger.lib
+
+//EPOCSTACKSIZE 0x5000
+
+EPOCALLOWDLLDATA
+
+MACRO			SYMBIAN
+
+LANG            SC
+
+// End of File

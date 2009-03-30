@@ -1,0 +1,127 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*
+*/
+/*TYPE TESTCLASS*//*
+* Copyright (c) 2002 - 2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  ?Description
+*
+*/
+
+
+#include <data_caging_paths.hrh>
+#include <bldvariant.hrh>
+
+#include <platform_paths.hrh>
+
+MW_LAYER_SYSTEMINCLUDE
+
+TARGET          tloggingservice.dll
+TARGETTYPE      dll
+UID             0x1000008D 0x101FB3E3
+
+//CAPABILITY	ReadUserData WriteUserData WriteDeviceData
+CAPABILITY      ALL -TCB
+/* Remove comments and replace 0x00000000 with correct vendor id */
+// VENDORID     0x00000000
+/* Remove comments and replace 0x00000000 with correct secure id */
+// SECUREID     0x00000000
+
+//TARGETPATH      ?target_path
+DEFFILE         tloggingservice.def
+
+SOURCEPATH      ../src
+SOURCE          tlogging.cpp
+
+SOURCE          tloggingBlocks.cpp
+SOURCE 			taddtest.cpp
+SOURCE 			taddtest1.cpp
+SOURCE 			taddtest2.cpp
+SOURCE 			taddtest3.cpp
+SOURCE 			taddtest4.cpp
+SOURCE			tgetlist1.cpp
+
+SOURCE          tlogcallback.cpp
+
+SOURCE			tconcurrenttest1.cpp
+SOURCE			tconcurrenttest2.cpp
+SOURCE			tconcurrenttest3.cpp
+SOURCE			tconcurrenttest4.cpp
+SOURCE			tconcurrenttest5.cpp
+SOURCE			tconcurrenttest6.cpp
+
+
+SOURCE			tgetrecentlist1.cpp
+SOURCE			tgetrecentlist2.cpp
+SOURCE			tgetrecentlist3.cpp
+
+SOURCE			tgetevent1.cpp
+SOURCE			tgetevent2.cpp
+SOURCE			tgetevent3.cpp
+SOURCE			tgetrecentlist4.cpp
+
+SOURCE          tdeletetest1.cpp
+SOURCE          tdeletetest2.cpp
+//RESOURCE        resource_file
+//RESOURCE        resource_file2
+
+USERINCLUDE     ../inc 
+
+LIBRARY         euser.lib
+LIBRARY         stiftestinterface.lib
+LIBRARY			loggingservice.lib
+//LIBRARY         logstub.lib 
+LIBRARY         logwrap.lib  
+LANG            SC
+
+/*
+START WINS      
+?wins_specific_information
+END
+
+START MARM
+?marm_specific_information
+END
+*/
+// Other possible keywords:
+ 
+// DOCUMENT     ?file, that is not compiled, but added to MSVC project workspace (i.e. release notes)
+/*
+START BITMAP ?target
+TARGETPATH   ?emulated_path_on_target_machine
+HEADER
+SOURCE       ?color_depth ?source_bitmap
+END
+*/
+// DEFFILE ?filename
+// AIF ?filename
+
+// End of File
+
+#ifndef WINSCW
+EPOCALLOWDLLDATA
+#endif 
+  

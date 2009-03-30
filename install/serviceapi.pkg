@@ -1,0 +1,360 @@
+; ============================================================================
+; Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+; All rights reserved.
+; This component and the accompanying materials are made available
+; under the terms of the License "Eclipse Public License v1.0"
+; which accompanies this distribution, and is available
+; at the URL "http://www.eclipse.org/legal/epl-v10.html".
+;
+; Initial Contributors:
+; Nokia Corporation - initial contribution.
+;
+; Contributors:
+;
+; Description:   package file for Service API package
+; ============================================================================
+
+;Languages
+&EN
+
+;Header
+#{"Platform Service Extensions"},(0x200100BE),1,0,0, TYPE=SA,RU
+
+;Supports S60 3.0
+[0x101F7961], 0, 0, 0, {"S60ProductID"}
+
+;Localised Vendor name
+%{"Nokia"}
+
+;Unique Vendor name
+:"Nokia"
+
+
+;LIWServiceHnadler Binaries
+"\epoc32\release\armv5\urel\liwServiceHandler.dll"     	-"!:\sys\bin\liwServiceHandler.dll"
+"\epoc32\release\armv5\urel\liwResolver.dll"          	-"!:\sys\bin\liwResolver.dll"
+"\epoc32\data\z\resource\liwServiceHandler.RSC"    			-"!:\resource\liwServiceHandler.RSC"
+"\epoc32\data\z\resource\plugins\liwResolver.RSC"				-"!:\resource\plugins\liwResolver.RSC"
+
+
+;SecurityManager Binaries
+"\epoc32\release\armv5\urel\RTSecMgrServer.exe"          -"!:\sys\bin\RTSecMgrServer.exe"
+"\epoc32\release\armv5\urel\RTSecMgrUtil.dll"          -"!:\sys\bin\RTSecMgrUtil.dll"
+"\epoc32\release\armv5\urel\RTSecMgrClient.dll"          -"!:\sys\bin\RTSecMgrClient.dll"
+;"\epoc32\data\Z\resource\apps\RTSecManager.rsc"     -"!:\resource\apps\RTSecManager.rsc"
+"\epoc32\data\Z\private\2000F847\backup_registration.xml"	-"!:\private\2000F847\backup_registration.xml"
+
+
+;SAPI Binaries to Install
+
+;Location SAPI binaries
+"\epoc32\release\armv5\urel\locationservice.dll"-"!:\sys\bin\locationservice.dll"
+"\epoc32\release\armv5\urel\locationprovider.dll"-"!:\sys\bin\locationprovider.dll"
+;Location SAPI resource files
+"\epoc32\data\Z\Resource\Plugins\locationprovider.rsc"    -"!:\resource\plugins\locationprovider.rsc"
+
+;Landmark SAPI binaries
+"\epoc32\release\armv5\urel\landmarkprovider.dll" - "!:\sys\bin\landmarkprovider.dll"
+"\epoc32\release\armv5\urel\landmarkservice.dll"-"!:\sys\bin\landmarkservice.dll"
+;Landmark SAPI resource files
+"\epoc32\data\Z\Resource\Plugins\landmarkprovider.rsc"    -"!:\resource\plugins\landmarkprovider.rsc"
+
+;Messaging SAPI binaries
+"\epoc32\release\armv5\urel\messagingprovider.dll" - "!:\sys\bin\messagingprovider.dll"
+"\epoc32\release\armv5\urel\messagingservice.dll"-"!:\sys\bin\messagingservice.dll"
+;Messaging SAPI resource files
+"\epoc32\data\Z\Resource\Plugins\messagingprovider.rsc"    -"!:\resource\plugins\messagingprovider.rsc"
+
+;Media Management SAPI binaries
+"\epoc32\release\armv5\urel\mediamanagementservice.dll"-"!:\sys\bin\mediamanagementservice.dll"
+"\epoc32\release\armv5\urel\mediamanagementprovider.dll"-"!:\sys\bin\mediamanagementprovider.dll"
+;Media Management SAPI resource files
+"\epoc32\data\Z\resource\plugins\mediamanagementprovider.rsc"    -  "!:\resource\plugins\mediamanagementprovider.rsc"
+
+;Camera SAPI binaries
+;"\epoc32\release\armv5\urel\cameraprovider.dll" - "!:\sys\bin\cameraprovider.dll"
+;"\epoc32\release\armv5\urel\cameraservice.dll"-"!:\sys\bin\cameraservice.dll"
+;Camera SAPI resource files
+;"\epoc32\data\Z\Resource\Plugins\cameraprovider.rsc"    -"!:\resource\plugins\cameraprovider.rsc"
+
+;Contacts SAPI binaries
+"\epoc32\release\armv5\urel\contactprovider.dll" - "!:\sys\bin\contactprovider.dll"
+"\epoc32\release\armv5\urel\contactservice.dll"-"!:\sys\bin\contactservice.dll"
+;Contacts SAPI resource files
+"\epoc32\data\Z\Resource\Plugins\contactprovider.rsc"    -"!:\resource\plugins\contactprovider.rsc"
+
+;AppManager SAPI binaries
+"\epoc32\release\armv5\urel\appmanagerprovider.dll" - "!:\sys\bin\appmanagerprovider.dll"
+"\epoc32\release\armv5\urel\appmanagerservice.dll"-"!:\sys\bin\appmanagerservice.dll"
+;Contacts SAPI resource files
+"\epoc32\data\Z\Resource\Plugins\appmanagerprovider.rsc"    -"!:\resource\plugins\appmanagerprovider.rsc"
+
+;Logging SAPI binaries
+"\epoc32\release\armv5\urel\loggingprovider.dll" - "!:\sys\bin\loggingprovider.dll"
+"\epoc32\release\armv5\urel\loggingservice.dll"-"!:\sys\bin\loggingservice.dll"
+;Contacts SAPI resource files
+"\epoc32\data\Z\Resource\Plugins\loggingprovider.rsc"    -"!:\resource\plugins\loggingprovider.rsc"
+
+;Calendar SAPI binaries
+"\epoc32\release\armv5\urel\calendarprovider.dll" - "!:\sys\bin\calendarprovider.dll"
+"\epoc32\release\armv5\urel\calendarservice.dll"-"!:\sys\bin\calendarservice.dll"
+;Contacts SAPI resource files
+"\epoc32\data\Z\Resource\Plugins\calendarprovider.rsc"    -"!:\resource\plugins\calendarprovider.rsc"
+
+;Sensor SAPI binaries
+"\epoc32\release\armv5\urel\sensorprovider.dll" - "!:\sys\bin\sensorprovider.dll"
+"\epoc32\release\armv5\urel\sensorservice.dll"-"!:\sys\bin\sensorservice.dll"
+;Sensor SAPI resource files
+"\epoc32\data\Z\Resource\Plugins\sensorprovider.rsc"    -"!:\resource\plugins\sensorprovider.rsc"
+
+;Sysinfo SAPI binaries
+"\epoc32\release\armv5\urel\sysinfoprovider.dll" - "!:\sys\bin\sysinfoprovider.dll"
+"\epoc32\release\armv5\urel\sysinfoservice.dll"-"!:\sys\bin\sysinfoservice.dll"
+;Contacts SAPI resource files
+"\epoc32\data\Z\Resource\Plugins\sysinfoprovider.rsc"    -"!:\resource\plugins\sysinfoprovider.rsc"
+
+
+; Variant resources for RTSecManager.rsc delivered via IAD
+if exists( "z:\resource\avkon.r01")
+"\epoc32\data\Z\resource\apps\RTSecManager.r01"	-"!:\resource\apps\RTSecManager.r01"
+endif
+
+if exists( "z:\resource\avkon.r02")
+"\epoc32\data\Z\resource\apps\RTSecManager.r02"	-"!:\resource\apps\RTSecManager.r02"
+endif
+
+if exists( "z:\resource\avkon.r03")
+"\epoc32\data\Z\resource\apps\RTSecManager.r03"	-"!:\resource\apps\RTSecManager.r03"
+endif
+
+if exists( "z:\resource\avkon.r04")
+"\epoc32\data\Z\resource\apps\RTSecManager.r04"	-"!:\resource\apps\RTSecManager.r04"
+endif
+
+if exists( "z:\resource\avkon.r05")
+"\epoc32\data\Z\resource\apps\RTSecManager.r05"	-"!:\resource\apps\RTSecManager.r05"
+endif
+
+if exists( "z:\resource\avkon.r06")
+"\epoc32\data\Z\resource\apps\RTSecManager.r06"	-"!:\resource\apps\RTSecManager.r06"
+endif
+
+if exists( "z:\resource\avkon.r07")
+"\epoc32\data\Z\resource\apps\RTSecManager.r07"	-"!:\resource\apps\RTSecManager.r07"
+endif
+
+if exists( "z:\resource\avkon.r08")
+"\epoc32\data\Z\resource\apps\RTSecManager.r08"	-"!:\resource\apps\RTSecManager.r08"
+endif
+
+if exists( "z:\resource\avkon.r09")
+"\epoc32\data\Z\resource\apps\RTSecManager.r09"	-"!:\resource\apps\RTSecManager.r09"
+endif
+
+if exists( "z:\resource\avkon.r10")
+"\epoc32\data\Z\resource\apps\RTSecManager.r10"	-"!:\resource\apps\RTSecManager.r10"
+endif
+
+if exists( "z:\resource\avkon.r401")
+"\epoc32\data\Z\resource\apps\RTSecManager.r401"	-"!:\resource\apps\RTSecManager.r401"
+endif
+
+if exists( "z:\resource\avkon.r402")
+"\epoc32\data\Z\resource\apps\RTSecManager.r402"	-"!:\resource\apps\RTSecManager.r402"
+endif
+
+if exists( "z:\resource\avkon.r129")
+"\epoc32\data\Z\resource\apps\RTSecManager.r129"	-"!:\resource\apps\RTSecManager.r129"
+endif
+
+if exists( "z:\resource\avkon.r13")
+"\epoc32\data\Z\resource\apps\RTSecManager.r13"	-"!:\resource\apps\RTSecManager.r13"
+endif
+
+if exists( "z:\resource\avkon.r14")
+"\epoc32\data\Z\resource\apps\RTSecManager.r14"	-"!:\resource\apps\RTSecManager.r14"
+endif
+
+if exists( "z:\resource\avkon.r15")
+"\epoc32\data\Z\resource\apps\RTSecManager.r15"	-"!:\resource\apps\RTSecManager.r15"
+endif
+
+if exists( "z:\resource\avkon.r157")
+"\epoc32\data\Z\resource\apps\RTSecManager.r157"	-"!:\resource\apps\RTSecManager.r157"
+endif
+
+if exists( "z:\resource\avkon.r158")
+"\epoc32\data\Z\resource\apps\RTSecManager.r158"	-"!:\resource\apps\RTSecManager.r158"
+endif
+
+if exists( "z:\resource\avkon.r159")
+"\epoc32\data\Z\resource\apps\RTSecManager.r159"	-"!:\resource\apps\RTSecManager.r159"
+endif
+
+if exists( "z:\resource\avkon.r16")
+"\epoc32\data\Z\resource\apps\RTSecManager.r16"	-"!:\resource\apps\RTSecManager.r16"
+endif
+
+if exists( "z:\resource\avkon.r160")
+"\epoc32\data\Z\resource\apps\RTSecManager.r160"	-"!:\resource\apps\RTSecManager.r160"
+endif
+
+if exists( "z:\resource\avkon.r161")
+"\epoc32\data\Z\resource\apps\RTSecManager.r161"	-"!:\resource\apps\RTSecManager.r161"
+endif
+
+if exists( "z:\resource\avkon.r17")
+"\epoc32\data\Z\resource\apps\RTSecManager.r17"	-"!:\resource\apps\RTSecManager.r17"
+endif
+
+if exists( "z:\resource\avkon.r18")
+"\epoc32\data\Z\resource\apps\RTSecManager.r18"	-"!:\resource\apps\RTSecManager.r18"
+endif
+
+if exists( "z:\resource\avkon.r186")
+"\epoc32\data\Z\resource\apps\RTSecManager.r186"	-"!:\resource\apps\RTSecManager.r186"
+endif
+
+if exists( "z:\resource\avkon.r25")
+"\epoc32\data\Z\resource\apps\RTSecManager.r25"	-"!:\resource\apps\RTSecManager.r25"
+endif
+
+if exists( "z:\resource\avkon.r26")
+"\epoc32\data\Z\resource\apps\RTSecManager.r26"	-"!:\resource\apps\RTSecManager.r26"
+endif
+
+if exists( "z:\resource\avkon.r27")
+"\epoc32\data\Z\resource\apps\RTSecManager.r27"	-"!:\resource\apps\RTSecManager.r27"
+endif
+
+if exists( "z:\resource\avkon.r28")
+"\epoc32\data\Z\resource\apps\RTSecManager.r28"	-"!:\resource\apps\RTSecManager.r28"
+endif
+
+if exists( "z:\resource\avkon.r29")
+"\epoc32\data\Z\resource\apps\RTSecManager.r29"	-"!:\resource\apps\RTSecManager.r29"
+endif
+
+if exists( "z:\resource\avkon.r30")
+"\epoc32\data\Z\resource\apps\RTSecManager.r30"	-"!:\resource\apps\RTSecManager.r30"
+endif
+
+if exists( "z:\resource\avkon.r31")
+"\epoc32\data\Z\resource\apps\RTSecManager.r31"	-"!:\resource\apps\RTSecManager.r31"
+endif
+
+if exists( "z:\resource\avkon.r32")
+"\epoc32\data\Z\resource\apps\RTSecManager.r32"	-"!:\resource\apps\RTSecManager.r32"
+endif
+
+if exists( "z:\resource\avkon.r326")
+"\epoc32\data\Z\resource\apps\RTSecManager.r326"	-"!:\resource\apps\RTSecManager.r326"
+endif
+
+if exists( "z:\resource\avkon.r327")
+"\epoc32\data\Z\resource\apps\RTSecManager.r327"	-"!:\resource\apps\RTSecManager.r327"
+endif
+
+if exists( "z:\resource\avkon.r33")
+"\epoc32\data\Z\resource\apps\RTSecManager.r33"	-"!:\resource\apps\RTSecManager.r33"
+endif
+
+if exists( "z:\resource\avkon.r37")
+"\epoc32\data\Z\resource\apps\RTSecManager.r37"	-"!:\resource\apps\RTSecManager.r37"
+endif
+
+if exists( "z:\resource\avkon.r39")
+"\epoc32\data\Z\resource\apps\RTSecManager.r39"	-"!:\resource\apps\RTSecManager.r39"
+endif
+
+if exists( "z:\resource\avkon.r42")
+"\epoc32\data\Z\resource\apps\RTSecManager.r42"	-"!:\resource\apps\RTSecManager.r42"
+endif
+
+if exists( "z:\resource\avkon.r44")
+"\epoc32\data\Z\resource\apps\RTSecManager.r44"	-"!:\resource\apps\RTSecManager.r44"
+endif
+
+if exists( "z:\resource\avkon.r45")
+"\epoc32\data\Z\resource\apps\RTSecManager.r45"	-"!:\resource\apps\RTSecManager.r45"
+endif
+
+if exists( "z:\resource\avkon.r49")
+"\epoc32\data\Z\resource\apps\RTSecManager.r49"	-"!:\resource\apps\RTSecManager.r49"
+endif
+
+if exists( "z:\resource\avkon.r50")
+"\epoc32\data\Z\resource\apps\RTSecManager.r50"	-"!:\resource\apps\RTSecManager.r50"
+endif
+
+if exists( "z:\resource\avkon.r51")
+"\epoc32\data\Z\resource\apps\RTSecManager.r51"	-"!:\resource\apps\RTSecManager.r51"
+endif
+
+if exists( "z:\resource\avkon.r54")
+"\epoc32\data\Z\resource\apps\RTSecManager.r54"	-"!:\resource\apps\RTSecManager.r54"
+endif
+
+if exists( "z:\resource\avkon.r57")
+"\epoc32\data\Z\resource\apps\RTSecManager.r57"	-"!:\resource\apps\RTSecManager.r57"
+endif
+
+if exists( "z:\resource\avkon.r58")
+"\epoc32\data\Z\resource\apps\RTSecManager.r58"	-"!:\resource\apps\RTSecManager.r58"
+endif
+
+
+if exists( "z:\resource\avkon.r59")
+"\epoc32\data\Z\resource\apps\RTSecManager.r59"	-"!:\resource\apps\RTSecManager.r59"
+endif
+
+if exists( "z:\resource\avkon.r65")
+"\epoc32\data\Z\resource\apps\RTSecManager.r65"	-"!:\resource\apps\RTSecManager.r65"
+endif
+
+if exists( "z:\resource\avkon.r67")
+"\epoc32\data\Z\resource\apps\RTSecManager.r67"	-"!:\resource\apps\RTSecManager.r67"
+endif
+
+if exists( "z:\resource\avkon.r68")
+"\epoc32\data\Z\resource\apps\RTSecManager.r68"	-"!:\resource\apps\RTSecManager.r68"
+endif
+
+if exists( "z:\resource\avkon.r70")
+"\epoc32\data\Z\resource\apps\RTSecManager.r70"	-"!:\resource\apps\RTSecManager.r70"
+endif
+
+if exists( "z:\resource\avkon.r72")
+"\epoc32\data\Z\resource\apps\RTSecManager.r72"	-"!:\resource\apps\RTSecManager.r72"
+endif
+
+if exists( "z:\resource\avkon.r76")
+"\epoc32\data\Z\resource\apps\RTSecManager.r76"	-"!:\resource\apps\RTSecManager.r76"
+endif
+
+if exists( "z:\resource\avkon.r78")
+"\epoc32\data\Z\resource\apps\RTSecManager.r78"	-"!:\resource\apps\RTSecManager.r78"
+endif
+
+if exists( "z:\resource\avkon.r79")
+"\epoc32\data\Z\resource\apps\RTSecManager.r79"	-"!:\resource\apps\RTSecManager.r79"
+endif
+
+
+if exists( "z:\resource\avkon.r83")
+"\epoc32\data\Z\resource\apps\RTSecManager.r83"	-"!:\resource\apps\RTSecManager.r83"
+endif
+
+if exists( "z:\resource\avkon.r93")
+"\epoc32\data\Z\resource\apps\RTSecManager.r93"	-"!:\resource\apps\RTSecManager.r93"
+endif
+
+if exists( "z:\resource\avkon.r94")
+"\epoc32\data\Z\resource\apps\RTSecManager.r94"	-"!:\resource\apps\RTSecManager.r94"
+endif
+
+if exists( "z:\resource\avkon.r96")
+"\epoc32\data\Z\resource\apps\RTSecManager.r96"	-"!:\resource\apps\RTSecManager.r96"
+endif
+
+; EOF

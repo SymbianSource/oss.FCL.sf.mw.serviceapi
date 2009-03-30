@@ -1,0 +1,74 @@
+/*
+* Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  IBY file for Service APIs
+*
+*/
+
+
+#ifndef SERVICEAPI_IBY
+#define SERVICEAPI_IBY
+
+file=ABI_DIR\BUILD_DIR\Liwservicehandler.dll               SHARED_LIB_DIR\Liwservicehandler.dll
+data=DATAZ_\RESOURCE_FILES_DIR\liwServiceHandler.rsc    	RESOURCE_FILES_DIR\liwServiceHandler.rsc
+ECOM_PLUGIN(liwResolver.dll, 2000B5D4.rsc)
+
+
+file=ABI_DIR\BUILD_DIR\RTSecMgrServer.exe          PROGRAMS_DIR\RTSecMgrServer.exe
+file=ABI_DIR\BUILD_DIR\RTSecMgrClient.dll          SHARED_LIB_DIR\RTSecMgrClient.dll
+file=ABI_DIR\BUILD_DIR\RTSecMgrUtil.dll            SHARED_LIB_DIR\RTSecMgrUtil.dll
+
+data=ZPRIVATE\2000f847\backup_registration.xml	  private\2000f847\backup_registration.xml
+
+
+
+
+file=ABI_DIR\BUILD_DIR\locationservice.dll               		SHARED_LIB_DIR\locationservice.dll
+ECOM_PLUGIN(locationprovider.dll, locationprovider.rsc)
+
+file=ABI_DIR\BUILD_DIR\landmarkservice.dll               		SHARED_LIB_DIR\landmarkservice.dll
+ECOM_PLUGIN(landmarkprovider.dll, landmarkprovider.rsc)
+
+file=ABI_DIR\BUILD_DIR\messagingservice.dll               	SHARED_LIB_DIR\messagingservice.dll
+ECOM_PLUGIN(messagingprovider.dll, messagingprovider.rsc)
+
+file=ABI_DIR\BUILD_DIR\mediamanagementservice.dll           SHARED_LIB_DIR\mediamanagementservice.dll
+ECOM_PLUGIN(mediamanagementprovider.dll, mediamanagementprovider.rsc)
+
+//file=ABI_DIR\BUILD_DIR\cameraservice.dll               			SHARED_LIB_DIR\cameraservice.dll
+//ECOM_PLUGIN(cameraprovider.dll, cameraprovider.rsc)
+
+file=ABI_DIR\BUILD_DIR\contactservice.dll               		SHARED_LIB_DIR\contactservice.dll
+ECOM_PLUGIN(contactprovider.dll, contactprovider.rsc)
+
+
+
+file=ABI_DIR\BUILD_DIR\appmanagerservice.dll               		SHARED_LIB_DIR\appmanagerservice.dll
+ECOM_PLUGIN(appmanagerprovider.dll, appmanagerprovider.rsc)
+
+file=ABI_DIR\BUILD_DIR\calendarservice.dll               		SHARED_LIB_DIR\calendarservice.dll
+ECOM_PLUGIN(calendarprovider.dll, calendarprovider.rsc)
+
+file=ABI_DIR\BUILD_DIR\loggingservice.dll               		SHARED_LIB_DIR\loggingservice.dll
+ECOM_PLUGIN(loggingprovider.dll, loggingprovider.rsc)
+
+file=ABI_DIR\BUILD_DIR\sensorservice.dll               			SHARED_LIB_DIR\sensorservice.dll
+ECOM_PLUGIN(sensorprovider.dll, sensorprovider.rsc)
+
+file=ABI_DIR\BUILD_DIR\sysinfoservice.dll               		SHARED_LIB_DIR\sysinfoservice.dll
+ECOM_PLUGIN(sysinfoprovider.dll, sysinfoprovider.rsc)
+
+data=ZSYSTEM\INSTALL\serviceapi_stub.sis	    System\Install\serviceapi_stub.sis
+
+#endif // SERVICEAPI_IBY
+

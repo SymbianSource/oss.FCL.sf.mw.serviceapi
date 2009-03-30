@@ -1,0 +1,62 @@
+;
+; Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+; All rights reserved.
+; This component and the accompanying materials are made available
+; under the terms of the License "Eclipse Public License v1.0"
+; which accompanies this distribution, and is available
+; at the URL "http://www.eclipse.org/legal/epl-v10.html".
+;
+; Initial Contributors:
+; Nokia Corporation - initial contribution.
+;
+; Contributors:
+;
+; Description:  
+;
+&EN
+; Installation header
+; Only one component name as we only support English
+; UID is the main app's UID
+
+#{"FILEOP"},(0x089E4EE6),1,0,24,TYPE=SA
+
+;
+;Supports Series 60 v 0.9
+(0x101F6F88), 0, 0, 0, 
+{"Series60ProductID"}
+
+; License agreement
+;"License.txt"-"",FILETEXT,TEXTABORT
+
+; Localised Vendor name
+%{"Nokia"}
+
+; Unique Vendor name
+:"Nokia Corporation"
+
+;exes
+	"\epoc32\release\ARMV5\urel\fileop.exe"           	-   "!:\Sys\Bin\fileop.exe"
+    
+
+;DEPENDENT LIBS for 3.0 SDK 
+;   "\epoc32\release\armv5\urel\backend.dll" -"!:\Sys\Bin\backend.dll"
+;		"\epoc32\release\armv5\urel\libc.dll"  -"!:\Sys\Bin\libc.dll"
+;		"\epoc32\release\ARMV5\urel\libcipcclient.dll"  -"!:\Sys\Bin\libcipcclient.dll"
+;		"\epoc32\release\armv5\urel\libcipcserver.exe"  -"!:\Sys\Bin\libcipcserver.exe"
+;		"\epoc32\release\armv5\urel\libclogger.dll" -"!:\Sys\Bin\libclogger.dll"
+;		"\epoc32\release\armv5\urel\libcrypt.dll"  -"!:\Sys\Bin\libcrypt.dll"
+;		"\epoc32\release\armv5\urel\libdl.dll"  -"!:\Sys\Bin\libdl.dll"
+;		"\epoc32\release\armv5\urel\libm.dll"  -"!:\Sys\Bin\libm.dll"
+;		"\epoc32\release\armv5\urel\libpthread.dll" -"!:\Sys\Bin\libpthread.dll"
+;		"\epoc32\release\armv5\urel\libz.dll"  -"!:\Sys\Bin\libz.dll"
+
+  
+
+
+; Required files:
+; none
+
+; Embedded SIS-files
+; none
+
+; End of File

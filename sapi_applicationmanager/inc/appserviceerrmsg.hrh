@@ -1,0 +1,63 @@
+/*
+* Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 	Top level service provider error codes.
+*	%created_by:	shreedha %
+*	%date_created:	Tue Feb 10 11:04:04 2009 %
+*
+*/
+/**********************************************************************
+*
+*	Header %name:	appserviceerrmsg.hrh %
+*	Instance:	bh1sapi_1
+*	Description:	Top level service provider error codes.
+*	%created_by:	shreedha %
+*	%date_created:	Tue Feb 10 11:04:04 2009 %
+*
+**********************************************************************/
+#ifndef APPSERVICEERRMSG_H
+#define APPSERVICEERRMSG_H
+
+_LIT8(KErrorMsg,"ErrorMessage");
+
+
+//Gernal provider error
+_LIT(KInterfaceNotSupported,"AppManager:Requested interface not supported by the provider");
+_LIT(KInterfaceNameMissing,"AppManager:Interface name missing");
+_LIT(KTransactionIdMissing,"AppManager:Transaction ID missing");
+_LIT(KIncorrectTransactionId,"AppManager:Incorrect TransactionID");
+_LIT(KCommandNotSupported,"AppManger:Requested command not supported by the interface");
+
+_LIT(KAsynchRequestNotProper,"AppManager:Insufficent argument for asynchronous request");
+
+
+
+
+//Domain Specific
+
+_LIT(KContentMissing ,"AppManager:GetList:Content Type Missing");
+_LIT(KContentTypeMismatch ,"AppManager:GetList:Content Type Mismatch/value more than expected length");
+
+_LIT(KFilterTypeMismatch ,"AppManager:GetList:Filter type mismatch/value more than expected length");
+_LIT(KLaunchAppOptionsTypeMismatch ,"AppManager:LaunchApp:Document's key type mismatch//values more than expected length");
+_LIT(KLaunchDocDocumentTypeMismatch ,"AppManager:LaunchDoc:OptionMap's key type mismatch//values more than expected length");
+_LIT(KLaunchOptionsTypeMismatch ,"AppManager:LaunchDoc:OptionMap type mismatch");
+_LIT(KLaunchDocMapTypeMismatch ,"AppManager:LaunchDoc:DocumentMap type mismatch");
+
+_LIT(KCommandLineMismatch ,"AppManager:LaunchApp:Command Line type mismatch ");
+_LIT(KAsynchVersionNotSupported,"AppManger:GetList:Asynchronous version of API is not supported");
+_LIT(KApplicationIDMismatch ,"AppManager:LaunchApp:ApplicationID type mismatch/value more than expected length");
+_LIT(KApplicationIDMissing ,"AppManager:LaunchApp:Application ID  Missing");
+_LIT(KDocumentMissing ,"AppManager:LaunchDoc:Document/MimeType Missing/value more than expected length ");
+_LIT(KLaunchDocMimeTypeMismatch ,"AppManager:LaunchDoc:MIME type mismatch/value more than expected length");
+#endif

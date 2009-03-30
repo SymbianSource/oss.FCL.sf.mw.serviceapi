@@ -1,0 +1,11 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZN13CEventDetails4NewLEv @ 2 NONAME
+	_ZN14CFilterDetails4NewLEv @ 3 NONAME
+	_ZTI13CEventDetails @ 4 NONAME ; #<TI>#
+	_ZTI14CFilterDetails @ 5 NONAME ; #<TI>#
+	_ZTI9tcallback @ 6 NONAME ; #<TI>#
+	_ZTV13CEventDetails @ 7 NONAME ; #<VT>#
+	_ZTV14CFilterDetails @ 8 NONAME ; #<VT>#
+	_ZTV9tcallback @ 9 NONAME ; #<VT>#
+

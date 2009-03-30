@@ -1,0 +1,23 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZTI11CTestAsync2 @ 2 NONAME ; #<TI>#
+	_ZTI11CTestAsync5 @ 3 NONAME ; #<TI>#
+	_ZTI11CTestAsync6 @ 4 NONAME ; #<TI>#
+	_ZTI11CWatchTimer @ 5 NONAME ; #<TI>#
+	_ZTI15CTestActiveConn @ 6 NONAME ; #<TI>#
+	_ZTI15CTestConnNotify @ 7 NONAME ; #<TI>#
+	_ZTI17CTestUserActivity @ 8 NONAME ; #<TI>#
+	_ZTI20CTestMemNotification @ 9 NONAME ; #<TI>#
+	_ZTI25CTCriticalMemNotification @ 10 NONAME ; #<TI>#
+	_ZTV11CTestAsync2 @ 11 NONAME ; #<VT>#
+	_ZTV11CTestAsync5 @ 12 NONAME ; #<VT>#
+	_ZTV11CTestAsync6 @ 13 NONAME ; #<VT>#
+	_ZTV11CWatchTimer @ 14 NONAME ; #<VT>#
+	_ZTV15CTestActiveConn @ 15 NONAME ; #<VT>#
+	_ZTV15CTestConnNotify @ 16 NONAME ; #<VT>#
+	_ZTV17CTestUserActivity @ 17 NONAME ; #<VT>#
+	_ZTV20CTestMemNotification @ 18 NONAME ; #<VT>#
+	_ZTV25CTCriticalMemNotification @ 19 NONAME ; #<VT>#
+	_ZTI17CAutoLockNotifier @ 20 NONAME ; #<TI>#
+	_ZTV17CAutoLockNotifier @ 21 NONAME ; #<VT>#
+

@@ -1,0 +1,9 @@
+EXPORTS
+	_Z24ImplementationGroupProxyRi @ 1 NONAME
+	_ZTI19CAppServiceObserver @ 2 NONAME ; #<TI>#
+	_ZTI20CAppManagerInterface @ 3 NONAME ; #<TI>#
+	_ZTI25CAppManagerServiceHandler @ 4 NONAME ; #<TI>#
+	_ZTV19CAppServiceObserver @ 5 NONAME ; #<VT>#
+	_ZTV20CAppManagerInterface @ 6 NONAME ; #<VT>#
+	_ZTV25CAppManagerServiceHandler @ 7 NONAME ; #<VT>#
+

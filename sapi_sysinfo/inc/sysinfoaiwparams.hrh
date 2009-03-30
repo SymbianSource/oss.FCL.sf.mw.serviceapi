@@ -1,0 +1,147 @@
+/*
+* Copyright (c) 2005-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Constants used in interface class
+*
+*/
+
+
+#ifndef __SYSINFO_AIWPARAMS_HRH_
+#define __SYSINFO_AIWPARAMS_HRH_
+
+namespace sysinfoaiwparams
+{
+//
+//Service Name.
+//
+_LIT8(KService,"Service.SysInfo");
+
+//
+//Interface identifier.
+//
+_LIT8(KIDataSource,"ISysInfo");
+
+//
+//Sysinfo commands.
+//
+_LIT8(KGetInfo,"GetInfo");
+_LIT8(KSetInfo,"SetInfo");
+_LIT8(KGetNotification,"GetNotification");
+_LIT8(KCancel,"Cancel");
+
+//
+//Content identifier.
+//
+_LIT8(KEntity,"Entity");
+_LIT8(KKey,"Key");
+_LIT8(KSysData,"SystemData");
+_LIT8(KReturnValue,"ReturnValue");
+_LIT8(KTransactionId,"TransactionID");
+_LIT8(KErrorCode,"ErrorCode");
+
+
+//
+//Driveinfo content identifiers
+//
+_LIT8(KDriveNo,"Drive");
+_LIT8(KCriticalSpace,"CriticalSpace");
+_LIT8(KMediaType,"MediaType");
+_LIT8(KTotalSpace,"TotalSpace");
+_LIT8(KFreeSpace,"FreeSpace");
+_LIT8(KDriveName,"DriveName");
+_LIT8(KBatteryState,"BatteryState");
+
+
+//
+//Driveinfo  identifier
+//
+_LIT8(KDriveinfo,"Driveinfo");
+
+
+//
+//Status content identifiers
+//
+_LIT8(KStatus,"Status");
+
+//
+// Version identifiers
+//
+_LIT8(KMajorVersion,"MajorVersion");
+_LIT8(KMinorVersion,"MinorVersion");
+
+//
+// NetworkInfo identifiers
+//
+_LIT8(KNetworkName,"NetworkName");
+_LIT8(KNetworkStatus,"NetworkStatus");
+_LIT8(KNetworkMode,"NetworkMode");
+_LIT8(KCountryCode,"CountryCode");
+_LIT8(KNetworkCode,"NetworkCode");
+_LIT8(KLocationStatus,"LocationStatus");
+_LIT8(KAreaCode,"AreaCode");
+_LIT8(KCellId,"CellId");
+
+//
+// ConnectionInfo identifiers
+//
+_LIT8(KIAPID,"IAPID");
+_LIT8(KIAPName,"IAPName");
+_LIT8(KIAPConnectionName,"IAPConnectionName");
+_LIT8(KConnectionType,"ConnectionType");
+_LIT8(KConnectionStatus,"ConnectionStatus");
+
+//
+// Connection identifiers
+//
+_LIT8(KConnectionList,"ConnectionList");
+
+//
+// Accessory identifiers
+//
+_LIT8(KAccessoryType,"AccessoryType");
+_LIT8(KAccessoryState,"AccessoryState");
+
+//
+// Accessory identifiers
+//
+_LIT8(KAccessoryList,"AccessoryList");
+
+
+//
+// Display Resolution identifiers
+//
+_LIT8(KXPixels,"XPixels");
+_LIT8(KYPixels,"YPixels");
+
+//
+// StringData identifier
+//
+_LIT8(KStringData,"StringData");
+
+//
+// StringList identifier
+//
+_LIT8(KStringList,"StringList");
+
+//
+// StringData identifier
+//
+_LIT8(KLanguageList,"LanguageList");
+
+//
+// DriveList identifier
+//
+_LIT8(KDriveList,"DriveList");
+}
+
+#endif //__SYSINFO_AIWPARAMS_HRH_

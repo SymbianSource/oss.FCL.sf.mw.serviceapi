@@ -1,0 +1,61 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  ?Description
+*
+*/
+
+#include "../../group/sapiincludes.mmpi"
+#include <data_caging_paths.hrh>
+TARGET        landmarkprovider.dll
+TARGETTYPE    PLUGIN
+
+// MAGIC Dll recognition UID followed by the unique UID for this dll
+UID             0x10009D8D 0x102833A9
+VENDORID        VID_DEFAULT
+CAPABILITY      CAP_ECOM_PLUGIN
+
+VERSION		1.0
+
+USERINCLUDE   ../inc
+USERINCLUDE   ../landmarksservice/inc
+
+
+
+SOURCEPATH    ../src
+SOURCE        landmarkprovider.cpp
+SOURCE        landmarkinterface.cpp
+SOURCE        clandmarkiterable.cpp //CAiwIterable class implementation for landmarks
+SOURCE        clandmarkcategoryiterable.cpp //CAiwIterable class implementation for landmark categories
+SOURCE        clandmarkdatabaseiterable.cpp //CAiwIterable class implementation for landmark categories
+SOURCE        clandmarkobserver.cpp
+
+// Published to /resource/plugins
+SOURCEPATH    ../data
+START RESOURCE  102833A9.rss
+TARGET          landmarkprovider.rsc
+END
+LIBRARY      landmarkservice.lib
+LIBRARY      euser.lib
+LIBRARY      eposlandmarks.lib // for landmarks and categories
+LIBRARY      eposlmsearchlib.lib // for searching in single database
+LIBRARY      liwServiceHandler.lib //for liw
+LIBRARY      lbs.lib // for coordinate and locality
+LIBRARY      eposlmdbmanlib.lib // for database management
+LIBRARY      bafl.lib 
+LIBRARY      charconv.lib  //for conversion from unicode to utf
+LIBRARY	     efsrv.lib
+
+paged
+
+//end of file

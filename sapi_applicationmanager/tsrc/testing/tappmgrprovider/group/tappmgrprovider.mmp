@@ -1,0 +1,59 @@
+/*
+* Copyright (c) 2006-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  ?Description
+*
+*/
+
+
+#include "../../../../../group/sapiincludes.mmpi"
+
+TARGET          tappmgrprovider.dll
+TARGETTYPE      dll
+UID             0x1000008D 0xE01FB708
+
+#if defined(EKA2)
+CAPABILITY      ALL -TCB
+/* Remove comments and replace 0x00000000 with correct vendor id */
+// VENDORID     0x00000000
+/* Remove comments and replace 0x00000000 with correct secure id */
+// SECUREID     0x00000000
+#endif
+
+//TARGETPATH      ?target_path
+DEFFILE         tappmgrprovider.def
+
+SOURCEPATH      ../src
+SOURCE          tappmgrprovider.cpp
+SOURCE          tappmgrproviderBlocks.cpp
+SOURCE          testappobserver.cpp
+
+USERINCLUDE     ../inc
+
+
+
+USERINCLUDE 	../../../../appmanagerservice/inc
+
+
+
+
+LIBRARY         euser.lib
+LIBRARY         stiftestinterface.lib
+//LIBRARY         appmanagerservice.lib
+LIBRARY		    bafl.lib
+LIBRARY         efsrv.lib
+LIBRARY         liwServiceHandler.lib apgrfx.lib apmime.lib
+LANG            SC
+
+
+// End of File

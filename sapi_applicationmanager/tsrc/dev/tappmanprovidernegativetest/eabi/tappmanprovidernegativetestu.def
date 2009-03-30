@@ -1,0 +1,5 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZTI17CProviderObserver @ 2 NONAME ; #<TI>#
+	_ZTV17CProviderObserver @ 3 NONAME ; #<VT>#
+

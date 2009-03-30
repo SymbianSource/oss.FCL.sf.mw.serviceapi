@@ -1,0 +1,13 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZTI11CTestAsync6 @ 2 NONAME ; #<TI>#
+	_ZTI11CTestAsync7 @ 3 NONAME ; #<TI>#
+	_ZTI11CTestAsync8 @ 4 NONAME ; #<TI>#
+	_ZTI11CTestAsync9 @ 5 NONAME ; #<TI>#
+	_ZTI12CTestAsync10 @ 6 NONAME ; #<TI>#
+	_ZTV11CTestAsync6 @ 7 NONAME ; #<VT>#
+	_ZTV11CTestAsync7 @ 8 NONAME ; #<VT>#
+	_ZTV11CTestAsync8 @ 9 NONAME ; #<VT>#
+	_ZTV11CTestAsync9 @ 10 NONAME ; #<VT>#
+	_ZTV12CTestAsync10 @ 11 NONAME ; #<VT>#
+

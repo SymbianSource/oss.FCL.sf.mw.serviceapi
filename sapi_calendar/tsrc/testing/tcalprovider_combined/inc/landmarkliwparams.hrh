@@ -1,0 +1,155 @@
+/*
+* Copyright (c) 2005-2006 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Constants used in interface class
+*
+*/
+
+
+
+#ifndef __LANDMARK_AIWPARAMS_HRH_
+#define __LANDMARK_AIWPARAMS_HRH_
+
+//
+//Service Name.
+//
+_LIT8(KLandService,"Service.Landmarks");
+
+//
+//Interface identifier.
+//
+_LIT8(KLandIDataSource,"IDataSource");
+
+//
+//Landmarks commands.
+//
+_LIT8(KNew,"New");
+//_LIT8(KGetList,"GetList");
+_LIT8(KAdd,"Add");
+_LIT8(KRemove,"Delete");
+_LIT8(KSetActive,"SetActive");
+_LIT8(KOrganise,"Organise");
+_LIT8(KImport,"Import");
+_LIT8(KExport,"Export");
+_LIT8(KCancel,"Cancel");
+
+//
+//Content identifier.
+//
+//_LIT8(KContentType,"Type");
+//_LIT8(KFilter,"Filter");
+//_LIT8(KSort,"Sort");
+_LIT8(KDataFields,"Data");
+_LIT8(KImportData,"Data");
+_LIT8(KExportData,"Data");
+_LIT8(KOperationType,"OperationType");
+_LIT8(KTransactionId,"TransactionID");
+//_LIT8(KErrorCode,"ErrorCode");
+_LIT8(KIterable,"ReturnValue");
+//_LIT8(KReturnValue,"ReturnValue");
+//
+//Content value.
+//
+_LIT16(KLandmark,"Landmark");
+_LIT16(KCategory,"Category");
+_LIT16(KDatabase,"Database");
+
+//
+//Landmark datamembers
+//
+_LIT8(KLandmarkId,"LandmarkId");
+_LIT8(KLandmarkName,"LandmarkName");
+_LIT8(KLandmarkPosition,"LandmarkPosition");
+_LIT8(KCoverageRadius,"CoverageRadius");
+_LIT8(KCategoryInfo,"CategoryInfo");
+_LIT8(KIconFile,"IconFile");
+_LIT8(KIconIndex,"IconIndex");
+_LIT8(KIconMaskIndex,"IconMaskIndex");
+_LIT8(KLandmarkDesc,"LandmarkDesc");
+_LIT8(KLandmarkFields,"LandmarkFields");
+_LIT8(KLatitude,"Latitude");
+_LIT8(KLongitude,"Longitude");
+_LIT8(KAltitude,"Altitude");
+_LIT8(KHAccuracy,"HAccuracy");
+_LIT8(KVAccuracy,"VAccuracy");
+_LIT8(KTStamp,"TStamp");
+
+//
+//Landmark fields
+//
+_LIT8(KLandmarkCountry,"Country");
+_LIT8(KLandmarkAreaCode,"AreaCode");
+_LIT8(KLandmarkCity,"City");
+_LIT8(KLandmarkDistrict,"District");
+_LIT8(KLandmarkBuildingName,"BuildingName");
+_LIT8(KLandmarkStreet,"Street");
+_LIT8(KLandmarkTelephone,"Telephone");
+
+//
+//Landmark category datamembers
+//
+_LIT8(KCategoryName,"CategoryName");
+_LIT8(KCategoryId,"CategoryId");
+_LIT8(KGlobalCategory,"GlobalCategoryId");
+
+//
+//landmark database datamembers
+//
+_LIT8(KDbName,"DatabaseName");
+_LIT8(KDbUri,"DatabaseURI");
+_LIT8(KDbDrive,"DbDrive");
+_LIT8(KDbProtocol,"DbProtocol");
+_LIT8(KDbMedia,"DbMedia");
+_LIT8(KDbSize,"DbSize");
+_LIT8(KDbActive,"DbActive");
+
+//
+//search criteria datamembers
+//
+_LIT8(KMaximumMatches,"MaximumMatches");
+_LIT8(KPrevMatchesOnly,"PreviousMatchesOnly");
+_LIT8(KSortKey,"Key");
+_LIT8(KSortOrder,"Order");
+
+//
+//sort value.
+//
+_LIT16(KDescending,"Descending");
+_LIT16(KAscending,"Ascending");
+
+//
+//search criteria datamembers for landmarks
+//
+_LIT8(KCoverageRadiusOption,"CoverageRadiusOption");
+_LIT8(KBoundedArea,"BoundedArea");
+_LIT8(KNorthLatitude,"NorthLatitude");
+_LIT8(KSouthLatitude,"SouthLatitude");
+_LIT8(KEastLongitude,"EastLongitude");
+_LIT8(KWestLongitude,"WestLongitude");
+_LIT8(KMaximumDistance,"MaximumDistance");
+
+//
+//Import/Export landmarks
+//
+_LIT8(KSourceFile, "SourceFile");
+_LIT8(KDestinationFile, "DestinationFile");
+_LIT8(KMimeType, "MimeType");
+_LIT8(KLandmarkIdList, "LandmarkIdList");
+
+//
+//Organise operation type value
+//
+_LIT16(KAssociate, "Associate");
+_LIT16(KDisassociate, "Disassociate");
+
+#endif //__LANDMARK_AIWPARAMS_HRH_

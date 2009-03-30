@@ -1,0 +1,24 @@
+<component>
+    <name>LibXXX_ATSTemplateXXX_module_blr_winscw_udeb_component</name>
+    <testset>
+        <id>LibXXX_ATSTemplateXXX_winscw_udeb_blr</id>
+        <priority>High</priority>
+        
+        <execute>
+            <install type="binary">
+                <src>ATSTemplateXXX.dll</src>
+                <dst>c:\sys\bin\ATSTemplateXXX.dll</dst>
+            </install>
+            <install type="data">
+                <src>ATSTemplateXXX.cfg</src>
+                <dst>c:\TestFramework\ATSTemplateXXX.cfg</dst>
+            </install>
+            <file>z:\ATSINTERFACE.EXE</file>
+            <parameters>-testmodule TestScripter -config c:\TestFramework\ATSTemplateXXX.cfg</parameters>
+            <result type="common">
+                <file>c:\spd_logs\xml\TestScripter.xml</file>
+            </result>
+            <timeout>300</timeout>
+        </execute>
+    </testset>
+</component>

@@ -1,0 +1,57 @@
+/*
+* Copyright (c) 2007-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Media Management Service API command IDs
+*
+*/
+
+
+
+#ifndef __MGSERVICE_HRH
+#define __MGSERVICE_HRH
+enum TMgState
+	{
+    /// State indicates class is ready to accept another request
+    EMgFree           = 0,
+    //State indicates class is busy in ongoing request
+    EMgBusy			  = 1
+	};
+
+enum TMgCmdId
+	{
+    /// State indicates class is ready to accept another request
+    EMgBlankCmdId     = 0,
+
+    //State indicates class is busy in ongoing request
+    EMgGetFiles		  = 1,
+
+    //State indicates class is busy in ongoing request
+    EMgGetFilesInfo	  = 2
+	};
+
+/**
+* Content Listing Framework list model operation events
+*/
+enum TMgOperationEvent
+    {
+    /// Refresh operation is completed
+    EMgRefreshComplete = 0x0,
+    /// Model content is obsolete and should be refreshed
+    EMgModelOutdated = 0x1,
+    /// Refersh Operation is canceled
+    EMgModelCancel = 0x2
+    };
+
+
+
+#endif // __MGSERVICE_HRH

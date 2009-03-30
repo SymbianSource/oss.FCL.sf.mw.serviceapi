@@ -1,0 +1,11 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZTI11CWatchTimer @ 2 NONAME ; #<TI>#
+	_ZTI12CChargerNoti @ 3 NONAME ; #<TI>#
+	_ZTI16CBatStrengthNoti @ 4 NONAME ; #<TI>#
+	_ZTI21CBatteryStrengthAsync @ 5 NONAME ; #<TI>#
+	_ZTV11CWatchTimer @ 6 NONAME ; #<VT>#
+	_ZTV12CChargerNoti @ 7 NONAME ; #<VT>#
+	_ZTV16CBatStrengthNoti @ 8 NONAME ; #<VT>#
+	_ZTV21CBatteryStrengthAsync @ 9 NONAME ; #<VT>#
+

@@ -1,0 +1,9 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZTI11CWatchTimer @ 2 NONAME ; #<TI>#
+	_ZTI12CAsyncStatus @ 3 NONAME ; #<TI>#
+	_ZTI21CTestIpAndPredTextNot @ 4 NONAME ; #<TI>#
+	_ZTV11CWatchTimer @ 5 NONAME ; #<VT>#
+	_ZTV12CAsyncStatus @ 6 NONAME ; #<VT>#
+	_ZTV21CTestIpAndPredTextNot @ 7 NONAME ; #<VT>#
+

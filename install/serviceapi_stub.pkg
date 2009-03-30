@@ -1,0 +1,112 @@
+; ============================================================================
+; Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+; All rights reserved.
+; This component and the accompanying materials are made available
+; under the terms of the License "Eclipse Public License v1.0"
+; which accompanies this distribution, and is available
+; at the URL "http://www.eclipse.org/legal/epl-v10.html".
+;
+; Initial Contributors:
+; Nokia Corporation - initial contribution.
+;
+; Contributors:
+;
+; Description:   package file for Service API package
+; ============================================================================
+
+;Languages
+&EN
+
+;Header
+#{"Platform Service Extensions"},(0x200100BE),1,0,0, TYPE=SA
+
+;Localised Vendor name
+%{"Nokia"}
+
+;Unique Vendor name
+:"Nokia"
+
+;LIWServiceHandler Binaries
+
+""-"z:\sys\bin\liwServiceHandler.dll"
+""-"z:\sys\bin\liwResolver.dll"
+""-"z:\resource\liwResolver.RSC"
+""-"z:\resource\liwServiceHandler.RSC"
+
+
+;Security Manager Binaries
+
+""-"z:\sys\bin\RTSecMgrServer.exe"
+""-"z:\sys\bin\RTSecMgrUtil.dll"
+""-"z:\sys\bin\RTSecMgrClient.dll"
+""-"z:\resource\apps\RTSecManager.r*"
+""-"z:\private\2000F847\backup_registration.xml"
+
+
+;SAPI Binaries to Install
+
+;Location SAPI binaries
+""-"z:\sys\bin\locationservice.dll"
+""-"z:\sys\bin\locationprovider.dll"
+;Location SAPI resource files
+""-"z:\resource\plugins\locationprovider.rsc"
+
+;Landmark SAPI binaries
+""-"z:\sys\bin\landmarkprovider.dll"
+""-"z:\sys\bin\landmarkservice.dll"
+;Landmark SAPI resource files
+""-"z:\resource\plugins\landmarkprovider.rsc"
+
+;Messaging SAPI binaries
+""-"z:\sys\bin\messagingprovider.dll"
+""-"z:\sys\bin\messagingservice.dll"
+;Messaging SAPI resource files
+""-"z:\resource\plugins\messagingprovider.rsc"
+
+;Media Management SAPI binaries
+""-"z:\sys\bin\mediamanagementservice.dll"
+""-"z:\sys\bin\mediamanagementprovider.dll"
+;Media Management SAPI resource files
+""-"z:\resource\plugins\mediamanagementprovider.rsc"
+
+;Camera SAPI binaries
+;""-"z:\sys\bin\cameraprovider.dll"
+;""-"z:\sys\bin\cameraservice.dll"
+;Camera SAPI resource files
+;""-"z:\resource\plugins\cameraprovider.rsc"
+
+;Contacts SAPI binaries
+""-"z:\sys\bin\contactprovider.dll"
+""-"z:\sys\bin\contactservice.dll"
+;Contacts SAPI resource files
+""-"z:\resource\plugins\contactprovider.rsc"
+
+;AppManager SAPI binaries
+""-"z:\sys\bin\appmanagerprovider.dll"
+""-"z:\sys\bin\appmanagerservice.dll"
+;AppManager SAPI resource files
+""-"z:\resource\plugins\appmanagerprovider.rsc"
+
+;Logging SAPI binaries
+""-"z:\sys\bin\loggingprovider.dll"
+""-"z:\sys\bin\loggingservice.dll"
+;Logging SAPI resource files
+""-"z:\resource\plugins\loggingprovider.rsc"
+
+;Calendar SAPI binaries
+""-"z:\sys\bin\calendarprovider.dll"
+""-"z:\sys\bin\calendarservice.dll"
+;Calendar SAPI resource files
+""-"z:\resource\plugins\calendarprovider.rsc"
+
+;Sensor SAPI binaries
+""-"z:\sys\bin\sensorprovider.dll"
+""-"z:\sys\bin\sensorservice.dll"
+;Sensor SAPI resource files
+""-"z:\resource\plugins\sensorprovider.rsc"
+
+;Sysinfo SAPI binaries
+""-"z:\sys\bin\sysinfoprovider.dll"
+""-"z:\sys\bin\sysinfoservice.dll"
+;Sysinfo SAPI resource files
+""-"z:\resource\plugins\sysinfoprovider.rsc"

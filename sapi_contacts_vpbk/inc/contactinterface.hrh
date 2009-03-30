@@ -1,0 +1,161 @@
+/*
+* Copyright (c) 2006-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Provides the Enumerations for contact interface Parameters
+*
+*/
+
+
+#ifndef C_CONTACTINTERFACE_HRH
+#define C_CONTACTINTERFACE_HRH
+
+enum TcontactAsyncCommands
+    {
+    ECmdImport = 0,
+    ECmdExport
+    };
+
+//commands that can be performed on the contacts database.
+_LIT8( KCmdImport, "Import" );
+_LIT8( KCmdExport, "Export" );
+_LIT8( KCmdGetList, "GetList");
+_LIT8( KCmdAdd, "Add" );
+_LIT8( KCmdDelete, "Delete" );
+_LIT8( KCmdOrganiseGroups, "Organise" );
+_LIT8( KCmdCancel, "Cancel" );
+// Constant for the appending Error code
+_LIT8( KErrorCode, "ErrorCode" );
+_LIT8( KErrorMessage, "ErrorMessage" );
+
+// Constant for the appending TransactionID
+_LIT8( KTransactionID, "TransactionID" );
+
+//Constant for appending Iterator
+_LIT8( KReturnValue, "ReturnValue");
+
+_LIT8(KSourceFileNameParam, "SourceFile");
+_LIT8(KDestFileNameParam, "DestinationFile");
+_LIT8(KGroupId,"id");
+_LIT8(KContactId, "id");
+		     
+
+_LIT8(KFieldLabel, "Label");
+_LIT8(KFieldValue, "Value");
+_LIT8(KFieldNext, "Next");
+_LIT8(KGroupLabel, "GroupLabel");
+_LIT8(KContents, "Contents");
+
+_LIT8(KList, "IdList"); 
+_LIT(KContact, "Contact");
+_LIT(KGroup, "Group");
+_LIT(KDatabase, "Database");
+		    
+_LIT8(KDBUri, "DBUri");
+_LIT8(KSearchVal, "SearchVal");
+_LIT8(KType, "Type");
+_LIT8(KFilter, "Filter");
+_LIT8(KSort, "Sort");
+_LIT8(KOrder, "Order");
+_LIT8(KData, "Data");
+_LIT8(KOperationType, "OperationType");
+
+_LIT(KAssociate, "Associate"); 
+_LIT(KDissociate, "Disassociate"); 
+				   	
+_LIT(KAscending, "Ascending"); 
+_LIT(KDescending, "Descending"); 
+
+
+#ifndef C_FIELDKEYS_HRH
+
+_LIT8(KSync, "Sync"); 
+_LIT8(KLastName, "LastName"); 
+_LIT8(KLastNameReading, "LastNameReading"); 
+_LIT8(KFirstName, "FirstName"); 
+_LIT8(KFirstNameReading, "FirstNameReading"); 
+_LIT8(KPrefix, "Prefix"); 
+_LIT8(KSuffix, "Suffix"); 
+_LIT8(KSecondName, "SecondName"); 
+_LIT8(KLandPhoneHome, "LandPhoneHome"); 
+_LIT8(KMobilePhoneHome, "MobilePhoneHome"); 
+_LIT8(KVideoNumberHome, "VideoNumberHome"); 
+_LIT8(KFaxNumberHome, "FaxNumberHome"); 
+_LIT8(KVoipHome, "VoipHome"); 
+_LIT8(KEmailHome, "EmailHome"); 
+_LIT8(KURLHome, "URLHome"); 
+_LIT8(KAddrLabelHome, "AddrLabelHome"); 
+_LIT8(KAddrPOHome, "AddrPOHome"); 
+_LIT8(KAddrEXTHome, "AddrEXTHome"); 
+_LIT8(KAddrStreetHome, "AddrStreetHome"); 
+_LIT8(KAddrLocalHome, "AddrLocalHome"); 
+_LIT8(KAddrRegionHome, "AddrRegionHome"); 
+_LIT8(KAddrPostCodeHome, "AddrPostCodeHome"); 
+_LIT8(KAddrCountryHome, "AddrCountryHome"); 
+_LIT8(KJobTitle, "JobTitle"); 
+_LIT8(KCompanyName,"CompanyName"); 
+_LIT8(KLandPhoneWork, "LandPhoneWork"); 
+_LIT8(KMobilePhoneWork, "MobilePhoneWork"); 
+_LIT8(KVideoNumberWork, "VideoNumberWork"); 
+_LIT8(KFaxNumberWork, "FaxNumberWork"); 
+_LIT8(KVoipWork, "VoipWork"); 
+_LIT8(KEmailWork, "EmailWork"); 
+_LIT8(KURLWork, "URLWork"); 
+_LIT8(KAddrLabelWork, "AddrLabelWork"); 
+_LIT8(KAddrPOWork, "AddrPOWork"); 
+_LIT8(KAddrEXTWork, "AddrEXTWork"); 
+_LIT8(KAddrStreetWork, "AddrStreetWork"); 
+_LIT8(KAddrLocalWork, "AddrLocalWork"); 
+_LIT8(KAddrRegionWork, "AddrRegionWork"); 
+_LIT8(KAddrPostCodeWork, "AddrPostCodeWork"); 
+_LIT8(KAddrCountryWork, "AddrCountryWork"); 
+_LIT8(KLandPhoneGen, "LandPhoneGen"); 
+_LIT8(KMobilePhoneGen, "MobilePhoneGen"); 
+_LIT8(KVideoNumberGen, "VideoNumberGen"); 
+_LIT8(KFaxNumberGen, "FaxNumberGen"); 
+_LIT8(KVOIPGen, "VOIPGen"); 
+_LIT8(KPOC, "POC"); 
+_LIT8(KSWIS, "SWIS"); 
+_LIT8(KSIP, "SIP"); 
+_LIT8(KEmailGen, "EmailGen"); 
+_LIT8(KURLGen, "URLGen"); 
+_LIT8(KAddrLabelGen, "AddrLabelGen"); 
+_LIT8(KAddrPOGen, "AddrPOGen"); 
+_LIT8(KAddrExtGen, "AddrExtGen"); 
+_LIT8(KAddrStreetGen, "AddrStreetGen"); 
+_LIT8(KAddrLocalGen, "AddrLocalGen"); 
+_LIT8(KAddrRegionGen, "AddrRegionGen"); 
+_LIT8(KAddrPostCodeGen, "AddrPostCodeGen"); 
+_LIT8(KAddrCountryGen, "AddrCountryGen"); 
+_LIT8(KPageNumber, "PageNumber"); 
+_LIT8(KDTMFString, "DTMFString"); 
+_LIT8(KWVAddress, "WVAddress"); 
+_LIT8(KDate, "Date"); 
+_LIT8(KNote, "Note"); 
+_LIT8(KThumbNailPic, "ThumbNailPic"); 
+_LIT8(KRingtone, "Ringtone"); 
+_LIT8(KCallerObjImg, "CallerObjImg"); 
+_LIT8(KCallerObjText, "CallerObjText"); 
+_LIT8(KMiddleName, "MiddleName"); 
+_LIT8(KDepartment, "Department"); 
+_LIT8(KAsstName, "AsstName"); 
+_LIT8(KSpouse, "Spouse"); 
+_LIT8(KChildren, "Children"); 
+_LIT8(KAsstPhone, "AsstPhone"); 
+_LIT8(KCarPhone, "CarPhone"); 
+_LIT8(KAnniversary, "Anniversary"); 
+_LIT8(KSyncClass, "SyncClass"); 
+_LIT8(KLOCPrivacy, "LOCPrivacy"); 
+_LIT8(KGenLabel, "GenLabel");
+
+#endif // C_FIELDKEYS_HRH
+#endif // C_CONTACTINTERFACE_HRH    

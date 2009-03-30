@@ -1,0 +1,37 @@
+/*
+* Copyright (c) 2002 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  This bld.inf is for all testapps comes under service API library.
+*
+*/
+
+
+
+// *****************mediagallery related testapps***********************
+#include "../../sapi_landmarks/tsrc/group/bld.inf"
+#include "../../sapi_applicationmanager/tsrc/group/bld.inf"
+#include "../../sapi_mediamanagement/tsrc/group/bld.inf"
+#include "../../sapi_location/tsrc/group/bld.inf"
+#include "../../sapi_logging/tsrc/group/bld.inf"
+#include "../../sapi_contacts_vpbk/tsrc/group/bld.inf"
+#include "../../sapi_sysinfo/tsrc/group/bld.inf"
+#include "../../sapi_calendar/tsrc/group/bld.inf"
+#include "../../sapi_sensor/tsrc/group/bld.inf"
+#include "../../sapi_messaging/tsrc/group/bld.inf"
+
+
+// *****************test provider related testapps***********************
+//#include "../testprovider/group/bld.inf"
+
+//
+//  End of File

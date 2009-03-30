@@ -1,0 +1,7 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZTI11Ctdeleteadd @ 2 NONAME ; #<TI>#
+	_ZTI16CContactCallback @ 3 NONAME ; #<TI>#
+	_ZTV11Ctdeleteadd @ 4 NONAME ; #<VT>#
+	_ZTV16CContactCallback @ 5 NONAME ; #<VT>#
+

@@ -1,0 +1,54 @@
+;
+; Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
+; All rights reserved.
+; This component and the accompanying materials are made available
+; under the terms of the License "Eclipse Public License v1.0"
+; which accompanies this distribution, and is available
+; at the URL "http://www.eclipse.org/legal/epl-v10.html".
+;
+; Initial Contributors:
+; Nokia Corporation - initial contribution.
+;
+; Contributors:
+;
+; Description: 
+;
+
+&EN
+; Installation header
+; Only one component name as we only support English
+; UID is the main app's UID
+
+#{"CalendarTest"},(0xE01FB706),1,0,24,TYPE=SA
+
+;
+;Supports Series 60 v 0.9
+;This line indicates that this installation is for the Series 60 platform v0.9
+;This line must appear _exactly_ as shown below in the sis file
+;If this line is missing or incorrect, the sis file will not be able
+;to be installed on Series 60 v0.9 platforms
+(0xE01FB706), 0, 0, 0, {"Series60ProductID"}
+
+; Localised Vendor name
+%{"Nokia"}
+
+; Unique Vendor name
+:"Nokia Corporation"
+
+;INI FILE
+ "\epoc32\winscw\c\testframework\testframework.ini"    -   "!:\testframework\testframewor.ini"
+
+;CFG FILES
+  "\epoc32\winscw\c\testframework\tcalendaradditer3.cfg"        -   "!:\testframework\tcalendaradditer3.cfg"
+;  "\epoc32\winscw\c\testframework\tcalendarexportiter3.cfg"        -   "!:\testframework\tcalendarexportiter3.cfg"
+;  "\epoc32\winscw\c\testframework\tcalendargetlistiter3.cfg"        -   "!:\testframework\tcalendargetlistiter3.cfg"
+ ; "\epoc32\winscw\c\testframework\tcalendarimportiter3.cfg"        -   "!:\testframework\tcalendarimportiter3.cfg"
+; Main DLL
+  "\epoc32\release\ARMV5\urel\calendarservice.dll"         -   "!:\Sys\Bin\calendarservice.dll"
+  "\epoc32\release\ARMV5\urel\calendarprovider.dll"         -   "!:\Sys\Bin\calendarprovider.dll"
+  "\epoc32\release\ARMV5\urel\tcalendaradditer3.dll"         -   "!:\Sys\Bin\tcalendaradditer3.dll"
+;  "\epoc32\release\ARMV5\urel\tcalendarexportiter3.dll"         -   "!:\Sys\Bin\tcalendarexportiter3.dll"
+;  "\epoc32\release\ARMV5\urel\tcalendargetlistiter3.dll"         -   "!:\Sys\Bin\tcalendargetlistiter3.dll"
+;  "\epoc32\release\ARMV5\urel\tcalendarimportiter3.dll"         -   "!:\Sys\Bin\tcalendarimportiter3.dll"
+   "\epoc32\data\Z\resource\plugins\calendarprovider.rsc"      -   "c:\resource\plugins\calendarprovider.rsc"
+

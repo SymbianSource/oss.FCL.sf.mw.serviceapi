@@ -1,0 +1,5 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZTI8Callback @ 2 NONAME ; #<TI>#
+	_ZTV8Callback @ 3 NONAME ; #<VT>#
+

@@ -1,0 +1,32 @@
+/*
+* Copyright (c) 2007-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description: 
+*
+*/
+
+
+#ifndef __testappmngui_HRH__
+#define __testappmngui_HRH__
+
+/** testappmngui enumerate command codes */
+enum TtestappmnguiIds
+    {
+    EtestappmnguiCommand1 = 1,  // start value must not be 0
+    EtestappmnguiCommand2 = 2,  // start value must not be 0
+    EtestappmnguiCommand3 = 3,  // start value must not be 0
+    EtestappmnguiCommand4 = 4  // start value must not be 0
+    };
+
+
+#endif // __testappmngui_HRH__

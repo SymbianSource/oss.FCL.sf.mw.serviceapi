@@ -1,0 +1,181 @@
+/*
+* Copyright (c) 2006-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:   Provides the Enumerations for Sensor interface Parameters
+*
+*/
+
+
+#ifndef C_SENSORINTERFACE_HRH
+#define C_SENSORINTERFACE_HRH
+
+#include <sensorgeneralproperties.h>
+
+_LIT8( KDataRate, "DataRate" );
+_LIT8( KAvailability, "Availability" );
+_LIT8( KMeasureRange, "MeasureRange" );
+_LIT8( KChannelDataFormat, "ChannelDataFormat" );
+_LIT8( KChannelAccuracy, "ChannelAccuracy" );
+_LIT8( KChannelScale, "ChannelScale" );
+_LIT8( KScaledRange, "ScaledRange" );
+_LIT8( KChannelUnit, "ChannelUnit" );
+_LIT8( KSensorModel, "SensorModel" );
+_LIT8( KConnectionType, "ConnectionType" );
+_LIT8( KSensorDescription, "Description" );
+
+//Constants for proprty size
+//TO DO: check for the size
+const TInt KChnlPropertySize = 50;
+// Constant for the appending Error code
+//_LIT8( KErrorCode, "ErrorCode" );
+
+// Constant for the command Find Sensor Channels
+_LIT8(KCmdFindChannel, "FindSensorChannel" );
+//Constants for the command start receiving notification
+_LIT8(KCmdStartGettingNotifications,"StartReceivingNotification");
+//Constants for command GetChannelProperty
+_LIT8(KCmdGetChnlProperty,"GetChannelProperty");
+//Constants for command SetChannelProperty
+_LIT8(KCmdSetChnlProperty,"SetChannelProperty");
+//Constant for command ModifyConditionSet
+_LIT8(KCmdModifyConditionSet,"ModifyConditionSet");
+//Constants for specifying channel finder search criterion
+_LIT8(KSearchCriterion,"FindChannelSearchCriterion");
+
+//Constants for sensor Chaneel Id
+_LIT8(KChnlID,"ChnlID");
+//constants for search string for finding sensor channels
+
+//find all channels
+_LIT8(KAll,"All");
+
+//find Accelerometer XYZ Axis data channels
+
+_LIT8(KAcclmtrAxis,"AcclmtrAxis");
+
+//find Accelerometer Wake up data channels
+
+
+_LIT8(KAcclmtrWakeup,"AcclmtrWakeup");
+
+//find Accelerometer Double Tapping channels
+_LIT8(KAcclmtrDoubleTapping,"AcclmtrDoubleTapping");
+
+//find orientation data channels
+_LIT8(KOrientation,"Orientation");
+
+//find rotaion data channels
+_LIT8(KRotation,"Rotation");
+
+//Constants for Start Receiving Notification : Listening Type
+_LIT8(KListeningType,"ListeningType");
+_LIT8(KChnlInfoMap,"ChannelInfoMap");
+_LIT8(KPropertyMap,"PropertyMap");
+
+//Constants for Data Notification
+_LIT8(KChnlData,"ChnlData");
+
+//Constants for  Channel Change Notification
+_LIT8(KChannelChange,"ChnlChange");
+
+//Constants for  Property Change Notification
+_LIT8(KPropertyChange,"ChnlPropChange");
+
+//Constants for  ConditionSet Change Notification
+_LIT8(KChnlCondnChange,"ChnlCondnChange");
+
+//Constants for received data type
+_LIT8(KDataType,"DataType");
+_LIT8(KAcclmtrAxisData,"AcclmtrAxisData");
+_LIT8(KAcclmtrWakeupData,"AcclmtrWakeupData");
+_LIT8(KAcclmtrDoubleTappingData,"AcclmtrDoubleTappingData");
+_LIT8(KOrientationData,"OrientationData");
+_LIT8(KRotationData,"RotationData");
+
+//done
+
+//constants for channel Info
+_LIT8(KChnlInfo,"ChannelInfo");
+_LIT8(KChnlId,"ChannelId");
+_LIT8(KContextType,"ContextType");
+_LIT8(KQuantity,"Quantity");
+_LIT8(KChannelType,"ChannelType");
+//_LIT8(KLocation,"Location");
+_LIT8(KVendorId,"VendorId");
+
+_LIT8(KDataItemSize,"DataItemSize");
+_LIT8(KChannelVisibility,"ChannelVisibility");
+_LIT8(KChnlDataTypeId,"ChannelDataTypeId");
+
+//Constants for appending data obtained from sensor channels :used to append to out List
+_LIT8(KXAxisData,"XAxisData");
+_LIT8(KYAxisData,"YAxisData");
+_LIT8(KZAxisData,"ZAxisData");
+_LIT8(KDirection,"Direction");
+_LIT8(KDeviceOrientation,"DeviceOrientation");
+
+//Constants for Device Orientation
+_LIT8(KDisplayUp,"DisplayUp");
+_LIT8(KUndefined,"OrientaionUndefined");
+_LIT8(KDisplayDown,"DisplayDown");
+_LIT8(KDisplayLeftUp,"DisplayLeftUp");
+_LIT8(KDisplayRightUp,"DisplayRightUp");
+_LIT8(KDisplayUpwards,"DisplayUpwards");
+_LIT8(KDisplayDownwards,"DisplayDownwards");
+
+//Constants for device rotation data
+_LIT8(KAbtXAxis,"RotaionAbtXAxis");
+_LIT8(KAbtYAxis,"RotaionAbtYAxis");
+_LIT8(KAbtZAxis,"RotaionAbtZAxis");
+//Constants for appending time stamp information to the output List
+_LIT8(KTimeStamp,"TimeStamp");
+
+//Constants For Channel Property
+_LIT8(KPropType,"PropertyType");
+_LIT8(KIntProperty,"IntProperty");
+_LIT8(KRealProperty,"RealProperty");
+_LIT8(KStringProperty,"StringProperty");
+_LIT8(KPropId,"PropertyId");
+_LIT8(KPropValue,"Value");
+_LIT8(KMaxValue,"MaxValue");
+_LIT8(KMinValue,"MinValue");
+_LIT8(KPropIndex,"PropIndex");
+
+//constants for conditon change
+_LIT8(KCondnChngValue,"CondnChgVal");
+
+//StopReceivingNotification Command
+_LIT8(KStopNotification,"StopReceivingNotification");
+_LIT8(KStopNotificationType,"StopReceivingNotificationType");
+
+
+
+//Constant for appending result to the output parameter list
+//_LIT8(KReturnValue,"ReturnValue");
+
+//Constants for ModifyConditionSet
+_LIT8(KModificationType,"ModificationType");
+_LIT8(KOperandType,"Operand");
+_LIT8(KOperator,"Operator");
+_LIT8(KCondnValue,"Value");
+_LIT8(KModificationTypeAdd,"Add");
+_LIT8(KModificationTypeRemove,"Remove");
+
+_LIT8(KOpEquals,"==");
+_LIT8(KOpGreaterThan,">");
+_LIT8(KOpGreaterThanEquals,">=");
+_LIT8(KOpLessThan,"<");
+_LIT8(KOpLessThanEquals,"<=");
+_LIT8(KOpAnd,"&");
+_LIT8(KOpAll,"*");
+#endif // C_SENSORINTERFACE_HRH    

@@ -1,0 +1,53 @@
+; ============================================================================
+; Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+; All rights reserved.
+; This component and the accompanying materials are made available
+; under the terms of the License "Eclipse Public License v1.0"
+; which accompanies this distribution, and is available
+; at the URL "http://www.eclipse.org/legal/epl-v10.html".
+;
+; Initial Contributors:
+; Nokia Corporation - initial contribution.
+;
+; Contributors:
+;
+; Description:   package file for Service API package
+; ============================================================================
+
+;Languages
+&EN
+
+;Header
+#{"App Mgr"},(0x102833AA),1,0,0
+
+;Supports S60 3.0
+[0x101F7961], 0, 0, 0, {"S60ProductID"}
+
+;Localised Vendor name
+%{"Nokia"}
+
+;Unique Vendor name
+:"Nokia"
+
+;SAPI Binaries to Install
+
+;Loggingservice binaries
+"..\..\..\..\..\..\..\epoc32\release\armv5\urel\appmanagerservice.dll"-"C:\sys\bin\appmanagerservice.dll"
+"..\..\..\..\..\..\..\epoc32\release\armv5\urel\tappmgrtest.dll"-"C:\sys\bin\tappmgrtest.dll"
+
+
+;ini file
+"..\init\Testframework.ini"-"c:\Testframework\Testframework1.ini"
+
+;cfg file
+"..\conf\tappmgrtest.cfg"-"c:\Testframework\tappmgrtest.cfg"
+
+
+
+"..\data\c\images\pict.jpg"  - "C:\Data\images\pict.jpg"
+"..\data\c\images\sapi.jpg"  - "C:\Data\images\sapi.jpg"
+"..\data\c\test.txt"  - "C:\Data\test.txt"
+"..\data\c\msg.sisx"  - "C:\Data\msg.sisx"
+"..\data\c\SpruceBlocks.jar"  - "C:\Data\SpruceBlocks.jar"
+
+

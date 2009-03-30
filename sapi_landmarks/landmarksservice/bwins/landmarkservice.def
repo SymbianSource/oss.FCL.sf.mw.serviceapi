@@ -1,0 +1,28 @@
+EXPORTS
+	?AddItemL@CLandmarkService@@QAEKAAVCPosLandmark@@ABVTDesC16@@@Z @ 1 NONAME ; unsigned long CLandmarkService::AddItemL(class CPosLandmark &, class TDesC16 const &)
+	?AddItemL@CLandmarkService@@QAEKAAVCPosLandmarkCategory@@ABVTDesC16@@@Z @ 2 NONAME ; unsigned long CLandmarkService::AddItemL(class CPosLandmarkCategory &, class TDesC16 const &)
+	?AddItemL@CLandmarkService@@QAEXABVTDesC16@@@Z @ 3 NONAME ; void CLandmarkService::AddItemL(class TDesC16 const &)
+	?Cancel@CLandmarkService@@QBEXJ@Z @ 4 NONAME ; void CLandmarkService::Cancel(long) const
+	?CategoryLC@CLandmarkService@@QBEPAVCPosLandmarkCategory@@ABKABVTDesC16@@@Z @ 5 NONAME ; class CPosLandmarkCategory * CLandmarkService::CategoryLC(unsigned long const &, class TDesC16 const &) const
+	?ExportL@CLandmarkService@@QBEXAAVCPosLandmarkEncoder@@ABV?$RArray@K@@ABVTDesC16@@@Z @ 6 NONAME ; void CLandmarkService::ExportL(class CPosLandmarkEncoder &, class RArray<unsigned long> const &, class TDesC16 const &) const
+	?GetDefaultDbUriL@CLandmarkService@@QBEXAAVTPtrC16@@@Z @ 7 NONAME ; void CLandmarkService::GetDefaultDbUriL(class TPtrC16 &) const
+	?GetListL@CLandmarkService@@QAEXJAAVCLandmarkFilter@@ABVTDesC16@@@Z @ 8 NONAME ; void CLandmarkService::GetListL(long, class CLandmarkFilter &, class TDesC16 const &)
+	?GetListL@CLandmarkService@@QBEXAAPAVCDesC16Array@@ABVTDesC16@@@Z @ 9 NONAME ; void CLandmarkService::GetListL(class CDesC16Array * &, class TDesC16 const &) const
+	?GetListL@CLandmarkService@@QBEXAAPAVCPosLmItemIterator@@AAVCLandmarkFilter@@ABVTDesC16@@@Z @ 10 NONAME ; void CLandmarkService::GetListL(class CPosLmItemIterator * &, class CLandmarkFilter &, class TDesC16 const &) const
+	?ImportL@CLandmarkService@@QAEXAAPAVCPosLmItemIterator@@AAVCPosLandmarkParser@@ABVTDesC16@@@Z @ 11 NONAME ; void CLandmarkService::ImportL(class CPosLmItemIterator * &, class CPosLandmarkParser &, class TDesC16 const &)
+	?LandmarkLC@CLandmarkService@@QBEPAVCPosLandmark@@ABKABVTDesC16@@@Z @ 12 NONAME ; class CPosLandmark * CLandmarkService::LandmarkLC(unsigned long const &, class TDesC16 const &) const
+	?LinkCategoryToLandmarksL@CLandmarkService@@QAEXKAAV?$RArray@K@@ABVTDesC16@@@Z @ 13 NONAME ; void CLandmarkService::LinkCategoryToLandmarksL(unsigned long, class RArray<unsigned long> &, class TDesC16 const &)
+	?NewL@CLandmarkFilter@@SAPAV1@W4TFilterItem@1@@Z @ 14 NONAME ; class CLandmarkFilter * CLandmarkFilter::NewL(enum CLandmarkFilter::TFilterItem)
+	?NewL@CLandmarkService@@SAPAV1@XZ @ 15 NONAME ; class CLandmarkService * CLandmarkService::NewL(void)
+	?NewLC@CLandmarkFilter@@SAPAV1@W4TFilterItem@1@@Z @ 16 NONAME ; class CLandmarkFilter * CLandmarkFilter::NewLC(enum CLandmarkFilter::TFilterItem)
+	?NewLC@CLandmarkService@@SAPAV1@XZ @ 17 NONAME ; class CLandmarkService * CLandmarkService::NewLC(void)
+	?RegisterObserver@CLandmarkService@@QAEXPAVMLandmarkObserver@@@Z @ 18 NONAME ; void CLandmarkService::RegisterObserver(class MLandmarkObserver *)
+	?RemoveItemL@CLandmarkService@@QAEXABVTDesC16@@@Z @ 19 NONAME ; void CLandmarkService::RemoveItemL(class TDesC16 const &)
+	?RemoveItemL@CLandmarkService@@QAEXKW4TPosItem@1@ABVTDesC16@@@Z @ 20 NONAME ; void CLandmarkService::RemoveItemL(unsigned long, enum CLandmarkService::TPosItem, class TDesC16 const &)
+	?SetActiveL@CLandmarkService@@QAEXABVTDesC16@@@Z @ 21 NONAME ; void CLandmarkService::SetActiveL(class TDesC16 const &)
+	?SetCriteria@CLandmarkFilter@@QAEXPAVCPosLmSearchCriteria@@@Z @ 22 NONAME ; void CLandmarkFilter::SetCriteria(class CPosLmSearchCriteria *)
+	?UnlinkCategoryToLandmarksL@CLandmarkService@@QAEXKAAV?$RArray@K@@ABVTDesC16@@@Z @ 23 NONAME ; void CLandmarkService::UnlinkCategoryToLandmarksL(unsigned long, class RArray<unsigned long> &, class TDesC16 const &)
+	?UpdateItemL@CLandmarkService@@QAEXABVCPosLandmark@@ABVTDesC16@@@Z @ 24 NONAME ; void CLandmarkService::UpdateItemL(class CPosLandmark const &, class TDesC16 const &)
+	?UpdateItemL@CLandmarkService@@QAEXABVCPosLandmarkCategory@@ABVTDesC16@@@Z @ 25 NONAME ; void CLandmarkService::UpdateItemL(class CPosLandmarkCategory const &, class TDesC16 const &)
+	?UpdateItemL@CLandmarkService@@QAEXVTPosLmDatabaseSettings@@ABVTDesC16@@@Z @ 26 NONAME ; void CLandmarkService::UpdateItemL(class TPosLmDatabaseSettings, class TDesC16 const &)
+

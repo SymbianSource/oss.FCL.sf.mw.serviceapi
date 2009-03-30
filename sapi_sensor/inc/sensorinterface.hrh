@@ -1,0 +1,200 @@
+/*
+* Copyright (c) 2006-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Provides the Enumerations for Sensor interface Parameters
+*
+*/
+
+#ifndef C_SENSORINTERFACE_HRH
+#define C_SENSORINTERFACE_HRH
+
+const TInt KBufSize = 20;
+const TInt KErrMessageLen = 150;
+const TInt KCmdLen = 40;
+
+// Output Key :
+_LIT8( KReturnValue, "ReturnValue" );
+
+//Constant for appending transaction id to the output parameter list
+// in async calls
+_LIT8(KTransactionId, "TransactionID");
+
+
+// API:FindSensorChannel :
+// Command :
+_LIT8( KCmdFindChannel, "FindSensorChannel" );
+// Input key for key based parsing :
+_LIT8( KSearchCriterion, "SearchCriterion" );
+// Input params :
+ // Find all channels
+_LIT( KAll, "All" );
+// Find Accelerometer Axis channels
+_LIT( KAcclmtrAxis, "AccelerometerAxis" );
+ // Find Accelerometer Wakeup channel
+_LIT( KAcclmtrWakeup, "AccelerometerWakeup" );
+// Find Accelerometer Double Tapping channel
+_LIT( KAcclmtrDoubleTapping, "AccelerometerDoubleTapping" );
+// Find Orientation channel
+_LIT( KOrientation, "Orientation" );
+// Find Rotation channel
+_LIT( KRotation, "Rotation" );
+// Output Map's internal keys :
+// Constants for channel info
+_LIT8( KChnlId, "ChannelId" );
+_LIT8( KContextType, "ContextType" );
+_LIT8( KQuantity, "Quantity" );
+_LIT8( KChannelType, "ChannelType" );
+_LIT8( KLocation, "Location" );
+_LIT8( KVendorId, "VendorId" );
+_LIT8( KDataItemSize, "DataItemSize" );
+_LIT8( KChannelVisibility, "ChannelVisibility" );
+_LIT8( KChnlDataTypeId, "ChannelDataTypeId" );
+
+// API:RegisterForNotification :
+// Command :
+_LIT8( KCmdRegisterForNotification, "RegisterForNotification" );
+// Input keys for key based parsing :
+//Key for listening type
+_LIT8( KListeningType, "ListeningType" );
+//Key for channelinfo map
+_LIT8( KChnlInfoMap, "ChannelInfoMap" );
+// Input params :
+// String for Channel Data Notification
+_LIT( KChnlData, "ChannelData" );
+// String for Channel Change Notification
+_LIT( KChannelChange, "ChannelChange" );
+// String for Property Change Notification
+_LIT( KPropertyChange, "ChannelPropertyChange" );
+// String for ConditionSet Change Notification
+_LIT( KChnlCondnChange, "ChannelConditionSetChange" );
+// Output :
+// Data type key
+_LIT8( KDataType, "DataType" );
+// Data type values :
+_LIT( KAcclmtrAxisData, "AxisData" );
+_LIT( KAcclmtrWakeupData, "WakeupData" );
+_LIT( KAcclmtrDoubleTappingData, "DoubleTappingData" );
+_LIT( KOrientationData, "OrientationData" );
+_LIT( KRotationData, "RotationData" );
+// Timestamp key
+_LIT8(KTimeStamp,"TimeStamp");
+// Keys for Axis data values
+_LIT8(KXAxisData,"XAxisData");
+_LIT8(KYAxisData,"YAxisData");
+_LIT8(KZAxisData,"ZAxisData");
+// Key for Direction
+_LIT8(KDirection,"DeviceDirection");
+// Key for Orientation
+_LIT8(KDeviceOrientation,"DeviceOrientation");
+//Constants for Device Orientation
+_LIT(KUndefined,"Undefined");
+_LIT(KDisplayUp,"DisplayUp");
+_LIT(KDisplayDown,"DisplayDown");
+_LIT(KDisplayLeftUp,"DisplayLeftUp");
+_LIT(KDisplayRightUp,"DisplayRightUp");
+_LIT(KDisplayUpwards,"DisplayUpwards");
+_LIT(KDisplayDownwards,"DisplayDownwards");
+// Keys for Rotation Data values
+_LIT8(KAbtXAxis,"XRotation");
+_LIT8(KAbtYAxis,"YRotation");
+_LIT8(KAbtZAxis,"ZRotation");
+// Key for channel changed notification
+_LIT8( KChannelChanged, "ChannelChanged" );
+//Key for change type
+_LIT8( KChangeType, "ChangeType" );
+// Keys for property change
+_LIT8( KPropId, "PropertyId" );
+
+// API : StopReceivingNotification
+// Command
+_LIT8( KStopNotification, "Cancel" );
+
+// API:GetChannelProperty :
+// Command :
+_LIT8(KCmdGetChnlProperty,"GetChannelProperty" );
+// Output params:
+// Keys for channel property map
+_LIT8( KPropertyDataType, "PropertyDataType" );
+_LIT8( KItemIndex, "ItemIndex" );
+_LIT8( KReadOnly, "ReadOnly" );
+_LIT8( KPropertyValue, "PropertyValue" );
+_LIT8( KPropertyMaxValue, "PropertyMaxValue" );
+_LIT8( KPropertyMinValue, "PropertyMinValue" );
+
+
+// API:SetChannelProperty :
+// Command:
+_LIT8( KCmdSetChnlProperty, "SetChannelProperty" );
+// Input key:
+_LIT8( KChannelPropertyMap, "ChannelPropertyMap" );
+// Constants for property ID
+_LIT( KDataRate, "DataRate" );
+_LIT( KAvailability, "Availability" );
+_LIT( KMeasureRange, "MeasureRange" );
+_LIT( KChannelDataFormat, "ChannelDataFormat" );
+_LIT( KChannelAccuracy, "ChannelAccuracy" );
+_LIT( KChannelScale, "ChannelScale" );
+_LIT( KScaledRange, "ScaledRange" );
+_LIT( KChannelUnit, "ChannelUnit" );
+_LIT( KSensorModel, "SensorModel" );
+_LIT( KConnectionType, "ConnectionType" );
+_LIT( KSensorDescription, "Description" );
+
+//Constant for command ModifyConditionSet
+_LIT8(KCmdModifyConditionSet,"ModifyConditionSet");
+
+//Constants for proprty size
+//TO DO: check for the size
+const TInt KChnlPropertySize = 50;
+// Constant for the appending Error code
+_LIT8( KErrorCode, "ErrorCode" );
+
+const TInt KMaxMsgSize = 256;
+const TInt KMaxKeySize = 128;
+
+//Constants for error messages
+_LIT8( KErrorMessage, "ErrorMessage");
+_LIT( KErrSensorInParamList, "Empty input param list" );
+_LIT( KErrSensorInvalidCmd, "Invalid service command" );
+_LIT( KErrSensorInvalidReq, "Invalid service request" );
+_LIT( KErrFindSensorChannelMissingSearchCrit, "Search criterion is missing" );
+_LIT( KErrFindSensorChannelInvalidSrch, "Invalid channel search param" );
+_LIT8( KErrFindSensorChannelBadSrchType, "Channel search param type invalid" );
+_LIT( KErrRegNotifyAsyncbit, "Insufficent argument for asynchronous request" );
+_LIT( KErrRegNotifyMissingListening, "Listening type is missing" );
+_LIT8( KErrRegNotifyInvalidListeningType, "Listening type is invalid" );
+_LIT( KErrRegNotifyInvalidListening, "Listening type is out of allowed range" );
+_LIT( KErrStopNotifMissingTransId, "Transaction id is missing" );
+_LIT( KErrStopNotifInvalidTransId, "Transaction id is incorrect" );
+_LIT( KErrStopNotifCancelBit, "Insufficent argument for cancel request" );
+_LIT( KErrInvalidChnlMap, "Channel info map values are inconsistent and not found" );
+_LIT( KErrMissingChnlMap, "Channel info map is missing" );
+_LIT( KErrMissingPropMap, "Channel property map is missing" );
+_LIT( KErrPropMissingArgs, "Missing input params" );
+_LIT( KErrPropInvalidPropId, "Property id is invalid" );
+_LIT( KErrPropNotSupported, "Property is not supported by this channel" );
+_LIT( KErrPropIncorrectVals, "Property values are incorrect" );
+_LIT( KErrPropSetNotSupported, "Setting channel property is not supported;can only be set by HW" );
+_LIT( KErrMissingPropId, "Property id is missing from input params" );
+_LIT( KErrRegNotEnoughParams, "Incomplete input param list" );
+_LIT( KErrInvalidNotif, "Notification is already registered on this channel" );
+_LIT8( KStrPropertyValueMax, "String property value exceeds max length of 20" );
+_LIT( KErrRegNoCallback, "Callback missing" );
+_LIT( KMsgErr, "Sensors:");
+_LIT( KColon, ":");
+_LIT( KIncorrectValue, " Value Incorrect" );
+_LIT( KInvalid, "Invalid" );
+_LIT( KMissing, " Missing from ChannelInfoMap" );
+_LIT( KTypeErr, " Type ");
+
+#endif // C_SENSORINTERFACE_HRH    

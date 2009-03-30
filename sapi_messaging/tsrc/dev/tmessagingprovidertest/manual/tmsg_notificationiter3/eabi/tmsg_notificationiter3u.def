@@ -1,0 +1,7 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZTI10CTestAsync @ 2 NONAME ; #<TI>#
+	_ZTI12CMsgCallback @ 3 NONAME ; #<TI>#
+	_ZTV10CTestAsync @ 4 NONAME ; #<VT>#
+	_ZTV12CMsgCallback @ 5 NONAME ; #<VT>#
+

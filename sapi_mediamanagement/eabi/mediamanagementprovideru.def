@@ -1,0 +1,7 @@
+EXPORTS
+	_Z24ImplementationGroupProxyRi @ 1 NONAME
+	_ZTI12CMgInterface @ 2 NONAME ; #<TI>#
+	_ZTI17CMgServiceHandler @ 3 NONAME ; #<TI>#
+	_ZTV12CMgInterface @ 4 NONAME ; #<VT>#
+	_ZTV17CMgServiceHandler @ 5 NONAME ; #<VT>#
+

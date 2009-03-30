@@ -1,0 +1,7 @@
+EXPORTS
+	?FindSensorChannelsL@CSensorService@@QAEXHAAV?$RArray@VTSensrvChannelInfo@@@@@Z @ 1 NONAME ; void CSensorService::FindSensorChannelsL(int, class RArray<class TSensrvChannelInfo> &)
+	?GetChannelPropertyL@CSensorService@@QAEXABVTSensrvChannelInfo@@AAV?$RArray@VTSensrvProperty@@@@@Z @ 2 NONAME ; void CSensorService::GetChannelPropertyL(class TSensrvChannelInfo const &, class RArray<class TSensrvProperty> &)
+	?GetDataNotificationL@CSensorService@@QAEXABVTSensrvChannelInfo@@PAVMSensrvDataListener@@@Z @ 3 NONAME ; void CSensorService::GetDataNotificationL(class TSensrvChannelInfo const &, class MSensrvDataListener *)
+	?NewL@CSensorService@@SAPAV1@XZ @ 4 NONAME ; class CSensorService * CSensorService::NewL(void)
+	?StopNotificationL@CSensorService@@QAEXHK@Z @ 5 NONAME ; void CSensorService::StopNotificationL(int, unsigned long)
+

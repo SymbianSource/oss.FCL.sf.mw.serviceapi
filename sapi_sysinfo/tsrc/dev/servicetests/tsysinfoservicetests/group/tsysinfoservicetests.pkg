@@ -1,0 +1,43 @@
+; ============================================================================
+; Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
+; All rights reserved.
+; This component and the accompanying materials are made available
+; under the terms of the License "Eclipse Public License v1.0"
+; which accompanies this distribution, and is available
+; at the URL "http://www.eclipse.org/legal/epl-v10.html".
+;
+; Initial Contributors:
+; Nokia Corporation - initial contribution.
+;
+; Contributors:
+;
+; Description:   package file for Service API package
+; ============================================================================
+
+;Languages
+&EN
+
+;Header
+#{"sysinfotest"},(0x114545AB),1,0,0
+
+;Supports S60 3.0
+[0x111F7945], 0, 0, 0, {"S60ProductID"}
+
+;Localised Vendor name
+%{"Nokia"}
+
+;Unique Vendor name
+:"Nokia"
+
+;SAPI Binaries to Install
+
+;SysInfoservice binaries
+"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\sysinfoservice.dll"-"C:\sys\bin\sysinfoservice.dll"
+"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tsysinfoservicetests.dll"-"C:\sys\bin\tsysinfoservicetests.dll"
+
+
+;ini file
+"..\init\Testframework.ini"-"c:\Testframework\Testframework.ini"
+
+;cfg file
+"..\conf\tsysinfoservicetests.cfg"-"c:\Testframework\tsysinfoservicetests.cfg"

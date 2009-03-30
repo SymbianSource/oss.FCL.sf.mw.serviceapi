@@ -1,0 +1,13 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZTI10ASyncLocCB @ 2 NONAME ; #<TI>#
+	_ZTI11AsyncGetLoc @ 3 NONAME ; #<TI>#
+	_ZTI17LocUpdateCallBack @ 4 NONAME ; #<TI>#
+	_ZTI23CancelLocUpdateCallBack @ 5 NONAME ; #<TI>#
+	_ZTI7ASyncCB @ 6 NONAME ; #<TI>#
+	_ZTV10ASyncLocCB @ 7 NONAME ; #<VT>#
+	_ZTV11AsyncGetLoc @ 8 NONAME ; #<VT>#
+	_ZTV17LocUpdateCallBack @ 9 NONAME ; #<VT>#
+	_ZTV23CancelLocUpdateCallBack @ 10 NONAME ; #<VT>#
+	_ZTV7ASyncCB @ 11 NONAME ; #<VT>#
+

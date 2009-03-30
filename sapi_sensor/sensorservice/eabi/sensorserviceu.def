@@ -1,0 +1,9 @@
+EXPORTS
+	_ZN14CSensorService17StopNotificationLEim @ 1 NONAME
+	_ZN14CSensorService19FindSensorChannelsLEiR6RArrayI18TSensrvChannelInfoE @ 2 NONAME
+	_ZN14CSensorService19GetChannelPropertyLERK18TSensrvChannelInfoR6RArrayI15TSensrvPropertyE @ 3 NONAME
+	_ZN14CSensorService20GetDataNotificationLERK18TSensrvChannelInfoP19MSensrvDataListener @ 4 NONAME
+	_ZN14CSensorService4NewLEv @ 5 NONAME
+	_ZTI14CSensorService @ 6 NONAME ; #<TI>#
+	_ZTV14CSensorService @ 7 NONAME ; #<VT>#
+

@@ -1,0 +1,9 @@
+EXPORTS
+	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
+	_ZTI11CBatteryNot @ 2 NONAME ; #<TI>#
+	_ZTI11CWatchTimer @ 3 NONAME ; #<TI>#
+	_ZTI19CTestAccAndVibraNot @ 4 NONAME ; #<TI>#
+	_ZTV11CBatteryNot @ 5 NONAME ; #<VT>#
+	_ZTV11CWatchTimer @ 6 NONAME ; #<VT>#
+	_ZTV19CTestAccAndVibraNot @ 7 NONAME ; #<VT>#
+
