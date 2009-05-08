@@ -23,9 +23,12 @@ DEFAULT
 
 
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tmediaprovidertest.cfg 		/epoc32/winscw/c/testframework/tmediaprovidertest.cfg
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 tmediaprovidertest.mmp
 //  End of File
+PRJ_EXPORTS
+
+PRJ_MMPFILES

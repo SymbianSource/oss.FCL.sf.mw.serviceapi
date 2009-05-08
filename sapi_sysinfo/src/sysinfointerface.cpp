@@ -711,8 +711,8 @@ void CSysInfoInterface::ConvertSysData2AiwParamL(const CSysData* aInSysData,
             aOutMapParam->InsertL(KNetworkCode,networkinfo->NetworkCode());
             aOutMapParam->InsertL(KLocationStatus,
                                         networkinfo->ValidLocationAreaCode());
-            aOutMapParam->InsertL(KAreaCode,networkinfo->LocationAreaCode());
-            aOutMapParam->InsertL(KCellId,networkinfo->CellId());
+            aOutMapParam->InsertL(KAreaCode,(TInt32)networkinfo->LocationAreaCode());
+            aOutMapParam->InsertL(KCellId,(TInt32)networkinfo->CellId());
             }
             break;
         case CSysData::EConnectionInfo:

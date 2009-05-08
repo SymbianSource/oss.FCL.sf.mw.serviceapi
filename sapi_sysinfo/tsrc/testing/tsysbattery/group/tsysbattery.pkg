@@ -32,7 +32,7 @@
 ;SAPI Binaries to Install
 
 ;sysinfoservice binaries
-"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\sysinfoservice.dll"-"C:\sys\bin\sysinfoservice.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\sysinfoservice.dll"-"C:\sys\bin\sysinfoservice.dll"
 "..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tsysbattery.dll"-"C:\sys\bin\tsysbattery.dll"
 
 

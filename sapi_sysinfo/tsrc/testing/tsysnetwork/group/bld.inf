@@ -22,10 +22,10 @@ PRJ_PLATFORMS
 DEFAULT
 
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tsysnetwork.cfg   /epoc32/WINSCW/C/TestFramework/tsysnetwork.cfg
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 
 tsysnetwork.mmp
 

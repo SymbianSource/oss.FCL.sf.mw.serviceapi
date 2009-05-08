@@ -26,16 +26,19 @@ DEFAULT
 PRJ_TESTEXPORTS
 // NOTE: If using ARS requirements all export operations should be done under this.
 // 'abld test export'
+../conf/tsysinfoprovidernetworktests.cfg	/epoc32/WINSCW/C/TestFramework/tsysinfoprovidernetworktests.cfg
+
 
 PRJ_EXPORTS
 
-../conf/tsysinfoprovidernetworktests.cfg	/epoc32/WINSCW/C/TestFramework/tsysinfoprovidernetworktests.cfg
+
 
 PRJ_TESTMMPFILES
 // NOTE: If using ARS requirements .mmp file operation should be done under this.
 // 'abld test build'
+tsysinfoprovidernetworktests.mmp
+
 
 PRJ_MMPFILES
-tsysinfoprovidernetworktests.mmp
 
 //  End of File

@@ -22,11 +22,11 @@ PRJ_PLATFORMS
 DEFAULT
 
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tsysbattery.cfg /epoc32/winscw/c/testframework/tsysbattery.cfg
 
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 
 tsysbattery.mmp
 

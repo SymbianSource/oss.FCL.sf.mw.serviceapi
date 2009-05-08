@@ -86,7 +86,7 @@ void CSysInfoObserver::HandleResponseL(const TDesC& aEntity,const TDesC& aKey,
     if ( aError != KErrNone )
         {
         SapiErr = iSysInfoIf->SapiError(aError);
-        eventParamList->AppendL(TLiwGenericParam(KErrorCode,TLiwVariant(SapiErr)));
+        eventParamList->AppendL(TLiwGenericParam(KErrorCode,TLiwVariant((TInt32)SapiErr)));
         TRAP_IGNORE(callback->HandleNotifyL(aTransID, KLiwEventError,
                                         *eventParamList,*inParamList));
         }

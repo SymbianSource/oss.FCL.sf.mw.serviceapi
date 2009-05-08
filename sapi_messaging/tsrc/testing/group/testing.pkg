@@ -32,7 +32,7 @@
 ;SAPI Binaries to Install
 
 ;Messagingservice binaries
-"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\messagingservice.dll"-"C:\sys\bin\messagingservice.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\messagingservice.dll"-"C:\sys\bin\messagingservice.dll"
 
 
 "../data/c/ant.jpg" - "C:/data/images/ant.jpg"

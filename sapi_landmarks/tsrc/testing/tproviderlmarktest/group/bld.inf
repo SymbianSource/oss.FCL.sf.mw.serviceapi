@@ -23,10 +23,10 @@ PRJ_PLATFORMS
 // defaults to WINS MARM so you can ignore this if you just build these
 DEFAULT
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tproviderlmarktest.cfg 		/epoc32/winscw/c/testframework/tproviderlmarktest.cfg
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 tproviderlmarktest.mmp
 
 //  End of File

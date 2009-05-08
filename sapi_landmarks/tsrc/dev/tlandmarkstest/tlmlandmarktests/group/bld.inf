@@ -19,10 +19,10 @@
 PRJ_PLATFORMS
 WINSCW ARMV5
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tlmlandmarktests.cfg	/epoc32/WINSCW/C/TestFramework/tlmlandmarktests.cfg
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 tlmlandmarktests.mmp
 
 //  End of File

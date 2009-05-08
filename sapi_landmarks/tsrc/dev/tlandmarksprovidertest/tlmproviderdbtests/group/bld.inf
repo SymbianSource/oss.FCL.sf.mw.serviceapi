@@ -24,6 +24,7 @@ PRJ_PLATFORMS
 DEFAULT
 
 PRJ_TESTEXPORTS
+../conf/tlmproviderdbtests.cfg	/epoc32/WINSCW/C/TestFramework/tlmproviderdbtests.cfg
 // NOTE: If using ARS requirements all export operations should be done under this.
 // 'abld test export'
 
@@ -36,14 +37,15 @@ PRJ_EXPORTS
 /*
 /agnmodel/inc/AGMCOMON.H
 */
-../conf/tlmproviderdbtests.cfg	/epoc32/WINSCW/C/TestFramework/tlmproviderdbtests.cfg
+
 
 PRJ_TESTMMPFILES
+tlmproviderdbtests.mmp
 // NOTE: If using ARS requirements .mmp file operation should be done under this.
 // 'abld test build'
 
 PRJ_MMPFILES
 
-tlmproviderdbtests.mmp
+
 
 //  End of File

@@ -24,11 +24,12 @@ PRJ_PLATFORMS
 DEFAULT
 
 PRJ_TESTEXPORTS
+../conf/landmarks_inputparams.cfg /epoc32/winscw/c/TestFramework/landmarks_inputparams.cfg
 // NOTE: If using ARS requirements all export operations should be done under this.
 // 'abld test export'
 
 PRJ_EXPORTS
-../conf/landmarks_inputparams.cfg /epoc32/winscw/c/TestFramework/landmarks_inputparams.cfg
+
 // Specify the source file followed by its destination here
 // copy will be used to copy the source file to its destination
 // If there's no destination then the source file will be copied
@@ -39,6 +40,7 @@ PRJ_EXPORTS
 */
 
 PRJ_TESTMMPFILES
+landmarks_inputparams.mmp
 // NOTE: If using ARS requirements .mmp file operation should be done under this.
 // 'abld test build'
 
@@ -56,6 +58,6 @@ PRJ_MMPFILES
 /agnmodel/group/agsvexe.mmp
 #endif
 */
-landmarks_inputparams.mmp
+
 
 //  End of File

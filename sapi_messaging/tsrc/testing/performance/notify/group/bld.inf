@@ -23,8 +23,12 @@ DEFAULT
 
 PRJ_EXPORTS
 
+PRJ_TESTMMPFILES
+// NOTE: If using ARS requirements .mmp file operation should be done under this.
+// 'abld test build'
+notify.mmp
 
 PRJ_MMPFILES
-notify.mmp
+
 
 //  End of File

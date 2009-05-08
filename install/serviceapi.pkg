@@ -18,10 +18,10 @@
 &EN
 
 ;Header
-#{"Platform Service Extensions"},(0x200100BE),1,0,0, TYPE=SA,RU
+#{"Platform Service Extensions"},(0x200100BE),1,0,1, TYPE=SA,RU
 
-;Supports S60 3.0
-[0x101F7961], 0, 0, 0, {"S60ProductID"}
+; S60 5.0 dependency
+[0x1028315F], 0, 0, 0, {"Series60ProductID"}
 
 ;Localised Vendor name
 %{"Nokia"}

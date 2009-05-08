@@ -32,7 +32,7 @@
 ;SAPI Binaries to Install
 
 ;Sensorservice binaries
-"..\..\..\..\..\..\..\epoc32\release\armv5\urel\sensorservice.dll"-"C:\sys\bin\sensorservice.dll"
+;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\sensorservice.dll"-"C:\sys\bin\sensorservice.dll"
 "..\..\..\..\..\..\..\epoc32\release\armv5\urel\sensrservicetest.dll"-"C:\sys\bin\sensrservicetest.dll"
 
 

@@ -31,13 +31,12 @@
 
 ;SAPI Binaries to Install
 
-;Loggingservice binaries
-"..\..\..\..\..\..\..\epoc32\release\armv5\urel\appmanagerservice.dll"-"C:\sys\bin\appmanagerservice.dll"
+;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\appmanagerservice.dll"-"C:\sys\bin\appmanagerservice.dll"
 "..\..\..\..\..\..\..\epoc32\release\armv5\urel\tappmgrtest.dll"-"C:\sys\bin\tappmgrtest.dll"
 
 
 ;ini file
-"..\init\Testframework.ini"-"c:\Testframework\Testframework1.ini"
+"..\init\Testframework.ini"-"c:\Testframework\Testframework.ini"
 
 ;cfg file
 "..\conf\tappmgrtest.cfg"-"c:\Testframework\tappmgrtest.cfg"

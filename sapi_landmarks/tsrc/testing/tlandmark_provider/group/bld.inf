@@ -23,10 +23,10 @@ PRJ_PLATFORMS
 // defaults to WINS MARM so you can ignore this if you just build these
 DEFAULT
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tlandmark_provider.cfg 		/epoc32/winscw/c/testframework/tlandmark_provider.cfg
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 tlandmark_provider.mmp
 
 //  End of File

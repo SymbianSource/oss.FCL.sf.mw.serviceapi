@@ -20,10 +20,14 @@
 PRJ_PLATFORMS
 WINSCW ARMV5
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tcontacts_async.cfg /epoc32/WINSCW/C/TestFramework/tcontacts_async.cfg
 
-PRJ_MMPFILES
+PRJ_EXPORTS
+//All files under this section are been moved to PRJ_TESTEXPORTS
+
+PRJ_TESTMMPFILES
 tcontacts_async.mmp
 
+PRJ_MMPFILES
 //  End of File

@@ -22,14 +22,16 @@ PRJ_PLATFORMS
 DEFAULT
 
 PRJ_TESTEXPORTS
-
-
-PRJ_EXPORTS
 ../conf/tsapiloctest.cfg	/epoc32/WINSCW/C/TestFramework/tsapiloctest.cfg
 
-PRJ_TESTMMPFILES
 
-PRJ_MMPFILES
+
+
+
+PRJ_TESTMMPFILES
 tsapiloctest.mmp
+
+
+
 
 //  End of File

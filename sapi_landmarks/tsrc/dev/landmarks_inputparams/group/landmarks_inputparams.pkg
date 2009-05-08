@@ -32,7 +32,7 @@
 ;SAPI Binaries to Install
 
 ;Landmarksservice binaries
-"..\..\..\..\..\..\..\epoc32\release\armv5\urel\landmarkservice.dll"-"C:\sys\bin\landmarkservice.dll"
+;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\landmarkservice.dll"-"C:\sys\bin\landmarkservice.dll"
 "..\..\..\..\..\..\..\epoc32\release\armv5\urel\landmarks_inputparams.dll"-"C:\sys\bin\landmarks_inputparams.dll"
 
 

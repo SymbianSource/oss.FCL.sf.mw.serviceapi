@@ -19,9 +19,9 @@
 PRJ_PLATFORMS
 WINSCW ARMV5
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tlandmarkprovider.cfg	/epoc32/WINSCW/C/TestFramework/tlandmarkprovider.cfg
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 
 TLandmarkProvider.mmp
 

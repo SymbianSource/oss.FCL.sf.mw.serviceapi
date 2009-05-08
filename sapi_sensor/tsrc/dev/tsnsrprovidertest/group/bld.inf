@@ -15,16 +15,20 @@
 *
 */
 
-
-
 PRJ_PLATFORMS
 DEFAULT
 
 
 
 PRJ_EXPORTS
+//All files under this section are been moved to PRJ_TESTEXPORTS
+
+PRJ_TESTEXPORTS
 ../conf/tsnsrprovidertest.cfg 		/epoc32/winscw/c/testframework/tsnsrprovidertest.cfg
 
 PRJ_MMPFILES
+//mmmp file under this section is moved to PRJ_TESTMMPFILES
+
+PRJ_TESTMMPFILES
 tsnsrprovidertest.mmp
 //  End of File

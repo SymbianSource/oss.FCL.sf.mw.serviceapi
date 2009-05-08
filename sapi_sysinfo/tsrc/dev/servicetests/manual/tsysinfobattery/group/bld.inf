@@ -26,16 +26,19 @@ DEFAULT
 PRJ_TESTEXPORTS
 // NOTE: If using ARS requirements all export operations should be done under this.
 // 'abld test export'
+../conf/tsysinfobattery.cfg	/epoc32/WINSCW/C/TestFramework/tsysinfobattery.cfg
+
 
 PRJ_EXPORTS
 
-../conf/tsysinfobattery.cfg	/epoc32/WINSCW/C/TestFramework/tsysinfobattery.cfg
 
 PRJ_TESTMMPFILES
 // NOTE: If using ARS requirements .mmp file operation should be done under this.
 // 'abld test build'
+tsysinfobattery.mmp
+
 
 PRJ_MMPFILES
-tsysinfobattery.mmp
+
 
 //  End of File

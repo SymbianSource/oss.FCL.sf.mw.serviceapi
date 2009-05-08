@@ -32,7 +32,7 @@
 ;SAPI Binaries to Install
 
 ;Messagingservice binaries
-"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\messagingservice.dll"-"C:\sys\bin\messagingservice.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\messagingservice.dll"-"C:\sys\bin\messagingservice.dll"
 "..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\get_header_message.dll"-"C:\sys\bin\get_header_message.dll"
 
 

@@ -20,10 +20,17 @@ PRJ_PLATFORMS
 DEFAULT
 
 PRJ_EXPORTS
+//All files under this section are been moved to PRJ_TESTEXPORTS
+
+PRJ_TESTEXPORTS
 ../conf/sensrprovidertest.cfg	/epoc32/WINSCW/C/TestFramework/sensrprovidertest.cfg
 ../conf/sensrprovidertest_manual.cfg	/epoc32/WINSCW/C/TestFramework/sensrprovidertest_manual.cfg
 
+
 PRJ_MMPFILES
+//mmmp file under this section is moved to PRJ_TESTMMPFILES
+
+PRJ_TESTMMPFILES
 sensrprovidertest.mmp
 
 //  End of File

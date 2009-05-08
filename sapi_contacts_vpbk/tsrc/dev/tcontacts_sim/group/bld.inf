@@ -22,9 +22,15 @@ WINSCW ARMV5
 
 
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tcontacts_sim.cfg  /epoc32/WINSCW/C/TestFramework/tcontacts_sim.cfg
 //../data/c/import.vcf	/epoc32/WINSCW/C/data/Import.vcf
-PRJ_MMPFILES
+
+PRJ_EXPORTS
+//All files under this section are been moved to PRJ_TESTEXPORTS
+
+PRJ_TESTMMPFILES
 tcontacts_sim.mmp
+
+PRJ_MMPFILES
 //  End of File

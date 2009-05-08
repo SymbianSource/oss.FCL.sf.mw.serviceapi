@@ -17,12 +17,12 @@
 
 
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 
 ../inc/mgservice.h		/epoc32/include/sapi/CoreImp/mgservice.h
 ../inc/mgoperationobserver.h	/epoc32/include/sapi/CoreImp/mgoperationobserver.h
 ../inc/mgservice.hrh		/epoc32/include/sapi/CoreImp/mgservice.hrh
 
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 mediamanagementservice.mmp

@@ -25,13 +25,20 @@ DEFAULT
 
 
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 
 ../conf/tcontactprovidertest.cfg	/epoc32/WINSCW/C/TestFramework/tcontactprovidertest.cfg
 ../data/c/contacts.cdb	/epoc32/WINSCW/C/private/10003a73/contacts.cdb
 ../data/c/vcardimportposbased.vcf	/epoc32/WINSCW/C/vcardimportposbased.vcf
 ../data/c/vcardimport.vcf	/epoc32/WINSCW/C/vcardimport.vcf
-PRJ_MMPFILES
+PRJ_EXPORTS
+//All files under this section are been moved to PRJ_TESTEXPORTS
+
+PRJ_TESTMMPFILES
 tcontactprovidertest.mmp
+
+
+
+PRJ_MMPFILES
 
 //  End of File

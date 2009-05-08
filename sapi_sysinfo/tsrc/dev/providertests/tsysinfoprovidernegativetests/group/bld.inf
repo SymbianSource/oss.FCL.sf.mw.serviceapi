@@ -22,14 +22,16 @@ PRJ_PLATFORMS
 DEFAULT
 
 PRJ_TESTEXPORTS
-
-PRJ_EXPORTS
 ../conf/tsysinfoprovidernegativetests.cfg	/epoc32/WINSCW/C/TestFramework/tsysinfoprovidernegativetests.cfg
 
 
+PRJ_EXPORTS
+
+
 PRJ_TESTMMPFILES
+tsysinfoprovidernegativetests.mmp
+
 
 PRJ_MMPFILES
-tsysinfoprovidernegativetests.mmp
 
 //  End of File

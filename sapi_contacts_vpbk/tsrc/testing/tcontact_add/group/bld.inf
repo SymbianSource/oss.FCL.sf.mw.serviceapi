@@ -38,10 +38,13 @@ PRJ_EXPORTS
 */
 
 PRJ_TESTMMPFILES
+tContact_add.mmp
 // NOTE: If using ARS requirements .mmp file operation should be done under this.
 // 'abld test build'
 
+
 PRJ_MMPFILES
+
 // Specify the .mmp files required for building the important component
 // releasables.
 //
@@ -55,6 +58,6 @@ PRJ_MMPFILES
 /agnmodel/group/agsvexe.mmp
 #endif
 */
-tContact_add.mmp
+
 
 //  End of File

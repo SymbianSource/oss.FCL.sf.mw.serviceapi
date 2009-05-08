@@ -31,8 +31,8 @@
 
 ;SAPI Binaries to Install
 
-;Loggingservice binaries
-"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\Calendarservice.dll"-"C:\sys\bin\sysinfoservice.dll"
+;Sysinfoservice binaries
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\sysinfoservice.dll"-"C:\sys\bin\sysinfoservice.dll"
 "..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tsysinfonetworktests.dll"-"C:\sys\bin\tsysinfonetworktests.dll"
 
 

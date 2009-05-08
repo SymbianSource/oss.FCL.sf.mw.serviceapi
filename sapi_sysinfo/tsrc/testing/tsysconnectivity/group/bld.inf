@@ -22,12 +22,12 @@ PRJ_PLATFORMS
 
 DEFAULT
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tsysconnectivity.cfg /epoc32/winscw/c/testframework/tsysconnectivity.cfg
 
 
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 
 tsysconnectivity.mmp
 

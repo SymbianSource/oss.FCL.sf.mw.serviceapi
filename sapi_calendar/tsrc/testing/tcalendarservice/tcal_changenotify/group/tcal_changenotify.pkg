@@ -32,7 +32,7 @@
 ;SAPI Binaries to Install
 
 ;Calendarservice binaries
-"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\Calendarservice.dll"-"C:\sys\bin\Calendarservice.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\Calendarservice.dll"-"C:\sys\bin\Calendarservice.dll"
 "..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tcal_changenotify.dll"-"C:\sys\bin\tcal_changenotify.dll"
 
 

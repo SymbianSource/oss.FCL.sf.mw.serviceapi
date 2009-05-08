@@ -24,22 +24,21 @@ PRJ_PLATFORMS
 DEFAULT
 
 PRJ_TESTEXPORTS
-// NOTE: If using ARS requirements all export operations should be done under this.
-// 'abld test export'
-
-PRJ_EXPORTS
-
 ../conf/tloggingprovidertest.cfg	/epoc32/WINSCW/C/TestFramework/tloggingprovidertest.cfg
 
 #ifndef __TOP_LEVEL_BUILD__
 //Testframework.ini  /epoc32/WINSCW/C/TestFramework/Testframework.ini 
 #endif
-PRJ_TESTMMPFILES
 
+PRJ_EXPORTS
+
+
+PRJ_TESTMMPFILES
+tloggingprovidertest.mmp
 
 PRJ_MMPFILES
 
 
-tloggingprovidertest.mmp
+
 
 //  End of File

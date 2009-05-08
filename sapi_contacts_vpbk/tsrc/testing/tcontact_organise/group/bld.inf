@@ -38,6 +38,7 @@ PRJ_EXPORTS
 */
 
 PRJ_TESTMMPFILES
+tContact_organise.mmp
 // NOTE: If using ARS requirements .mmp file operation should be done under this.
 // 'abld test build'
 
@@ -55,6 +56,6 @@ PRJ_MMPFILES
 /agnmodel/group/agsvexe.mmp
 #endif
 */
-tContact_organise.mmp
+
 
 //  End of File

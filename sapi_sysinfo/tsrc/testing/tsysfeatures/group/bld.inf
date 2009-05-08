@@ -22,10 +22,10 @@ PRJ_PLATFORMS
 DEFAULT
 
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tsysfeatures.cfg /epoc32/winscw/c/testframework/tsysfeatures.cfg
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 tsysfeatures.mmp
 
 //  End of File

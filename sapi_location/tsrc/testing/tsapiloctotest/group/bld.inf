@@ -21,11 +21,11 @@
 PRJ_PLATFORMS
 DEFAULT
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tsapiloctotest.cfg	/epoc32/WINSCW/C/TestFramework/tsapiloctotest.cfg
 
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 tsapiloctotest.mmp
 
 //  End of File

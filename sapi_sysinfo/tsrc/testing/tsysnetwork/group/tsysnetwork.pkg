@@ -14,7 +14,6 @@
 ; Description:   package file for Service API package
 ; ============================================================================
 
-
 ;Languages
 &EN
 
@@ -33,7 +32,7 @@
 ;SAPI Binaries to Install
 
 ;Sysinfoservice binaries
-"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\sysinfoservice.dll"-"C:\sys\bin\sysinfoservice.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\sysinfoservice.dll"-"C:\sys\bin\sysinfoservice.dll"
 "..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tsysnetwork.dll"-"C:\sys\bin\tsysnetwork.dll"
 
 

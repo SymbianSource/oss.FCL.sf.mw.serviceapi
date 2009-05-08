@@ -32,7 +32,7 @@
 ;SAPI Binaries to Install
 
 ;Mediamgmtservice binaries
-"..\..\..\..\..\..\..\epoc32\release\armv5\urel\mediamanagementservice.dll"-"C:\sys\bin\mediamanagementservice.dll"
+;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\mediamanagementservice.dll"-"C:\sys\bin\mediamanagementservice.dll"
 "..\..\..\..\..\..\..\epoc32\release\armv5\urel\taiwmediamgmttest.dll"-"C:\sys\bin\taiwmediamgmttest.dll"
 
 

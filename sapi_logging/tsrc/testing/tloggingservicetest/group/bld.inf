@@ -24,11 +24,6 @@ PRJ_PLATFORMS
 DEFAULT
 
 PRJ_TESTEXPORTS
-// NOTE: If using ARS requirements all export operations should be done under this.
-// 'abld test export'
-
-PRJ_EXPORTS
-
 ../conf/tloggingservicetest.cfg     /epoc32/WINSCW/C/TestFramework/tloggingservicetest.cfg
 ../init/testframework.ini  /epoc32/WINSCW/C/TestFramework/testframework.ini 
 // Specify the source file followed by its destination here
@@ -40,11 +35,11 @@ PRJ_EXPORTS
 /agnmodel/inc/AGMCOMON.H
 */
 
-PRJ_TESTMMPFILES
-// NOTE: If using ARS requirements .mmp file operation should be done under this.
-// 'abld test build'
+PRJ_EXPORTS
 
-PRJ_MMPFILES
+
+
+PRJ_TESTMMPFILES
 // Specify the .mmp files required for building the important component
 // releasables.
 //
@@ -59,5 +54,8 @@ PRJ_MMPFILES
 #endif
 */
 tloggingservicetest.mmp
+
+PRJ_MMPFILES
+
 
 //  End of File

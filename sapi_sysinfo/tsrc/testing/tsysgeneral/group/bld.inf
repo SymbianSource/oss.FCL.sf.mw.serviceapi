@@ -23,10 +23,10 @@ DEFAULT
 
 
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tsysgeneral.cfg /epoc32/winscw/c/testframework/tsysgeneral.cfg
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 tsysgeneral.mmp
 
 //  End of File

@@ -26,6 +26,6 @@ DEFAULT
 
 PRJ_MMPFILES
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../data/c/test1.jpg	/epoc32/WINSCW/C/data/images/test1.jpg
 ../data/c/test2.jpg	/epoc32/WINSCW/C/data/images/test2.jpg

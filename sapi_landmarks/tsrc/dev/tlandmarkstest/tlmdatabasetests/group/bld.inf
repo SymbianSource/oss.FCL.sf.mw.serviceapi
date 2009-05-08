@@ -21,10 +21,10 @@
 PRJ_PLATFORMS
 WINSCW ARMV5
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/Tlmdatabasetests.cfg	/epoc32/WINSCW/C/TestFramework/Tlmdatabasetests.cfg
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 Tlmdatabasetests.mmp
 
 //  End of File

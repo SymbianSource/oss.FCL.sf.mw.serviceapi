@@ -23,13 +23,17 @@ PRJ_PLATFORMS
 // defaults to WINS MARM so you can ignore this if you just build these
 DEFAULT
 
-
-
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 
 ../conf/tcontactprovidertest_sync.cfg	/epoc32/WINSCW/C/TestFramework/tcontactprovidertest_sync.cfg
 ../data/c/import.vcf	/epoc32/WINSCW/C/data/import.vcf
-PRJ_MMPFILES
+
+PRJ_EXPORTS
+
+//All files under this section are been moved to PRJ_TESTEXPORTS
+
+PRJ_TESTMMPFILES
 tcontactprovidertest_sync.mmp
 
+PRJ_MMPFILES
 //  End of File

@@ -23,7 +23,7 @@ PRJ_PLATFORMS
 DEFAULT
 
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tsysdisplay.cfg /epoc32/winscw/c/testframework/tsysdisplay.cfg
 ../data/c/1.jpg		/epoc32/winscw/c/data/Images/sysinfotest1.jpg
 ../data/c/2.bmp		/epoc32/winscw/c/data/Images/sysinfotest2.bmp
@@ -31,7 +31,7 @@ PRJ_EXPORTS
 ../data/c/4.txt		/epoc32/winscw/c/data/Images/sysinfotest4.txt
 
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 tsysdisplay.mmp
 
 //  End of File

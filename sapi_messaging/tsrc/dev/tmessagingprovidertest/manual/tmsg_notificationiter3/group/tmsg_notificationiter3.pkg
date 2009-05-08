@@ -1,7 +1,4 @@
 ; ============================================================================
-;  Name        : serviceapi.pkg
-;  Part of     : SAPI project
-; ============================================================================
 ; Copyright (c) 2007 Nokia Corporation and/or its subsidiary(-ies).
 ; All rights reserved.
 ; This component and the accompanying materials are made available
@@ -35,7 +32,7 @@
 ;SAPI Binaries to Install
 
 ;Messagingservice binaries
-"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\messagingservice.dll"-"C:\sys\bin\messagingservice.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\messagingservice.dll"-"C:\sys\bin\messagingservice.dll"
 "..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tmsg_notificationiter3.dll"-"C:\sys\bin\tmsg_notificationiter3.dll"
 
 

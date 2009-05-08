@@ -21,11 +21,15 @@
 PRJ_PLATFORMS
 DEFAULT
 
-
-
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tlogtypeidtest.cfg 		/epoc32/winscw/c/testframework/tlogtypeidtest.cfg
 
-PRJ_MMPFILES
+PRJ_EXPORTS
+
+PRJ_TESTMMPFILES
 tlogtypeidtest.mmp
+
+
+PRJ_MMPFILES
+
 //  End of File

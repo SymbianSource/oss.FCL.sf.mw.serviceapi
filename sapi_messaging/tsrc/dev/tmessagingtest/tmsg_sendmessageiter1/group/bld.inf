@@ -21,12 +21,21 @@
 PRJ_PLATFORMS
 DEFAULT
 
-
-
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
+// NOTE: If using ARS requirements all export operations should be done under this.
+// 'abld test export'
 ../conf/tmsg_sendmessageiter1.cfg 		/epoc32/winscw/c/testframework/tmsg_sendmessageiter1.cfg
 ../conf/tmsg_sendmessageiter1_manual.cfg 		/epoc32/winscw/c/testframework/tmsg_sendmessageiter1_manual.cfg
-PRJ_MMPFILES
+
+PRJ_EXPORTS
+
+
+PRJ_TESTMMPFILES
+// NOTE: If using ARS requirements .mmp file operation should be done under this.
+// 'abld test build'
 tmsg_sendmessageiter1.mmp
+
+PRJ_MMPFILES
+
 
 //  End of File

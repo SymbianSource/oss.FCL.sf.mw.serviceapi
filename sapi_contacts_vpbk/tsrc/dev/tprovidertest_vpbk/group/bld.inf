@@ -23,9 +23,13 @@ DEFAULT
 
 
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tprovidertest_vpbk.cfg 		/epoc32/winscw/c/testframework/tprovidertest_vpbk.cfg
 
-PRJ_MMPFILES
+PRJ_EXPORTS
+//All files under this section are been moved to PRJ_TESTEXPORTS
+PRJ_TESTMMPFILES
 tprovidertest_vpbk.mmp
+
+PRJ_MMPFILES
 //  End of File

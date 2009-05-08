@@ -22,14 +22,18 @@ PRJ_PLATFORMS
 DEFAULT
 
 PRJ_TESTEXPORTS
-
-PRJ_EXPORTS
 ../conf/tsysinfoprovidertests.cfg	/epoc32/WINSCW/C/TestFramework/tsysinfoprovidertests.cfg
 
 
+PRJ_EXPORTS
+
+
+
 PRJ_TESTMMPFILES
+tsysinfoprovidertests.mmp
+
 
 PRJ_MMPFILES
-tsysinfoprovidertests.mmp
+
 
 //  End of File

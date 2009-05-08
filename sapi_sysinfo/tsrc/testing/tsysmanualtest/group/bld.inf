@@ -23,11 +23,11 @@ PRJ_PLATFORMS
 // defaults to WINS MARM so you can ignore this if you just build these
 DEFAULT
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tsysmanualtest.cfg /epoc32/winscw/c/testframework/tsysmanualtest.cfg
 
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 tsysmanualtest.mmp
 
 //  End of File

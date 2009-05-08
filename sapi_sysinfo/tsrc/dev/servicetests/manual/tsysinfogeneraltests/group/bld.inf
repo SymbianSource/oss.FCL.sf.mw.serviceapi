@@ -26,6 +26,8 @@ DEFAULT
 PRJ_TESTEXPORTS
 // NOTE: If using ARS requirements all export operations should be done under this.
 // 'abld test export'
+../conf/tsysinfogeneraltests.cfg	/epoc32/WINSCW/C/TestFramework/tsysinfogeneraltests.cfg
+
 
 PRJ_EXPORTS
 // Specify the source file followed by its destination here
@@ -36,11 +38,13 @@ PRJ_EXPORTS
 /*
 /agnmodel/inc/AGMCOMON.H
 */
-../conf/tsysinfogeneraltests.cfg	/epoc32/WINSCW/C/TestFramework/tsysinfogeneraltests.cfg
+
 
 PRJ_TESTMMPFILES
 // NOTE: If using ARS requirements .mmp file operation should be done under this.
 // 'abld test build'
+tsysinfogeneraltests.mmp
+
 
 PRJ_MMPFILES
 // Specify the .mmp files required for building the important component
@@ -56,6 +60,6 @@ PRJ_MMPFILES
 /agnmodel/group/agsvexe.mmp
 #endif
 */
-tsysinfogeneraltests.mmp
+
 
 //  End of File
