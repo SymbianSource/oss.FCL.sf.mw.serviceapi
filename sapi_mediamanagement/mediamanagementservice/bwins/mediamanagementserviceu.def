@@ -1,6 +1,0 @@
-EXPORTS
-	?CancelL@CMgService@@QAEHI@Z @ 1 NONAME ; int CMgService::CancelL(unsigned int)
-	?GetListL@CMgService@@QAEXABVTMgServiceRequest@@PAVMMgOperationObserver@@@Z @ 2 NONAME ; void CMgService::GetListL(class TMgServiceRequest const &, class MMgOperationObserver *)
-	?NewL@CMgService@@SAPAV1@XZ @ 3 NONAME ; class CMgService * CMgService::NewL(void)
-	?State@CMgService@@QBEABW4TMgState@@XZ @ 4 NONAME ; enum TMgState const & CMgService::State(void) const
-

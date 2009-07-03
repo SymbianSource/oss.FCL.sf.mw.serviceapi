@@ -1,0 +1,58 @@
+/*
+* Copyright (c) 2007-2007 Nokia Corporation and/or its subsidiary(-ies).
+* All rights reserved.
+* This component and the accompanying materials are made available
+* under the terms of the License "Eclipse Public License v1.0"
+* which accompanies this distribution, and is available
+* at the URL "http://www.eclipse.org/legal/epl-v10.html".
+*
+* Initial Contributors:
+* Nokia Corporation - initial contribution.
+*
+* Contributors:
+*
+* Description:  Project definition file for Media Management SAPI
+*
+*/
+
+#include "../../../group/sapiincludes.mmpi"
+
+TARGET          mediamanagementservice.dll
+TARGETTYPE      DLL
+UID             0x100039CE 0x102833AC
+SECUREID        0x102833AC
+EPOCSTACKSIZE   0x5000
+
+DEFFILE        	mediamanagementservice.def
+
+VERSION		1.0
+
+CAPABILITY      ALL -TCB
+VENDORID        VID_DEFAULT
+
+SOURCEPATH      ../src
+SOURCE          mgservice.cpp
+SOURCE          mgpostfilter.cpp
+SOURCE					mgclfoperationobserver.cpp mgthumbobserver.cpp mgthumbnailgeneration.cpp mgmresolution.cpp mgimageresolution.cpp mgvideoresolution.cpp mgmediacontainer.cpp
+
+
+USERINCLUDE     ../inc
+
+
+
+LIBRARY         euser.lib
+LIBRARY         estor.lib
+LIBRARY         efsrv.lib
+LIBRARY         estlib.lib
+LIBRARY         cntmodel.lib
+LIBRARY			ContentListingFramework.lib
+LIBRARY       	thumbnailmanager.lib // For TNM
+LIBRARY			imageconversion.lib // For image resolution 
+LIBRARY 		fbscli.lib	// CFbsBitmap		
+LIBRARY			mediaclientvideo.lib  // For CVideoPlayerUtility
+LIBRARY    		ws32.lib // 
+LIBRARY			cone.lib    // For CoeCntrl
+LIBRARY   		apgrfx.lib // for RApaLsSession 
+LIBRARY			apmime.lib // TDataRecognitionResult
+
+paged

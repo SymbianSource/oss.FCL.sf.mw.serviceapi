@@ -7,7 +7,6 @@
 <layer name="mw_layer">                        
 <module name="serviceapi">                             
 <unit name="serviceapi" unitID="sapido.serviceapi" bldFile="&layer_real_source_path;/group" mrp="" />
-<unit name="serviceapi_int" unitID="sapido.serviceapi.internal" bldFile="&layer_real_source_path;/tsrc/group" mrp="" />
 </module>    
 </layer>        
 </systemModel>

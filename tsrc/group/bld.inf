@@ -18,16 +18,17 @@
 
 
 // *****************mediagallery related testapps***********************
-#include "../../sapi_landmarks/tsrc/group/bld.inf"
-#include "../../sapi_applicationmanager/tsrc/group/bld.inf"
-#include "../../sapi_mediamanagement/tsrc/group/bld.inf"
-#include "../../sapi_location/tsrc/group/bld.inf"
-#include "../../sapi_logging/tsrc/group/bld.inf"
-#include "../../sapi_contacts_vpbk/tsrc/group/bld.inf"
-#include "../../sapi_sysinfo/tsrc/group/bld.inf"
-#include "../../sapi_calendar/tsrc/group/bld.inf"
-#include "../../sapi_sensor/tsrc/group/bld.inf"
-#include "../../sapi_messaging/tsrc/group/bld.inf"
+#include "../../serviceproviders/sapi_landmarks/tsrc/group/bld.inf"
+#include "../../serviceproviders/sapi_applicationmanager/tsrc/group/bld.inf"
+#include "../../serviceproviders/sapi_mediamanagement/tsrc/group/bld.inf"
+#include "../../serviceproviders/sapi_location/tsrc/group/bld.inf"
+#include "../../serviceproviders/sapi_logging/tsrc/group/bld.inf"
+#include "../../serviceproviders/sapi_contacts_vpbk/tsrc/group/bld.inf"
+#include "../../serviceproviders/sapi_sysinfo/tsrc/group/bld.inf"
+#include "../../serviceproviders/sapi_calendar/tsrc/group/bld.inf"
+#include "../../serviceproviders/sapi_sensor/tsrc/group/bld.inf"
+#include "../../serviceproviders/sapi_messaging/tsrc/group/bld.inf"
+#include "../../serviceproviders/sapi_serviceregistry/tsrc/group/bld.inf"
 
 
 // *****************test provider related testapps***********************

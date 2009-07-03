@@ -15,26 +15,5 @@
 *
 */
 
-#include <platform_paths.hrh>
-
-#include "../sapi_contacts_vpbk/group/bld.inf"
-#include "../sapi_location/group/bld.inf"
-#include "../sapi_mediamanagement/group/bld.inf"
-#include "../sapi_landmarks/group/bld.inf"
-//#include "../camera/group/bld.inf"
-#include "../sapi_messaging/group/bld.inf"
-
-#include "../sapi_applicationmanager/group/bld.inf"
-#include "../sapi_calendar/group/bld.inf"
-#include "../sapi_logging/group/bld.inf"
-#include "../sapi_sensor/group/bld.inf"
-#include "../sapi_sysinfo/group/bld.inf"
-
-
-PRJ_EXPORTS
-../rom/serviceapi.iby                     CORE_MW_LAYER_IBY_EXPORT_PATH(serviceapi.iby)
-../rom/serviceapiresource.iby                     LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(serviceapiresource.iby)
-
-../install/serviceapi_stub.sis	/epoc32/data/z/system/install/serviceapi_stub.sis
-//  End of File
+#include "../serviceproviders/group/bld.inf"
 
