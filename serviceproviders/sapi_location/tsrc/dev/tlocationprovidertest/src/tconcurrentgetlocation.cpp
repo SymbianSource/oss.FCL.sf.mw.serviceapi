@@ -77,7 +77,7 @@ TInt ConcurrentGetLoc ::  HandleNotifyL(
   
 TInt ConcurrentGetLocCallsL()
 {
-	
+    __UHEAP_MARK ;
 	
 		CActiveScheduler *Scheduler = new CActiveScheduler ;
 
@@ -158,12 +158,13 @@ TInt ConcurrentGetLocCallsL()
 	
     TLiwVariant ErrVariant = errparam->Value() ;
     TInt ret = ErrVariant.AsTInt32() ;
-   
+    a.ResetAndDestroy() ;
 	locinterface->Close() ;
 	delete ServiceHandler ;
 	delete InputList ;
 	delete OutParmList ;
 	delete Scheduler ;
+    __UHEAP_MARKEND ;
 	return ret ; // Controll never reaches here
 }
 

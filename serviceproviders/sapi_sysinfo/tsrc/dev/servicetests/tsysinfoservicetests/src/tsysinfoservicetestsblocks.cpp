@@ -30,11 +30,11 @@
 
 #include "sysinfoservice.h"
 #include "entitykeys.h"
+#include <COEMAIN.H> 
 
 using namespace SysInfo;
 _LIT(KROMInstallDir,"\\system\\install\\");
 _LIT(KS60ProductIdFile,"Series60v*.sis");
-_LIT(KDisplayLanguage,"DisplayLanguage");
 
 	const TPtrC KFeature[] = 
 	{
@@ -107,6 +107,9 @@ TInt Ctsysinfoservicetests::RunMethodL(
         ENTRY( "AvailableUSBModes",    Ctsysinfoservicetests::AvailableUSBModes),
         ENTRY( "ActiveUSBModes",    Ctsysinfoservicetests::ActiveUSBModes),
         ENTRY( "NotificationCancelVibra",    Ctsysinfoservicetests::NotificationCancelVibra),
+        ENTRY( "CameraData",    Ctsysinfoservicetests::CameraData),
+        ENTRY( "CameraDataWrongEntity", Ctsysinfoservicetests::CameraDataNegativeEntity),
+        ENTRY( "CameraDataWrongKey",   Ctsysinfoservicetests::CameraDataNegativeKey),
 //Connectivity
   		ENTRY( "ConnBluetooth",    Ctsysinfoservicetests::ConnBluetooth),
         ENTRY( "IRStatus",    Ctsysinfoservicetests::IRStatus),
@@ -2183,99 +2186,101 @@ TInt  Ctsysinfoservicetests::InputLang(CStifItemParser& /*aItem*/)
 // 
 // -----------------------------------------------------------------------------
 //
-TInt  Ctsysinfoservicetests::GetDisplayLang(CStifItemParser& /*aItem*/)
-	{
+TInt Ctsysinfoservicetests::GetDisplayLang(CStifItemParser& /*aItem*/)
+    {
+    CCoeEnv* coeSupported = NULL;
+    coeSupported = CCoeEnv::Static();
+    if (coeSupported)
+        {
+        TInt result = KErrNone;
+        __UHEAP_MARK;
 
-	TInt result = KErrNone;
-	__UHEAP_MARK;
-	
+        _LIT(KExample, "GetDisplayLang:");
+        iLog->Log(KExample);
 
-	_LIT( KExample, "GetDisplayLang:" );
-    iLog->Log( KExample );
-    
-			 
-	CSysInfoService* iSysInfoService = CSysInfoService::NewL();
+        CSysInfoService* iSysInfoService = CSysInfoService::NewL();
 
-	CleanupStack::PushL(iSysInfoService);
+        CleanupStack::PushL(iSysInfoService);
 
-	
-	CSysData* data2 = NULL;
+        CSysData* data2 = NULL;
 
-	TRAPD(err,iSysInfoService->GetInfoL(KGeneral,KDisplayLanguage,data2));
-	if( err != KErrNotFound )
-		{
-		iLog->Log( _L("Failed,Get Display language found ret err: %d"),err );
-		result = KErrGeneral;
-		}
-	else
-		{
-		result = KErrNone;
-		iLog->Log( _L("Passed Get Display language not found") );
-		}
-		
-	delete data2;
-	
-	CleanupStack::PopAndDestroy(1);
-	__UHEAP_MARKEND;
+        TRAPD(err, iSysInfoService->GetInfoL(KGeneral, KDisplayLanguage,
+                data2));
+        if (err != KErrNotFound)
+            {
+            iLog->Log(_L("Failed,Get Display language found ret err: %d"),
+                    err);
+            result = KErrGeneral;
+            }
+        else
+            {
+            result = KErrNone;
+            iLog->Log(_L("Passed Get Display language not found") );
+            }
 
-	return result;
-	
-	
-	}
+        delete data2;
+
+        CleanupStack::PopAndDestroy(1);
+        __UHEAP_MARKEND;
+
+        return result;
+
+        }
+    else
+        {
+        iLog->Log(_L("CCoeEnv not supported . Hence passing the test case") );
+        return 0;
+        }
+    }
 
 // -----------------------------------------------------------------------------
 // Ctsysinfoservicetests::SetDisplayLang
 // 
 // -----------------------------------------------------------------------------
 //	
-TInt  Ctsysinfoservicetests::SetDisplayLang(CStifItemParser& /*aItem*/)
-	{
+TInt Ctsysinfoservicetests::SetDisplayLang(CStifItemParser& /*aItem*/)
+    {
+    TInt result = KErrNone;
+    __UHEAP_MARK;
+    CSysInfoService* iSysInfoService = CSysInfoService::NewL();
+    CleanupStack::PushL(iSysInfoService);
+    CStatus* data = CStatus::NewL(10);
+    CleanupStack::PushL(data);
+    TRAPD(err, iSysInfoService->SetInfoL(KGeneral, KDisplayLanguage, data));
+    if (err != KErrNotFound)
+        {
+        iLog->Log(_L("Failed,Set Display language found ret err: %d"), err);
+        result = KErrGeneral;
+        }
+    else
+        {
+        result = KErrNone;
+        iLog->Log(_L("Passed Set Display language not found") );
+        }
+    CleanupStack::PopAndDestroy(data);
 
-	TInt result = KErrNone;
-
-	__UHEAP_MARK;
-
-	CSysInfoService* iSysInfoService = CSysInfoService::NewL();
-
-	CleanupStack::PushL(iSysInfoService);
-
-
-	CStatus* data = CStatus::NewL(10);
-	CleanupStack::PushL(data);
-	TRAPD(err,iSysInfoService->SetInfoL(KGeneral,KDisplayLanguage,data));
-	if( err != KErrNotFound )
-		{
-		iLog->Log( _L("Failed,Set Display language found ret err: %d"),err );
-		result = KErrGeneral;
-		}
-	else
-		{
-		result = KErrNone;
-		iLog->Log( _L("Passed Set Display language not found") );
-		}
-	CleanupStack::PopAndDestroy(data);
-	
-	CSysData *data1 = NULL;
-	TRAPD(err1,iSysInfoService->GetInfoL(KGeneral,KDisplayLanguage,data1));
-	if( err1 != KErrNotFound )
-		{
-		iLog->Log( _L("Failed,Set Display language found ret err: %d"),err );
-		result = KErrGeneral;
-		}
-	else
-		{
-		result = KErrNone;
-		iLog->Log( _L("Passed Set Display language not found") );
-		}
-	delete data1;
-
-	CleanupStack::PopAndDestroy(1);
-	__UHEAP_MARKEND;
-
-	return result;
-	
-	
-	}
+    CCoeEnv* coeSupported = NULL;
+    coeSupported = CCoeEnv::Static();
+    if (coeSupported)
+        {
+        CSysData *data1 = NULL;
+        TRAPD(err1, iSysInfoService->GetInfoL(KGeneral, KDisplayLanguage,data1));
+        if (err1 != KErrNotFound)
+            {
+            iLog->Log(_L("Failed,Set Display language found ret err: %d"),err);
+            result = KErrGeneral;
+            }
+        else
+            {
+            result = KErrNone;
+            iLog->Log(_L("Passed Set Display language not found") );
+            }
+        delete data1;
+        }
+    CleanupStack::PopAndDestroy(1);
+    __UHEAP_MARKEND;
+    return result;
+    }
 // -----------------------------------------------------------------------------
 // Ctsysinfoservicetests::SetInputLang
 // 
@@ -2569,7 +2574,159 @@ TInt  Ctsysinfoservicetests::NotificationCancelVibra(CStifItemParser& /*aItem*/)
 		else	
 			return KErrGeneral;
 		}	
-		
+
+// -----------------------------------------------------------------------------
+// Ctsysinfoservicetests::CameraData
+// Positive Test for Core Class
+// -----------------------------------------------------------------------------
+//
+TInt Ctsysinfoservicetests::CameraData(CStifItemParser& /*aItem*/)
+   {
+    TInt result = 0;
+    _LIT( KExample, "CameraData" );
+    iLog->Log( KExample );
+	
+	__UHEAP_MARK;
+
+	CSysInfoService *obj = CSysInfoService::NewL();
+	CleanupStack::PushL(obj);
+	
+	CSysData* output=NULL;
+	TRAPD(err,obj->GetInfoL(KCameraInfo,KCameraProperties,output));
+	result = err;
+	if (result == KErrNone)
+		{
+		iLog->Log(_L("Got Expected error code %d "),result);
+		if(!output)
+			{
+			iLog->Log( _L("Output data Set to NULL") );
+			result = -1;
+			}
+		else
+			{
+			CleanupStack::PushL(output);
+			iLog->Log( _L("Output data Obtained") );			
+			if( CSysData::ECameraInfo != output->DataType() )
+				{
+				iLog->Log( _L("Invalid output data type") );
+				result = -1;
+				}
+			else
+				{
+				iLog->Log( _L("Valid output data type - ECameraInfo") );
+				const CCameraInfo* camInfoTest = ((CCameraInfo*) output);	
+				TInt count = camInfoTest->ResolutionList()->Count();
+
+			    iLog->Log( _L("Count is - %d"),count );
+                for(TInt i=0; i<count; i++)
+                    {
+                    TInt val = 0;
+                    TPtrC string;
+                    camInfoTest->ResolutionList()->At(i,0,val);
+                    iLog->Log( _L("Width %d is - %d"),i+1,val );
+                    camInfoTest->ResolutionList()->At(i,1,val);
+                    iLog->Log( _L("Height %d is - %d"),i+1,val );
+                    camInfoTest->MimeTypesList()->At(i,string);
+                    iLog->Log( _L("MimeType %d is %s"),i+1,string.Ptr());
+                    }  
+                iLog->Log(_L("Test Completed"));
+                iLog->Log( _L("PASS"));  
+				}//datatype	- ECameraInfo	
+			CleanupStack::PopAndDestroy(output);
+			}//output		
+		}//err
+	else
+		{
+		iLog->Log( _L("GetInfo API for Camera returned error %d"),result );
+        iLog->Log(_L("Test Completed"));
+        iLog->Log( _L("FAIL"));   
+		}	
+	
+	CleanupStack::PopAndDestroy(obj);
+	__UHEAP_MARKEND;
+	return result;    
+    }	
+
+// -----------------------------------------------------------------------------
+// Ctsysinfoservicetests::CameraDataNegativeEntity
+// negative test case for core class - Wrong Entity
+// -----------------------------------------------------------------------------
+//
+TInt Ctsysinfoservicetests::CameraDataNegativeEntity(CStifItemParser& /*aItem*/)
+   {
+    TInt result;
+    TInt expectedError = KErrNotFound;
+    _LIT( KExample, "CameraDataNegativeEntity" );
+    iLog->Log( KExample );
+    
+    _LIT( KCameraEntity, "CameraEntity" );
+    __UHEAP_MARK;
+
+    CSysInfoService *obj = CSysInfoService::NewL();
+    CleanupStack::PushL(obj);
+    
+    CSysData* output=NULL; 
+    TRAPD(err,obj->GetInfoL(KCameraEntity,KCameraProperties,output));
+    result = err;
+    if (result == expectedError)
+        {
+        iLog->Log(_L("Got Expected error code %d "),result);
+        result = KErrNone;
+        iLog->Log(_L("Test Completed"));
+        iLog->Log( _L("PASS"));   
+        }//err
+    else
+        {
+        iLog->Log( _L("GetInfo API for Camera returned unexpected error") );
+        iLog->Log(_L("Test Completed"));
+        iLog->Log( _L("FAIL"));  
+        }    
+    
+    CleanupStack::PopAndDestroy(obj);
+    __UHEAP_MARKEND;
+    return result;    
+    }   
+
+// -----------------------------------------------------------------------------
+// Ctsysinfoservicetests::CameraDataNegativeKey
+// negative test case for core class - Wrong Key
+// -----------------------------------------------------------------------------
+//
+TInt Ctsysinfoservicetests::CameraDataNegativeKey(CStifItemParser& /*aItem*/)
+   {
+    TInt result;
+    TInt expectedError = KErrNotFound;
+    _LIT( KExample, "CameraDataNegativeKey" );
+    iLog->Log( KExample );
+    
+    _LIT( KCameraKey, "CameraKey" );
+    __UHEAP_MARK;
+
+    CSysInfoService *obj = CSysInfoService::NewL();
+    CleanupStack::PushL(obj);
+    
+    CSysData* output=NULL;
+    TRAPD(err,obj->GetInfoL(KCameraInfo,KCameraKey,output));
+    result = err;
+    if (result == expectedError)
+        {
+        iLog->Log(_L("Got Expected error code %d "),result);
+        result = KErrNone;
+        iLog->Log(_L("Test Completed"));
+        iLog->Log( _L("PASS"));  
+        }//err
+    else
+        {
+        iLog->Log( _L("GetInfo API for Camera returned unexpected error") );
+        iLog->Log(_L("Test Completed"));
+        iLog->Log( _L("FAIL"));   
+        }    
+    
+    CleanupStack::PopAndDestroy(obj);
+    __UHEAP_MARKEND;
+    return result;    
+    }  
+
 		
 TInt  Ctsysinfoservicetests::ConnBluetooth(CStifItemParser& /*aItem*/)
 	{	int ret=0;

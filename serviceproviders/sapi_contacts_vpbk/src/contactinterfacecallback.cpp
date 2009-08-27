@@ -236,3 +236,120 @@ void CContactInterfaceCallback::HandleReturnIter(const TInt& aError,
     	}
     CleanupStack::PopAndDestroy(this);
     }
+
+void CContactInterfaceCallback :: HandleReturnId(const TInt& aError,HBufC8* acntId , TInt aTransId )
+    {
+    TInt err = 0;
+      CleanupStack::PushL(this);  
+      if( iCallback )
+          {
+          if( iEventParamList )
+              {
+              iEventParamList->Reset();
+              }
+          else
+              {
+              iEventParamList = CLiwGenericParamList::NewL();
+              }
+          //Append Error Code
+          TInt32 sapiError = CContactInterface::SapiError(aError);
+          iEventParamList->AppendL(TLiwGenericParam( KErrorCode, 
+                                   TLiwVariant((TInt32)sapiError)));
+          
+      if(acntId)
+          {
+          HBufC* cntIdUnicode = HBufC::NewL(acntId->Length());
+          CleanupStack :: PushL(cntIdUnicode);
+          cntIdUnicode->Des().Copy(*acntId);
+          delete acntId;
+          acntId = NULL;
+          ContactIDToUTF(cntIdUnicode);           
+          iEventParamList->AppendL(TLiwGenericParam(KReturnValue, 
+                                   TLiwVariant(*cntIdUnicode)));  
+          CleanupStack :: Pop(cntIdUnicode);
+          }
+      
+          //Call HandleNotify
+          TRAP(err,iCallback->HandleNotifyL(aTransId, 
+                                            KLiwEventCompleted, 
+                                            *iEventParamList, 
+                                            *iInParamList));
+          }
+      CleanupStack::PopAndDestroy(this);
+      }
+ 
+ 
+
+void CContactInterfaceCallback::HandleReturnArray(const TInt& aError,
+                                                RPointerArray<HBufC8>& aArray, 
+                                                 TInt aTransId)
+    {
+    TInt err = 0;
+    CleanupStack::PushL(this);  
+    if( iCallback )
+        {
+        if( iEventParamList )
+            {
+            iEventParamList->Reset();
+            }
+        else
+            {
+            iEventParamList = CLiwGenericParamList::NewL();
+            }
+        //Append Error Code
+        TInt32 sapiError = CContactInterface::SapiError(aError);
+        iEventParamList->AppendL(TLiwGenericParam( KErrorCode, 
+                                 TLiwVariant((TInt32)sapiError)));
+        
+    if(aArray.Count() > 0)
+        {
+        CLiwList* IdList = NULL;
+        TLiwVariant outputVal;
+        TInt count = aArray.Count();
+        TInt i;
+        IdList = CLiwDefaultList::NewL();
+        for(i=0; i<count; i++)
+            {
+            TDesC8* idVal = aArray[i];
+           HBufC8* idBufVal = idVal->AllocL();
+           HBufC* cntIdUnicode = HBufC::NewL(idBufVal->Length());
+           CleanupStack :: PushL(cntIdUnicode);
+           cntIdUnicode->Des().Copy(*idBufVal);
+           delete idBufVal;
+           idBufVal = NULL;
+           ContactIDToUTF(cntIdUnicode);      
+           outputVal.Set(*cntIdUnicode);
+           IdList->AppendL(outputVal);
+           CleanupStack :: Pop(cntIdUnicode);       
+            }
+        CLiwMap* pFieldLinkedMap = CLiwDefaultMap::NewL();
+        CleanupClosePushL(*pFieldLinkedMap);
+        pFieldLinkedMap->InsertL(KIdsLabel,TLiwVariant(IdList));
+        
+        //Append Iterator in case it is valid
+        iEventParamList->AppendL(TLiwGenericParam(KReturnValue, 
+                                 TLiwVariant(pFieldLinkedMap)));
+        CleanupStack::PopAndDestroy(pFieldLinkedMap);
+             
+        }
+
+        //Call HandleNotify
+        TRAP(err,iCallback->HandleNotifyL(aTransId, 
+                                          KLiwEventCompleted, 
+                                          *iEventParamList, 
+                                          *iInParamList));
+        }
+    CleanupStack::PopAndDestroy(this);
+    }
+
+
+
+void CContactInterfaceCallback :: ContactIDToUTF(HBufC* aContactID)
+    {
+    TInt len = aContactID->Length();
+    TUint16* ptr16 = const_cast<TUint16*> (aContactID->Des().Ptr());
+    for(TInt i=0; i<len; i++)
+        {
+        ptr16[i] = ptr16[i] | 0xE000;    
+        }
+    }

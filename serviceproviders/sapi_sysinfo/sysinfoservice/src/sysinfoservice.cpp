@@ -43,6 +43,7 @@
 
 #include <usbman.h>
 #include <AknsWallpaperUtils.h>
+#include <AknUtils.h>
 
 #include "sysinfoservice.h"
 #include "sysinfo.h"
@@ -52,6 +53,7 @@
 #include "deviceinfo.h"
 #include "sysrange.h"
 
+#include <string.h>
 
 using namespace SysInfo;
 
@@ -59,7 +61,10 @@ using namespace SysInfo;
 const TInt KGranularity(2);
 const TInt KPhoneWlanMacAddressLength = 50;
 const TChar KPhoneWlanSeparator (':');
+const TUint KPrimaryCameraDisplayID = 2;
 _LIT(KWLanMACDataFormat, "%02x");
+const TInt KPhoneLanguageLength = 20;
+const TInt KMimeTypeLength = 20;
 
 // --------------------------------------------------------------------
 // CSysInfoService::CSysInfoService()
@@ -340,6 +345,9 @@ EXPORT_C void CSysInfoService::GetInfoL( const TDesC& aEntity, const TDesC& aKey
 
     else if( !aEntity.CompareF(KFeatures) )
         GetFeatureInfoL(aKey,aOutput);
+    
+    else if ( !aEntity.CompareF( KCameraInfo ) )
+        GetCameraDataL( aKey,aOutput );
 
     else
         User::Leave(KErrNotFound);
@@ -681,6 +689,15 @@ void CSysInfoService::GetGeneralInfoL(TPtrC aKey,CSysData*& aSysData)
         RepositoryUtil::GetRepositoryKeyL(KCRUidAknFep,
                                         KAknFepInputTxtLang,inputLang);
         aSysData = CStatus::NewL(inputLang);
+        }    
+    else if ( !aKey.CompareF( KDisplayLanguage ) )
+        {
+        HBufC* phoneLang = NULL;
+        TBuf<KPhoneLanguageLength> language;
+        TRAP_IGNORE(phoneLang = AknLangUtils::DisplayLanguageTagL());           
+        language.Copy( phoneLang->Des() );
+        delete phoneLang;
+        aSysData = CStringData::NewL( language );
         }
     else if( !aKey.CompareF(KSupportedLanguages) )
         {
@@ -912,6 +929,64 @@ void CSysInfoService::GetAvailableUsbModesL(CSysData*& aSysData)
     aSysData = CStringList::NewL(usbModesDesArray);
     CleanupStack::Pop(usbModesDesArray);
     CleanupStack::PopAndDestroy(2,&usbsessn);
+    }
+
+// --------------------------------------------------------------------
+// CSysInfoService::GetACameraDataL()
+// Returns the readonly properties of camera - Media Types and Sizes Supported.
+// returns CSysData.
+// --------------------------------------------------------------------
+//
+void CSysInfoService::GetCameraDataL( TPtrC aKey, CSysData*& aSysData )
+    {
+    if ( !aKey.CompareF( KCameraProperties ) )
+        {
+        CImagingConfigManager* cfgMgr = CImagingConfigManager::NewL();
+        CleanupStack::PushL( cfgMgr );
+        TImageQualitySet set;
+        RPointerArray<CResolution> camResArr( KGranularity );
+        CDesCArray* mimeArray= NULL;
+        mimeArray = new (ELeave) CDesCArrayFlat( KGranularity );
+        CleanupStack::PushL( mimeArray );
+
+        CCameraResolutionList* resList= NULL;
+        CStringList* mimeList= NULL;
+
+        TInt totalLevels = cfgMgr->NumberOfImageQualityLevels();
+        CArrayFixFlat<TUint>* levels = new (ELeave) CArrayFixFlat<TUint>( totalLevels );
+        CleanupStack::PushL( levels );
+
+        cfgMgr->GetImageQualityLevelsL( *levels, KPrimaryCameraDisplayID );
+        TInt numLevels(levels->Count() );
+        for ( int i=0; i<numLevels; i++ )
+            {
+            cfgMgr->GetImageQualitySet( set, levels->At(i), KPrimaryCameraDisplayID );
+            if ( set.iCamcorderVisible > 0 )
+                {
+                CResolution* camRes = CResolution::NewL( set.iImageWidth, set.iImageHeight );
+                CleanupStack::PushL( camRes );
+                camResArr.AppendL( camRes );
+                CleanupStack::Pop( camRes );
+
+                TText8* mimeType = set.iImageFileMimeType;
+                TInt length = strlen( (const char *)mimeType );
+                TPtrC8 mimeTypePtr( mimeType, length );
+                TBuf8<KMimeTypeLength> mimeTypeBuf = mimeTypePtr;
+                TBuf16<KMimeTypeLength> imageMimeType;
+                imageMimeType.Copy( mimeTypeBuf );
+                mimeArray->AppendL( imageMimeType );
+                }
+            }
+        resList = CCameraResolutionList::NewL( camResArr ); //Ownership of camResArr is transferred to CCameraResolutionList
+        mimeList = CStringList::NewL( mimeArray ); //Ownership of mimeArray is transferred to CStringList
+        CleanupStack::PopAndDestroy( levels );
+        CleanupStack::Pop( mimeArray );
+        CleanupStack::PopAndDestroy( cfgMgr );
+        camResArr.Reset();
+        aSysData = CCameraInfo::NewL( resList, mimeList ); //Ownership of resList and mimeList is transferred to CCameraInfo
+        }
+    else
+        User::Leave( KErrNotFound );
     }
 
 // End of file.

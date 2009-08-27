@@ -948,6 +948,15 @@ class CMsgCallbackBase : public CBase
 	   * @return void
   	*/
 		virtual void NotifyResultL(TInt aErrCode, TAny* aResult) = 0;
+		
+	/**
+	   * Gives the result
+	   * @param aErrCode Error code
+	   * @param aEntrySelection EntrySelection 
+	   * @param aFilter Filter
+	   * @return void
+  	*/
+		virtual void HandleGetlistL ( TInt aErrCode, CMsvEntrySelection* aEntrySelection, CFilterParamInfo* aFilter ) = 0;
 
 		/**
 	   * Input param 

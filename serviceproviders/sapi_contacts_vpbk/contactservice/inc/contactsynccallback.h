@@ -47,7 +47,12 @@ class CContactSyncCallback: public CBase ,public MContactCallback
           *@return value TInt, integer error code KErrNone if no error
           *occured else can be any system wide error code.
           */
+         void  GetArray(RPointerArray<HBufC8>*);
          TInt GetErrorCode();
+         
+         HBufC8* GetId();
+         
+         
          /**
           *setter method for the wait shceduler shallow copy owned by core class.
           *@return void.
@@ -71,13 +76,19 @@ class CContactSyncCallback: public CBase ,public MContactCallback
           *@return void.
           */
          virtual void HandleReturnIter( const TInt& aError, CContactIter* aIter, TInt aTransId );
+         virtual void HandleReturnArray( const TInt& aError, RPointerArray<HBufC8>& idArray, TInt aTransId );
+         
+         virtual void HandleReturnId(const TInt& aError, HBufC8* acntId, TInt aTransId );
      private:
         //Pointer to the CContactIter class.
         CContactIter* iIter;
+        RPointerArray<HBufC8> iIDArray;
         //Integer error code.
         TInt iError;
         //Scheduler pointer owned by core class used by this class
         CActiveSchedulerWait *iWaitScheduler;
+        HBufC8* icntId;
+        
     public:
         TInt iErrKey;    
     };

@@ -29,6 +29,9 @@
 #include <MVPbkContactFieldBinaryData.h>
 #include <MVPbkContactFieldDateTimeData.h>			      
 #include <MVPbkStoreContactField.h>
+#include <MVPbkContactFieldUriData.h>
+_LIT8(KXSPID,"IMPP");
+_LIT(KXSPIDLabel,"IMPP");
 
 #include "singlecontact.h"
 
@@ -69,12 +72,43 @@ void CSingleContact::ConstructL(MVPbkStoreContact* aSingleContact, Ttype aIndica
 
 void CSingleContact::ConvertContactToFieldListL(MVPbkStoreContact* aSingleContact)
     {
+    TBool XSPID = EFalse;
 
 	if(aSingleContact)
 	{
 	TInt fieldCount = aSingleContact->Fields().FieldCount();	
 	CSingleContactField* field = NULL;
 	for(TInt fieldIndex = 0; fieldIndex < fieldCount ; fieldIndex++)
+		{
+		TPtrC8 fieldKey;
+		if(XSPID == EFalse)
+		    {
+		MVPbkStoreContactField& fieldval = aSingleContact->Fields().FieldAt(fieldIndex);
+		        
+		//Get the fieldKey of the field 
+		fieldKey.Set(CSearchFields::GetFieldKeyFromId(fieldval.BestMatchingFieldType()->FieldTypeResId()));
+		
+		    }
+		else
+		    {
+		    fieldIndex--;
+		    MVPbkStoreContactField& fieldval = aSingleContact->Fields().FieldAt(fieldIndex);
+		                    
+		            //Get the fieldKey of the field 
+            fieldKey.Set(CSearchFields::GetFieldKeyFromId(fieldval.BestMatchingFieldType()->FieldTypeResId()));
+            XSPID = EFalse;
+		    }
+		
+		if(fieldKey.Compare(KXSPID) == 0)
+		    {
+		    XSPID = ETrue;
+		    field = GetXSPIDFieldL(aSingleContact, fieldIndex);
+		    if(field != NULL)
+		        {
+		        iFields.Append(field);
+		        }
+		    }
+		else
 		{
 		field = NextFieldL(aSingleContact, fieldIndex);
 		if(field !=NULL)
@@ -83,8 +117,60 @@ void CSingleContact::ConvertContactToFieldListL(MVPbkStoreContact* aSingleContac
 			}
 		}
 	}
+	}
 		delete aSingleContact;
 
+    }
+CSingleContactField* CSingleContact::GetXSPIDFieldL(MVPbkStoreContact* aSingleContact, TInt& aIndex)
+    {
+    CSingleContactField* contactField = CSingleContactField::NewL();
+    CleanupStack::PushL(contactField);
+    TPtrC uri;
+    if(iIndicator == EContacts)
+            {
+                MVPbkStoreContactField& field = aSingleContact->Fields().FieldAt(aIndex);
+                    
+                //Get the fieldKey of the field 
+                TPtrC8 fieldKeyXspid = CSearchFields::GetFieldKeyFromId(field.BestMatchingFieldType()->FieldTypeResId());
+                if(fieldKeyXspid.Compare(KNullDesC8) == 0)
+                    {
+                    CleanupStack::PopAndDestroy(contactField);      
+                    return NULL;
+                    }
+                
+                RPointerArray<HBufC> xspidArray;
+                
+                while(fieldKeyXspid.Compare(KXSPID) == 0)
+                    {
+                    TPtrC label(field.FieldLabel());
+                
+                      TVPbkFieldStorageType storageType = field.FieldData().DataType();
+                                   
+                      if(EVPbkFieldStorageTypeUri == storageType )
+                          {
+                          //TDesC val = label.Alloc();
+                          uri.Set((MVPbkContactFieldUriData::Cast(field.FieldData())).Uri());
+                   /*       TBuf<10> bufVal1;
+                          bufVal1.Copy(label);
+                          TBuf<100> bufVal2;
+                          bufVal2.Copy(uri);
+                          bufVal1.Append(_L(":"));
+                          bufVal1.Append(bufVal2);
+                          HBufC* xspidVal = bufVal1.AllocLC();*/
+                          xspidArray.AppendL(uri.AllocL());
+                          }
+                      aIndex++;
+                      MVPbkStoreContactField& field = aSingleContact->Fields().FieldAt(aIndex);
+                      
+                      fieldKeyXspid.Set(CSearchFields::GetFieldKeyFromId(field.BestMatchingFieldType()->FieldTypeResId()));
+                
+                    }
+                
+                    contactField->SetUriFieldParamsL(KXSPID,KXSPIDLabel,xspidArray);
+                    CleanupStack::Pop(contactField);    
+                    return contactField;
+            }
+        return NULL;
     }
 //Returns the Next field in the contact if any, otherwise returns NULL
 CSingleContactField* CSingleContact::NextFieldL(MVPbkStoreContact* aSingleContact, TInt aIndex)

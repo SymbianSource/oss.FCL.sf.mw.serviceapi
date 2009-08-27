@@ -77,7 +77,7 @@
   // CImageResolution::GetresolutionL
   // This method gets the resolution of image
   // ----------------------------------------------------------------------------- 
-  TBool CImageResolution::GetresolutionL(TSize& aSize)
+  EXPORT_C  TBool CImageResolution::GetresolutionL(TSize& aSize)
       {
       iFrameInfo = iImageDecoder->FrameInfo();
       

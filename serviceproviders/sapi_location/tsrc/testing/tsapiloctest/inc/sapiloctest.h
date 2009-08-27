@@ -258,7 +258,7 @@ NONSHARABLE_CLASS(CSAPILocTest) : public CScriptBase
 
     };
 
-
+TInt TraceLPosition6T(TAny */*Arg*/);
 TInt threadFunc1(TAny */*Arg*/);
 TInt threadFuncTO(TAny */*Arg*/);
 TInt threadFunc2(TAny */*Arg*/);

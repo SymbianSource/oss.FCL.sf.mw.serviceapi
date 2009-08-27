@@ -69,6 +69,13 @@ TInt CTCalendarUpdateTest::RunMethodL(
         ENTRY( "UpdateAppointmentEntryWithNewAttendees",       CTCalendarUpdateTest::UpdateAppointmentEntryWithNewAttendeesL),
         ENTRY( "UpdateAppointmentEntryWithNewRepeat",    	CTCalendarUpdateTest::UpdateAppointmentEntryWithNewRepeatL),
         //ENTRY( "UpdateAppointmentEntryWithNewTimeAndAttendees",       CTCalendarUpdateTest::UpdateAppointmentEntryWithNewTimeAndAttendeesL),
+        
+        ENTRY( "UpdateAppointmentEntryWithGlobalId",        CTCalendarUpdateTest::UpdateAppointmentEntryWithGlobalIdL),
+        ENTRY( "UpdateTodoEntryWithGlobalId",       CTCalendarUpdateTest::UpdateTodoEntryWithGlobalIdL),
+        ENTRY( "UpdateAnniversaryWithGlobalId",       CTCalendarUpdateTest::UpdateAnniversaryWithGlobalIdL),
+        ENTRY( "UpdateDayEventWithGlobalId",       CTCalendarUpdateTest::UpdateDayEventWithGlobalIdL),
+        ENTRY( "UpdateReminderWithGlobalId",       CTCalendarUpdateTest::UpdateReminderWithGlobalIdL),
+        ENTRY( "UpdateAppointmentEntryWithNewTimeAndGlobalId",       CTCalendarUpdateTest::UpdateAppointmentEntryWithNewTimeAndGlobalIdL),
         };
 
     const TInt count = sizeof( KFunctions ) / 
@@ -774,6 +781,491 @@ TInt CTCalendarUpdateTest::UpdateAppointmentEntryWithNewRepeatL(CStifItemParser 
 	return result;
 	
     }
+
+TInt CTCalendarUpdateTest::UpdateAppointmentEntryWithGlobalIdL(CStifItemParser &aItem )
+    {
+    
+    
+    TInt result = KErrNone;
+    
+    __UHEAP_MARK;
+    
+    CCalendarService* service = CCalendarService::NewL();
+    
+    RemoveCalendarFile( service, KTestCal1File );
+    AddCalendarFile( service, KTestCal1File );
+
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddAppointmentWithAttendees(service, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if ( arruids.Count() > 0 )
+        {
+        RPointerArray<CCalEntry> entryArray;
+        
+        CEntryAttributes* entryObj = CEntryAttributes::NewL();
+                
+        TTime stTime(TDateTime(2007, EAugust, 8, 11, 0, 0, 0));
+        entryObj->SetStartTimeL(stTime);
+        
+        TTime endTime(TDateTime(2007, EAugust, 8, 12, 0, 0, 0));
+        entryObj->SetEndTimeL(endTime);
+        
+        
+        CCalAlarm* alarm = CCalAlarm::NewL();
+        TTime alarmTime(TDateTime(2007,EAugust, 8, 10, 30, 0, 0));
+        entryObj->SetAlarm(alarmTime);
+        delete alarm;
+        
+        service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+
+        if( entryArray.Count() == 1 )
+            {
+            entryObj->SetUidL( *(arruids[0]->iGlobalUID) );
+            }
+            
+        TUIDSet* newuids = NULL;    
+        entryArray.ResetAndDestroy();   
+        TRAPD( err, service->AddL(KTestCal1File,entryObj,newuids) );
+        delete newuids;
+        if ( err == KErrNone )
+            { 
+            service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+            if( entryArray.Count() == 1 )
+                {
+                CCalAlarm* entryalarm = entryArray[0]->AlarmL();
+                if( !(entryArray[0]->StartTimeL().TimeUtcL() == stTime && 
+                    entryArray[0]->EndTimeL().TimeUtcL() == endTime &&
+                    entryalarm->TimeOffset() == TTimeIntervalMinutes(30) ))
+                    {
+                    result = KErrGeneral;
+                    delete entryalarm;  
+                    }
+                else
+                    delete entryalarm;
+                }
+            }
+        else
+            {
+            result = KErrGeneral;       
+            }
+        entryArray.ResetAndDestroy();
+        arruids.ResetAndDestroy();
+        delete entryObj;
+        }
+        else
+            result = KErrGeneral;   
+
+    RemoveCalendarFile( service, KTestCal1File );
+    
+    delete service;
+    
+    __UHEAP_MARKEND;
+
+    return result;
+    
+    }
+    
+TInt CTCalendarUpdateTest::UpdateTodoEntryWithGlobalIdL(CStifItemParser &aItem )
+    {
+    
+    TInt result = KErrNone;
+    
+    __UHEAP_MARK;
+    
+    CCalendarService* service = CCalendarService::NewL();
+    
+    RemoveCalendarFile( service, KTestCal1File );
+    AddCalendarFile( service, KTestCal1File );
+
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddToDo(service, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if ( arruids.Count() > 0 )
+        {
+        RPointerArray<CCalEntry> entryArray;
+        
+        CEntryAttributes* entryObj = CEntryAttributes::NewL();
+        
+        TTime endTime(TDateTime(2007, EAugust, 22, 0, 0, 0, 0));
+        entryObj->SetEndTimeL(endTime);     
+                
+        service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+
+        if( entryArray.Count() == 1 )
+            {
+            entryObj->SetUidL( *(arruids[0]->iGlobalUID) );
+            }
+            
+        TCalLocalUid modifiedEntryId;   
+        TUIDSet* entryUids = NULL;  
+        TRAPD( err, service->AddL(KTestCal1File,entryObj,entryUids) );
+        delete entryUids;
+        entryArray.ResetAndDestroy();
+        if ( err == KErrNone )
+            { 
+            service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+            if( entryArray.Count() == 1 )
+                {
+                if( !(entryArray[0]->EndTimeL().TimeUtcL() == endTime ))
+                    {
+                    result = KErrGeneral;   
+                    }
+                }
+            }
+        else
+            {
+            result = KErrGeneral;       
+            }
+        entryArray.ResetAndDestroy();
+        arruids.ResetAndDestroy();
+        delete entryObj;
+        }
+        else
+            result = KErrGeneral;   
+
+    RemoveCalendarFile( service, KTestCal1File );
+    
+    delete service;
+    
+    __UHEAP_MARKEND;
+
+    return result;
+    
+    
+    }
+
+TInt CTCalendarUpdateTest::UpdateAnniversaryWithGlobalIdL(CStifItemParser &aItem )//try
+    {
+    
+    TInt result = KErrNone;
+    
+    __UHEAP_MARK;
+    
+    CCalendarService* service = CCalendarService::NewL();
+
+    RemoveCalendarFile( service, KTestCal1File );
+    AddCalendarFile( service, KTestCal1File );
+
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddAnny(service, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if ( arruids.Count() > 0 )
+        {
+        RPointerArray<CCalEntry> entryArray;
+        
+        CEntryAttributes* entryObj = CEntryAttributes::NewL();
+        TCalTime stTime;
+        stTime.SetTimeLocalFloatingL(TTime(TDateTime(2007, EDecember, 28, 0, 0, 0, 0)));
+        TTime startTime(TDateTime(2007, EDecember, 28, 0, 0, 0, 0));
+        entryObj->SetStartTimeL(startTime); 
+        
+        /*TCalRRule rrule(TCalRRule::EYearly);
+        rrule.SetDtStart(stTime);
+        rrule.SetInterval(1);
+        
+        TCalTime uTime;
+        uTime.SetTimeLocalFloatingL(TCalTime::MaxTime());
+        rrule.SetUntil(uTime);
+        
+        entryObj->SetRepeatRule(rrule); */   
+                    
+        service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+
+        if( entryArray.Count() == 1 )
+            {
+            entryObj->SetUidL( *(arruids[0]->iGlobalUID) );
+            }
+            
+        TUIDSet* uids = NULL;
+        entryArray.ResetAndDestroy();       
+        TRAPD( err, service->AddL(KTestCal1File,entryObj,uids) );
+        delete uids;
+        if ( err == KErrNone )
+            { 
+            service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+            if( entryArray.Count() == 1 )
+                {
+                TCalRRule rRule;
+                entryArray[0]->GetRRuleL( rRule );
+                TCalTime utTime;
+                utTime.SetTimeLocalFloatingL(TTime(TDateTime(2100, EDecember, 28, 0, 0, 0, 0)));
+                if( !( entryArray[0]->StartTimeL().TimeLocalL() == stTime.TimeLocalL() ) && rRule.Until().TimeLocalL() == utTime.TimeLocalL())
+                    {
+                    result = KErrGeneral;   
+                    }
+                }
+            }
+        else
+            {
+            result = KErrGeneral;       
+            }
+        entryArray.ResetAndDestroy();
+        arruids.ResetAndDestroy();
+        delete entryObj;
+        }
+        else
+            result = KErrGeneral;   
+
+    RemoveCalendarFile( service, KTestCal1File );
+    
+    delete service;
+    
+    __UHEAP_MARKEND;
+
+    return result;
+    
+    }
+
+TInt CTCalendarUpdateTest::UpdateDayEventWithGlobalIdL(CStifItemParser &aItem )//try
+    {
+    TInt result = KErrNone;
+    
+    __UHEAP_MARK;
+    
+    CCalendarService* service = CCalendarService::NewL();
+    
+    RemoveCalendarFile( service, KTestCal1File );
+    AddCalendarFile( service, KTestCal1File );
+
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddEvent(service, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if ( arruids.Count() > 0 )
+        {
+        RPointerArray<CCalEntry> entryArray;
+        
+        CEntryAttributes* entryObj = CEntryAttributes::NewL();
+                
+        entryObj->SetDescriptionL(_L("Day event modified"));
+        entryObj->SetPriority(2);   
+        service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+
+        if( entryArray.Count() == 1 )
+            {
+            entryObj->SetUidL( *(arruids[0]->iGlobalUID) );
+            }
+            
+        TUIDSet* uids = NULL;       
+        TRAPD( err, service->AddL(KTestCal1File,entryObj,uids) );
+        delete uids;
+        entryArray.ResetAndDestroy();
+        if ( err == KErrNone )
+            { 
+            service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+            if( entryArray.Count() == 1 )
+                {
+                if( !( entryArray[0]->DescriptionL().CompareF(_L("Day event modified")) == 0 && entryArray[0]->PriorityL() == 2 ) )
+                    {
+                    result = KErrGeneral;   
+                    }
+                }
+            }
+        else
+            {
+            result = KErrGeneral;       
+            }
+        entryArray.ResetAndDestroy();
+        arruids.ResetAndDestroy();
+        delete entryObj;
+        }
+        else
+            result = KErrGeneral;   
+
+    RemoveCalendarFile( service, KTestCal1File );
+    
+    delete service;
+        
+    __UHEAP_MARKEND;
+
+    return result;
+    
+    }
+    
+TInt CTCalendarUpdateTest::UpdateReminderWithGlobalIdL(CStifItemParser &aItem )
+    {
+    TInt result = KErrNone;
+    
+    __UHEAP_MARK;
+    
+    CCalendarService* service = CCalendarService::NewL();
+    
+    RemoveCalendarFile( service, KTestCal1File );
+    AddCalendarFile( service, KTestCal1File );
+
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddReminder(service, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if ( arruids.Count() > 0 )
+        {
+        RPointerArray<CCalEntry> entryArray;
+        
+        CEntryAttributes* entryObj = CEntryAttributes::NewL();
+        entryObj->SetSummaryL(KString1);        
+        TTime stTime(TDateTime(2007, EJuly, 23, 11, 30, 0, 0));
+        entryObj->SetStartTimeL(stTime);
+                    
+        service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+
+        if( entryArray.Count() == 1 )
+            {
+            entryObj->SetUidL( *(arruids[0]->iGlobalUID) );
+            }
+            
+        TUIDSet* uids = NULL;       
+        TRAPD( err, service->AddL(KTestCal1File,entryObj,uids) );
+        delete uids;
+        entryArray.ResetAndDestroy();
+        if ( err == KErrNone )
+            { 
+            service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+            if( entryArray.Count() == 1 )
+                {
+                if( !( entryArray[0]->SummaryL().CompareF( KString1 ) == 0 && entryArray[0]->StartTimeL().TimeUtcL() == stTime))
+                    {
+                    result = KErrGeneral;   
+                    }
+                }
+            }
+        else
+            {
+            result = KErrGeneral;       
+            }
+        entryArray.ResetAndDestroy();
+        arruids.ResetAndDestroy();
+        delete entryObj;
+        }
+        else
+            result = KErrGeneral;   
+
+    RemoveCalendarFile( service, KTestCal1File );
+    
+    delete service;
+        
+    __UHEAP_MARKEND;
+
+    return result;
+
+    }
+TInt CTCalendarUpdateTest::UpdateAppointmentEntryWithNewTimeAndGlobalIdL(CStifItemParser &aItem )
+    {
+    TInt result = KErrNone;
+    
+    __UHEAP_MARK;
+    
+    CCalendarService* service = CCalendarService::NewL();
+    
+    RemoveCalendarFile( service, KTestCal1File );
+    AddCalendarFile( service, KTestCal1File );
+
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddRepeatingAppointmentEntryL(service, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if ( arruids.Count() > 0 )
+        {
+        RPointerArray<CCalEntry> entryArray;
+        
+        CEntryAttributes* entryObj = CEntryAttributes::NewL();
+        
+        
+        TTime stTime(TDateTime(2007, ESeptember, 17, 9, 0, 0, 0));
+        entryObj->SetInstanceStartTimeL(stTime);
+        TTime startTime(TDateTime(2007, ESeptember, 17, 14, 0, 0, 0));
+        entryObj->SetStartTimeL(startTime);
+        TTime endTime(TDateTime(2007, ESeptember, 17, 17, 30, 0, 0));
+        entryObj->SetEndTimeL(endTime);     
+                        
+        service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+
+        if( entryArray.Count() == 1 )
+            {
+            entryObj->SetUidL( *(arruids[0]->iGlobalUID) );
+            }
+            
+        TUIDSet* uids = NULL;
+        TCalLocalUid modifiedEntryId;       
+        TRAPD( err, service->AddL(KTestCal1File,entryObj,uids) );
+        //modifiedEntryId = uids->iLocalUID;
+     //   modifiedEntryId = uids->iGlobalUID;
+        delete uids;
+        entryArray.ResetAndDestroy();
+        if ( err == KErrNone )
+            { 
+            service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+            if( entryArray.Count() == 1 )
+                {
+                if( !( entryArray[0]->StartTimeL().TimeUtcL() == startTime && 
+                    entryArray[0]->EndTimeL().TimeUtcL() == endTime ))
+                    {
+                    result = KErrGeneral;   
+                    }
+                }
+                
+            }
+        else
+            {
+            result = KErrGeneral;       
+            }
+        entryArray.ResetAndDestroy();
+        arruids.ResetAndDestroy();
+        delete entryObj;
+        }
+        else
+            result = KErrGeneral;   
+
+    RemoveCalendarFile( service, KTestCal1File );
+    
+    delete service;
+    
+    __UHEAP_MARKEND;
+
+    return result;
+    
+    }
+
+
+
 #if 0
 
 TInt CTCalendarUpdateTest::UpdateAppointmentEntryWithNewTimeAndAttendeesL(CStifItemParser &aItem )

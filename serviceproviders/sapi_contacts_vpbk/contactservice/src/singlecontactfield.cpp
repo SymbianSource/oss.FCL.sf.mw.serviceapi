@@ -59,7 +59,15 @@ EXPORT_C void CSingleContactField::GetFieldDataL(TPtrC8& aFieldKey,
                                                  TPtrC& aLabel,
                                                  TPtrC& aValue)
 	{
-	if(iFieldKey && iLabel && iValue)
+	if(iFieldKey->Compare(KXspid) == 0)
+	    {
+	    if(iFieldKey && iLabel)
+	            {
+	            aFieldKey.Set(*iFieldKey);
+	            aLabel.Set(*iLabel);
+	            }
+	    }
+	else if(iFieldKey && iLabel && iValue)
     	{
     	aFieldKey.Set(*iFieldKey);
     	aLabel.Set(*iLabel);
@@ -104,6 +112,50 @@ EXPORT_C void CSingleContactField::
 	iFieldKey= aFieldKey.AllocL();
 	iLabel = aLabel.AllocL();
 	iValue = aValue.AllocL();
+	}
+
+
+EXPORT_C void CSingleContactField::
+              SetUriFieldParamsL(const TDesC8& aFieldKey,
+                              const TDesC& aLabel,
+                              const RPointerArray<HBufC> aValue)
+    {
+    if(iFieldKey)
+        {
+        delete iFieldKey;
+        iFieldKey = NULL;
+        }
+    if( iLabel )
+        {
+        delete iLabel;
+        iLabel = NULL;
+        }
+    if( iValue )
+        {
+        delete iValue;
+        iValue = NULL;
+        }
+    iFieldKey= aFieldKey.AllocL();
+    iLabel = aLabel.AllocL();
+    iidArray.ResetAndDestroy();
+    iidArray = aValue;
+    }
+
+EXPORT_C void CSingleContactField::GetUriFieldParamL(RPointerArray<HBufC>& axspidArray)
+    {
+    TInt count = iidArray.Count();
+    if(count != 0)
+            {
+           
+            for(TInt i=0;i<count;i++)
+            {
+            axspidArray.AppendL(iidArray[i]);         
+            }
+            }
+        else
+            {
+            User::Leave(KErrNotFound);    
+            }       
 	}
 
 //Gets the Group Data and returns them as output parameters
@@ -158,6 +210,45 @@ EXPORT_C TTime CSingleContactField::GetDateTime()
 	return iDateAndTime;
 	}
 
+//Private method used to set TTime variable
+EXPORT_C void CSingleContactField::SetXspidDataL(const TDesC8& aFieldKey,
+        const TDesC& aLabel,
+        RPointerArray<HBufC>& axspidArray)
+    {
+    if(iFieldKey)
+            {
+            delete iFieldKey;
+            iFieldKey = NULL;
+            }
+        if( iLabel )
+            {
+            delete iLabel;
+            iLabel = NULL;
+            }    
+        iFieldKey= aFieldKey.AllocL();
+        iLabel = aLabel.AllocL();
+        iArrayValue = axspidArray;
+    }
+
+
+EXPORT_C void CSingleContactField::GetXspidDataL(RPointerArray<HBufC>& axspidArray)
+    {
+    TInt count = iArrayValue.Count();
+    if(count != 0)
+            {
+           
+            for(TInt i=0;i<count;i++)
+            {
+        /*    HBufC* val = iArrayValue[i];
+            axspidArray.Append(val); */
+            axspidArray.AppendL(iArrayValue[i]);         
+            }
+            }
+        else
+            {
+            User::Leave(KErrNotFound);    
+            }       
+    }
 CSingleContactField::~CSingleContactField()
     {
     delete iFieldKey;
@@ -165,4 +256,11 @@ CSingleContactField::~CSingleContactField()
     delete iValue;
     delete iGroupLabel;
     iContactIdArray.ResetAndDestroy();
+    iArrayValue.ResetAndDestroy();
+    }
+EXPORT_C void CSingleContactField::SetUriData(TPtrC aUri)
+    {
+    HBufC* val = aUri.Alloc();
+    
+    iUriData.AppendL(val);
     }

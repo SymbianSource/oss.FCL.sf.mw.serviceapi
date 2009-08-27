@@ -168,7 +168,7 @@ TInt ASyncCB ::  HandleNotifyL(
 TInt StrayTestL()
 {
 
-	
+    __UHEAP_MARK ;
 	_LIT(KTraceFile , "C:\\Trace.txt") ;
 	
 	RFile TraceFile ;
@@ -273,6 +273,7 @@ TInt StrayTestL()
 	delete Scheduler ;
 	
 	TraceFile.Write(_L8("Scheduler  deleted\n")) ;
+    __UHEAP_MARKEND ;
 	return 0 ; // Controll never reaches here
 }
 

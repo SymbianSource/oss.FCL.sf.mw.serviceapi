@@ -50,6 +50,7 @@ class CContactInterfaceCallback : public CBase, public MContactCallback
          */
         static CContactInterfaceCallback* NewL(CSingleContact* aContact);
         
+        static void ContactIDToUTF(HBufC* aContactID);
         /**
          * Destructor
          */
@@ -86,6 +87,9 @@ class CContactInterfaceCallback : public CBase, public MContactCallback
          */		
 		virtual void HandleReturnIter(const TInt& aError,CContactIter* aIter, TInt aTransId );
         
+		virtual void HandleReturnId(const TInt& aError, HBufC8* acntId, TInt aTransId );
+		
+		virtual void HandleReturnArray( const TInt& aError, RPointerArray<HBufC8>& idArray, TInt aTransId );
 
     private:
         //Pointer to the MLiwNotifyCallback callback passed by consumer.

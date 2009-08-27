@@ -31,6 +31,7 @@
 #include <MVPbkContactFieldData.h>
 #include <MVPbkContactFieldBinaryData.h>
 #include <MVPbkContactFieldDateTimeData.h>
+#include <MVPbkContactFieldUriData.h>
 
 /*
 -------------------------------------------------------------------------------------
@@ -162,12 +163,17 @@ void CAddContactObserver::CreateAndAddFieldToContactL()
     TPtrC8 fieldKey(KNullDesC8);
     TPtrC  label(KNullDesC); 
     TPtrC  value(KNullDesC);    
+    TBool labelFound = EFalse;
     iErrorID = 0;
-    
+    TBuf16<100> bufVal;
+    int len =0;
+    TBool xspidField = EFalse;
+    TBool secTime = EFalse;
     TInt fieldCount = iStoreContact->FieldCount();
 	const CVPbkContactManager* contactManager = &(iContactService->GetContactManager());
     for(TInt index = 0; index < fieldCount; index++)
     {
+    xspidField = EFalse;
     CSingleContactField* field = iStoreContact->FieldAt(index);
 
     field->GetFieldDataL(fieldKey, label, value);
@@ -189,16 +195,73 @@ void CAddContactObserver::CreateAndAddFieldToContactL()
     	TTime timeVal = field->GetDateTime();
     	(MVPbkContactFieldDateTimeData::Cast(cntField->FieldData())).SetDateTime( timeVal );
     	}
+    else if(EVPbkFieldStorageTypeUri == storageType )
+        {   
+        
+        
+        xspidField = ETrue;
+        RPointerArray<HBufC> xspidArray;
+        //CleanupClosePushL(xspidArray);
+        field->GetXspidDataL(xspidArray);
+        TInt count = xspidArray.Count();
+        for(int i=0; i<count; i++)
+            {
+            if(secTime != EFalse)
+            {
+            fieldTypeResId = CSearchFields::GetIdFromFieldKey(fieldKey);
+            iErrorID =  fieldTypeResId;       
+            cntField =  iContact->CreateFieldLC( * contactManager->FieldTypes().Find( fieldTypeResId ) );
+            
+            iErrorID = 0;
+                       
+            storageType = cntField->FieldData().DataType();
+               
+            }
+            secTime = ETrue;
+                    
+            HBufC* val = xspidArray[i];            
+            bufVal.Copy(val->Des());
+            TDes16 desVal = bufVal;
+            TPtrC ptrVal; //desVal.Left(0);
+            TInt valLen = val->Length();
+            (MVPbkContactFieldUriData::Cast(cntField->FieldData())).SetUriL( bufVal );
+ 
+            len = val->Find(_L(":"));
+                  
+            if(len != -1)
+                {
+                TInt trimLen = valLen - len;
+                ptrVal.Set(val->Left(valLen - (trimLen)));
+                len =0;
+    
+                TRAP_IGNORE(cntField->SetFieldLabelL(ptrVal));
+
+                iContact->AddFieldL(cntField);
+                CleanupStack::Pop(); //cntField
+                }
+            else
+                {
+                CleanupStack::Pop(); //cntField
+                User::Leave(KErrArgument);
+                }
+
+              //  delete val;
+            }
+			xspidArray.Reset();
+        //CleanupStack::Pop();
+        }
     else
     	{
     	(MVPbkContactFieldTextData::Cast(cntField->FieldData())).SetTextL( value );
     	}
-
+    if(xspidField == EFalse)
+        {
 	TRAP_IGNORE(cntField->SetFieldLabelL(label));
 
     iContact->AddFieldL(cntField);
 
     CleanupStack::Pop(); //cntField
+        }
     }
     }
 
@@ -277,12 +340,16 @@ TInt CAddContactObserver::DoCommitL( TContactOpResult aResult )
 		aResult.iOpCode == EContactLock && 
 		((*iGroupId != KNullDesC8) && (*iGroupLabel != KNullDesC)) )
     	{
-		(iContact->Group())->SetGroupLabelL(*iGroupLabel);
+    	MVPbkContactGroup* grpintf = iContact->Group();
+    	if(grpintf != NULL)
+    	    {
+    	grpintf->SetGroupLabelL(*iGroupLabel);
 	    (iContact->Group())->CommitL(*this);
 		//set lock flag to false, as it is done.
 		iLockFlag = EFalse;
 		//set return value to ErrNone...completed successfully.
 	    retVal = KErrNone;
+    	    }
     	}	
 	//lock is success, so update the fields in the contact and commit.
 	else if( iLockFlag && aResult.iOpCode == EContactLock )
@@ -341,14 +408,61 @@ void CAddContactObserver::ContactOperationCompleted( TContactOpResult aResult )
 	//if lock operation is successfull then it enters here...
 	//call DoCommitL(), to commit the contact into the contact store.
 	TRAPD(error, error = DoCommitL(aResult));
-
+	if(error == KErrNone)
+	    {
 	//notify the user with the status of the operation.
 	if((aResult.iOpCode != EContactLock) || (error != KErrNone))
 	    {
-    	iContactService->RequestComplete(iTransId);
-		iCallback->HandleReturnValue(EOpComplete, error, iTransId);
-		delete this;
+    	//iContactService->RequestComplete(iTransId);
+		//iCallback->HandleReturnValue(EOpComplete, error, iTransId);
+	    if(iGroupLabel->Compare(KNullDesC) != 0)    //.Compare(KNullDesC)) != 0)
+	        {
+	        if(iGroup != NULL)
+	            {
+	        iContactService->RequestComplete(iTransId);
+            MVPbkContactLink* link = iGroup->CreateLinkLC();  
+            HBufC8* grpId = link->PackLC();
+            CleanupStack::Pop(grpId);
+            iCallback->HandleReturnId(error, grpId, iTransId);
+            CleanupStack::PopAndDestroy();  
+            //delete grpId;
+            delete this;	  
+	            }
+	        else
+	            {
+	            iContactService->RequestComplete(iTransId);
+	            iCallback->HandleReturnValue(EOpComplete, error, iTransId);
+	            delete this;
+	            }
+	        }
+	    else
+	        {
+	        if(iContact != NULL)
+	            {
+	        iContactService->RequestComplete(iTransId);
+            MVPbkContactLink* link = iContact->CreateLinkLC();
+            HBufC8* cntId = link->PackLC();
+            CleanupStack::Pop(cntId);
+            iCallback->HandleReturnId(error, cntId, iTransId);
+            CleanupStack::PopAndDestroy();
+      //      delete cntId;
+            delete this;
+	            }
+	        else
+                {
+                iContactService->RequestComplete(iTransId);
+                iCallback->HandleReturnValue(EOpComplete, error, iTransId);
+                delete this;
+                }
+	        }
+	    }
     	}
+	else
+	    {
+	    iContactService->RequestComplete(iTransId);
+	    iCallback->HandleReturnValue(EOpError, error, iTransId);
+	    delete this;
+	    }
     }
 
 /*

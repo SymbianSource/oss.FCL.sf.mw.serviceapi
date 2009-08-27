@@ -26,6 +26,7 @@
 #include <hal.h>
 #include <liwcommon.h>
 #include <LiwServiceHandler.h>
+#include <COEMAIN.H> 
 
 #include "tsysinfoprovidertests.h"
 #include "entitykeys.h"
@@ -37,7 +38,6 @@
 using namespace LIW ;
 using namespace SysInfo;
 using namespace sysinfoaiwparams;
-_LIT(KDisplayLanguage,"DisplayLanguage");
 
 _LIT(KROMInstallDir,"\\system\\install\\");
 _LIT(KS60ProductIdFile,"Series60v*.sis");
@@ -101,6 +101,7 @@ TInt Ctsysinfoprovidertests::RunMethodL(
         ENTRY( "GetActiveConnections",    Ctsysinfoprovidertests::GetActiveConnections),
         ENTRY( "BTAsyncRequestCancel",    Ctsysinfoprovidertests::BTAsyncRequestCancel),
         ENTRY( "GetActiveConnectionsReqCancel",    Ctsysinfoprovidertests::GetActiveConnectionsReqCancel),
+        ENTRY("GetCameraInfo",  Ctsysinfoprovidertests::GetCameraInfoTest), // During CJSE 2.0
 
 
         };
@@ -2597,129 +2598,137 @@ TInt  Ctsysinfoprovidertests::VibraStatus(CStifItemParser& /*aItem*/)
 // 
 // -----------------------------------------------------------------------------
 //	
-TInt  Ctsysinfoprovidertests::SetDisplayLang(CStifItemParser& /*aItem*/)
-	{
-	
-	TInt result =KErrNone;	
+TInt Ctsysinfoprovidertests::SetDisplayLang(CStifItemParser& /*aItem*/)
+    {
+    CCoeEnv* coeSupported = NULL;
+    coeSupported = CCoeEnv::Static();
+    if (coeSupported)
+        {
+        TInt result =KErrNone;
 
-	_LIT( KExample, "SupportedLang:" );
-    iLog->Log( KExample );
-    
-    TInt32 oldDisplayLang = 0 ,newDisplayLang = 0,changedDisplayLang = 0;
-   
-   	__UHEAP_MARK;
-   	
-	CLiwServiceHandler* iServiceHandler = CLiwServiceHandler::NewL();
-	CleanupStack::PushL(iServiceHandler);
-	CLiwGenericParamList* inparam = &(iServiceHandler->InParamListL());
-	CLiwGenericParamList* outparam = &(iServiceHandler->OutParamListL());
+        _LIT(KExample, "SupportedLang:");
+        iLog->Log(KExample);
 
-	TInt 	err = KErrNone; 
-	
-	CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
-	crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+        TInt32 oldDisplayLang = 0, newDisplayLang = 0, changedDisplayLang = 0;
 
-	RCriteriaArray a;
-	a.AppendL(crit);    
+        __UHEAP_MARK;
 
-	iServiceHandler->AttachL(a);
+        CLiwServiceHandler* iServiceHandler = CLiwServiceHandler::NewL();
+        CleanupStack::PushL(iServiceHandler);
+        CLiwGenericParamList* inparam = &(iServiceHandler->InParamListL());
+        CLiwGenericParamList* outparam = &(iServiceHandler->OutParamListL());
 
-	iServiceHandler->ExecuteServiceCmdL(*crit, *inparam, *outparam); 
+        TInt err = KErrNone;
 
-	delete crit;
-	a.Reset();
-	
-	TInt pos = 0;
-	MLiwInterface* interface = NULL;
-	outparam->FindFirst( pos, KIDataSource );
-	if(pos != KErrNotFound)
-		{
-		//getting the interface handle
-		interface = (*outparam)[pos].Value().AsInterface();	
-		}
+        CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,
+                KService);
+        crit->SetServiceClass(TUid::Uid(KLiwClassBase));
 
-	outparam->Reset();
-	inparam->Reset();
-	
-	if(interface)
-		{
-		TLiwGenericParam entity;
-		TLiwVariant  entityname;
-		TLiwGenericParam key;
-		TLiwVariant  keyname;
+        RCriteriaArray a;
+        a.AppendL(crit);
 
-		entityname.Set(KGeneral);
-		entity.SetNameAndValueL(KEntity,entityname);
+        iServiceHandler->AttachL(a);
 
-		keyname.Set(KDisplayLanguage);
-		key.SetNameAndValueL(KKey,keyname);
+        iServiceHandler->ExecuteServiceCmdL(*crit, *inparam, *outparam);
 
-		inparam->AppendL(entity);
+        delete crit;
+        a.Reset();
 
-		inparam->AppendL(key);
-		
-		entity.Reset();
-		entityname.Reset();
-		key.Reset();
-		keyname.Reset();
-		TInt32 err(KErrNone);
+        TInt pos = 0;
+        MLiwInterface* interface = NULL;
+        outparam->FindFirst(pos, KIDataSource);
+        if (pos != KErrNotFound)
+            {
+            //getting the interface handle
+            interface = (*outparam)[pos].Value().AsInterface();
+            }
 
-		//get current display language
-		interface->ExecuteCmdL(KGetInfo,*inparam,*outparam);
-		
-		result |= CheckErrorCode(*outparam,err);
-		iLog->Log( _L("GetInfo retured error : %d"),err );
-		
-		if( err != SErrNotFound )
-			{
-			iLog->Log( _L("Failed,Get Display language found ret err: %d"),err );
-			result = KErrGeneral;
-			}
-		else
-			{
-			result = KErrNone;
-			iLog->Log( _L("Passed Get Display language not found") );
-			}
-		
-		outparam->Reset();
-		CLiwDefaultMap* sysdatamap = CLiwDefaultMap::NewL();
-		CleanupClosePushL(*sysdatamap);
-		sysdatamap->InsertL(KStatus,(TInt32)10);
-		inparam->AppendL(TLiwGenericParam(KSysData,TLiwVariant(sysdatamap)));
-		CleanupStack::PopAndDestroy(sysdatamap);
+        outparam->Reset();
+        inparam->Reset();
 
-		
-		interface->ExecuteCmdL(KSetInfo,*inparam,*outparam);
+        if (interface)
+            {
+            TLiwGenericParam entity;
+            TLiwVariant entityname;
+            TLiwGenericParam key;
+            TLiwVariant keyname;
 
-		result |= CheckErrorCode(*outparam,err);
-		iLog->Log( _L("GetInfo retured error : %d"),err );
+            entityname.Set(KGeneral);
+            entity.SetNameAndValueL(KEntity, entityname);
 
-			
-		if( err != SErrNotFound )
-			{
-			iLog->Log( _L("Failed, Set Display language found ret err: %d"),err );
-			result = KErrGeneral;
-			}
-		else
-			{
-			result = KErrNone;
-			iLog->Log( _L("Passed, Set Display language not found") );
-			}
-		}
+            keyname.Set(KDisplayLanguage);
+            key.SetNameAndValueL(KKey, keyname);
 
-	inparam->Reset();
-	outparam->Reset();
-	
-	interface->Close();
-	
-	CleanupStack::PopAndDestroy( iServiceHandler );
+            inparam->AppendL(entity);
 
-	return result;	
-	__UHEAP_MARKEND;
+            inparam->AppendL(key);
 
+            entity.Reset();
+            entityname.Reset();
+            key.Reset();
+            keyname.Reset();
+            TInt32 err(KErrNone);
 
-	
-	}
+            //get current display language
+            interface->ExecuteCmdL(KGetInfo, *inparam, *outparam);
+
+            result |= CheckErrorCode(*outparam, err);
+            iLog->Log(_L("GetInfo retured error : %d"), err);
+
+            if (err != SErrNotFound)
+                {
+                iLog->Log(_L("Failed,Get Display language found ret err: %d"),err);
+                result = KErrGeneral;
+                }
+            else
+                {
+                result = KErrNone;
+                iLog->Log(_L("Passed Get Display language not found") );
+                }
+
+            outparam->Reset();
+            CLiwDefaultMap* sysdatamap = CLiwDefaultMap::NewL();
+            CleanupClosePushL(*sysdatamap);
+            sysdatamap->InsertL(KStatus, (TInt32)10);
+            inparam->AppendL(TLiwGenericParam(KSysData,
+                    TLiwVariant(sysdatamap)));
+            CleanupStack::PopAndDestroy(sysdatamap);
+
+            interface->ExecuteCmdL(KSetInfo, *inparam, *outparam);
+
+            result |= CheckErrorCode(*outparam, err);
+            iLog->Log(_L("GetInfo retured error : %d"), err);
+
+            if (err != SErrNotFound)
+                {
+                iLog->Log(_L("Failed, Set Display language found ret err: %d"),
+                        err);
+                result = KErrGeneral;
+                }
+            else
+                {
+                result = KErrNone;
+                iLog->Log(_L("Passed, Set Display language not found") );
+                }
+            }
+
+        inparam->Reset();
+        outparam->Reset();
+
+        interface->Close();
+
+        CleanupStack::PopAndDestroy(iServiceHandler);
+
+        return result;
+        __UHEAP_MARKEND;
+        }
+    else
+        {
+        iLog->Log(_L("CCoeEnv not supported . Hence passing the test case") );
+        return 0;
+        }
+
+    }
 	
 	
 // -----------------------------------------------------------------------------
@@ -3307,9 +3316,163 @@ TInt  Ctsysinfoprovidertests::GetActiveConnectionsReqCancel(CStifItemParser& /*a
 		else	
 			return KErrGeneral;
 		}
-				
 
-	
-	
-	
+// -----------------------------------------------------------------------------
+// Ctsysinfoprovidertests::GetCameraInfoTest
+// Positive Test
+// -----------------------------------------------------------------------------
+//
+TInt Ctsysinfoprovidertests::GetCameraInfoTest(CStifItemParser& aItem)
+    {
+    TInt retcode;
+    iLog->Log(_L("GetCameraInfoTest - Positive Test") );
+
+    __UHEAP_MARK;
+    TInt error = KErrNone;
+    CLiwServiceHandler* iServiceHandler = CLiwServiceHandler::NewL();
+    CleanupStack::PushL(iServiceHandler);
+    CLiwGenericParamList* inparam = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outparam = &(iServiceHandler->OutParamListL());
+
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource, KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+
+    RCriteriaArray a;
+    a.AppendL(crit);
+    iServiceHandler->AttachL(a);
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inparam, *outparam);
+    delete crit;
+    a.Reset();
+
+    TInt pos = 0;
+    MLiwInterface* interface = NULL;
+    outparam->FindFirst(pos, KIDataSource);
+    if (pos != KErrNotFound)
+        {
+        interface = (*outparam)[pos].Value().AsInterface();
+        }
+    outparam->Reset();
+    inparam->Reset();
+
+    if (interface)
+        {
+        TLiwGenericParam entity;
+        TLiwVariant entityValue;
+        TLiwGenericParam key;
+        TLiwVariant keyValue;
+        TPtrC16 Entity(KNullDesC);
+        TPtrC16 Key(KNullDesC);
+        TInt expectedError = 0;
+
+        aItem.GetNextString(Entity);
+        aItem.GetNextString(Key);
+        aItem.GetNextInt(expectedError);
+
+        entityValue.Set(Entity);
+        entity.SetNameAndValueL(KEntity, entityValue);
+        keyValue.Set(Key);
+        key.SetNameAndValueL(KKey, keyValue);
+
+        inparam->AppendL(entity);
+        inparam->AppendL(key);
+
+        entity.Reset();
+        entityValue.Reset();
+        key.Reset();
+        keyValue.Reset();
+
+        //Get Image Data
+        TRAP(error, interface->ExecuteCmdL(KGetInfo, *inparam, *outparam));
+
+        pos = 0;
+        const TLiwGenericParam* errorCode = outparam->FindFirst(pos,
+                KErrorCode);
+        if (errorCode)
+            {
+            retcode = errorCode->Value().AsTInt32();
+            if (retcode == expectedError)
+                {
+                iLog->Log(_L("Got expected error code %d"), retcode);
+                pos = 0;
+                const TLiwGenericParam* output = outparam->FindFirst(pos,
+                        KReturnValue);
+                if (output)
+                    {
+                    const CLiwMap* Map = output->Value().AsMap();
+                    if (Map)
+                        {
+                        TLiwVariant data1;
+                        TLiwVariant data2;
+                        if (EFalse != Map->FindL(KCamResList, data1))
+                            {
+                            const CLiwList* resolutionList = data1.AsList();
+                            TInt width;
+                            TInt height;
+                            if (resolutionList)
+                                {
+                                TInt count = resolutionList->Count();
+                                for (TInt i=0; i < count; i++)
+                                    {
+                                    TLiwVariant resolutionData;
+                                    resolutionList->AtL(i, resolutionData);
+                                    const CLiwMap* resolutionDataMap = resolutionData.AsMap();
+                                    TLiwVariant xPix;
+                                    resolutionDataMap->FindL(KXPixels, xPix);
+                                    width = xPix.AsTInt32();
+                                    xPix.Reset();
+                                    iLog->Log(_L("Supported XPixel %d is - %d "),i, width);
+
+                                    TLiwVariant yPix;
+                                    resolutionDataMap->FindL(KYPixels, yPix);
+                                    height = yPix.AsTInt32();
+                                    yPix.Reset();
+                                    iLog->Log(_L("Supported YPixel %d is - %d "),i, height);
+
+                                    resolutionData.Reset();
+                                    }//for
+                                } //resolutionList                            
+                            }//FindL
+                        if (EFalse != Map->FindL(KCamMimeTypesList, data2))
+                            {
+                            const CLiwList* mimeList = data2.AsList();
+                            if (mimeList)
+                                {
+                                for (TInt i=0; i != mimeList->Count(); i++)
+                                    {
+                                    TLiwVariant mimeData;
+                                    TPtrC16 mimeType;
+                                    mimeList->AtL(i, mimeData);
+                                    mimeType.Set(mimeData.AsDes());
+
+                                    iLog->Log(_L("Mimetype %d is - %s"), i,mimeType.Ptr());
+                                    mimeData.Reset();
+                                    }//for
+                                } //mimeList
+                            }//FindL
+                        data1.Reset();
+                        data2.Reset();
+                        }//Map                    
+                    }//output 
+                retcode = KErrNone;
+                iLog->Log(_L("Test Completed"));
+                iLog->Log(_L("PASS"));
+                }//retcode == expected error
+            else
+                {
+                iLog->Log(_L("Error Code Returned = %d"), retcode);
+                iLog->Log(_L("Error Code Expected = %d"), expectedError);
+                iLog->Log(_L("Test Completed"));
+                iLog->Log(_L("FAIL"));
+                }
+            }//errorCode
+        }//interface    
+    inparam->Reset();
+    outparam->Reset();
+    interface->Close();
+    CleanupStack::PopAndDestroy(iServiceHandler);
+    __UHEAP_MARKEND;
+    iLog->Log(_L("END"));
+    return retcode;
+    }
+
 //  End of File

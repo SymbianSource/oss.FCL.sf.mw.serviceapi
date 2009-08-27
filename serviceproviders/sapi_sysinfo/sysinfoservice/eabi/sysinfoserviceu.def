@@ -55,4 +55,9 @@ EXPORTS
 	_ZNK8CVersion12MajorVersionEv @ 54 NONAME
 	_ZNK8CVersion12MinorVersionEv @ 55 NONAME
 	_ZNK15CConnectionInfo15ConnectionStateEv @ 56 NONAME
+	_ZNK11CCameraInfo13MimeTypesListEv @ 57 NONAME
+	_ZNK11CCameraInfo14ResolutionListEv @ 58 NONAME
+	_ZNK21CCameraResolutionList2AtEiiRi @ 59 NONAME
+	_ZNK21CCameraResolutionList5CountEv @ 60 NONAME
+	_ZNK21CCameraResolutionListixEi @ 61 NONAME
 

@@ -84,6 +84,7 @@ TInt CTLocManualTest::RunMethodL(
 	
 TInt  CTLocManualTest ::GetLocationTimedOut(CStifItemParser& /*aItem*/)
 	{
+    __UHEAP_MARK ;
 	    // Print to UI
     _LIT( KTLocManualTest, "TLocTest" );
     _LIT( KGetLocationTimeout , "Time out test" );
@@ -96,7 +97,7 @@ TInt  CTLocManualTest ::GetLocationTimedOut(CStifItemParser& /*aItem*/)
     TPositionInfo position;
     TPositionUpdateOptions Updateopts ;
     
-    Updateopts.SetUpdateTimeOut(TTimeIntervalMicroSeconds(KUpdatetimeOut));
+    Updateopts.SetUpdateTimeOut(TTimeIntervalMicroSeconds(100000));
 
     
     CLocationService *CoreObj = CLocationService :: NewL();
@@ -108,11 +109,12 @@ TInt  CTLocManualTest ::GetLocationTimedOut(CStifItemParser& /*aItem*/)
     infostack.Append(identityInfo);
     CoreObj->SetRequestorIdentityL(infostack);*/
     
-    TInt Result =CoreObj->GetLocationL(&position , &Updateopts) ;
+    TRAPD( Result ,CoreObj->GetLocationL(&position , &Updateopts) );
     
     
 
     delete 	CoreObj ;
+    __UHEAP_MARKEND ;
     if(Result == KErrTimedOut)
     {
     	return KErrNone ;
@@ -130,6 +132,7 @@ TInt  CTLocManualTest ::GetLocationTimedOut(CStifItemParser& /*aItem*/)
 	
 TInt  CTLocManualTest ::ServiceNotAvailable(CStifItemParser& /*aItem*/)
 	{
+    __UHEAP_MARK ;
 	  CLocationService *CoreObj ;
 	  TInt result = 0 ;
 	  TPositionInfo pos ;
@@ -145,11 +148,11 @@ TInt  CTLocManualTest ::ServiceNotAvailable(CStifItemParser& /*aItem*/)
 	    												KRequestor) ;
 	    infostack.Append(identityInfo);
 	    CoreObj->SetRequestorIdentityL(infostack);*/
-	  	result = CoreObj->GetLocationL(&pos) ;    //Synchronous getlocation test 
+        TRAP(result , CoreObj->GetLocationL(&pos)) ;    //Synchronous getlocation test 
 	  	}
 	  
 	  delete CoreObj ;
-	  
+    __UHEAP_MARKEND ;
 	  if((result == KErrNotFound  ) || (result == KPositionQualityLoss))
 	  	{
 	  	_LIT(KLog , "positioning  technology not available") ;
@@ -165,13 +168,32 @@ class LocUpdateCallBack : public MLocationCallBack
  {
    TInt iCount ;
    TInt iRetStatus ;
+    TInt iRequestType;
+    TInt iTransactionId;
     public :
     	TInt HandleNotifyL(HPositionGenericInfo *posinfo , TInt aError) ;
     
-    	LocUpdateCallBack() :iCount(0) , iRetStatus(KErrGeneral)  //Default constructor 
-    	{
-    		;
-    	}
+        LocUpdateCallBack(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral)  //Default constructor 
+    	    {
+    	    iRequestType = req;
+
+    	    iTransactionId = transId;;
+    	    }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
   };
   
   
@@ -248,7 +270,7 @@ if(iCount > 2)
 	
 TInt ServiceFailedFunctionL()
 {
-		
+    __UHEAP_MARK ;
 		CActiveScheduler *Scheduler = new CActiveScheduler ;
 		CActiveScheduler :: Install(Scheduler) ;
 		CLocationService *CoreObj = CLocationService ::NewL() ;
@@ -260,10 +282,13 @@ TInt ServiceFailedFunctionL()
 	    infostack.Append(identityInfo);
 	    CoreObj->SetRequestorIdentityL(infostack);*/
 		
-		LocUpdateCallBack MyUpdates ;
+    LocUpdateCallBack MyUpdates(12,1) ;
     
     	CoreObj->TraceL(&MyUpdates,EBasicInfo) ;
     	CActiveScheduler :: Start() ; 
+    delete Scheduler;
+    delete CoreObj;
+    __UHEAP_MARKEND ;
     	return  0 ;
     	
     	

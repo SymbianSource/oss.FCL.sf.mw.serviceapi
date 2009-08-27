@@ -11,10 +11,9 @@
 *
 * Contributors:
 *
-* Description:   Defination of class CCalendarInterface
+* Description:  Defination of class CCalendarInterface
 *
 */
-
 
 
 #ifndef __CALENDARINTERFACE_H
@@ -117,6 +116,28 @@ class CCalendarInterface : public CBase, public MLiwInterface
 		static void SetImportOutputL( RPointerArray<TUIDSet>& aOutputUIDSet, 
 												CLiwGenericParamList& aOutParamList );
 
+        /**
+         * Set Getlist output to output parameter
+         * @param aOutputCalEntry getlist output
+         * @param aOutParamList Output parammeter
+         *
+         * @return void
+        */
+        void SetCalEntryOutputL( RPointerArray<CCalEntry>& aOutputCalEntry, 
+                                                CLiwGenericParamList& aOutParamList, 
+                                                const TDesC& aCalendarName );
+        /**
+         * Set Getlist output to output parameter
+         * @param aOutputCalEntry getlist output
+         * @param aOutParamList Output parammeter
+         *
+         * @return void
+        */
+        void SetCalInstanceOutputL( RPointerArray<CCalInstance>& aOutputCalEntry, 
+                                                CLiwGenericParamList& aOutParamList, 
+                                                const TDesC& aCalendarName );
+        
+		
 		/**
 	     * Set Change Notification output to output parameter
 	     * @param aOutputChangeSet Notifications list
@@ -328,8 +349,11 @@ class CCalendarInterface : public CBase, public MLiwInterface
 	     * @return void
 	    */
 		void GetListCalendarEntryL(const CLiwGenericParamList& aInParamList, 
-												CLiwGenericParamList& aOutParamList, 
-												const TBool aPosBased );
+												CLiwGenericParamList& aOutParamList,
+												TUint aCmdOptions,
+												MLiwNotifyCallback* aCallback ,
+												const TBool aPosBased,
+												TInt32& aTransactionId  );
 												
 		/**
 	     * Issues Import Calendar Entry request to Calendar Service
@@ -575,6 +599,15 @@ class CCalendarInterface : public CBase, public MLiwInterface
 	     * @return Entry type
 	    */
 		TInt GetEntryType( const TDesC& aCalendarName, TCalLocalUid aLocalUid );
+        /**
+         * Returns entry type for given LocalUid.
+         * @param aCalendarName CalendarName
+         * @param aLocalUid LocalUid
+         *
+         * @return Entry type
+        */
+        TInt GetEntryType( const TDesC& aCalendarName, const TDesC8& aGuid );
+		
 		
 		/**
 	     * Check if given calendar is in use.

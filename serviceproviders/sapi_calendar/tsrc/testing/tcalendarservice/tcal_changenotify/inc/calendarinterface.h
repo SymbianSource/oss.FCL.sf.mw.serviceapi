@@ -11,10 +11,9 @@
 *
 * Contributors:
 *
-* Description:   Defination of class CCalendarInterface
+* Description:  Defination of class CCalendarInterface
 *
 */
-
 
 
 #ifndef __CALENDARINTERFACE_H
@@ -31,8 +30,10 @@
 #include <calchangecallback.h>
 
 #include "calendarheader.h"
+#include "calendarconstants.h"
 
 class CCalendarService;
+class CIterableCalEntryList;
 class CEntryAttributes;
 class TUIDSet;
 
@@ -115,6 +116,28 @@ class CCalendarInterface : public CBase, public MLiwInterface
 		static void SetImportOutputL( RPointerArray<TUIDSet>& aOutputUIDSet, 
 												CLiwGenericParamList& aOutParamList );
 
+        /**
+         * Set Getlist output to output parameter
+         * @param aOutputCalEntry getlist output
+         * @param aOutParamList Output parammeter
+         *
+         * @return void
+        */
+        void SetCalEntryOutputL( RPointerArray<CCalEntry>& aOutputCalEntry, 
+                                                CLiwGenericParamList& aOutParamList, 
+                                                const TDesC& aCalendarName );
+        /**
+         * Set Getlist output to output parameter
+         * @param aOutputCalEntry getlist output
+         * @param aOutParamList Output parammeter
+         *
+         * @return void
+        */
+        void SetCalInstanceOutputL( RPointerArray<CCalInstance>& aOutputCalEntry, 
+                                                CLiwGenericParamList& aOutParamList, 
+                                                const TDesC& aCalendarName );
+        
+		
 		/**
 	     * Set Change Notification output to output parameter
 	     * @param aOutputChangeSet Notifications list
@@ -241,6 +264,15 @@ class CCalendarInterface : public CBase, public MLiwInterface
 	    */
 		static TPtrC GetMethodL( const CCalEntry::TMethod aMethod );
 
+		/**
+	     * Removes the reference of CIterableCalEntryList from the table maintained 
+	     * by interface
+	     * @param aCalEntryList Element that need to be removed from the table
+		 *
+	     * @return void
+	    */
+		void RemoveCalEntryListFromArray( CIterableCalEntryList* aCalEntryList );
+
 
 	private:
 	
@@ -317,8 +349,11 @@ class CCalendarInterface : public CBase, public MLiwInterface
 	     * @return void
 	    */
 		void GetListCalendarEntryL(const CLiwGenericParamList& aInParamList, 
-												CLiwGenericParamList& aOutParamList, 
-												const TBool aPosBased );
+												CLiwGenericParamList& aOutParamList,
+												TUint aCmdOptions,
+												MLiwNotifyCallback* aCallback ,
+												const TBool aPosBased,
+												TInt32& aTransactionId  );
 												
 		/**
 	     * Issues Import Calendar Entry request to Calendar Service
@@ -388,7 +423,7 @@ class CCalendarInterface : public CBase, public MLiwInterface
 		 *
 	     * @return void
 	    */
-		void GetGlobalUid( const TDesC& aGlobalUid, TDes8& aOutGlobalUid );
+		void GetGlobalUid( const TDesC& aGlobalUid, TPtr8 aOutGlobalUid );
 
 		/**
 	     * Extracts ContentType from the input param list
@@ -407,44 +442,82 @@ class CCalendarInterface : public CBase, public MLiwInterface
 		 *
 	     * @return void
 	    */
-		TInt GetTransactionId( const CLiwGenericParamList& aInParamList, 
+		void GetTransactionIdL( const CLiwGenericParamList& aInParamList, 
 												TInt32& aTransactionId );
 
 		/**
 	     * Extracts CalendarName from the input param list
 	     * @param aInParamList Input param list
+	     * @param aCmdName Command Name
+	     * @param aField ParameterName to read
 	     * @param aPosBased ETrue for position pased parameters
 	     * @param aCalendarName Output param for Calendar Name
 		 *
 	     * @return void
 	    */
-	    void GetCalendarNameL( const CLiwGenericParamList& aInParamList, 
+	    void GetCalendarNameL( const CLiwGenericParamList& aInParamList,
+	    										const TDesC8& aCmdName,  
+	    										const TDesC8& aField, 
 	    										TBool aPosBased, 
-	    										TDes& aCalendarName );
+	    										HBufC*& aCalendarName );
+
+		/**
+	     * Extracts Descriptor Field from Map in input param list
+	     * @param aInParamList Input param list
+	     * @param aCmdName Command Name
+	     * @param aMapName Map name in input param list
+	     * @param aFieldName Filed name to read from map
+	     * @param aPosBased ETrue for position pased parameters
+	     * @param aOutputField Output param for Field value
+		 *
+	     * @return void
+	    */
+		void CCalendarInterface::GetDesCFieldFromMapL( const CLiwGenericParamList& aInParamList, 
+														const TDesC8& aCmdName, 
+														const TDesC8& aMapName, 
+														const TDesC8& aFieldName, 
+														TBool aPosBased, 
+														HBufC*& aOutputField );
+
+		/**
+	     * Extracts 8-bit Descriptor Field from Map in input param list
+	     * @param aInParamList Input param list
+	     * @param aCmdName Command Name
+	     * @param aMapName Map name in input param list
+	     * @param aFieldName Filed name to read from map
+	     * @param aPosBased ETrue for position pased parameters
+	     * @param aOutputField Output param for Field value
+		 *
+	     * @return void
+	    */
+		void CCalendarInterface::GetDesC8FieldFromMapL( const CLiwGenericParamList& aInParamList, 
+														const TDesC8& aCmdName, 
+														const TDesC8& aMapName, 
+														const TDesC8& aFieldName, 
+														TBool aPosBased, 
+														HBufC8*& aOutputField );
 
 		/**
 	     * Extracts Entry attributes for Add/Update request
 	     * @param aInParamList Input param list
+	     * @param aCalendarName CalendarName
 	     * @param aPosBased ETrue for position pased parameters
-	     * @param aCalendar Output param for Calendar Name
 		 *
 	     * @return CEntryAttributes* EntryAttributes object
 	    */
 		CEntryAttributes* GetAddParametersL( const CLiwGenericParamList& aInParamList, 
-												TBool aPosBased, 
-												TDes& aCalendar );
+												const TDesC& aCalendarName,
+												TBool aPosBased);
 		
 		/**
 	     * Extracts Filter for Delete request
 	     * @param aInParamList Input param list
-	     * @param aCalendarName Output param for Calendar Name
 	     * @param aFilter Output param for Filter
 	     * @param aPosBased ETrue for position pased parameters
 		 *
 	     * @return void
 	    */
 		void GetDeleteEntryFilterL(const CLiwGenericParamList& aInParamList, 
-												TDes& aCalendarName,
 												CCalendarFilter& aFilter, 
 												const TBool aPosBased );
 
@@ -471,38 +544,98 @@ class CCalendarInterface : public CBase, public MLiwInterface
 	     * @param aInParamList Input param list
 	     * @param aPosBased ETrue for position pased parameters
 	     * @param aCalExportParams Output param for Export parameters
-	     * @param aCalendarFormat Output param for Calendar Format to be used (ICal/VCal)
-	     * @param aCalendarName Output param for Calendar Name
 		 *
 	     * @return void
 	    */
 		void GetExportInputL( const CLiwGenericParamList& aInParamList, 
 												TBool                  aPosBased, 
-												CCalendarExportParams& aCalExportParams,
-												TDes8&                 aCalendarFormat, 
-												TDes&                  aCalendarName );							  
+												CCalendarExportParams& aCalExportParams);							  
 	
 		/**
 	     * Extracts Inputs for Change Notification request
 	     * @param aInParamList Input param list
-	     * @param aCalendarName Output param for Calendar Name
 	     * @param aFileter Output param for Change Notification filter
 	     * @param aPosBased ETrue for position pased parameters
 		 *
 	     * @return void
 	    */
-		void GetNotificationFilterL(const CLiwGenericParamList& aInParamList, 
-												TDes& aCalendarName,
+		void GetNotificationFilterL( const CLiwGenericParamList& aInParamList, 
 												CCalendarFilter& aFilter, 
 												const TBool aPosBased );
 												
+		/**
+	     * Appends error message
+	     * @param aCmdName Command Name
+	     * @param aParameter Parameter Name
+	     * @param aMessage Error message
+		 *
+	     * @return void
+	    */
+		void AppendErrorMessageL( const TDesC8& aCmdName, 
+												const TDesC8& aParameter, 
+												const TDesC& aMessage );
 												
+		/**
+	     * Checks for the valid data type of Parameter.
+	     * @param aParam Input parameter
+	     * @param aExpectedtype Expected type for input parameter
+	     * @param aCmdName Command Name
+	     * @param aParameter Parameter Name
+	     * @param aErrorMessage Error message in case of type mismatch
+		 *
+	     * @return void
+	    */
+		void ValidateParamTypeL( TLiwVariant& aParam, 
+												LIW::TVariantTypeId aExpectedtype, 
+												const TDesC8& aCmdName, 
+												const TDesC8& aParameter,
+												const TDesC& aMessage );
+
+		/**
+	     * Returns entry type for given LocalUid.
+	     * @param aCalendarName CalendarName
+	     * @param aLocalUid LocalUid
+		 *
+	     * @return Entry type
+	    */
+		TInt GetEntryType( const TDesC& aCalendarName, TCalLocalUid aLocalUid );
+        /**
+         * Returns entry type for given LocalUid.
+         * @param aCalendarName CalendarName
+         * @param aLocalUid LocalUid
+         *
+         * @return Entry type
+        */
+        TInt GetEntryType( const TDesC& aCalendarName, const TDesC8& aGuid );
+		
+		
+		/**
+	     * Check if given calendar is in use.
+	     * @param aCalendarName CalendarName
+		 *
+	     * @return True if given calendar is in use
+	    */
+		TBool CCalendarInterface::CheckCalendarInUse( const TDesC& aCalendarName );
+		
 	private:
 
 	  	/**
 	     * CCalendarService class pointer
+	     * @internal
 	    */		
 		CCalendarService* iCalService;
+
+	  	/**
+	     * Error Message object
+	     * @internal
+	    */		
+		HBufC* iErrorMessage;
+
+	  	/**
+	     * Array containing the list of CalEntryList.
+	     * @internal
+	    */		
+		RPointerArray<CIterableCalEntryList> iArrayCalEntryList;
 
 	};
 

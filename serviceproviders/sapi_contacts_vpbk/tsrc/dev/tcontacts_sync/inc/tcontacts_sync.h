@@ -132,6 +132,10 @@ NONSHARABLE_CLASS(CContactsUT) : public CScriptBase,
          */
         virtual void HandleReturnIter( const TInt& aError, CContactIter* aIter, TInt aTransId );
         
+        virtual void HandleReturnId( const TInt& aError, HBufC8* acntId, TInt aTransId );
+        
+        virtual void HandleReturnArray(const TInt& aError, RPointerArray<HBufC8>& aArray, TInt aTransId );
+        
         /*
          * Called when creating a new contact or retrieving a contact is successful
          */

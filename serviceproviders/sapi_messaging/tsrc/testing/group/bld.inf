@@ -28,6 +28,7 @@
 #include "../tmessagingtest/get_header_message/group/bld.inf"
 #include "../tmessagingtest/register_message/group/bld.inf"
 #include "../tmessagingtest/send_message/group/bld.inf"
+#include "../tmessagingtest/get_message_async/group/bld.inf"
 
 
 PRJ_PLATFORMS

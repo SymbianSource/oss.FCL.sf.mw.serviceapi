@@ -50,8 +50,9 @@ private:
 	void HandleReturnValue(TOperationEvent aEvent, const TInt& aError , TInt aTransId);
 	
 	void HandleReturnIter( const TInt& aError, CContactIter* aIter, TInt aTransId );
+	void HandleReturnId( const TInt& aError, HBufC8* acntId, TInt aTransId );
 	
-	
+	void HandleReturnArray(const TInt& aError, RPointerArray<HBufC8>& aArray, TInt aTransId );
 private:	
 	CActiveSchedulerWait* 	iWaitSchedular;
 	CContactService*		iContactService;
@@ -181,7 +182,15 @@ void CTestAsync::HandleReturnIter( const TInt& aError, CContactIter* aIter, TInt
 		
 		}
 	}
+void CTestAsync::HandleReturnId( const TInt& aError, HBufC8* acntId, TInt aTransId )
+    {
+    CActiveScheduler::Stop();
+    }
 
+void CTestAsync::HandleReturnArray(const TInt& aError, RPointerArray<HBufC8>& aArray, TInt aTransId )
+    {
+    CActiveScheduler::Stop();
+    }
 	
 TInt CTestAsync::Result()
 	{

@@ -32,6 +32,8 @@ extern int getheader_test2(int, char**);
 extern int getheader_test3(int, char**);
 extern int getheadermms_test1(int, char**);
 extern int getheadermms_test2(int, char**);
+extern int getheadersmsasync_test4(int, char**);
+extern int getheadermmsasync_test3(int, char**);
 
 
 //extern int accum2_test(int, char**);
@@ -156,7 +158,8 @@ NONSHARABLE_CLASS(Csapi_getheader) : public CScriptBase
         virtual TInt getheader_test3L( CStifItemParser& aItem );
        virtual TInt getheadermms_test1L( CStifItemParser& aItem );
        virtual TInt getheadermms_test2L( CStifItemParser& aItem );       
-   
+       virtual TInt getheadersmsasync_test4L( CStifItemParser& aItem );
+       virtual TInt getheadermmsasync_test3L( CStifItemParser& aItem );
        
     public:     // Data
         // ?one_line_short_description_of_data

@@ -34,7 +34,7 @@
 
 #include "tcalendargetlisttest.h"
 #include "teststartconsolealarmserver.h"
-
+#include "calgetlisttestcases.h"
 
 
 // ============================ MEMBER FUNCTIONS ===============================
@@ -76,6 +76,15 @@ TInt CTCalendarGetListTest::RunMethodL(
 		ENTRY( "GetListInvalidCalName", CTCalendarGetListTest::GetListInvalidCalName ),
 		ENTRY( "GetListInvalidGUID"   , CTCalendarGetListTest::GetListInvalidGUID ),
 		ENTRY( "GetListInvalidLUID"   , CTCalendarGetListTest::GetListInvalidLUID ),
+		
+		ENTRY( "GetListTimeRangeFilterAsync",       CTCalendarGetListTest::GetListTimeRangeFilterAsync ),
+		ENTRY( "GetListGuidFilterAsync",       CTCalendarGetListTest::GetListGuidFilterAsync ),
+		ENTRY( "GetListLuidFilterAsync",       CTCalendarGetListTest::GetListLuidFilterAsync ),
+		ENTRY( "GetListTextFilterAsync",       CTCalendarGetListTest::GetListTextFilterAsync ),
+		ENTRY( "GetListTypeFilterAsync",       CTCalendarGetListTest::GetListTypeFilterAsync ),
+        ENTRY( "GetListInvalidGuidFilterAsync",       CTCalendarGetListTest::GetListInvalidGuidFilterAsync ),
+	    ENTRY( "GetListInvalidLuidFilterAsync",       CTCalendarGetListTest::GetListInvalidLuidFilterAsync ),
+
         };
 
     const TInt count = sizeof( KFunctions ) / 
@@ -702,4 +711,128 @@ EIncludeRptsNextInstanceOnly Include next only instance of a repeat entry.
 EIncludeAll Include all entries (appointments, day events, anniversaries and todos).
 */
     
+//  
+//Whats done here? 
+//  Get the default system Calendar using GetList of CCalendarService and output that to GetListdefaultCalendar.txt
+//    
+TInt CTCalendarGetListTest::GetListTimeRangeFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
 
+    CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistTmRgFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+
+TInt CTCalendarGetListTest::GetListGuidFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+   CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistGuidFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+  //  delete calGetlistTest;
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+TInt CTCalendarGetListTest::GetListLuidFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+    CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistLuidFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+TInt CTCalendarGetListTest::GetListTextFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+    CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistTextFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+TInt CTCalendarGetListTest::GetListTypeFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+    CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistTypeFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+TInt CTCalendarGetListTest::GetListInvalidGuidFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+    CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistInvalidGuidFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+TInt CTCalendarGetListTest::GetListInvalidLuidFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+    CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistInvalidLuidFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 

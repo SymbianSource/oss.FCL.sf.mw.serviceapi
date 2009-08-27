@@ -26,7 +26,9 @@
 class MCLFItemListModel;
 class MMgOperationObserver;
 class CMgService;
-
+class CAsynchRequestManager;
+class CPostFilter;
+class MCLFSortingStyle;
 
 // CLASS DECLARATION
 
@@ -85,7 +87,8 @@ NONSHARABLE_CLASS( CClfOperationObserver ) : public CBase, public MCLFOperationO
         void SetMemberVar(TUint  aTransactionID,
                           MMgOperationObserver* aServiceObserver,
         				  MCLFItemListModel* aListModel,
-        				  CMgService* aMGService);
+        				  CMgService* aMGService,CAsynchRequestManager* aAsyncReqManager,
+        				  CPostFilter* aFilter,MCLFSortingStyle* aSortingStyle);
 
         /**
         * Cancel the pending asynchronous request
@@ -118,6 +121,23 @@ NONSHARABLE_CLASS( CClfOperationObserver ) : public CBase, public MCLFOperationO
      	* stores the TransactionID
      	*/
     	TUint  iTransactionID;
+    	
+    	/**
+    	* stores AsyncRequestManager instance 
+    	 */
+    	CAsynchRequestManager* iAsyncRequestManager;
+    	
+        /**
+         * store the instance of CPostfilter which filters the result
+         * as per the set filter criteria
+         */
+         CPostFilter* iFilter;
+
+         /**
+         * store the instance of sorting style which sorts the result
+         * as per the set sort criteria
+         */
+         MCLFSortingStyle* iSortingStyle;
 	};
 
 #endif __MGCLFOPERATIONOBSERVER_H

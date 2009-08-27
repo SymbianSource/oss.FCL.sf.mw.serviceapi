@@ -106,6 +106,28 @@ class CCalendarService : public CBase
 		*/ 
 		IMPORT_C void GetListL( const TDesC& aCalendarName, CCalendarFilter* aFilter, RPointerArray<CCalInstance>& aEntryList);
 
+        /**
+         * Returns list of calendar instance from given calendar with the given Filter.
+         * @param aCalendarName Calendar Name
+         * @param aFilter Filter, Ownership is passed
+         * @param aCallBack   For ASyncronous usage of this Object this paramater is mandatory to be set  
+        */ 
+        IMPORT_C void GetListL( const TDesC& aCalendarName, CCalendarFilter* aFilter,  MCalCallbackBase* aCallBack);
+        /**
+         * Returns list of calendar entries from given calendar with the given Global UID.
+         * @param aCalendarName Calendar Name
+         * @param aGuid Global UID
+         * @param aCallBack   For ASyncronous usage of this Object this paramater is mandatory to be set
+        */ 
+        IMPORT_C void GetListL( const TDesC& aCalendarName, const TDesC8& aGuid,  MCalCallbackBase* aCallBack);
+        /**
+         * Returns list of calendar entries from given calendar with the given Global UID.
+         * @param aCalendarName Calendar Name
+         * @param aGuid Global UID
+         * @param aCallBack   For ASyncronous usage of this Object this paramater is mandatory to be set
+        */ 
+        IMPORT_C void GetListL( const TDesC& aCalendarName, const TCalLocalUid aLocalUid,  MCalCallbackBase* aCallBack);
+
 		/**
 		 * Add new calendar in device.
 		 * @param aCalendarName Calendar Name

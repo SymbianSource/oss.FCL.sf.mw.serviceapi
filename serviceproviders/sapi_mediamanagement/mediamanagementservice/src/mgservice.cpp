@@ -29,6 +29,7 @@
 #include "mgoperationobserver.h"
 #include "mgclfoperationobserver.h"
 #include "mgconsts.h"
+#include"asynchrequestmanager.h"
 
 // Inclusion for thumbnail generation
 
@@ -41,7 +42,8 @@ _LIT8( KMgSound        ,"Sound" );
 _LIT8( KMgImage        ,"Image" );
 _LIT8( KMgVideo        ,"Video" );
 _LIT8( KMgStreamingURL ,"StreamingURL" );
-
+_LIT8(KAudio,"Audio");
+_LIT8(KAll,"All");
 
 //SortingOrder
 _LIT8( KMgDescending,   "Descending" );
@@ -70,7 +72,7 @@ CMgService::~CMgService()
 	{
     
         //release filter class
-    if(iFilter)
+   /* if(iFilter)
         {
         delete iFilter;
         }
@@ -80,13 +82,13 @@ CMgService::~CMgService()
         {
         delete iSortingStyle;
         }
-    
+    */
         // release clf observer class
-    if(iClfObserver)
+ /*   if(iClfObserver)
         {
         delete iClfObserver;
         }
-        
+   */     
         //release iEngine;
     if(iEngine)
         {
@@ -97,6 +99,12 @@ CMgService::~CMgService()
     if(iTumbnailGeneration)
         {
         delete iTumbnailGeneration;
+        }
+    
+    // deleting the instance of iAsyncRequestManager
+    if(iAsyncRequestManager)
+        {
+        delete iAsyncRequestManager;
         }
 
 	}
@@ -117,19 +125,33 @@ EXPORT_C void CMgService::GetListL(const TMgServiceRequest& aInParameters,
 	//This has already been verified by SAPI interface class ,still this condition
 	//is checked keeping in mind that this class may be called directly by a
 	//Series60 application in future
-	if( EMgFree == iState )
-		{
-
-
-
 		if( NULL != aServiceObserver )//Asynchronous request
 			{
+			 
+		     //create the instance of clf observer
+			CClfOperationObserver* clfObserver = CClfOperationObserver::NewL();
+			CleanupStack::PushL(clfObserver);
+					
 			// create the instance of CLF list Model for the current request
    	 	    MCLFItemListModel* listModel = iEngine->
-   	 	                                   CreateListModelLC( *iClfObserver );
+   	 	                                   CreateListModelLC( *clfObserver );
+//            CleanupStack::Pop();
+  //          CleanupStack::PushL(listModel);
+   	 	    // adding observer to asynrequestmanager 
+   	 	
+   	 	//iAsyncRequestManager->AddObserverL(clfObserver,aInParameters.iTransactionID);
 
+   	 	     
+   	    // We need to make post filter and sorting style each for each call
+   	    
+   	    // create the instance of CPostFilter and store it in member data
+   	 	CPostFilter* filter = CPostFilter::NewL();
+   	 	CleanupStack::PushL(filter);
 
-			
+   	    // Get the sorting style from CLF
+        MCLFSortingStyle* sortingStyle = ContentListingFactory::NewSortingStyleLC();
+   	   
+
 
 		    SendRequestToClfL( aInParameters.iFileType,
 		    				   aInParameters.iFilterField,
@@ -137,31 +159,29 @@ EXPORT_C void CMgService::GetListL(const TMgServiceRequest& aInParameters,
 		    				   aInParameters.iEndVal,
 		    				   aInParameters.iSortField,
 		    				   aInParameters.iOrder,
-		    				   listModel );
+		    				   listModel,filter,sortingStyle );
 		    				   
-		    CleanupStack::Pop();
-		    
-		    iTransactionID = aInParameters.iTransactionID;
-		    iClfObserver->SetMemberVar( aInParameters.iTransactionID,
-		                                aServiceObserver,
-										listModel,
-										this );
-		    
+		    CleanupStack::Pop();//sortingStyle
+		    CleanupStack::Pop(filter);
+		    CleanupStack::Pop(); //listModel
+		    CleanupStack::Pop(clfObserver); //clfObserver
 
+		    iAsyncRequestManager->AddObserverL(clfObserver,aInParameters.iTransactionID);
+		    
+		    // Adding aServiceObserver, listmodel instance , filter and sorting instance to observer
+		    clfObserver->SetMemberVar( aInParameters.iTransactionID,
+		                                            aServiceObserver,
+		                                            listModel,
+		                                            this ,iAsyncRequestManager,
+		                                            filter,sortingStyle );
+		                
 	 
 			}
 		else
 			{
 			//Synchronous request handling is currently not supported
 			User::Leave( KErrNotSupported );
-			}
-
-		}//SAPI State
-	else
-	    {
-        User::Leave( KErrServerBusy ); // busy in previous request
-	    }
-
+		}
 	}
 
 
@@ -176,8 +196,9 @@ EXPORT_C TInt CMgService::CancelL( TUint aTransactionID)
 		// but in future we have to find the iClfObserver
 		// coresponding to this Transaction ID and Call cancel
 		// on that observer
-	if( EMgBusy == iState )
+/*	if( EMgBusy == iState )
 		{
+		// Need to change the implementation of cancel here  LOK
 		if( aTransactionID == iTransactionID )
 		    {
 		    iClfObserver->CancelL( );
@@ -185,17 +206,30 @@ EXPORT_C TInt CMgService::CancelL( TUint aTransactionID)
 		    return KErrNone;
 	    	}
 		}
-
+*/
+	TInt ret = KErrNone;
+	
+	ret = iAsyncRequestManager->Cancel(aTransactionID); 
+	
+	if(KErrNotFound == ret )
+	    {
+	    // Cancel request if for thumbnail 
+	    ret = CancelThumbnailReq(aTransactionID);
+	    
+	    }
+	
+	return ret ;
 // Calling cancel of thumbnail
 	
-	if(aTransactionID != iTransactionID)
+	/*if(aTransactionID != iTransactionID) // Need to check this condion LOK
 	    {
 	    return CancelThumbnailReq(aTransactionID);
 	    }
 	
- 		return KErrArgument;
+ 		return KErrArgument;*/
      
 	}
+
 // -----------------------------------------------------------------------------
 // CMgService::CancelThumbnailReq
 // Cancel the pending asynchronous request for thumbnail generation
@@ -212,7 +246,7 @@ TInt  CMgService::CancelThumbnailReq( TUint aTransactionID )
 
 void CMgService::Clear()
 	{
-       	iFilter->Clear();
+       	//iFilter->Clear();
 		iState = EMgFree;
 		iTransactionID = 0;
 	}
@@ -244,7 +278,8 @@ EXPORT_C const TMgState& CMgService::State() const
 void CMgService::SetSortingFieldL(const TDesC8& aSortField ,
 								  const TDesC8&  aOrder ,
 								  const RArray<TInt>& aMediaTypes,
-								  MCLFItemListModel* alistModel )
+								  MCLFItemListModel* alistModel,
+								  MCLFSortingStyle* aSortingStyle )
 	{
 
 	// Default sorting as per file name
@@ -269,22 +304,22 @@ void CMgService::SetSortingFieldL(const TDesC8& aSortField ,
 	 		}
     	}
 
-	iSortingStyle->ResetL();
+	aSortingStyle->ResetL();
 
 
  	//Set the field on which sorting has to perform
-	iSortingStyle->AddFieldL( metaDataId );
+	aSortingStyle->AddFieldL( metaDataId );
 
 	// Set the sorting field data type
-	iSortingStyle->SetSortingDataType( metaDataType );
+	aSortingStyle->SetSortingDataType( metaDataType );
 
 	if( 0 == aOrder.CompareF( KMgDescending ) )
 		{
-		iSortingStyle->SetOrdering( ECLFOrderingDescending  );
+		aSortingStyle->SetOrdering( ECLFOrderingDescending  );
 		}
 	else if( 0 == aOrder.CompareF( KMgAscending) )
 		{
-		iSortingStyle->SetOrdering( ECLFOrderingAscending );
+		aSortingStyle->SetOrdering( ECLFOrderingAscending );
 		}
 	else
 		{
@@ -292,10 +327,10 @@ void CMgService::SetSortingFieldL(const TDesC8& aSortField ,
 		}
 
 	//Items with undefined fields are placed after items with defined fields
-	iSortingStyle->SetUndefinedItemPosition( ECLFSortingStyleUndefinedEnd );
+	aSortingStyle->SetUndefinedItemPosition( ECLFSortingStyleUndefinedEnd );
 
 	// set sorting style in CLF.
-	alistModel->SetSortingStyle( iSortingStyle );
+	alistModel->SetSortingStyle( aSortingStyle );
 
 
 	}
@@ -309,7 +344,8 @@ void CMgService::SetFilterMetaDataL( const TDesC8& aFilterField,
 									 const TDesC& aStartVal,
 									 const TDesC& aEndVal,
 									 const RArray<TInt>& aMediaTypes, 
-									 MCLFItemListModel* alistModel )
+									 MCLFItemListModel* alistModel,
+									 CPostFilter* aFilter)
 	{
 	TCLFDefaultFieldId metaDataId;
     TCLFItemDataType  metaDataType;
@@ -322,7 +358,7 @@ void CMgService::SetFilterMetaDataL( const TDesC8& aFilterField,
     	{
        	metaDataId = ECLFFieldIdNull;
        	metaDataType = ECLFItemDataTypeDesC;	// Blank Descriptor
-        iFilter->SetFilterMetaData( metaDataId, metaDataType );
+        aFilter->SetFilterMetaData( metaDataId, metaDataType );
    		}
     else
     	{
@@ -338,13 +374,13 @@ void CMgService::SetFilterMetaDataL( const TDesC8& aFilterField,
 	 		}
 
 
-	 	iFilter->SetFilterMetaData( metaDataId, metaDataType );
+	 	aFilter->SetFilterMetaData( metaDataId, metaDataType );
 
        	// set filter value of CLF
-	    iFilter->SetFilterValueL( aStartVal,aEndVal );
+	    aFilter->SetFilterValueL( aStartVal,aEndVal );
 
 		// Set Post Filter in CLF
-	    alistModel->SetPostFilter( iFilter );
+	    alistModel->SetPostFilter( aFilter );
 
 	 	}
 
@@ -363,18 +399,11 @@ void CMgService::ConstructL()
     CleanupStack::Pop();
 
 
-    // create the instance of CPostFilter and store it in member data
-    iFilter = CPostFilter::NewL();
-
-    // Get the sorting style from CLF
-	iSortingStyle = ContentListingFactory::NewSortingStyleLC();
- 	CleanupStack::Pop();
-
- 	//create the instance of clf observer
- 	iClfObserver = CClfOperationObserver::NewL();
- 	
- 	// creates instance for async requestmanager for thumbnail
+ 	// creates instance for thumbnailgeneration calss
  	iTumbnailGeneration = CThumbnailGeneration::NewL();
+ 	
+ 	//creates the instance of async request manager  for getlist
+ 	iAsyncRequestManager = CAsynchRequestManager::NewL();
  	
 	}
 
@@ -388,15 +417,12 @@ void CMgService::ConstructL()
 CMgService::CMgService()
           : iState( EMgFree ),
             iEngine( NULL ),
-			iFilter( NULL ),
-			iSortingStyle( NULL ),
-			iClfObserver( NULL ),
-			iTransactionID( 0 ),
-			iTumbnailGeneration(NULL)
-	{
+            iTransactionID( 0 ),
+            iTumbnailGeneration(NULL),
+            iAsyncRequestManager(NULL)
+    {
 
-	}
-
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -408,8 +434,15 @@ CMgService::CMgService()
 void CMgService::SetMediaTypeL (const TDesC8& aFileType,
 								RArray<TInt>& aMediaType)
 	{
-
-	if( 0 == aFileType.CompareF( KMgMusic ) )
+	if(0 == aFileType.CompareF( KAll ))
+	    {
+	    aMediaType.AppendL( ECLFMediaTypeMusic );
+	    aMediaType.AppendL( ECLFMediaTypeSound );
+	    aMediaType.AppendL( ECLFMediaTypeImage );
+	    aMediaType.AppendL( ECLFMediaTypeVideo );
+	    //aMediaType.AppendL( ECLFMediaTypeStreamingURL ); Not supported by MDS till now
+	    }
+	else if( 0 == aFileType.CompareF( KMgMusic ) )
  		{
  	 	aMediaType.AppendL( ECLFMediaTypeMusic );
  	 	}
@@ -432,6 +465,11 @@ void CMgService::SetMediaTypeL (const TDesC8& aFileType,
  	 	{
  	 	aMediaType.AppendL( ECLFMediaTypeStreamingURL );
  	 	}
+ 	else if(0 == aFileType.CompareF( KAudio ))
+ 	    {
+ 	    aMediaType.AppendL( ECLFMediaTypeMusic );
+ 	    aMediaType.AppendL( ECLFMediaTypeSound );
+ 	    }
  	else
  	 	{
  	 	User::Leave ( KErrArgument ); // Media Type Not suuported
@@ -458,7 +496,9 @@ void CMgService::SendRequestToClfL( const TDesC8& aFileType,
                 				    const TDesC&  aEndVal,
                 				    const TDesC8& aSortField,
                 				    const TDesC8&  aOrder,
-                				    MCLFItemListModel* alistModel )
+                				    MCLFItemListModel* alistModel ,
+                				    CPostFilter* aFilter,
+                				    MCLFSortingStyle* aSortingStyle)
     {
 
 
@@ -475,12 +515,12 @@ void CMgService::SendRequestToClfL( const TDesC8& aFileType,
 
 
 	// Set Filter Meta Data  and Value
-    SetFilterMetaDataL( aFilterField,aStartVal,aEndVal,mediaTypes,alistModel);
+    SetFilterMetaDataL( aFilterField,aStartVal,aEndVal,mediaTypes,alistModel,aFilter);
     
 
 
     // call set sorting field of CLF
-    SetSortingFieldL( aSortField,aOrder,mediaTypes,alistModel );
+    SetSortingFieldL( aSortField,aOrder,mediaTypes,alistModel ,aSortingStyle);
    
  	// set the state = Busy
  	// till this request is complete

@@ -71,7 +71,11 @@ class CSingleContactField:public CBase
 		IMPORT_C void SetFieldParamsL(const TDesC8& Fieldkey,
 		                              const TDesC& aLabel,
 		                              const TDesC& aValue);
-	    
+		IMPORT_C void SetUriFieldParamsL(const TDesC8& aFieldKey,
+		                              const TDesC& aLabel,
+		                              const RPointerArray<HBufC> aValue);
+		    
+		IMPORT_C void GetUriFieldParamL(RPointerArray<HBufC>& axspidArray);
 	    /**
          * Sets the Label and the id arrray  of the group.                  
          * @param aGroupLabel A reference that holds the Label.
@@ -80,6 +84,11 @@ class CSingleContactField:public CBase
          */
 	    void SetFieldParamsL(const TPtrC& aGroupLabel,
 	                         RPointerArray<HBufC8>& aArray);
+	    IMPORT_C void SetXspidDataL(const TDesC8& aFieldKey,
+                const TDesC& aLabel,
+                RPointerArray<HBufC>& axspidArray);
+	    
+	    IMPORT_C void GetXspidDataL(RPointerArray<HBufC>& axspidArray);
 	    
 	    /**
 	     * Get Method for time.
@@ -94,6 +103,7 @@ class CSingleContactField:public CBase
 	     * @return None.
 	     */
 	    IMPORT_C void SetDateTime(TTime aDateTime);
+	    IMPORT_C void SetUriData(TPtrC aUri);
 	    		
 		/**
 	     * CSingleContactField Destructor.
@@ -123,13 +133,15 @@ class CSingleContactField:public CBase
     HBufC8* iFieldKey;
     HBufC* iLabel;
     HBufC* iValue;
-    
+    RPointerArray<HBufC> iArrayValue;
     //In case the value is of type TTime
     TTime iDateAndTime;
    
     //In case we are iterating a group
     HBufC* iGroupLabel;
     RPointerArray<HBufC8> iContactIdArray;
+    RPointerArray<HBufC> iUriData;
+    RPointerArray<HBufC> iidArray;
 
 };
 

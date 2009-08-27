@@ -175,21 +175,22 @@ void CCalendarInterface::ExecuteCmdL( const TDesC8& aCmdName,
 
 	else if ( aCmdName.CompareF( KCmdGetList ) == 0 ) 
 		{
-		if( !aCallback )
-			{
+		
 			if ( contentType.CompareF( KContentCalendar ) == 0 )
 				{
-				TRAP(errcode, GetListCalendarL( aInParamList, aOutParamList, posBased ));
+				if( !aCallback )
+				    {
+				    TRAP(errcode, GetListCalendarL( aInParamList, aOutParamList, posBased ));
+				    }
+				else
+                    {
+                    AppendErrorMessageL(aCmdName, KNullDesC8, KAsyncNotSupported);
+                    }
 				}
 			else if ( contentType.CompareF( KContentCalendarEntry ) == 0 )
 				{
-				TRAP(errcode, GetListCalendarEntryL( aInParamList, aOutParamList, posBased ));
+				TRAP(errcode, GetListCalendarEntryL( aInParamList, aOutParamList, aCmdOptions, aCallback, posBased, transactionId ));
 				}
-			}
-		else
-			{
-			AppendErrorMessageL(aCmdName, KNullDesC8, KAsyncNotSupported);
-			}	
 		}
 
 	else if ( aCmdName.CompareF( KCmdReqNot ) == 0 ) 
@@ -512,8 +513,11 @@ void CCalendarInterface::GetListCalendarL(const CLiwGenericParamList& aInParamLi
 // ---------------------------------------------------------------------------
 //
 void CCalendarInterface::GetListCalendarEntryL(const CLiwGenericParamList& aInParamList, 
-													CLiwGenericParamList& aOutParamList, 
-													const TBool aPosBased )
+													CLiwGenericParamList& aOutParamList,
+													TUint aCmdOptions,
+													MLiwNotifyCallback* aCallback ,
+													const TBool aPosBased,
+													TInt32& aTransactionId)
 	{
 	const TLiwGenericParam* filterParam = NULL; 
 
@@ -620,9 +624,48 @@ void CCalendarInterface::GetListCalendarEntryL(const CLiwGenericParamList& aInPa
 	if( calName )
 		CleanupStack::PushL(calName);	
 	TPtrC calendarName(	calName ? calName->Des() : TPtrC() );	
+	
+	//asynchronous version of getlist is called if callback is provided
+   if ( aCallback && ( KLiwOptASyncronous & aCmdOptions  ) )
+        {
+        aTransactionId = aCallback->GetTransactionID();
+
+        CCalCallbackCalEntryList* callback = NULL;
+        
+       
+       
+       
+       if(( filter->Filter() & EFilterGUid ) || ( filter->Filter() & EFilterLUid ))
+           {
+           callback = CCalCallbackCalEntryList::NewL( *this, aCallback, calendarName, aTransactionId, ETrue );
+           }
+       else
+           {
+           callback = CCalCallbackCalEntryList::NewL( *this, aCallback, calendarName, aTransactionId, EFalse );
+           }
+         
+       CleanupStack::PushL( callback );
+       if ( filter->Filter() & EFilterGUid )
+           {
+           // In case of GlobalUid only one entry is returned.
+           iCalService->GetListL( calendarName, (*filter->GuidList())[0], callback);
+           }
+       else if( filter->Filter() & EFilterLUid )
+           {
+           // In case of LocalUid there can be more than one entry(child entries)
+           iCalService->GetListL( calendarName, (filter->LocalUidList())[0], callback);
+           }
+       else
+           {
+           iCalService->GetListL( calendarName , filter, callback );
+           }
+       aOutParamList.AppendL(TLiwGenericParam( KTransactionID, TLiwVariant( aTransactionId )));
+       
+       CleanupStack::Pop( callback );    
+        }
 
 	// Return list of CalendarEntries if any of LocalUid or GlobalUid is passed as Filter.
-	if ( ( filter->Filter() & EFilterGUid ) || 
+    else if ( ( filter->Filter() & EFilterGUid ) || 
 			( filter->Filter() & EFilterLUid ) )
 		{
 		CIterableCalEntryList* iterEntryList = CIterableCalEntryList::NewL( *this, calendarName, ETrue );
@@ -1176,6 +1219,8 @@ CEntryAttributes* CCalendarInterface::GetAddParametersL( const CLiwGenericParamL
 	
 	CleanupStack::PushL( entryAttributes );
 	
+	TBool id;
+	
 	const TLiwGenericParam* param = NULL;
 	
 	if ( aPosBasedSearch )
@@ -1203,6 +1248,7 @@ CEntryAttributes* CCalendarInterface::GetAddParametersL( const CLiwGenericParamL
 			TInt entryType = -1;
 			if ( inMap->FindL( KLocalId, inParam ) ) 
 				{
+				id = EFalse;
 				ValidateParamTypeL( inParam, LIW::EVariantTypeDesC, 
 									KCmdAdd, KLocalId, KInvalid );
 				
@@ -1212,6 +1258,19 @@ CEntryAttributes* CCalendarInterface::GetAddParametersL( const CLiwGenericParamL
 				entryAttributes->SetLocalUid( localUid );
 				isUpdate = ETrue;
 				}
+            if ( inMap->FindL( KId, inParam ) ) 
+                {
+                id = ETrue;
+                ValidateParamTypeL( inParam, LIW::EVariantTypeDesC, 
+                                    KCmdAdd, KId, KInvalid );
+                
+                HBufC8* globalUid = HBufC8::NewL(inParam.AsDes().Length());
+                CleanupStack::PushL( globalUid );
+                GetGlobalUid(inParam.AsDes(), globalUid->Des());
+                entryAttributes->SetUidL( globalUid->Des() );
+                CleanupStack::PopAndDestroy( globalUid ); 
+                isUpdate = ETrue;
+                }
 			
 			if ( inMap->FindL( KType, inParam ) ) 
 				{
@@ -1233,7 +1292,14 @@ CEntryAttributes* CCalendarInterface::GetAddParametersL( const CLiwGenericParamL
 			//Get the type of the original entry. User cannot change the type
 			if( isUpdate )
 				{
-				entryType = GetEntryType( aCalendarName, entryAttributes->LocalUid() );
+				if(id)
+				    {
+                    entryType = GetEntryType( aCalendarName, entryAttributes->GlobalUid() );				    
+                    }
+				else
+				    {
+				    entryType = GetEntryType( aCalendarName, entryAttributes->LocalUid() );
+				    }
 				if ( entryType == -1 )
 					{
 					AppendErrorMessageL( KCmdAdd, KLocalId, KInvalid );
@@ -2393,7 +2459,64 @@ void CCalendarInterface::SetImportOutputL( RPointerArray<TUIDSet>& aOutputUIDSet
 	
 	CleanupStack::Pop( uIDList );
 	}
+// ---------------------------------------------------------------------------
+// Set getlist output to output parameter
+// ---------------------------------------------------------------------------
+//
+void CCalendarInterface::SetCalEntryOutputL( RPointerArray<CCalEntry>& aOutputCalEntry, 
+                                             CLiwGenericParamList& aOutParamList, 
+                                             const TDesC& aCalendarName )
+    {
+ 
+    TInt arrCount = aOutputCalEntry.Count();
+    
+    CIterableCalEntryList* iterEntryList = CIterableCalEntryList::NewL( *this, aCalendarName, ETrue );
+   CleanupStack::PushL(  TCleanupItem(CleanupIterableCalEntry, iterEntryList ) );
+            
+    for( TInt index = 0; index < arrCount; ++index )
+        {
+            iterEntryList->EntryArray().Append(aOutputCalEntry[index]);
+        }
 
+     //Appending the Iterator over List of Maps to the outParamList CLiwGenericParamList 
+    aOutParamList.AppendL( TLiwGenericParam( KReturnValue, TLiwVariant( iterEntryList ) ) );
+                        
+    iterEntryList->DecRef();
+    
+    iArrayCalEntryList.Append( iterEntryList );
+    
+    CleanupStack::Pop( iterEntryList );
+
+    }
+// ---------------------------------------------------------------------------
+// Set getlist output to output parameter
+// ---------------------------------------------------------------------------
+//
+void CCalendarInterface::SetCalInstanceOutputL( RPointerArray<CCalInstance>& aOutputCalInstance,
+                                                CLiwGenericParamList& aOutParamList,
+                                                const TDesC& aCalendarName)
+    {
+    TInt arrCount = aOutputCalInstance.Count();
+
+   CIterableCalEntryList* iterInstanceList = CIterableCalEntryList::NewL( *this, aCalendarName, EFalse );
+    CleanupStack::PushL(  TCleanupItem(CleanupIterableCalEntry, iterInstanceList ) );
+            
+    for( TInt index = 0; index < arrCount; ++index )
+        {
+        iterInstanceList->InstanceArray().Append(aOutputCalInstance[index]);
+        }
+
+    // Appending the Iterator over List of Maps to the outParamList CLiwGenericParamList 
+    aOutParamList.AppendL( TLiwGenericParam( KReturnValue, TLiwVariant( iterInstanceList ) ) );
+                        
+    iterInstanceList->DecRef();
+    
+    iArrayCalEntryList.Append( iterInstanceList );
+    
+    CleanupStack::Pop( iterInstanceList );
+    
+
+    }
 // ---------------------------------------------------------------------------
 // Set Change Notification output to output parameter
 // ---------------------------------------------------------------------------
@@ -2912,7 +3035,22 @@ TInt CCalendarInterface::GetEntryType( const TDesC& aCalendarName, TCalLocalUid 
 	entryArray.ResetAndDestroy();
 	return entryType;
 	}
-	
+// ---------------------------------------------------------------------------
+// Return Entry Type for given GlobalUid
+// ---------------------------------------------------------------------------
+//
+TInt CCalendarInterface::GetEntryType( const TDesC& aCalendarName, const TDesC8& aGuid )
+    {
+    TInt entryType = -1;
+    RPointerArray<CCalEntry> entryArray;
+    iCalService->GetListL( aCalendarName, aGuid, entryArray);
+    if( entryArray.Count() )
+        {
+        entryType = entryArray[0]->EntryTypeL();
+        }
+    entryArray.ResetAndDestroy();
+    return entryType;
+    }	
 // ---------------------------------------------------------------------------
 // Check if given calendar is in use by other resources
 // ---------------------------------------------------------------------------

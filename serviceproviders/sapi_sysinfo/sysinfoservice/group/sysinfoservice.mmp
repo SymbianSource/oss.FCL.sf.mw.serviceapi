@@ -64,6 +64,9 @@ LIBRARY	        sysutil.lib
 LIBRARY	        btengsettings.lib
 LIBRARY		    aknswallpaperutils.lib 
 LIBRARY	  		PlatformEnv.lib
+LIBRARY			ImagingConfigManager.lib
+LIBRARY                   Avkon.lib  // PhoneLanguage
+LIBRARY                   estlib.lib  //strlen function
 
 paged
 

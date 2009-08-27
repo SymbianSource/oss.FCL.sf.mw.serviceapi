@@ -21,10 +21,10 @@
 
  #include "locationservice.h"
  
- #define TRACE 0 
- #define GETLOCATION 1
- 
- 
+#define TRACE 1 
+#define GETLOCATION 0
+
+TInt reqErr1;//To share the error value from callback
  _LIT(KRequestor,"testapp");
  
 class ASyncCB : public MLocationCallBack
@@ -32,78 +32,101 @@ class ASyncCB : public MLocationCallBack
 	TInt iCmd ;
 	TInt iRetStatus ;
 	TInt iCount ;
-	
-	CLocationService *iService ;
+    TInt iRequestType;
+    TInt iTransactionId;
+
+    CLocationService *iService ;
 
 
-	public :
-		
-		
-		TInt HandleNotifyL(HPositionGenericInfo* aPosInfo , TInt aError) ;
-
-		ASyncCB() :iCmd(0) , iRetStatus(KErrGeneral) , iCount(0) //Default constructor 
-			{
-				;
-			}
-		ASyncCB(TInt aCmd , CLocationService *aService)	 ;
-};
+public :
 
 
-ASyncCB :: ASyncCB(TInt aCmd ,CLocationService *aService):iCount(0) 
-{ 
-  iCmd = aCmd ;
-  iService = aService ;
-  	
-}
+    TInt HandleNotifyL(HPositionGenericInfo* aPosInfo , TInt aError) ;
+
+    ASyncCB() :iCmd(0) , iRetStatus(KErrGeneral) , iCount(0) //Default constructor 
+			    {
+			    }
+    ASyncCB(TInt transId,TInt aCmd , CLocationService *aService)	 ;
+
+    inline TUint GetRequestType(void) 
+        {
+        return iRequestType ;
+        }
+    /**
+     * GetTransactionId function returns transcation id associated with current async object
+     *
+     */
+    inline TInt32 GetTransactionId(void)
+        {
+        return iTransactionId ;
+        }
+    };
+
+
+ASyncCB :: ASyncCB(TInt transId,TInt aCmd ,CLocationService *aService):iCount(0) 
+    { 
+    iCmd = aCmd ;
+    iService = aService ;
+
+    iTransactionId = transId;
+    iRequestType = aCmd;
+    }
 
 TInt ASyncCB :: HandleNotifyL (HPositionGenericInfo* aPosInfo , TInt Error )
-{
-	if(iCmd == TRACE)
-		{
-		iService->CancelOnGoingService(ECancelTrace) ;
-		}
-	else if(iCmd == GETLOCATION)
-		{
-		 iService->GetLocationL(this,EBasicInfo) ;
-		 iCount++ ;
-		}
-		
-	if(iCount > 3)
-		{
-		 CActiveScheduler *current = CActiveScheduler :: Current() ;
-		 current->Stop() ;
-		}
-	iRetStatus = KErrNone ;
-	return iRetStatus ;	
-}
+    {
+    if(iCmd == TRACE)
+        {
+        if(iService->CancelService(this->GetTransactionId()))
+            reqErr1 = KErrGeneral;
+        }
+    else if(iCmd == GETLOCATION)
+        {
+        iCount++;
+        TRAPD(err,iService->GetLocationL(this,EBasicInfo));
+        if(err) 
+            reqErr1 = KErrGeneral;		
+        }
+
+    if(iCount > 2)
+        {
+        CActiveScheduler *current = CActiveScheduler :: Current() ;
+        current->Stop() ;
+        }
+    iRetStatus = KErrNone ;
+    return iRetStatus ;	
+    }
   
   
 TInt StrayTestL()
-{
-	
-	CActiveScheduler *Scheduler = new CActiveScheduler ;
+    {
+    __UHEAP_MARK ;
+    reqErr1 = KErrNone;
+    CActiveScheduler *Scheduler = new CActiveScheduler ;
 
-	CActiveScheduler :: Install(Scheduler) ;
-	CLocationService *CoreObj = CLocationService ::NewL() ;
-	ASyncCB Updates(TRACE , CoreObj)  ;
-	ASyncCB GetLoc(GETLOCATION , CoreObj)  ;
+    CActiveScheduler :: Install(Scheduler) ;
+    CLocationService *CoreObj = CLocationService ::NewL() ;
+    ASyncCB Updates(12,TRACE , CoreObj)  ;
+    ASyncCB GetLoc(13,GETLOCATION , CoreObj)  ;
 
-	// GelocUpdateCallBack  MyUpdates(&CmdId  , (CLocationService *)NULL) ;
-	CoreObj->TraceL(&Updates,EBasicInfo) ;
-	CoreObj->GetLocationL(&GetLoc,EBasicInfo) ;
+    // GelocUpdateCallBack  MyUpdates(&CmdId  , (CLocationService *)NULL) ;
+    CoreObj->TraceL(&Updates,EBasicInfo) ;
+    CoreObj->GetLocationL(&GetLoc,EBasicInfo) ;
 
-	CActiveScheduler :: Start() ;
-	return 0 ; // Controll never reaches here
-}
+    CActiveScheduler :: Start() ;
+    delete Scheduler;
+    delete CoreObj;
+    __UHEAP_MARKEND ;
+    return reqErr1 ; 
+    }
 
 
 TInt StrayTest(TAny */*Arg*/)
-{
-	CTrapCleanup* cleanup = CTrapCleanup::New();
-	//Install a new active scheduler to this thread 
-	TRAPD(err , StrayTestL()) ;
-	delete cleanup ;
-	return 0 ;
-}
+    {
+    TInt errval;
+    CTrapCleanup* cleanup = CTrapCleanup::New();
+    //Install a new active scheduler to this thread 
+    TRAPD(err , errval = StrayTestL()) ;
+    delete cleanup ;
+    return errval | err ;
+    }
 
-  

@@ -31,4 +31,6 @@
 
 #include "../tprovidertest_vpbk/group/bld.inf"
 
+#include "../tcontactsgetidsprovidertest/group/bld.inf"
+
 //  End of File

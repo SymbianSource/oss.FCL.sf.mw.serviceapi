@@ -150,7 +150,7 @@ void CGetListStoreListObserver::CreateAndFilterViewL( MVPbkContactStore& aContac
 			 					   iUri,
 			 					   iSortOrder,
 			 					   iTransId, 
-			 					   schedulerWait);
+			 					   schedulerWait, iVal);
         CleanupStack::PushL(defaultView);
         if(iSearchVal->Length() <= 0)
     	    {
@@ -205,7 +205,7 @@ void CGetListStoreListObserver::CreateAndFilterViewL( MVPbkContactStore& aContac
 								   iUri,
 								   iSortOrder,
 			 					   iTransId, 
-			 					   schedulerWait); 
+			 					   schedulerWait,iVal); 
            	    											 					    	    
 	    CleanupStack::PushL(filteredView);
 	    //Filtering the view to find the iFindStrings
@@ -228,22 +228,52 @@ void CGetListStoreListObserver::CreateAndFilterViewL( MVPbkContactStore& aContac
     	{
     	//Get the linkarray of the groups in the database
     	MVPbkContactLinkArray* array = aContactStore.ContactGroupsLC();        	
-    	if(array->Count())
-        	{
-        	//Set the iterator with the result
-        	iIter->SetParams(array, iUri, EAsc, iTransId, EGroups, iContactService);
-       		
-			iContactService->RequestComplete(iTransId);	
-       		//Notify the user
-       		iCallback->HandleReturnIter(KErrNone, iIter, iTransId);
-        	}
-    	else
-    		{
-			iContactService->RequestComplete(iTransId);	
+        TInt count = array->Count();
+        if(count)
+            {
+            if(iVal == EGetList)
+                {
+                //Set the iterator with the result
+                iIter->SetParams(array, iUri, EAsc, iTransId, EGroups, iContactService);
+                
+                iContactService->RequestComplete(iTransId); 
+                //Notify the user
+                iCallback->HandleReturnIter(KErrNone, iIter, iTransId);
+                }
+            else
+                {
+                RPointerArray<HBufC8> idArray(count);
+                MVPbkContactLink *link = NULL;
+                //Set the array with the ids
+                for(TInt index(0); index < count; index++)
+                    {
+                    link = const_cast<MVPbkContactLink*>(&((*array)[index]));
+                    idArray.AppendL(link->PackLC());
+                    CleanupStack::Pop();
+                    }
+                //iIter->SetIdsPtr(idArray, count);
+                iContactService->RequestComplete(iTransId);
+                //Notify the user
+                iCallback->HandleReturnArray(KErrNone , idArray , iTransId);
+                idArray.Reset();
+                //CleanupStack::PopAndDestroy(link);
+                delete link;
+                link = NULL;
+                //CleanupStack::Pop();
+                //delete array;
+                //array = NULL;
+                //iCallback->HandleReturnIter(KErrNone, iIter, iTransId);
+                }
+            }
+        else
+            {
+            iContactService->RequestComplete(iTransId); 
     		//Notify the user
     		iCallback->HandleReturnValue(EOpComplete, KErrNotFound, iTransId);	
+		 delete iIter;
+	        iIter = NULL;
     		}    	
-    	CleanupStack::Pop();
+    	CleanupStack::Pop();       
     	}
     else if(iType == EOthers)
     	{
@@ -292,7 +322,7 @@ NewL(const TDesC& aUri,
       CContactService *aContactService,
      CContactIter* aIter, 
      enum Ttype aType, TInt aTransId,
-     MVPbkContactStore* aContactStore)
+     MVPbkContactStore* aContactStore, TCmdType val)
      
     {
     CGetListStoreListObserver* self = 
@@ -306,7 +336,7 @@ NewL(const TDesC& aUri,
                                             aIter,
                                             aType, 
                                             aTransId,
-                                            aContactStore);    
+                                            aContactStore, val);
     self->ConstructL(aContactId, aSearchVal);									 
     return self;
     }
@@ -336,7 +366,7 @@ CGetListStoreListObserver(const TDesC& aUri,const TDesC8& /*aContactId*/,
 						   CContactService *aContactService,
 						  CContactIter* aIter, 
 						  enum Ttype aType, TInt aTransId,
-						  MVPbkContactStore* aContactStore)
+						  MVPbkContactStore* aContactStore, TCmdType val)
     {
 	iUri = aUri;			
     iSearchFields = aSearchFields;
@@ -349,6 +379,7 @@ CGetListStoreListObserver(const TDesC& aUri,const TDesC8& /*aContactId*/,
 	iFieldsList = NULL;
 	iRetOp = NULL;
 	iContactStore = aContactStore;
+    iVal = val;
     }
 
 

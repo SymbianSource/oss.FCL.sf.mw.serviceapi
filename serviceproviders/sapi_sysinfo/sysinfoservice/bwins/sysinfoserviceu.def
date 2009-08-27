@@ -55,4 +55,9 @@ EXPORTS
 	?ValidLocationAreaCode@CNetworkInfo@@QBEHXZ @ 54 NONAME ; int CNetworkInfo::ValidLocationAreaCode(void) const
 	?XPixels@CResolution@@QBEHXZ @ 55 NONAME ; int CResolution::XPixels(void) const
 	?YPixels@CResolution@@QBEHXZ @ 56 NONAME ; int CResolution::YPixels(void) const
+	??ACCameraResolutionList@@QBEPBVCResolution@@H@Z @ 57 NONAME ; class CResolution const * CCameraResolutionList::operator[](int) const
+	?At@CCameraResolutionList@@QBEHHHAAH@Z @ 58 NONAME ; int CCameraResolutionList::At(int, int, int &) const
+	?Count@CCameraResolutionList@@QBEHXZ @ 59 NONAME ; int CCameraResolutionList::Count(void) const
+	?MimeTypesList@CCameraInfo@@QBEPAVCStringList@@XZ @ 60 NONAME ; class CStringList * CCameraInfo::MimeTypesList(void) const
+	?ResolutionList@CCameraInfo@@QBEPAVCCameraResolutionList@@XZ @ 61 NONAME ; class CCameraResolutionList * CCameraInfo::ResolutionList(void) const
 

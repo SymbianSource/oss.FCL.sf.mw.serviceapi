@@ -126,3 +126,41 @@ CContactSyncCallback :: ~CContactSyncCallback()
      //can be CActiveScheduler::Stop(); or to be replaced by wait scheduler.    
      iWaitScheduler->AsyncStop();
      }
+
+ 
+ void CContactSyncCallback :: HandleReturnId(const TInt& /*aError*/,HBufC8* acntId , TInt /*aTransId*/ )
+     {
+     icntId = acntId;
+     
+     iWaitScheduler->AsyncStop();
+     }
+
+ 
+ HBufC8* CContactSyncCallback :: GetId()
+     {
+     return icntId;
+     }
+ 
+ void CContactSyncCallback :: HandleReturnArray( const TInt& /*aError*/, RPointerArray<HBufC8>& idArray, TInt /*aTransId*/ )
+      {         
+      //iIDArray = idArray;
+      for(TInt i = 0; i<idArray.Count(); i++)
+          {
+      TDesC8* idVal = idArray[i];
+       HBufC8* idBufVal = idVal->AllocL();
+       iIDArray.AppendL(idBufVal);
+          }
+       //can be CActiveScheduler::Stop(); or to be replaced by wait scheduler.    
+      iWaitScheduler->AsyncStop();
+      }
+
+void CContactSyncCallback::GetArray(RPointerArray<HBufC8>* aArray)
+    {
+    for(TInt i = 0; i<iIDArray.Count(); i++)
+              {
+              TDesC8* idVal = iIDArray[i];
+           HBufC8* idBufVal = idVal->AllocL();
+           aArray->AppendL(idBufVal);
+           delete idVal;
+              }
+    }

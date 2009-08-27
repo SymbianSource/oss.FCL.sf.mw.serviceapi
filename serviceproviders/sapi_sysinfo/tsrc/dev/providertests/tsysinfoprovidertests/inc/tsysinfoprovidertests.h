@@ -144,6 +144,7 @@ NONSHARABLE_CLASS(Ctsysinfoprovidertests) : public CScriptBase
 	    virtual TInt GetActiveConnections(CStifItemParser &aItem );
 	    virtual TInt BTAsyncRequestCancel(CStifItemParser &aItem );
 	    virtual TInt GetActiveConnectionsReqCancel(CStifItemParser &aItem );
+	    virtual TInt GetCameraInfoTest(CStifItemParser &aItem );
 
 
     public:    

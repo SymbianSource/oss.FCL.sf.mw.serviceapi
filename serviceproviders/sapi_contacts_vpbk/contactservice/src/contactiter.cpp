@@ -221,7 +221,8 @@ void CContactIter::SetupDBL()
 																	self,
 																	EOthers,
 																	iTransId,
-																	NULL) ;
+																	NULL,
+																	EGetList) ;
     if(iContactStore)
     {
     	iContactStore->OpenL( *iGetListStoreListObserver  );    	

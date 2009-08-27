@@ -28,16 +28,6 @@ class CGetLoc;
 
 _LIT(KIdentity,"Location SAPI");
 
-/**
- * Key for locating active objects associated with async request in registration table
- *
- * @ 0 for  Getlocation async Active object
- * @ 1 for Trace async active object
- */
- 
-const TInt KARRAY_INDEX_GETLOCATION = 0 ;
-const TInt KARRAY_INDEX_TRACE       = 1 ; 
-
 
 
 /**
@@ -46,6 +36,8 @@ const TInt KARRAY_INDEX_TRACE       = 1 ;
 _LIT8(KLongitudeKey,"Longitude") ;
 _LIT8(KLatitudeKey , "Latitude") ;
 _LIT8(KAltitudeKey , "Altitude") ;
+_LIT8(KHorAccuracy,"HorizontalAccuracy");
+_LIT8(KVerAccuracy,"VerticalAccuracy");
 
 _LIT(KUnknown,"Unknown");
 
@@ -63,6 +55,8 @@ const TInt KSUpdateTimeOut = 15*KSSecond;
 
 //MaxAge
 const TInt KSMaxAge = 0;
+const TInt KGetLocationReq = 0 ;
+const TInt KTraceReq   = 1 ;
 
 /**
  * Enums required for mathoperations
@@ -138,6 +132,23 @@ typedef struct _INPPARM inpparam;
      */
     public :
     virtual TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) = 0 ;
+    /*
+     * To be implemented by every class that derives from this. This function should return 
+     * the Async Request type for which this callback is used.
+     */ 
+    
+    virtual TUint GetRequestType(void) = 0; 
+    
+    /*
+     * To be implemented by every class that derives from this. This returns the 
+     * TransactionId associated with the Async request for which this Callback
+     * object is used.
+     */
+    
+    virtual TInt32 GetTransactionId(void) = 0;
+    
+    
+    virtual ~MLocationCallBack(){}
     };
 
 
@@ -176,9 +187,11 @@ class CLocationService : public CBase
 	     *
 	     * @param aPosinfobase input TPositionInfoBase object which will hold location details
 	     * @param aUpdateOpts updateoptions for synchronous calls 
+	     * @param aEnableHighAcc - Tells whether to use greater accuracy modules to obtain updates
 	     */
-	    IMPORT_C TInt GetLocationL( TPositionInfoBase* aPos ,
-	    							const TPositionUpdateOptions* aUpdateOpts= NULL ) ;
+	    IMPORT_C void GetLocationL( TPositionInfoBase* aPos ,
+	    							const TPositionUpdateOptions* aUpdateOpts= NULL,
+	    							TBool aEnableHighAcc = false ) ;
 	    							
 
 	    /**
@@ -188,12 +201,14 @@ class CLocationService : public CBase
 	     * @param aLocationInfoCategory specifying one of the enumeration in TLocationInfoType.
 	     * @param aFieldIdList specifies field of HPositionGenericInfo that user intend to retrieve.
 	     * @param aUpdateoptions update options for asynchronous requests.
+	     * @param aEnableHighAcc - Tells whether to use greater accuracy modules to obtain updates
 	     * @see Lsbcommon.h for details of TPositionFieldIdList and TPositionUpdateOptions
 	     */
-	    IMPORT_C TInt GetLocationL( MLocationCallBack* aCallBackObj ,
+	    IMPORT_C void GetLocationL( MLocationCallBack* aCallBackObj ,
 	    							TInt aLocationInfoCategory = 0, 
 	    							TPositionFieldIdList aFieldIdList = NULL ,
-	    							const TPositionUpdateOptions* aUpdateopts = NULL
+	    							const TPositionUpdateOptions* aUpdateopts = NULL,
+	    							TBool aEnableHighAcc = false
 	    							 );
 	    							
 	    /**
@@ -224,14 +239,15 @@ class CLocationService : public CBase
 	     * @param aLocationInfoCategory specifying one of the enumeration in TLocationInfoType.
 	     * @param aFiledList List of position fields that should be retrived 
 	     * @param aUpdateOptions update options for trace
-	     *
+	     * @param aEnableHighAcc Tells whether to use greater accuracy modules to obtain updates
 	     * @see Lsbcommon.h for details of TPositionFieldIdList and TPositionUpdateOptions
 	     */ 
 
-	    IMPORT_C TInt TraceL(MLocationCallBack* aCallBackObj , 
+	    IMPORT_C void TraceL(MLocationCallBack* aCallBackObj , 
 	    						TInt aLocationInfoCategory = 0,
 	    						TPositionFieldIdList aFiledList = NULL ,
-	    						const TPositionUpdateOptions* aUpateOptions= NULL );
+	    						const TPositionUpdateOptions* aUpateOptions= NULL,
+	    						TBool aEnableHighAcc = false);
 	    						
 
 	    /**
@@ -245,12 +261,24 @@ class CLocationService : public CBase
 	     IMPORT_C TInt CancelOnGoingService( TInt aCancelparam ) ;
 	    
 	    /**
+         * Method to cancel pending async request
+         * 
+         * aTransId Transaction Id that was returned for an Async request         
+         */
+	     IMPORT_C TInt CancelService( TInt aTransId);
+	     
+	    /**
 	     * Method to fetch last known location from location server
 	     */
 
-	     TInt GetLastKnownLoc( TPosition& aResultPos ) ; 
+	     IMPORT_C TInt GetLastKnownLoc( TPosition& aResultPos ) ; 
 
-
+	     /**
+	      * Method to obtain the High Accuracy module out of the 
+	      * currently available modules on the phone
+	      */
+	     
+	     void GetHighAccuracyModuleL(TPositionModuleId* aModId);
 
 
 
@@ -265,10 +293,6 @@ class CLocationService : public CBase
 	     */
 	    CLocationService() ;  
 	    
-	    /**
-	     * Method to initalise class memebers 
-	     */
-	    void DoInitialiseL() ;
 
 	    private :
 	    
@@ -289,7 +313,6 @@ class CLocationService : public CBase
 	     */
 	          
 	    RPointerArray<CGetLoc> iRegTable; 
-	    TInt iIndex;
 
 	    
 	    /**

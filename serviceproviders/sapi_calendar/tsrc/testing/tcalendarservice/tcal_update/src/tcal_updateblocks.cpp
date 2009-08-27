@@ -114,7 +114,10 @@ TInt Ctcal_update::RunMethodL(
         ENTRY( "UpdateAptWithAttendees", Ctcal_update::UpdateAptWithAttendees ),
         ENTRY( "UpdateRepeatDate", Ctcal_update::UpdateRepeatDate ),
         ENTRY( "UpdateInstance", Ctcal_update::UpdateInstance ),
-        
+ 
+        ENTRY( "UpdateToDoWithGlobalId", Ctcal_update::UpdateToDoWithGlobalId ),
+        ENTRY( "UpdateInstanceWithGlobalId", Ctcal_update::UpdateInstanceWithGlobalId ),
+
         //ADD NEW ENTRY HERE
 
         };
@@ -983,3 +986,227 @@ TInt Ctcal_update::?member_function(
 // None
 
 //  End of File
+TInt Ctcal_update::UpdateToDoWithGlobalId( CStifItemParser& /*aItem*/ )
+    {
+
+    TInt result = KErrNone;
+    
+    
+    CCalendarService* service = CCalendarService::NewL();
+    
+    RemoveCalendarFile( service, KTestCal1File );
+//  TRAPD(err_add,AddCalendarFile( service, KTestCalTestFile ));
+    AddCalendarFile( service, KTestCal1File);
+    
+
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    TInt err_addtodo;
+    
+//  TInt test_addtodo = AddToDo(service, KTestCalTestFile, uids);
+    
+//  if(test_addtodo != KErrNone)
+         err_addtodo = AddToDo(service, KTestCal1File, uids);
+    
+    if(err_addtodo == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+        delete uids;
+    if ( arruids.Count() > 0 )
+        {
+        RPointerArray<CCalEntry> entryArray;
+        
+        CEntryAttributes* entryObj = CEntryAttributes::NewL();
+        
+        
+        entryObj->SetEntryStatusL(KStatusTodoCompleted); 
+        
+        
+        
+        
+        TRAPD(err_rep,entryObj->SetReplicationL(KTestRep));
+        if(err_rep != KErrNone)
+            entryObj->SetReplicationL(KReplPrivate);
+        
+    
+                
+        service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+
+        if( entryArray.Count() == 1 )
+            {
+            entryObj->SetUidL( *(arruids[0]->iGlobalUID) );
+            
+            }
+            
+        TCalLocalUid modifiedEntryId;   
+        TUIDSet* entryUids = NULL;  
+        TRAPD( err, service->AddL(KTestCal1File,entryObj,entryUids) );
+        TInt err_new;
+        TInt err_add;
+                        
+        delete entryUids;
+        entryArray.ResetAndDestroy();
+        if ( err == KErrNone )
+            { 
+            service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+            if( entryArray.Count() == 1 )
+                {
+                if( !(entryArray[0]->ReplicationStatusL() == CCalEntry::EPrivate && entryArray[0]->StatusL() == CCalEntry::ETodoCompleted))
+                    {
+                    result = KErrGeneral;   
+                    }
+                }
+            }
+        else
+            {
+            result = KErrGeneral;       
+            }
+        entryArray.ResetAndDestroy();
+        arruids.ResetAndDestroy();
+        delete entryObj;
+        
+        
+        }
+        else
+            result = KErrGeneral;   
+
+    RemoveCalendarFile( service, KTestCal1File );
+    
+    delete service;
+    
+    return result;
+    
+
+    }
+    
+TInt Ctcal_update::UpdateInstanceWithGlobalId( CStifItemParser& /*aItem*/ )
+    {
+
+   TInt result = KErrNone;
+    
+    __UHEAP_MARK;
+    
+    CCalendarService* service = CCalendarService::NewL();
+    
+    RemoveCalendarFile( service, KTestCal1File );
+    AddCalendarFile( service, KTestCal1File );
+
+    RPointerArray<TUIDSet> arruids(5);
+    
+    RPointerArray<CCalInstance> calInstanceArray;
+    
+    CCalendarFilter *getListfilter2 = CCalendarFilter::NewL();
+    
+    getListfilter2->SetFilterTypeL( KIncludeAll );
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddRepeatingAppointmentEntryL(service, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+        
+    if(AddEvent(service, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+        
+    service->GetListL( KTestCal1File, getListfilter2 , calInstanceArray );
+    
+    TInt count = calInstanceArray.Count();
+    
+    calInstanceArray.ResetAndDestroy();
+    
+
+    if ( arruids.Count() > 0 )
+        {
+        RPointerArray<CCalEntry> entryArray;
+        
+        CEntryAttributes* entryObj = CEntryAttributes::NewL();
+        
+        TTime stTime(TDateTime(2007, ESeptember, 17, 9, 0, 0, 0));
+        entryObj->SetInstanceStartTimeL(stTime);
+        TTime startTime(TDateTime(2007, ESeptember, 17, 14, 0, 0, 0));
+        entryObj->SetStartTimeL(startTime);
+        TTime endTime(TDateTime(2007, ESeptember, 17, 17, 30, 0, 0));
+        entryObj->SetEndTimeL(endTime);  
+        
+        CAttendeeInfo* attendee = CAttendeeInfo::NewL(_L("carendar@yahoo.com"));
+        CleanupStack::PushL(attendee);
+        attendee->SetRoleL(KAttRoleReqParticipant);
+        attendee->SetStatusL(KAttStatusTentative);
+        attendee->SetRsvp(EFalse);
+        
+        entryObj->AddAttendeeL(attendee);
+        CleanupStack::PopAndDestroy(attendee);
+        
+        attendee = CAttendeeInfo::NewL(_L("bettinapinto@gmail.com"));
+        CleanupStack::PushL(attendee);
+        attendee->SetCommonNameL(_L("SAPI"));
+        attendee->SetRoleL(KAttRoleReqParticipant);
+        attendee->SetStatusL(KAttStatusTentative);
+        attendee->SetRsvp(EFalse);
+        
+        entryObj->AddAttendeeL(attendee);
+        CleanupStack::PopAndDestroy(attendee);
+        
+        service->GetListL( KTestCal1File, *(arruids[0]->iGlobalUID) , entryArray );
+
+        if( entryArray.Count() == 1 )
+            {
+            entryObj->SetUidL( *(arruids[0]->iGlobalUID) );
+            }
+            
+        TUIDSet* uids = NULL;
+       // TCalLocalUid modifiedEntryId;       
+        TRAPD( err, service->AddL(KTestCal1File,entryObj,uids) );
+        //modifiedEntryId = uids->iLocalUID;
+        delete uids;
+        entryArray.ResetAndDestroy();
+        if ( err == KErrNone )
+            { 
+                
+                getListfilter2->SetFilterTypeL( KIncludeAll );
+            
+                service->GetListL( KTestCal1File, getListfilter2 , calInstanceArray );
+    
+                TInt new_count = calInstanceArray.Count();
+                if(new_count != count)
+                {
+                    
+                    result = KErrGeneral;
+                }
+                 calInstanceArray.ResetAndDestroy();
+                delete getListfilter2;
+            }
+        else
+            {
+            result = KErrGeneral;       
+            }
+            
+        
+        entryArray.ResetAndDestroy();
+        arruids.ResetAndDestroy();
+        delete entryObj;
+        }
+        else
+            result = KErrGeneral;   
+
+    RemoveCalendarFile( service, KTestCal1File );
+    
+    delete service;
+    
+    
+    __UHEAP_MARKEND;
+
+    return result;
+
+
+    }

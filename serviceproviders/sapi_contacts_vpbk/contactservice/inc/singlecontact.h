@@ -88,6 +88,7 @@ class CSingleContact:public CBase
 		CSingleContactField* NextFieldL(MVPbkStoreContact* aSingleContact, 
 		                                TInt aIndex);
 				
+		CSingleContactField* GetXSPIDFieldL(MVPbkStoreContact* aSingleContact, TInt& aIndex);
 		/*
 		 *Get the  number of fields in the contact
 		 */

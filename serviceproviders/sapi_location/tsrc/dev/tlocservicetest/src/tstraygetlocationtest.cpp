@@ -30,7 +30,7 @@ class ASyncLocCB : public MLocationCallBack
 	TInt iCmd ;
 	TInt iRetStatus ;
 	TInt iCount ;
-	
+    TInt iTransactionId;
 	CLocationService *iService ;
 
 
@@ -43,14 +43,35 @@ class ASyncLocCB : public MLocationCallBack
 			{
 				;
 			}
-		ASyncLocCB(TInt aCmd , CLocationService *aService)	 ;
+    ASyncLocCB(TInt aCmd , CLocationService *aService,TInt aTransId)	 ;
+
+    inline TUint GetRequestType(void) 
+        {
+        return iCmd ;
+        }
+
+
+    MLocationCallBack* GetCallBackobj()
+		             {
+		             return this;  
+		             }
+
+    /**
+     * GetTransactionId function returns transcation id associated with current async object
+     *
+     */
+    inline TInt32 GetTransactionId(void)
+        {
+        return iTransactionId ;
+        }
 };
 
 
-ASyncLocCB :: ASyncLocCB(TInt aCmd ,CLocationService *aService):iCount(0) 
+ASyncLocCB :: ASyncLocCB(TInt aCmd ,CLocationService *aService,TInt aTransId):iCount(0) 
 { 
   iCmd = aCmd ;
   iService = aService ;
+    iTransactionId = aTransId;
   	
 }
 
@@ -58,35 +79,39 @@ TInt ASyncLocCB :: HandleNotifyL(HPositionGenericInfo* aInfo , TInt Error )
 {
 	if(iCmd == GETLOCATION)
 		{
-		iService->CancelOnGoingService(ECancelGetLocation) ;
+        //Do nothing
 		}
 
-	if(iCount > 5)
-		{
-		 CActiveScheduler *current = CActiveScheduler :: Current() ;
-		 current->Stop() ;
-		}
-	iCount++ ;	
-	iRetStatus = KErrNone ;
-	return iRetStatus ;	
+    if(iCount > 2)
+        {
+        CActiveScheduler *current = CActiveScheduler :: Current() ;
+        current->Stop() ;
+        }
+    iCount++ ;	
+    iRetStatus = KErrNone ;
+    return iRetStatus ;	
 }
   
   
 TInt StrayTestGetLocL()
 {
-	
-	CActiveScheduler *Scheduler = new CActiveScheduler ;
+    __UHEAP_MARK ;
+    CActiveScheduler *Scheduler = new CActiveScheduler ;
 
-	CActiveScheduler :: Install(Scheduler) ;
-	CLocationService *CoreObj = CLocationService ::NewL() ;
-	ASyncLocCB Updates(TRACE , CoreObj)  ;
-	ASyncLocCB GetLoc(GETLOCATION , CoreObj)  ;
+    CActiveScheduler :: Install(Scheduler) ;
+    CLocationService *CoreObj = CLocationService ::NewL() ;
+    ASyncLocCB Updates(TRACE , CoreObj,1000)  ;
 
-	// GelocUpdateCallBack  MyUpdates(&CmdId  , (CLocationService *)NULL) ;
-	CoreObj->TraceL(&Updates,EBasicInfo) ;
-	CoreObj->GetLocationL(&GetLoc,EBasicInfo) ;
+    ASyncLocCB GetLoc(GETLOCATION , CoreObj,2000)  ;
 
-	CActiveScheduler :: Start() ;
+    // GelocUpdateCallBack  MyUpdates(&CmdId  , (CLocationService *)NULL) ;
+    CoreObj->TraceL(&Updates,EBasicInfo) ;
+    CoreObj->GetLocationL(&GetLoc,EBasicInfo) ;
+
+    CActiveScheduler :: Start() ;
+    delete CoreObj;
+    delete Scheduler;
+    __UHEAP_MARKEND ;
 	return 0 ; // Controll never reaches here
 }
 

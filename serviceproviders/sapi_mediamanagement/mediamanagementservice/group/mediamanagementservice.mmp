@@ -33,7 +33,14 @@ VENDORID        VID_DEFAULT
 SOURCEPATH      ../src
 SOURCE          mgservice.cpp
 SOURCE          mgpostfilter.cpp
-SOURCE					mgclfoperationobserver.cpp mgthumbobserver.cpp mgthumbnailgeneration.cpp mgmresolution.cpp mgimageresolution.cpp mgvideoresolution.cpp mgmediacontainer.cpp
+SOURCE					mgclfoperationobserver.cpp
+SOURCE mgthumbobserver.cpp
+SOURCE mgthumbnailgeneration.cpp
+SOURCE mgmresolution.cpp
+SOURCE mgimageresolution.cpp
+SOURCE mgvideoresolution.cpp
+SOURCE mgmediacontainer.cpp
+SOURCE asynchrequestmanager.cpp
 
 
 USERINCLUDE     ../inc

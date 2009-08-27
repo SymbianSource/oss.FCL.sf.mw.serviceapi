@@ -39,11 +39,13 @@ DEFFILE         tmsg_getheaderlistiter1.def
 SOURCEPATH      ../src
 SOURCE          getheader.cpp
 SOURCE          get_headerblocks.cpp
-SOURCE		     	tgetheaderlistsms1.cpp 
+SOURCE		tgetheaderlistsms1.cpp 
 SOURCE          tgetheaderlistsms2.cpp
 SOURCE          tgetheaderlistsms3.cpp
 SOURCE          tgetheaderlistmms1.cpp
-SOURCE          tgetheaderlistmms2.cpp
+SOURCE          tgetheaderlistmms2.cpp  
+SOURCE          tgetheaderlistsms4.cpp
+SOURCE          tgetheaderlistmms3.cpp
 //RESOURCE        resource_file
 //RESOURCE        resource_file2
 

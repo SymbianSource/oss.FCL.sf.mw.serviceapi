@@ -25,7 +25,7 @@
  * in a sorted order present in a folder . Message Headers are 
  * retrieved as per searching options provided by user. 
 */
-class CMessagingAccessFolder : public CBase
+class CMessagingAccessFolder : public CActive
 	{
 
 	public:
@@ -56,6 +56,16 @@ class CMessagingAccessFolder : public CBase
 
 
 	public:
+	    
+	    /**
+         * Sets message input parameters 
+         * Ownership is transferred to this class
+         * @param aNotifyCallback Bydefault it is NULL to make function
+         *        call synchronous , if provided then function call is asynchronous                  
+         * @param aAsyncRequestObserver Asynchronous request observer
+        */
+        void SetInputParamsL(   CMsgCallbackBase* aNotifyCallback = NULL,
+                                MAsyncRequestObserver* aAsyncRequestObserver = NULL);
 
 		/**
 		 * Gives Message id list of messages 
@@ -136,6 +146,26 @@ class CMessagingAccessFolder : public CBase
 		 * @return TBool ETrue if filter on date is set and entry matches with filter
 		*/ 
 		TBool FilterDate( const TMsvEntry& aEntry ) const;
+		
+		/**
+         * Inherited from CActive class 
+        */ 
+        virtual void DoCancel();
+
+        /**
+         * Inherited from CActive class 
+        */ 
+        virtual void RunL();
+        
+        /**
+         * Activates the request and call SetActive() function
+        */ 
+        void ActivateRequest(TInt aReason);
+
+        /**
+         * Gives the result for notification request.
+        */ 
+        void NotifyRequestResult(TInt aReason, CMsvEntrySelection* aEntrySelection, CFilterParamInfo* aFilter );
 
 
 	private:
@@ -165,6 +195,23 @@ class CMessagingAccessFolder : public CBase
 		 * Filter variable
 		*/ 
         CFilterParamInfo*       iFilter;    
+        
+        /**
+         * A callback notification for asynchronous function
+        */ 
+        CMsgCallbackBase*       iNotifyCallback;
+        
+        /**
+         * Asynchronous request observer, Used to get infromed of completion or request
+        */ 
+        MAsyncRequestObserver*  iAsyncRequestObserver;
+        
+        /**
+         * Flag which specifies to cancel the request 
+         * but not to call the NotifyResultL
+         * If false doesnot call the NotifyResultL
+        **/
+        TBool iCallNotifyForCancelFlag;
 
 	};
 

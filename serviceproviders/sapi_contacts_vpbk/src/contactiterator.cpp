@@ -101,7 +101,9 @@ TBool CContactIterator::NextL(TLiwVariant& aEntry)
 
 	CLiwMap* pContactMap = NULL;
 	TBool retVal = EFalse;
-	
+	RPointerArray<HBufC> xspidArray;
+	CLiwList* IdList = NULL;
+	TLiwVariant outputVal;
 	//If iterator is iterating over contacts
 	if(iContactIter->iIndicator == EContacts)
 		{
@@ -120,6 +122,7 @@ TBool CContactIterator::NextL(TLiwVariant& aEntry)
         	TPtrC  fieldValue;
         	TTime  fieldTime;
         	TBool date = EFalse;
+        	TBool xspid = EFalse;
         	
         	CleanupStack :: PushL(contact);        	        	
         							    		    		    			    	        	
@@ -148,7 +151,29 @@ TBool CContactIterator::NextL(TLiwVariant& aEntry)
 				
 				//Get field data and populate the map structure
 				field->GetFieldDataL(fieldName, fieldLabel, fieldValue);
-				if((fieldName.Compare(KDate) == 0) || (fieldName.Compare(KAnniversary) == 0))
+				if(fieldName.Compare(KXspid) == 0)
+				    {
+				    xspid = ETrue;
+				    fieldLabel.Set(KXspidLabel);
+				    field->GetUriFieldParamL(xspidArray);
+				    if(xspidArray.Count() > 0)
+				           {
+				           
+				           TInt count = xspidArray.Count();
+				           TInt i;
+				           IdList = CLiwDefaultList::NewL();
+				           for(i=0; i<count; i++)
+				               {
+				               TDesC* idVal = xspidArray[i];
+				               outputVal.Set(*idVal);
+				               IdList->AppendL(outputVal);
+				               }
+				           
+				           }
+				    xspidArray.ResetAndDestroy();
+				    
+				    }
+				if((fieldName.Compare(KDate) == 0) || (fieldName.Compare(KAnniversary) == 0)) // || fieldName.Compare(KBirthDay) == 0)
 					{
 					date = ETrue;
 					fieldTime = field->GetDateTime();
@@ -162,6 +187,12 @@ TBool CContactIterator::NextL(TLiwVariant& aEntry)
 					if(date)
 						{
 						pFieldLinkedMap->InsertL(KFieldValue,TLiwVariant(fieldTime));				
+						}
+					else if(xspid)
+					    {
+					  //  CLiwMap* pFieldLinkedMap = CLiwDefaultMap::NewL();
+                       // CleanupClosePushL(*pFieldLinkedMap);
+                        pFieldLinkedMap->InsertL(KFieldValue,TLiwVariant(IdList));
 						}
 					else
 						{
@@ -177,6 +208,11 @@ TBool CContactIterator::NextL(TLiwVariant& aEntry)
 						{
 						date = EFalse;
 						pFieldLinkedMap->InsertL(KFieldValue,TLiwVariant(fieldTime));				
+						}
+					else if(xspid)
+                        {
+                        xspid = EFalse;
+                        pFieldLinkedMap->InsertL(KFieldValue,TLiwVariant(IdList));
 						}
 					else
 						{

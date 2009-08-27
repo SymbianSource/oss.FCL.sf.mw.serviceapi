@@ -53,6 +53,7 @@ class WrongNotificationTraceLoc : public MLiwNotifyCallback
 
 TInt TraceLocWrongCancelL()
 {
+    __UHEAP_MARK ;
 	WrongNotificationTraceLoc MyUpdates ;
 	
 	
@@ -134,16 +135,19 @@ TInt TraceLocWrongCancelL()
    
    TInt ret = (errprm->Value()).AsTInt32() ;
     
-    delete Scheduler ;
+   locinterface->Close(); 
+   delete Scheduler ;
     
-    locinterface->Close();
+    a.ResetAndDestroy();
+    
     delete InputList ;
     delete  OutParmList ;
-    
+    delete ServiceHandler;
     if ( SErrNotFound == ret )
 	    {
 	    return KErrNone;	
 	    }
+    __UHEAP_MARKEND ;
     return ret ;  
 }
 

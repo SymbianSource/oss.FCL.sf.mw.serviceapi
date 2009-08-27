@@ -246,9 +246,9 @@ TInt Clandmarks_inputparams::GetLandmarkL()
     CLiwDefaultMap* area = CLiwDefaultMap::NewL();
     CleanupStack::PushL(area);
     area->InsertL(_L8("NorthLatitude"),TLiwVariant(12.12));
-    area->InsertL(_L8("SouthLatitude"),TLiwVariant(13.13));
+    area->InsertL(_L8("SouthLatitude"),TLiwVariant(11.13));
     area->InsertL(_L8("EastLongitude"),TLiwVariant(14.14));
-    area->InsertL(_L8("WestLongitude"),TLiwVariant(15.15));
+    area->InsertL(_L8("WestLongitude"),TLiwVariant(13.15));
     filter->InsertL(_L8("BoundedArea"),TLiwVariant(area));
     
     
@@ -264,12 +264,17 @@ TInt Clandmarks_inputparams::GetLandmarkL()
     
     
     
-    iLandmarkIf->ExecuteCmdL(_L8("GetList"),inList,outList,0,0);  
+    iLandmarkIf->ExecuteCmdL(_L8("getList"),inList,outList,0,0);  
     
-    CleanupStack::PopAndDestroy(sort);
-    CleanupStack::PopAndDestroy(area);
-    CleanupStack::PopAndDestroy(position);
-    CleanupStack::PopAndDestroy(filter);
+    
+    CleanupStack::Pop(sort);
+    sort->DecRef();  
+    CleanupStack::Pop(area);
+    area->DecRef();
+    CleanupStack::Pop(position);
+    position->DecRef();  
+    CleanupStack::Pop(filter);
+    filter->DecRef();    
     
     
     TInt index = 0;
@@ -306,7 +311,8 @@ TInt Clandmarks_inputparams::GetLandmarkDefL()
     
     iLandmarkIf->ExecuteCmdL(_L8("GetList"),inList,outList,0,0);  
     
-    CleanupStack::PopAndDestroy(filter);
+    CleanupStack::Pop(filter);
+    filter->DecRef();
     
     
     TInt index = 0;
@@ -361,10 +367,11 @@ TInt Clandmarks_inputparams::GetCategoryL()
     inList.AppendL(TLiwGenericParam(KNullDesC8,TLiwVariant(sort)));
 
     iLandmarkIf->ExecuteCmdL(_L8("GetList"),inList,outList,0,0);  
-    
-    CleanupStack::PopAndDestroy(sort);
-    CleanupStack::PopAndDestroy(filter);
-    
+        
+    CleanupStack::Pop(sort);
+    sort->DecRef();
+    CleanupStack::Pop(filter);
+    filter->DecRef();
     
     TInt index = 0;
     const TLiwGenericParam* outParam = outList.FindFirst(index,_L8("ErrorCode")); 
@@ -413,8 +420,10 @@ TInt Clandmarks_inputparams::GetDatabaseL()
     
     iLandmarkIf->ExecuteCmdL(_L8("GetList"),inList,outList,0,0);  
     
-    CleanupStack::PopAndDestroy(sort);
-    CleanupStack::PopAndDestroy(filter);
+    CleanupStack::Pop(sort);
+    sort->DecRef();
+    CleanupStack::Pop(filter);
+    filter->DecRef();
     
     
     TInt index = 0;
@@ -551,10 +560,13 @@ TInt Clandmarks_inputparams::AddLmL( TInt32 count )
         
         iLandmarkIf->ExecuteCmdL(_L8("Add"),inList,outList,0,0);  
         
-        CleanupStack::PopAndDestroy(fields);
-        CleanupStack::PopAndDestroy(position);
-        CleanupStack::PopAndDestroy(data);
         
+        CleanupStack::Pop(fields);
+        fields->DecRef();
+        CleanupStack::Pop(position);
+        position->DecRef();
+        CleanupStack::Pop(data);
+        data->DecRef(); 
         
         TInt index = 0;
         const TLiwGenericParam* outParam = outList.FindFirst(index,_L8("ErrorCode")); 
@@ -638,10 +650,12 @@ TInt Clandmarks_inputparams::AddLandmarkL()
     
     iLandmarkIf->ExecuteCmdL(_L8("Add"),inList,outList,0,0);  
     
-    CleanupStack::PopAndDestroy(fields);
-    CleanupStack::PopAndDestroy(position);
-    //CleanupStack::PopAndDestroy(category);
-    CleanupStack::PopAndDestroy(data);
+    CleanupStack::Pop(fields);
+    fields->DecRef();
+    CleanupStack::Pop(position);
+    position->DecRef();
+    CleanupStack::Pop(data);
+    data->DecRef();   
     
     
     TInt index = 0;
@@ -698,7 +712,8 @@ TInt Clandmarks_inputparams::AddCategoryL()
     
     iLandmarkIf->ExecuteCmdL(_L8("Add"),inList,outList,0,0);  
     
-    CleanupStack::PopAndDestroy(data);
+    CleanupStack::Pop(data);
+    data->DecRef();  
     
     
     TInt index = 0;
@@ -771,13 +786,14 @@ TInt Clandmarks_inputparams::DeleteLandmarkL()
     CleanupStack::PushL(data);
     
     data->InsertL(_L8("DatabaseURI"),TLiwVariant(_L("c:eposlm.ldb")));
-    data->InsertL(_L8("LandmarkId"),TLiwVariant(_L("0")));
+    data->InsertL(_L8("id"),TLiwVariant(_L("0")));
 
     inList.AppendL(TLiwGenericParam(KNullDesC8,TLiwVariant(data)));
     
     iLandmarkIf->ExecuteCmdL(_L8("Delete"),inList,outList,0,0);  
     
-    CleanupStack::PopAndDestroy(data);
+    CleanupStack::Pop(data);
+    data->DecRef();  
     
     
     TInt index = 0;
@@ -811,13 +827,14 @@ TInt Clandmarks_inputparams::DeleteCategoryL()
     CleanupStack::PushL(data);
     
     data->InsertL(_L8("DatabaseURI"),TLiwVariant(_L("c:eposlm.ldb")));
-    data->InsertL(_L8("CategoryId"),TLiwVariant(_L("0")));
+    data->InsertL(_L8("id"),TLiwVariant(_L("0")));
 
     inList.AppendL(TLiwGenericParam(KNullDesC8,TLiwVariant(data)));
     
     iLandmarkIf->ExecuteCmdL(_L8("Delete"),inList,outList,0,0);  
     
-    CleanupStack::PopAndDestroy(data);
+    CleanupStack::Pop(data);
+    data->DecRef();  
     
     
     TInt index = 0;
@@ -881,7 +898,8 @@ TInt Clandmarks_inputparams::ImportL( CStifItemParser& aItem )
     
     iLandmarkIf->ExecuteCmdL(_L8("Import"),inList,outList,0,0);  
     
-    CleanupStack::PopAndDestroy(data);
+    CleanupStack::Pop(data);
+    data->DecRef();  
     
     
     TInt index = 0;
@@ -895,7 +913,7 @@ TInt Clandmarks_inputparams::ImportL( CStifItemParser& aItem )
     outList.Reset();
     Delete();
     //__UHEAP_MARKEND;
-    if( index == 1013 )
+    if( index == 1012 )
     {
         index = 0;
     }
@@ -954,7 +972,7 @@ TInt Clandmarks_inputparams::ExportL( CStifItemParser& aItem )
     CLiwDefaultList* list = CLiwDefaultList::NewL();
     CleanupStack::PushL(list);
     list->AppendL(TLiwVariant(_L("0")));
-    data->InsertL(_L8("LandmarkIdList"),TLiwVariant(list));
+    data->InsertL(_L8("IdList"),TLiwVariant(list));
     
     data->InsertL(_L8("MimeType"),TLiwVariant(_L("application/vnd.nokia.landmarkcollection+xml")));
 
@@ -962,8 +980,10 @@ TInt Clandmarks_inputparams::ExportL( CStifItemParser& aItem )
     
     iLandmarkIf->ExecuteCmdL(_L8("Export"),inList,outList,0,0);  
     
-    CleanupStack::PopAndDestroy(list);
-    CleanupStack::PopAndDestroy(data);
+    CleanupStack::Pop(list);
+    list->DecRef();  
+    CleanupStack::Pop(data);
+    data->DecRef();  
     
     
     TInt index = 0;
@@ -1025,12 +1045,12 @@ TInt Clandmarks_inputparams::OrganiseL( CStifItemParser& aItem )
     CleanupStack::PushL(data);
     
     data->InsertL(_L8("DatabaseURI"),TLiwVariant(_L("c:eposlm.ldb")));
-    data->InsertL(_L8("CategoryId"),TLiwVariant(_L("0")));
+    data->InsertL(_L8("id"),TLiwVariant(_L("0")));
     
     CLiwDefaultList* list = CLiwDefaultList::NewL();
     CleanupStack::PushL(list);
     list->AppendL(TLiwVariant(_L("0")));
-    data->InsertL(_L8("LandmarkIdList"),TLiwVariant(list));
+    data->InsertL(_L8("IdList"),TLiwVariant(list));
     
     inList.AppendL(TLiwGenericParam(KNullDesC8,TLiwVariant(data)));
     
@@ -1039,8 +1059,10 @@ TInt Clandmarks_inputparams::OrganiseL( CStifItemParser& aItem )
     
     iLandmarkIf->ExecuteCmdL(_L8("Organise"),inList,outList,0,0);  
     
-    CleanupStack::PopAndDestroy(list);
-    CleanupStack::PopAndDestroy(data);
+    CleanupStack::Pop(list);
+    list->DecRef();  
+    CleanupStack::Pop(data);
+    data->DecRef();
     
     
     TInt index = 0;
@@ -1097,7 +1119,7 @@ TInt Clandmarks_inputparams::CancelL( CStifItemParser& aItem )
     //Type mandatory
     inList.AppendL(TLiwGenericParam(KNullDesC8,TLiwVariant((TInt32)0)));
     
-    iLandmarkIf->ExecuteCmdL(_L8("Cancel"),inList,outList,0,0);  
+    iLandmarkIf->ExecuteCmdL(_L8("Cancel"),inList,outList,KLiwOptCancel,0);  
     
     
     TInt index = 0;
@@ -1157,7 +1179,9 @@ TInt Clandmarks_inputparams::LiwL( CStifItemParser& aItem )
     map->InsertL(KNullDesC8,variant);
     TRAP_IGNORE(OperationsL(map));
     param->AppendL(TLiwGenericParam(KNullDesC8,TLiwVariant(map)));
-    CleanupStack::PopAndDestroy(map);
+     
+    CleanupStack::Pop(map);
+    map->DecRef();
     TLiwGenericParam outParam;
     param->AtL(0,outParam);
     const CLiwMap* outMap = outParam.Value().AsMap();

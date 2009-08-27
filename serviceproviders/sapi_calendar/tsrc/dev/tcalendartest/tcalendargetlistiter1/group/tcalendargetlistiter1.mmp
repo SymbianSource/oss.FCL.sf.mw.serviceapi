@@ -41,6 +41,7 @@ DEFFILE         tcalendargetlistiter1.def
 SOURCEPATH      ../src
 SOURCE          tcalendargetlisttest.cpp
 SOURCE          tcalendargetlisttestblocks.cpp
+SOURCE          calgetlisttestcases.cpp
 
 USERINCLUDE     ../inc 
 //USERINCLUDE     ../../../inc

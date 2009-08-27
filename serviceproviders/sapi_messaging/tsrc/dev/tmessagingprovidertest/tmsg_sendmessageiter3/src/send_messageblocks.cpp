@@ -111,6 +111,7 @@ TInt Csapi_sendmessage::RunMethodL(
         ENTRY( "sendmessage_test8", Csapi_sendmessage::sendmessage_test8L ),
         ENTRY( "sendmessage_test9", Csapi_sendmessage::sendmessage_test9L ),
         ENTRY( "sendmessage_test10", Csapi_sendmessage::sendmessage_test10L ),
+        ENTRY( "sendmessage_test11", Csapi_sendmessage::sendmessage_test11L )
 
         };
 
@@ -220,7 +221,12 @@ TInt Csapi_sendmessage::sendmessage_test9L( CStifItemParser& /*aItem*/ )
 TInt Csapi_sendmessage::sendmessage_test10L( CStifItemParser& /*aItem*/ )
     {
     return sendmessage_test10(0, NULL);
-    }    
+    } 
+
+TInt Csapi_sendmessage::sendmessage_test11L( CStifItemParser& /*aItem*/ )
+    {
+    return sendmessage_test11(0, NULL);
+    }
 // -----------------------------------------------------------------------------
 // Csapi_sendmessage::?member_function
 // ?implementation_description

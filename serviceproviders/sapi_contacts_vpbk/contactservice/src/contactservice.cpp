@@ -431,7 +431,7 @@ void CContactService::GetListL( MContactCallback*  aCallback,
 	    						const TDesC& aSearchVal,
 	    						CSearchFields* aSearchFields,
 	    						TOrder aSortOrder,
-	    						const TDesC& aStoreUri)
+	    						const TDesC& aStoreUri, TCmdType val)
 	{
 		TInt retVal = KErrGeneral;
 		CContactIter* iter;
@@ -472,7 +472,7 @@ void CContactService::GetListL( MContactCallback*  aCallback,
 													 iter,
 													 type,
 													 aTransId,
-													 iContactStore) ;
+													 iContactStore,val) ;
 
 			        CleanupStack::PushL(getListOpenObserver);
 
@@ -510,7 +510,7 @@ void CContactService::GetListL( MContactCallback*  aCallback,
 												iter,
 												type,
 												aTransId,
-												iContactStore) ;
+												iContactStore,val) ;
 		        CleanupStack::PushL(getListOpenObserver);
 
 		        //Opens the database and goes to observer's StoreReady() function.

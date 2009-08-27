@@ -64,6 +64,11 @@ void  Ctmediaprovidertesting::ParseStiffInput(CStifItemParser& aItem)
        {
        iFiletype = EMusicFile;
        }
+    else if(inpFileType.CompareF(KFileTypeImage) == 0)
+       {
+       iFiletype = EImageFile;
+       iLog->Log(_L("file type is image"));
+       }
     //check for expected key 
     //if it is there then get the expected result and put it into the map.
     if(expectedStart.CompareF(KExpectedStart) == 0)
@@ -190,6 +195,12 @@ void Ctmediaprovidertesting :: SetExpectedOutputMap(CStifItemParser& aItem)
                     aItem.GetNextInt(fileSize);                    
                     expectedOutPutMap->InsertL(insertKey, (TInt32)fileSize);                    
                     }
+                else if(key.CompareF(_L("XPixels"))==0 || key.CompareF(_L("YPixels"))==0)
+                    {
+                    TInt resolution = -1;
+                    aItem.GetNextInt(resolution);
+                    expectedOutPutMap->InsertL(insertKey, (TInt32)resolution);
+                    }
                 else
                     {
                     aItem.GetNextString(nextString);
@@ -239,7 +250,7 @@ TBool  Ctmediaprovidertesting::IsExpectedResult(CLiwIterable* aResultlist)
                         iLog->Log(_L("Result Not in Expected sort order"));
                         User::Leave(KErrGeneral);
                         }                                   
-                    iLog->Log(_L("Map is in sorted order with positio ")); // Lok
+                    iLog->Log(_L("Map is in sorted order with position ")); // Lok
                     TBuf<10>buf;
                     buf.Num(index);
                     iLog->Log(buf);
@@ -299,7 +310,24 @@ TBool Ctmediaprovidertesting::CompareMaps(CLiwMap* aExpectedMap,
     if(!CompareTTimeResult(KMgFileDate, aExpectedMap, aResultMap))
         {
         return EFalse;
-        }    
+        }
+    
+    //Image Files 
+    if(iFiletype == EImageFile)
+       {    
+       if(!CompareTIntResult(KXPixels, aExpectedMap, aResultMap))
+               {
+               iLog->Log(_L("Expected and Returned XPixel values do not match"));
+               return EFalse;
+               }            
+
+       if(!CompareTIntResult(KYPixels, aExpectedMap, aResultMap))
+               {
+               iLog->Log(_L("Expected and Returned YPixel values do not match"));
+               return EFalse;
+               }            
+       }
+    
     //In case of streamingURL file check for few additional keys. 
     if(iFiletype == EStreamingURLFile)
        {       
@@ -395,7 +423,7 @@ TBool Ctmediaprovidertesting::CompareTTimeResult(const TDesC8& aKey,
                                                  CLiwMap* aExpectedMap,
                                                  const CLiwMap* aResultMap)
     {
-    iLog->Log(_L("Inside CompareStringResult"));
+    iLog->Log(_L("Inside CompareTTimeResult"));
     TLiwVariant expValue;
     TLiwVariant resValue;    
     TBool equal = EFalse; 

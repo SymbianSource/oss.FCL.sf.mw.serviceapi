@@ -328,8 +328,11 @@ class CCalendarInterface : public CBase, public MLiwInterface
 	     * @return void
 	    */
 		void GetListCalendarEntryL(const CLiwGenericParamList& aInParamList, 
-												CLiwGenericParamList& aOutParamList, 
-												const TBool aPosBased );
+												CLiwGenericParamList& aOutParamList,
+												TUint aCmdOptions,
+												MLiwNotifyCallback* aCallback ,
+												const TBool aPosBased,
+												TInt32& aTransactionId  );
 												
 		/**
 	     * Issues Import Calendar Entry request to Calendar Service
@@ -575,6 +578,15 @@ class CCalendarInterface : public CBase, public MLiwInterface
 	     * @return Entry type
 	    */
 		TInt GetEntryType( const TDesC& aCalendarName, TCalLocalUid aLocalUid );
+        /**
+         * Returns entry type for given LocalUid.
+         * @param aCalendarName CalendarName
+         * @param aLocalUid LocalUid
+         *
+         * @return Entry type
+        */
+        TInt GetEntryType( const TDesC& aCalendarName, const TDesC8& aGuid );
+		
 		
 		/**
 	     * Check if given calendar is in use.

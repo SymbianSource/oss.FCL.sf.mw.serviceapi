@@ -35,6 +35,17 @@
 ;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\contactservice.dll"-"C:\sys\bin\contactservice.dll"
 "..\..\..\..\..\..\..\epoc32\release\armv5\urel\tContact_import.dll"-"C:\sys\bin\tContact_import.dll"
 
+;vcf files
+"..\data\c\cagent.vcf"-"c:\data\cagent.vcf"
+"..\data\c\details.vcf"-"c:\data\details.vcf"
+"..\data\c\doublecontact.vcf"-"c:\data\doublecontact.vcf"
+"..\data\c\empty.vcf"-"c:\data\empty.vcf"
+"..\data\c\halfline.vcf"-"c:\data\halfline.vcf"
+"..\data\c\mti.vcf"-"c:\data\mti.vcf"
+"..\data\c\singlecontact1.vcf"-"c:\data\singlecontact1.vcf"
+"..\data\c\singlecontact2.vcf"-"c:\data\singlecontact2.vcf"
+"..\data\c\singlecontact.vcf"-"c:\data\singlecontact.vcf"
+"..\data\c\singlecontact.txt"-"c:\data\singlecontact.txt"
 
 ;ini file
 "..\init\Testframework.ini"-"c:\Testframework\Testframework.ini"

@@ -114,7 +114,7 @@ TInt TraceCB ::  HandleNotifyL(
   
 TInt StrayTestGetLocL()
 {
-	
+    __UHEAP_MARK ;
 	CActiveScheduler *Scheduler = new CActiveScheduler ;
 
 	CActiveScheduler :: Install(Scheduler) ;
@@ -182,12 +182,13 @@ TInt StrayTestGetLocL()
 
 	CActiveScheduler :: Start() ;
 	
-	
+	a.ResetAndDestroy() ;
 	locinterface->Close() ;
 	delete ServiceHandler ;
 	delete InputList ;
 	delete OutParmList ;
 	delete Scheduler ;
+	__UHEAP_MARKEND ;
 	return 0 ; // Controll never reaches here
 }
 

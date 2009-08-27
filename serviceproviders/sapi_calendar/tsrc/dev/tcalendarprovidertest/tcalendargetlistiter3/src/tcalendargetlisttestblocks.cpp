@@ -45,6 +45,106 @@ void GetLocalUid( const TDesC& aLocalUid, TCalLocalUid& aOutLocalUid );
 void GetGlobalUid( const TDesC& aGlobalUid, TDes8& aOutGlobalUid );
 TDesC& GetEntry(MLiwInterface* interface, CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC globaluid, const TDesC& calname);
 
+class CCalGetListCallback : public MLiwNotifyCallback
+    {
+    public:
+        
+        static CCalGetListCallback* NewL(CActiveSchedulerWait* aWaitSchedular, TInt& aResult );
+        
+        virtual ~CCalGetListCallback(){}
+        
+        TInt HandleNotifyL(TInt aCmdId,
+                TInt aEventId,
+                CLiwGenericParamList& aEventParamList,
+                const CLiwGenericParamList& aInParamList);
+        TInt            iEntryAdded;
+        
+    private:
+    
+        CCalGetListCallback(CActiveSchedulerWait* aWaitSchedular, TInt& aResult ):iWaitSchedular(aWaitSchedular), iResult(aResult){ }
+
+        CActiveSchedulerWait*   iWaitSchedular;
+        TInt&           iResult;
+        
+            
+    };
+
+class CTestAsync : public CActive
+{
+enum TTestCaseType
+        {
+        KGetlistGuidFilterAsync,
+        KGetlistLuidFilterAsync,
+        KGetlistTmRgFilterAsync,
+        KGetlistTextFilterAsync,
+        KGetlistTypeFilterAsync,
+        KGetlistInvalidGuidFilterAsync,
+        KGetlistInvalidLuidFilterAsync,
+        KGetlistGuidFilterCancelAsync,
+        KGetlistLuidFilterCancelAsync,
+        KGetlistTmRgFilterCancelAsync,
+        KGetlistTextFilterCancelAsync,
+        KGetlistTypeFilterCancelAsync,
+        };
+
+public:
+    static CTestAsync* NewL();
+    ~CTestAsync();
+    void Start();
+
+    void TestGetlistGuidFilterAsyncL();
+    void TestGetlistLuidFilterAsyncL();
+    void TestGetlistTmRgFilterAsyncL();
+    void TestGetlistTextFilterAsyncL();
+    void TestGetlistTypeFilterAsyncL();
+    void TestGetlistInvalidGuidFilterAsyncL();
+    void TestGetlistInvalidLuidFilterAsyncL();
+
+    void TestGetlistGuidFilterCancelAsyncL();
+    void TestGetlistLuidFilterCancelAsyncL();
+    void TestGetlistTmRgFilterCancelAsyncL();
+    void TestGetlistTextFilterCancelAsyncL();
+    void TestGetlistTypeFilterCancelAsyncL();
+    
+    void GuidAsyncL();
+    void LuidAsyncL();
+    void TmRgFilterAsyncL();
+    void TextFilterAsyncL();
+    void TypeFilterAsyncL();
+    void InvalidGuidAsyncL();
+    void InvalidLuidAsyncL();
+
+    void GuidCancelAsyncL();
+    void LuidCancelAsyncL();
+    void TmRgFilterCancelAsyncL();
+    void TextFilterCancelAsyncL();
+    void TypeFilterCancelAsyncL();
+    
+    TInt Result();
+    
+private:
+    void ConstructL();
+    CTestAsync();
+    
+    virtual void DoCancel();
+    virtual void RunL();
+    
+    void TestFunc();
+
+    
+private:    
+    CLiwServiceHandler*     iServiceHandler;
+    CActiveSchedulerWait*   iWaitSchedular;
+    TInt                    iResult;
+    TInt                    iEntryAdded;    
+    CCalGetListCallback*    iCallback;
+    MLiwInterface*          interface;
+    TInt32                  iTransactionId;
+    TBool                   iEntryArray;
+    TTestCaseType           iTestCaseType;
+};
+
+_LIT8(KCmdCancel,       "Cancel");
 _LIT8(KIDataSource, "IDataSource");
 _LIT8(KService, "Service.Calendar");
 
@@ -93,6 +193,20 @@ TInt CTCalendarGetListTest::RunMethodL(
 		ENTRY( "GetListInvalidCalName", CTCalendarGetListTest::GetListInvalidCalName ),
 		ENTRY( "GetListInvalidGUID"   , CTCalendarGetListTest::GetListInvalidGUID ),
 		ENTRY( "GetListInvalidLUID"   , CTCalendarGetListTest::GetListInvalidLUID ),
+		
+		ENTRY( "GetListGUidFilterAsync",       CTCalendarGetListTest::GetListGUidFilterAsync ),
+        ENTRY( "GetListLocalUidFilterAsync", CTCalendarGetListTest::GetListLocalUidFilterAsync ),
+        ENTRY( "GetListTimeRangeFilterAsync",CTCalendarGetListTest::GetListTimeRangeFilterAsync ),
+        ENTRY( "GetListTextFilterAsync",     CTCalendarGetListTest::GetListTextFilterAsync ),
+        ENTRY( "GetListTypeFilterAsync",     CTCalendarGetListTest::GetListTypeFilterAsync ),
+        ENTRY( "GetListInvalidGUidFilterAsync",       CTCalendarGetListTest::GetListInvalidGUidFilterAsync ),
+        ENTRY( "GetListInvalidLocalUidFilterAsync", CTCalendarGetListTest::GetListInvalidLocalUidFilterAsync ),
+
+        ENTRY( "GetListGUidFilterCancelAsync",       CTCalendarGetListTest::GetListGUidFilterCancelAsync ),
+        ENTRY( "GetListLocalUidFilterCancelAsync", CTCalendarGetListTest::GetListLocalUidFilterCancelAsync ),
+        ENTRY( "GetListTimeRangeFilterCancelAsync",CTCalendarGetListTest::GetListTimeRangeFilterCancelAsync ),
+        ENTRY( "GetListTextFilterCancelAsync",     CTCalendarGetListTest::GetListTextFilterCancelAsync ),
+        ENTRY( "GetListTypeFilterCancelAsync",     CTCalendarGetListTest::GetListTypeFilterCancelAsync ),
         };
 
     const TInt count = sizeof( KFunctions ) / 
@@ -1404,7 +1518,236 @@ TInt CTCalendarGetListTest::GetListInvalidLUID(CStifItemParser& /*aItem*/ )
 	return result;
 
 	}		
+//_LIT8(KErrorCode,"ErrorCode");
+TInt CTCalendarGetListTest::GetListGUidFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result=KErrNone;     
+    
+    __UHEAP_MARK;
+    
+    CTestAsync* test = CTestAsync::NewL();
+    test->TestGetlistGuidFilterAsyncL();
+    result = test->Result();
+    delete test;
+    
+    __UHEAP_MARKEND;    
 
+    return result;
+
+    }
+TInt CTCalendarGetListTest::GetListLocalUidFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result=KErrNone;     
+    
+    __UHEAP_MARK;
+ 
+    CTestAsync* test = CTestAsync::NewL();
+    test->TestGetlistLuidFilterAsyncL();
+    result = test->Result();
+    delete test;
+     
+    __UHEAP_MARKEND;    
+
+    return result;
+    }
+
+TInt CTCalendarGetListTest::GetListTimeRangeFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result=KErrNone;     
+    
+    __UHEAP_MARK;
+    
+    CTestAsync* test = CTestAsync::NewL();
+    test->TestGetlistTmRgFilterAsyncL();
+    result = test->Result();
+    delete test;
+    
+    __UHEAP_MARKEND;    
+
+    return result;
+    
+    }
+
+  
+//  
+//Whats done here? 
+//  Get the default system Calendar using GetList of CCalendarService and output that to GetListdefaultCalendar.txt
+//       
+TInt CTCalendarGetListTest::GetListTextFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result=KErrNone;     
+    
+    __UHEAP_MARK;
+    
+    CTestAsync* test = CTestAsync::NewL();
+    test->TestGetlistTextFilterAsyncL();
+    result = test->Result();
+    delete test;
+   
+    __UHEAP_MARKEND;    
+
+    return result;
+    
+    
+    }
+    
+
+//  
+//Whats done here? 
+//  Get the default system Calendar using GetList of CCalendarService and output that to GetListdefaultCalendar.txt
+//           
+TInt CTCalendarGetListTest::GetListTypeFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+
+    TInt result=KErrNone;     
+    
+    __UHEAP_MARK;
+    
+    CTestAsync* test = CTestAsync::NewL();
+    test->TestGetlistTypeFilterAsyncL();
+    result = test->Result();
+    delete test;
+    
+    __UHEAP_MARKEND;    
+
+    return result;
+    
+    }
+TInt CTCalendarGetListTest::GetListInvalidGUidFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result=KErrNone;     
+    
+    __UHEAP_MARK;
+    
+    CTestAsync* test = CTestAsync::NewL();
+    test->TestGetlistInvalidGuidFilterAsyncL();
+    result = test->Result();
+    if(result == KErrGeneral)
+        {
+        result = KErrNone;
+        }
+    delete test;
+    
+    __UHEAP_MARKEND;    
+
+    return result;
+
+    }
+TInt CTCalendarGetListTest::GetListInvalidLocalUidFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result=KErrNone;     
+    
+    __UHEAP_MARK;
+ 
+    CTestAsync* test = CTestAsync::NewL();
+    test->TestGetlistInvalidLuidFilterAsyncL();
+    result = test->Result();
+    if(result == KErrGeneral)
+        {
+        result = KErrNone;
+        }
+    delete test;
+     
+    __UHEAP_MARKEND;    
+
+    return result;
+    }
+
+TInt CTCalendarGetListTest::GetListGUidFilterCancelAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result=KErrNone;     
+    
+    __UHEAP_MARK;
+    
+    CTestAsync* test = CTestAsync::NewL();
+    test->TestGetlistGuidFilterCancelAsyncL();
+    result = test->Result();
+   // test->CancelNotification();
+    delete test;
+    
+    __UHEAP_MARKEND;    
+
+    return result;
+
+    }
+TInt CTCalendarGetListTest::GetListLocalUidFilterCancelAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result=KErrNone;     
+    
+    __UHEAP_MARK;
+ 
+    CTestAsync* test = CTestAsync::NewL();
+    test->TestGetlistLuidFilterCancelAsyncL();
+    result = test->Result();
+    delete test;
+     
+    __UHEAP_MARKEND;    
+
+    return result;
+    }
+
+TInt CTCalendarGetListTest::GetListTimeRangeFilterCancelAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result=KErrNone;     
+    
+    __UHEAP_MARK;
+    
+    CTestAsync* test = CTestAsync::NewL();
+    test->TestGetlistTmRgFilterCancelAsyncL();
+    result = test->Result();
+    delete test;
+    
+    __UHEAP_MARKEND;    
+
+    return result;
+    
+    }
+
+  
+//  
+//Whats done here? 
+//  Get the default system Calendar using GetList of CCalendarService and output that to GetListdefaultCalendar.txt
+//       
+TInt CTCalendarGetListTest::GetListTextFilterCancelAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result=KErrNone;     
+    
+    __UHEAP_MARK;
+    
+    CTestAsync* test = CTestAsync::NewL();
+    test->TestGetlistTextFilterCancelAsyncL();
+    result = test->Result();
+    delete test;
+   
+    __UHEAP_MARKEND;    
+
+    return result;
+    
+    
+    }
+    
+
+//  
+//Whats done here? 
+//  Get the default system Calendar using GetList of CCalendarService and output that to GetListdefaultCalendar.txt
+//           
+TInt CTCalendarGetListTest::GetListTypeFilterCancelAsync(CStifItemParser& /*aItem*/ )
+    {
+
+    TInt result=KErrNone;     
+    
+    __UHEAP_MARK;
+    
+    CTestAsync* test = CTestAsync::NewL();
+    test->TestGetlistTypeFilterCancelAsyncL();
+    result = test->Result();
+    delete test;
+    
+    __UHEAP_MARKEND;    
+
+    return result;
+    
+    }
 
 TInt RemoveProvCalendar(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, MLiwInterface* interface, const TDesC& aCalendar)
 	{
@@ -1922,3 +2265,1522 @@ TInt AddProvEvent(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam,
 	};
 				
 				
+/**
+ * Callback class for asynchronous SAPI message header
+*/  
+CCalGetListCallback* CCalGetListCallback::NewL(CActiveSchedulerWait* aWaitSchedular, TInt& aResult)
+    {
+    return new (ELeave) CCalGetListCallback(aWaitSchedular, aResult);
+    }
+        
+TInt CCalGetListCallback::HandleNotifyL(TInt aCmdId,
+                                            TInt aEventId,
+                                            CLiwGenericParamList& aEventParamList,
+                                            const CLiwGenericParamList& aInParamList)
+    {
+    TInt pos = 0;
+    TInt result = KErrNone;
+    const TLiwGenericParam* output = aEventParamList.FindFirst( pos,_L8("ReturnValue"));
+    
+    if(output)
+        {
+        CLiwIterable* iterlist = output->Value().AsIterable();
+        
+        TInt returnItems = 0;
+
+        if(iterlist)
+            {
+            TLiwVariant data;
+
+            while ( iterlist->NextL(data) )
+                returnItems++;  
+            
+            data.Reset();  
+            }
+        if ( iWaitSchedular && iWaitSchedular->IsStarted())
+        {
+             iWaitSchedular->AsyncStop();
+        }
+        
+        if(returnItems == 0)
+            {
+            return KErrGeneral;
+            }
+         }
+   
+        return 0;
+    }
+CTestAsync* CTestAsync::NewL()
+    {
+    CTestAsync* self = new (ELeave) CTestAsync();
+    self->ConstructL();
+    return self;
+    }
+
+CTestAsync::~CTestAsync()
+    {
+    Cancel();
+    
+    interface->Close();
+    
+    delete iServiceHandler;
+    
+    delete iCallback;
+
+    if(iWaitSchedular->IsStarted())
+        iWaitSchedular->AsyncStop();
+
+    delete iWaitSchedular;
+    }
+
+
+void CTestAsync::ConstructL()
+    {
+    CActiveScheduler::Add(this);
+    iWaitSchedular = new(ELeave) CActiveSchedulerWait();
+    }
+
+
+CTestAsync::CTestAsync() :
+CActive(EPriorityStandard)
+        {
+        interface = NULL ;
+        iResult = KErrNone;
+      //  iResult = KErrGeneral;
+        }
+
+void CTestAsync::DoCancel()
+    {
+
+    }
+    
+void CTestAsync::TestGetlistGuidFilterAsyncL()    
+    {
+    iTestCaseType = KGetlistGuidFilterAsync;
+        
+    if(iResult == KErrNone)
+        Start();
+    }   
+
+void CTestAsync::TestGetlistLuidFilterAsyncL()    
+    {
+    iTestCaseType = KGetlistLuidFilterAsync;
+    
+    if(iResult == KErrNone)
+        Start();
+    }   
+
+void CTestAsync::TestGetlistTmRgFilterAsyncL()    
+    {
+    iTestCaseType = KGetlistTmRgFilterAsync;
+
+    if(iResult == KErrNone)
+        Start();
+    }   
+
+void CTestAsync::TestGetlistTextFilterAsyncL()    
+    {
+    iTestCaseType = KGetlistTextFilterAsync;
+
+    if(iResult == KErrNone)
+        Start();
+    }   
+
+void CTestAsync::TestGetlistTypeFilterAsyncL()    
+    {
+    iTestCaseType = KGetlistTypeFilterAsync;
+
+    if(iResult == KErrNone)
+        Start();
+    }  
+
+void CTestAsync::TestGetlistInvalidGuidFilterAsyncL()    
+    {
+    iTestCaseType = KGetlistInvalidGuidFilterAsync;
+
+    if(iResult == KErrNone)
+        Start();
+    }   
+
+void CTestAsync::TestGetlistInvalidLuidFilterAsyncL()    
+    {
+    iTestCaseType = KGetlistInvalidLuidFilterAsync;
+
+    if(iResult == KErrNone)
+        Start();
+    }   
+
+void CTestAsync::TestGetlistGuidFilterCancelAsyncL()    
+    {
+    iTestCaseType = KGetlistGuidFilterAsync;
+        
+    if(iResult == KErrNone)
+        Start();
+    }   
+
+void CTestAsync::TestGetlistLuidFilterCancelAsyncL()    
+    {
+    iTestCaseType = KGetlistLuidFilterAsync;
+    
+    if(iResult == KErrNone)
+        Start();
+    }   
+
+void CTestAsync::TestGetlistTmRgFilterCancelAsyncL()    
+    {
+    iTestCaseType = KGetlistTmRgFilterAsync;
+
+    if(iResult == KErrNone)
+        Start();
+    }   
+
+void CTestAsync::TestGetlistTextFilterCancelAsyncL()    
+    {
+    iTestCaseType = KGetlistTextFilterAsync;
+
+    if(iResult == KErrNone)
+        Start();
+    }   
+
+void CTestAsync::TestGetlistTypeFilterCancelAsyncL()    
+    {
+    iTestCaseType = KGetlistTypeFilterCancelAsync;
+
+    if(iResult == KErrNone)
+        Start();
+    }  
+
+void CTestAsync::RunL()
+    {
+    switch( iTestCaseType )
+        {
+        case KGetlistGuidFilterAsync :
+            GuidAsyncL();
+            break;
+        case KGetlistLuidFilterAsync :
+            LuidAsyncL();
+            break;
+        case KGetlistTmRgFilterAsync :
+            TmRgFilterAsyncL();
+            break;
+        case KGetlistTextFilterAsync :
+            TextFilterAsyncL();
+            break;
+        case KGetlistTypeFilterAsync :
+            TypeFilterAsyncL();
+            break;
+        case KGetlistInvalidGuidFilterAsync :
+            InvalidGuidAsyncL();
+            break;
+        case KGetlistInvalidLuidFilterAsync :
+            InvalidLuidAsyncL();
+            break;
+        case KGetlistGuidFilterCancelAsync :
+            GuidCancelAsyncL();
+            break;
+        case KGetlistLuidFilterCancelAsync :
+            LuidCancelAsyncL();
+            break;
+        case KGetlistTmRgFilterCancelAsync :
+            TmRgFilterCancelAsyncL();
+            break;
+        case KGetlistTextFilterCancelAsync :
+            TextFilterCancelAsyncL();
+            break;
+        case KGetlistTypeFilterCancelAsync :
+            TypeFilterCancelAsyncL();
+            break;
+             
+        }
+    }
+TInt CTestAsync::Result()
+    {
+    return iResult;
+    }
+void CTestAsync::Start()
+    {
+        SetActive();
+        TRequestStatus* temp = &iStatus;
+        User::RequestComplete(temp, KErrNone);
+        iWaitSchedular->Start();    
+   }
+
+void CTestAsync::GuidAsyncL()
+    {
+    iServiceHandler = CLiwServiceHandler::NewL();
+
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+    
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+    
+    RCriteriaArray a;
+    
+    a.AppendL(crit);    
+    
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt pos = 0;
+    
+    outParamList->FindFirst(pos,KIDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    
+    RemoveProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    AddProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddProvAppointmentDailyRepeat(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if(AddProvEvent(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+    
+    if ( arruids.Count() > 0 )
+        {
+            TLiwVariant content(_L("CalendarEntry"));
+            TLiwGenericParam element1;  
+            element1.SetNameAndValueL(_L8("Type"),content);
+            inParamList->AppendL(element1);
+            content.Reset();
+            element1.Reset();
+            
+            
+            CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+            CleanupStack::PushL(map);
+
+            map->InsertL(_L8("CalendarName"), TLiwVariant(KTestCal1File) ); 
+            
+            TBuf<100> gid;
+            gid.Copy( arruids[0]->iGlobalUID->Des() );
+            map->InsertL(_L8("id"), TLiwVariant(gid) ); 
+            
+            TLiwVariant filterparam(map);
+            TLiwGenericParam element ;  
+            element.SetNameAndValueL(_L8("Filter"),filterparam);
+            filterparam.Reset();
+            
+            inParamList->AppendL(element);
+            element.Reset();
+            map->DecRef();
+            CleanupStack::Pop(map);
+
+            TInt err =0 ;
+            iCallback = CCalGetListCallback::NewL(iWaitSchedular, iResult);
+
+            TRAP(err, interface->ExecuteCmdL( KCmdGetList ,*inParamList ,*outParamList,KLiwOptASyncronous,iCallback));
+            pos = 0;
+            const TLiwGenericParam* output = outParamList->FindFirst( pos,_L8("TransactionID"));
+            
+            if(output)
+                {
+                iTransactionId = output->Value().AsTInt32();
+                }
+            else
+                {
+                if(iWaitSchedular->IsStarted())
+                    iWaitSchedular->AsyncStop();
+                }   
+            inParamList->Reset();
+            outParamList->Reset();
+        
+        arruids.ResetAndDestroy();
+        }
+    else
+        iResult = KErrGeneral;   
+
+    }
+void CTestAsync::LuidAsyncL()
+    {
+    iServiceHandler = CLiwServiceHandler::NewL();
+
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+    
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+    
+    RCriteriaArray a;
+    
+    a.AppendL(crit);    
+    
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt pos = 0;
+    
+    outParamList->FindFirst(pos,KIDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    
+    RemoveProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    AddProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddProvAppointmentDailyRepeat(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if(AddProvEvent(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+    
+    if ( arruids.Count() > 0 )
+        {
+            TLiwVariant content(_L("CalendarEntry"));
+            TLiwGenericParam element1;  
+            element1.SetNameAndValueL(_L8("Type"),content);
+            inParamList->AppendL(element1);
+            content.Reset();
+            element1.Reset();
+            
+            
+            CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+            CleanupStack::PushL(map);
+        
+            map->InsertL(_L8("CalendarName"), TLiwVariant(KTestCal1File) ); 
+            TBuf<50> globaluid;
+            TBuf<10> luid;
+            //luid.Num(TInt64(arruids[0]->iLocalUID));
+            globaluid.Copy(arruids[0]->iGlobalUID->Des());
+            luid.Num(TInt64(arruids[0]->iLocalUID));
+         //   luid = GetEntry(interface, inParamList, outParamList, globaluid, KTestCal1File);
+            map->InsertL(_L8("LocalId"), TLiwVariant(luid)); 
+            
+            TLiwVariant filterparam(map);
+            TLiwGenericParam element ;  
+            element.SetNameAndValueL(_L8("Filter"),filterparam);
+            filterparam.Reset();
+            
+            inParamList->AppendL(element);
+            element.Reset();
+            map->DecRef();
+            CleanupStack::Pop(map);
+
+            TInt err =0 ;
+            iCallback = CCalGetListCallback::NewL(iWaitSchedular, iResult);
+
+            TRAP(err, interface->ExecuteCmdL( KCmdGetList ,*inParamList ,*outParamList,KLiwOptASyncronous,iCallback));
+            pos = 0;
+            const TLiwGenericParam* output = outParamList->FindFirst( pos,_L8("TransactionID"));
+            
+            if(output)
+                {
+                iTransactionId = output->Value().AsTInt32();
+                }
+            else
+                {
+                if(iWaitSchedular->IsStarted())
+                    iWaitSchedular->AsyncStop();
+                }   
+            inParamList->Reset();
+            outParamList->Reset();
+        
+        arruids.ResetAndDestroy();
+        }
+    else
+        iResult = KErrGeneral;   
+
+    }
+void CTestAsync::TmRgFilterAsyncL()
+    {
+    iServiceHandler = CLiwServiceHandler::NewL();
+
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+    
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+    
+    RCriteriaArray a;
+    
+    a.AppendL(crit);    
+    
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt pos = 0;
+    
+    outParamList->FindFirst(pos,KIDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    
+    RemoveProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    AddProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddProvAppointmentDailyRepeat(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if(AddProvEvent(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+    
+    if ( arruids.Count() > 0 )
+        {
+            TLiwVariant content(_L("CalendarEntry"));
+            TLiwGenericParam element1;  
+            element1.SetNameAndValueL(_L8("Type"),content);
+            inParamList->AppendL(element1);
+            content.Reset();
+            element1.Reset();
+            
+            
+            CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+            CleanupStack::PushL(map);
+    
+            map->InsertL(_L8("CalendarName"), TLiwVariant(KTestCal1File) ); 
+            map->InsertL(_L8("StartRange"), TLiwVariant(TTime(TDateTime(2007,EOctober,23,10,0,0,0))) ); 
+            map->InsertL(_L8("EndRange"), TLiwVariant(TTime(TDateTime(2007,EOctober,30,10,30,0,0))) ); 
+            
+            TLiwVariant filterparam(map);
+            TLiwGenericParam element ;  
+            element.SetNameAndValueL(_L8("Filter"),filterparam);
+            filterparam.Reset();
+            
+            inParamList->AppendL(element);
+            element.Reset();
+            map->DecRef();
+            CleanupStack::Pop(map);
+
+            TInt err =0 ;
+            iCallback = CCalGetListCallback::NewL(iWaitSchedular, iResult);
+
+            TRAP(err, interface->ExecuteCmdL( KCmdGetList ,*inParamList ,*outParamList,KLiwOptASyncronous,iCallback));
+            pos = 0;
+            const TLiwGenericParam* output = outParamList->FindFirst( pos,_L8("TransactionID"));
+            
+            if(output)
+                {
+                iTransactionId = output->Value().AsTInt32();
+                }
+            else
+                {
+                if(iWaitSchedular->IsStarted())
+                    iWaitSchedular->AsyncStop();
+                }   
+            inParamList->Reset();
+            outParamList->Reset();
+        
+        arruids.ResetAndDestroy();
+        }
+    else
+        iResult = KErrGeneral;   
+
+    }
+void CTestAsync::TextFilterAsyncL()
+    {
+    iServiceHandler = CLiwServiceHandler::NewL();
+
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+    
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+    
+    RCriteriaArray a;
+    
+    a.AppendL(crit);    
+    
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt pos = 0;
+    
+    outParamList->FindFirst(pos,KIDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    
+    RemoveProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    AddProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddProvAppointmentDailyRepeat(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if(AddProvEvent(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+    
+    if ( arruids.Count() > 0 )
+        {
+            TLiwVariant content(_L("CalendarEntry"));
+            TLiwGenericParam element1;  
+            element1.SetNameAndValueL(_L8("Type"),content);
+            inParamList->AppendL(element1);
+            content.Reset();
+            element1.Reset();
+            
+            
+            CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+            CleanupStack::PushL(map);
+    
+            map->InsertL(_L8("CalendarName"), TLiwVariant(KTestCal1File) ); 
+            map->InsertL(_L8("SearchText"), TLiwVariant(_L("Meeting")) ); 
+            
+            TLiwVariant filterparam(map);
+            TLiwGenericParam element ;  
+            element.SetNameAndValueL(_L8("Filter"),filterparam);
+            filterparam.Reset();
+            
+            inParamList->AppendL(element);
+            element.Reset();
+            map->DecRef();
+            CleanupStack::Pop(map);
+
+            TInt err =0 ;
+            iCallback = CCalGetListCallback::NewL(iWaitSchedular, iResult);
+
+            TRAP(err, interface->ExecuteCmdL( KCmdGetList ,*inParamList ,*outParamList,KLiwOptASyncronous,iCallback));
+            pos = 0;
+            const TLiwGenericParam* output = outParamList->FindFirst( pos,_L8("TransactionID"));
+            
+            if(output)
+                {
+                iTransactionId = output->Value().AsTInt32();
+                }
+            else
+                {
+                if(iWaitSchedular->IsStarted())
+                    iWaitSchedular->AsyncStop();
+                }   
+            inParamList->Reset();
+            outParamList->Reset();
+        
+        arruids.ResetAndDestroy();
+        }
+    else
+        iResult = KErrGeneral;   
+
+    }
+void CTestAsync::TypeFilterAsyncL()
+    {
+    iServiceHandler = CLiwServiceHandler::NewL();
+
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+    
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+    
+    RCriteriaArray a;
+    
+    a.AppendL(crit);    
+    
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt pos = 0;
+    
+    outParamList->FindFirst(pos,KIDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    
+    RemoveProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    AddProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddProvAppointmentDailyRepeat(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if(AddProvEvent(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+    
+    if ( arruids.Count() > 0 )
+        {
+            TLiwVariant content(_L("CalendarEntry"));
+            TLiwGenericParam element1;  
+            element1.SetNameAndValueL(_L8("Type"),content);
+            inParamList->AppendL(element1);
+            content.Reset();
+            element1.Reset();
+            
+            
+            CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+            CleanupStack::PushL(map);
+    
+            map->InsertL(_L8("CalendarName"), TLiwVariant(KTestCal1File) ); 
+            map->InsertL(_L8("Type"), TLiwVariant(_L("Meeting")) ); 
+            
+            TLiwVariant filterparam(map);
+            TLiwGenericParam element ;  
+            element.SetNameAndValueL(_L8("Filter"),filterparam);
+            filterparam.Reset();
+            
+            inParamList->AppendL(element);
+            element.Reset();
+            map->DecRef();
+            CleanupStack::Pop(map);
+
+            TInt err =0 ;
+            iCallback = CCalGetListCallback::NewL(iWaitSchedular, iResult);
+
+            TRAP(err, interface->ExecuteCmdL( KCmdGetList ,*inParamList ,*outParamList,KLiwOptASyncronous,iCallback));
+            pos = 0;
+            const TLiwGenericParam* output = outParamList->FindFirst( pos,_L8("TransactionID"));
+            
+            if(output)
+                {
+                iTransactionId = output->Value().AsTInt32();
+                }
+            else
+                {
+                if(iWaitSchedular->IsStarted())
+                    iWaitSchedular->AsyncStop();
+                }   
+            inParamList->Reset();
+            outParamList->Reset();
+        
+        arruids.ResetAndDestroy();
+        }
+    else
+        iResult = KErrGeneral;   
+
+    }
+void CTestAsync::InvalidGuidAsyncL()
+    {
+    iServiceHandler = CLiwServiceHandler::NewL();
+
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+    
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+    
+    RCriteriaArray a;
+    
+    a.AppendL(crit);    
+    
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt pos = 0;
+    
+    outParamList->FindFirst(pos,KIDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    
+    RemoveProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    AddProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddProvAppointmentDailyRepeat(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if(AddProvEvent(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+    
+    if ( arruids.Count() > 0 )
+        {
+            TLiwVariant content(_L("CalendarEntry"));
+            TLiwGenericParam element1;  
+            element1.SetNameAndValueL(_L8("Type"),content);
+            inParamList->AppendL(element1);
+            content.Reset();
+            element1.Reset();
+            
+            
+            CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+            CleanupStack::PushL(map);
+    
+            map->InsertL(_L8("CalendarName"), TLiwVariant(KTestCal1File) ); 
+            map->InsertL(_L8("id"), TLiwVariant(_L("abc")) ); 
+            
+            TLiwVariant filterparam(map);
+            TLiwGenericParam element ;  
+            element.SetNameAndValueL(_L8("Filter"),filterparam);
+            filterparam.Reset();
+            
+            inParamList->AppendL(element);
+            element.Reset();
+            map->DecRef();
+            CleanupStack::Pop(map);
+
+            TInt err =0 ;
+            iCallback = CCalGetListCallback::NewL(iWaitSchedular, iResult);
+
+            TRAP(err, interface->ExecuteCmdL( KCmdGetList ,*inParamList ,*outParamList,KLiwOptASyncronous,iCallback));
+            pos = 0;
+            const TLiwGenericParam* output = outParamList->FindFirst( pos,_L8("TransactionID"));
+            
+            if(output)
+                {
+                iTransactionId = output->Value().AsTInt32();
+                }
+            else
+                {
+                if(iWaitSchedular->IsStarted())
+                    iWaitSchedular->AsyncStop();
+                }   
+            inParamList->Reset();
+            outParamList->Reset();
+        
+        arruids.ResetAndDestroy();
+        }
+    else
+        iResult = KErrGeneral;   
+
+    }
+void CTestAsync::InvalidLuidAsyncL()
+    {
+    iServiceHandler = CLiwServiceHandler::NewL();
+
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+    
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+    
+    RCriteriaArray a;
+    
+    a.AppendL(crit);    
+    
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt pos = 0;
+    
+    outParamList->FindFirst(pos,KIDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    
+    RemoveProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    AddProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddProvAppointmentDailyRepeat(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if(AddProvEvent(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+    
+    if ( arruids.Count() > 0 )
+        {
+            TLiwVariant content(_L("CalendarEntry"));
+            TLiwGenericParam element1;  
+            element1.SetNameAndValueL(_L8("Type"),content);
+            inParamList->AppendL(element1);
+            content.Reset();
+            element1.Reset();
+            
+            
+            CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+            CleanupStack::PushL(map);
+    
+            map->InsertL(_L8("CalendarName"), TLiwVariant(KTestCal1File) ); 
+            map->InsertL(_L8("LocalId"), TLiwVariant(_L("0")) ); 
+            
+            TLiwVariant filterparam(map);
+            TLiwGenericParam element ;  
+            element.SetNameAndValueL(_L8("Filter"),filterparam);
+            filterparam.Reset();
+            
+            inParamList->AppendL(element);
+            element.Reset();
+            map->DecRef();
+            CleanupStack::Pop(map);
+
+            TInt err =0 ;
+            iCallback = CCalGetListCallback::NewL(iWaitSchedular, iResult);
+
+            TRAP(err, interface->ExecuteCmdL( KCmdGetList ,*inParamList ,*outParamList,KLiwOptASyncronous,iCallback));
+            pos = 0;
+            const TLiwGenericParam* output = outParamList->FindFirst( pos,_L8("TransactionID"));
+            
+            if(output)
+                {
+                iTransactionId = output->Value().AsTInt32();
+                }
+            else
+                {
+                if(iWaitSchedular->IsStarted())
+                    iWaitSchedular->AsyncStop();
+                }   
+            inParamList->Reset();
+            outParamList->Reset();
+        
+        arruids.ResetAndDestroy();
+        }
+    else
+        iResult = KErrGeneral;   
+
+    }
+
+void CTestAsync::GuidCancelAsyncL()
+    {
+    iServiceHandler = CLiwServiceHandler::NewL();
+
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+    
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+    
+    RCriteriaArray a;
+    
+    a.AppendL(crit);    
+    
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt pos = 0;
+    
+    outParamList->FindFirst(pos,KIDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    
+    RemoveProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    AddProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddProvAppointmentDailyRepeat(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if(AddProvEvent(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+    
+    if ( arruids.Count() > 0 )
+        {
+            TLiwVariant content(_L("CalendarEntry"));
+            TLiwGenericParam element1;  
+            element1.SetNameAndValueL(_L8("Type"),content);
+            inParamList->AppendL(element1);
+            content.Reset();
+            element1.Reset();
+            
+            
+            CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+            CleanupStack::PushL(map);
+
+            map->InsertL(_L8("CalendarName"), TLiwVariant(KTestCal1File) ); 
+            
+            TBuf<100> gid;
+            gid.Copy( arruids[0]->iGlobalUID->Des() );
+            map->InsertL(_L8("id"), TLiwVariant(gid) ); 
+            
+            TLiwVariant filterparam(map);
+            TLiwGenericParam element ;  
+            element.SetNameAndValueL(_L8("Filter"),filterparam);
+            filterparam.Reset();
+            
+            inParamList->AppendL(element);
+            element.Reset();
+            map->DecRef();
+            CleanupStack::Pop(map);
+
+            TInt err =0 ;
+            iCallback = CCalGetListCallback::NewL(iWaitSchedular, iResult);
+
+            TRAP(err, interface->ExecuteCmdL( KCmdGetList ,*inParamList ,*outParamList,KLiwOptASyncronous,iCallback));
+            pos = 0;
+            const TLiwGenericParam* output = outParamList->FindFirst( pos,_L8("TransactionID"));
+            
+            if(output)
+                {
+                iTransactionId = output->Value().AsTInt32();
+                inParamList->AppendL(iTransactionId);
+                TRAPD(err1, interface->ExecuteCmdL(KCmdCancel, *inParamList, *outParamList, KLiwOptCancel ));
+                }
+            else
+                {
+                if(iWaitSchedular->IsStarted())
+                    iWaitSchedular->AsyncStop();
+                }   
+            inParamList->Reset();
+            outParamList->Reset();
+        
+        arruids.ResetAndDestroy();
+        }
+    else
+        iResult = KErrGeneral;   
+
+    }
+void CTestAsync::LuidCancelAsyncL()
+    {
+    iServiceHandler = CLiwServiceHandler::NewL();
+
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+    
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+    
+    RCriteriaArray a;
+    
+    a.AppendL(crit);    
+    
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt pos = 0;
+    
+    outParamList->FindFirst(pos,KIDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    
+    RemoveProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    AddProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddProvAppointmentDailyRepeat(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if(AddProvEvent(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+    
+    if ( arruids.Count() > 0 )
+        {
+            TLiwVariant content(_L("CalendarEntry"));
+            TLiwGenericParam element1;  
+            element1.SetNameAndValueL(_L8("Type"),content);
+            inParamList->AppendL(element1);
+            content.Reset();
+            element1.Reset();
+            
+            
+            CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+            CleanupStack::PushL(map);
+        
+            map->InsertL(_L8("CalendarName"), TLiwVariant(KTestCal1File) ); 
+            TBuf<50> globaluid;
+            TBuf<10> luid;
+            //luid.Num(TInt64(arruids[0]->iLocalUID));
+            globaluid.Copy(arruids[0]->iGlobalUID->Des());
+            luid.Num(TInt64(arruids[0]->iLocalUID));
+         //   luid = GetEntry(interface, inParamList, outParamList, globaluid, KTestCal1File);
+            map->InsertL(_L8("LocalId"), TLiwVariant(luid)); 
+            
+            TLiwVariant filterparam(map);
+            TLiwGenericParam element ;  
+            element.SetNameAndValueL(_L8("Filter"),filterparam);
+            filterparam.Reset();
+            
+            inParamList->AppendL(element);
+            element.Reset();
+            map->DecRef();
+            CleanupStack::Pop(map);
+
+            TInt err =0 ;
+            iCallback = CCalGetListCallback::NewL(iWaitSchedular, iResult);
+
+            TRAP(err, interface->ExecuteCmdL( KCmdGetList ,*inParamList ,*outParamList,KLiwOptASyncronous,iCallback));
+            pos = 0;
+            const TLiwGenericParam* output = outParamList->FindFirst( pos,_L8("TransactionID"));
+            
+            if(output)
+                {
+                iTransactionId = output->Value().AsTInt32();
+                inParamList->AppendL(iTransactionId);
+                TRAPD(err1, interface->ExecuteCmdL(KCmdCancel, *inParamList, *outParamList, KLiwOptCancel ));
+                }
+            else
+                {
+                if(iWaitSchedular->IsStarted())
+                    iWaitSchedular->AsyncStop();
+                }   
+            inParamList->Reset();
+            outParamList->Reset();
+        
+        arruids.ResetAndDestroy();
+        }
+    else
+        iResult = KErrGeneral;   
+
+    }
+void CTestAsync::TmRgFilterCancelAsyncL()
+    {
+    iServiceHandler = CLiwServiceHandler::NewL();
+
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+    
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+    
+    RCriteriaArray a;
+    
+    a.AppendL(crit);    
+    
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt pos = 0;
+    
+    outParamList->FindFirst(pos,KIDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    
+    RemoveProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    AddProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddProvAppointmentDailyRepeat(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if(AddProvEvent(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+    
+    if ( arruids.Count() > 0 )
+        {
+            TLiwVariant content(_L("CalendarEntry"));
+            TLiwGenericParam element1;  
+            element1.SetNameAndValueL(_L8("Type"),content);
+            inParamList->AppendL(element1);
+            content.Reset();
+            element1.Reset();
+            
+            
+            CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+            CleanupStack::PushL(map);
+    
+            map->InsertL(_L8("CalendarName"), TLiwVariant(KTestCal1File) ); 
+            map->InsertL(_L8("StartRange"), TLiwVariant(TTime(TDateTime(2007,EOctober,23,10,0,0,0))) ); 
+            map->InsertL(_L8("EndRange"), TLiwVariant(TTime(TDateTime(2007,EOctober,30,10,30,0,0))) ); 
+            
+            TLiwVariant filterparam(map);
+            TLiwGenericParam element ;  
+            element.SetNameAndValueL(_L8("Filter"),filterparam);
+            filterparam.Reset();
+            
+            inParamList->AppendL(element);
+            element.Reset();
+            map->DecRef();
+            CleanupStack::Pop(map);
+
+            TInt err =0 ;
+            iCallback = CCalGetListCallback::NewL(iWaitSchedular, iResult);
+
+            TRAP(err, interface->ExecuteCmdL( KCmdGetList ,*inParamList ,*outParamList,KLiwOptASyncronous,iCallback));
+            pos = 0;
+            const TLiwGenericParam* output = outParamList->FindFirst( pos,_L8("TransactionID"));
+            
+            if(output)
+                {
+                iTransactionId = output->Value().AsTInt32();
+                inParamList->AppendL(iTransactionId);
+                TRAPD(err1, interface->ExecuteCmdL(KCmdCancel, *inParamList, *outParamList, KLiwOptCancel ));
+                }
+            else
+                {
+                if(iWaitSchedular->IsStarted())
+                    iWaitSchedular->AsyncStop();
+                }   
+            inParamList->Reset();
+            outParamList->Reset();
+        
+        arruids.ResetAndDestroy();
+        }
+    else
+        iResult = KErrGeneral;   
+
+    }
+void CTestAsync::TextFilterCancelAsyncL()
+    {
+    iServiceHandler = CLiwServiceHandler::NewL();
+
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+    
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+    
+    RCriteriaArray a;
+    
+    a.AppendL(crit);    
+    
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt pos = 0;
+    
+    outParamList->FindFirst(pos,KIDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    
+    RemoveProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    AddProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddProvAppointmentDailyRepeat(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if(AddProvEvent(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+    
+    if ( arruids.Count() > 0 )
+        {
+            TLiwVariant content(_L("CalendarEntry"));
+            TLiwGenericParam element1;  
+            element1.SetNameAndValueL(_L8("Type"),content);
+            inParamList->AppendL(element1);
+            content.Reset();
+            element1.Reset();
+            
+            
+            CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+            CleanupStack::PushL(map);
+    
+            map->InsertL(_L8("CalendarName"), TLiwVariant(KTestCal1File) ); 
+            map->InsertL(_L8("SearchText"), TLiwVariant(_L("Meeting")) ); 
+            
+            TLiwVariant filterparam(map);
+            TLiwGenericParam element ;  
+            element.SetNameAndValueL(_L8("Filter"),filterparam);
+            filterparam.Reset();
+            
+            inParamList->AppendL(element);
+            element.Reset();
+            map->DecRef();
+            CleanupStack::Pop(map);
+
+            TInt err =0 ;
+            iCallback = CCalGetListCallback::NewL(iWaitSchedular, iResult);
+
+            TRAP(err, interface->ExecuteCmdL( KCmdGetList ,*inParamList ,*outParamList,KLiwOptASyncronous,iCallback));
+            pos = 0;
+            const TLiwGenericParam* output = outParamList->FindFirst( pos,_L8("TransactionID"));
+            
+            if(output)
+                {
+                iTransactionId = output->Value().AsTInt32();
+                inParamList->AppendL(iTransactionId);
+                TRAPD(err1, interface->ExecuteCmdL(KCmdCancel, *inParamList, *outParamList, KLiwOptCancel ));
+                }
+            else
+                {
+                if(iWaitSchedular->IsStarted())
+                    iWaitSchedular->AsyncStop();
+                }   
+            inParamList->Reset();
+            outParamList->Reset();
+        
+        arruids.ResetAndDestroy();
+        }
+    else
+        iResult = KErrGeneral;   
+
+    }
+void CTestAsync::TypeFilterCancelAsyncL()
+    {
+    iServiceHandler = CLiwServiceHandler::NewL();
+
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+    
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+    
+    RCriteriaArray a;
+    
+    a.AppendL(crit);    
+    
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt pos = 0;
+    
+    outParamList->FindFirst(pos,KIDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    
+    RemoveProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    AddProvCalendar(inParamList, outParamList, interface, KTestCal1File);
+    
+    RPointerArray<TUIDSet> arruids(5);
+    
+    TUIDSet* uids = NULL;
+    
+    if(AddProvAppointmentDailyRepeat(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+
+    if(AddProvEvent(inParamList, outParamList, interface, KTestCal1File, uids) == KErrNone && uids)
+        {
+        arruids.Append(uids);
+        uids = NULL;
+        }
+    
+    if ( arruids.Count() > 0 )
+        {
+            TLiwVariant content(_L("CalendarEntry"));
+            TLiwGenericParam element1;  
+            element1.SetNameAndValueL(_L8("Type"),content);
+            inParamList->AppendL(element1);
+            content.Reset();
+            element1.Reset();
+            
+            
+            CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+            CleanupStack::PushL(map);
+    
+            map->InsertL(_L8("CalendarName"), TLiwVariant(KTestCal1File) ); 
+            map->InsertL(_L8("Type"), TLiwVariant(_L("Meeting")) ); 
+            
+            TLiwVariant filterparam(map);
+            TLiwGenericParam element ;  
+            element.SetNameAndValueL(_L8("Filter"),filterparam);
+            filterparam.Reset();
+            
+            inParamList->AppendL(element);
+            element.Reset();
+            map->DecRef();
+            CleanupStack::Pop(map);
+
+            TInt err =0 ;
+            iCallback = CCalGetListCallback::NewL(iWaitSchedular, iResult);
+
+            TRAP(err, interface->ExecuteCmdL( KCmdGetList ,*inParamList ,*outParamList,KLiwOptASyncronous,iCallback));
+            pos = 0;
+            const TLiwGenericParam* output = outParamList->FindFirst( pos,_L8("TransactionID"));
+            
+            if(output)
+                {
+                iTransactionId = output->Value().AsTInt32();
+                inParamList->AppendL(iTransactionId);
+                TRAPD(err1, interface->ExecuteCmdL(KCmdCancel, *inParamList, *outParamList, KLiwOptCancel ));
+                }
+            else
+                {
+                if(iWaitSchedular->IsStarted())
+                    iWaitSchedular->AsyncStop();
+                }   
+            inParamList->Reset();
+            outParamList->Reset();
+        
+        arruids.ResetAndDestroy();
+        }
+    else
+        iResult = KErrGeneral;   
+
+    }

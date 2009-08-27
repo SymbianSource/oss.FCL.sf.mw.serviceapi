@@ -33,6 +33,7 @@
 #include <calinstance.h>
 #include "teststartconsolealarmserver.h"
 
+#include "calgetlisttestcases.h"
 
 // EXTERNAL DATA STRUCTURES
 //extern  ?external_data;
@@ -152,7 +153,15 @@ TInt Ctcal_getlist::RunMethodL(
 		ENTRY( "GetCalEntBySearchFilter"   , Ctcal_getlist::GetCalEntBySearchFilter ),
 		ENTRY( "GetCalEntByTimeFilter"   , Ctcal_getlist::GetCalEntByTimeFilter ),
 		ENTRY( "GetCalEntByTypeFilter"   , Ctcal_getlist::GetCalEntByTypeFilter ),
-		
+
+		ENTRY( "GetListTimeRangeFilterAsync",       Ctcal_getlist::GetListTimeRangeFilterAsync ),
+        ENTRY( "GetListGuidFilterAsync",       Ctcal_getlist::GetListGuidFilterAsync ),
+        ENTRY( "GetListLuidFilterAsync",       Ctcal_getlist::GetListLuidFilterAsync ),
+        ENTRY( "GetListTextFilterAsync",       Ctcal_getlist::GetListTextFilterAsync ),
+        ENTRY( "GetListTypeFilterAsync",       Ctcal_getlist::GetListTypeFilterAsync ),
+        ENTRY( "GetListInvalidGuidFilterAsync",       Ctcal_getlist::GetListInvalidGuidFilterAsync ),
+        ENTRY( "GetListInvalidLuidFilterAsync",       Ctcal_getlist::GetListInvalidLuidFilterAsync ),
+
         //ADD NEW ENTRY HERE
 
         };
@@ -1927,7 +1936,129 @@ TInt Ctcal_getlist::GetCalEntByTypeFilter( CStifItemParser& /*aItem*/ )
 	__UHEAP_MARKEND;
 	return result;
     }
+
+TInt Ctcal_getlist::GetListTimeRangeFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
     
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+    CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistTmRgFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+
+TInt Ctcal_getlist::GetListGuidFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+   CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistGuidFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+  //  delete calGetlistTest;
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+TInt Ctcal_getlist::GetListLuidFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+    CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistLuidFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+TInt Ctcal_getlist::GetListTextFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+    CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistTextFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+TInt Ctcal_getlist::GetListTypeFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+    CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistTypeFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+TInt Ctcal_getlist::GetListInvalidGuidFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+    CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistInvalidGuidFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+TInt Ctcal_getlist::GetListInvalidLuidFilterAsync(CStifItemParser& /*aItem*/ )
+    {
+    TInt result = KErrNone;
+   __UHEAP_MARK;
+    
+    CCalGetlistTestCases *calGetlistTest =  CCalGetlistTestCases::NewL(result);
+
+    CleanupStack::PushL( calGetlistTest );
+
+    calGetlistTest->TestGetlistInvalidLuidFilterAsyncL();
+
+    CleanupStack::PopAndDestroy( calGetlistTest );
+    
+    __UHEAP_MARKEND;
+    return result;
+
+    } 
+   
 // Helper function
 
 TInt AddRepeatingAptEntryL(CCalendarService* aService, const TDesC& name, TUIDSet*& uids)

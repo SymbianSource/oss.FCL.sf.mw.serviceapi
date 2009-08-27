@@ -63,6 +63,8 @@ _LIT8( KMgFileDate, "FileDate" );
 _LIT8( KMgMediaType, "MediaType" );
 _LIT8( KMgMimeType, "MimeType" ); 
 _LIT8( KMgFileNameAndPath, "FileNameAndPath");
+_LIT8(KXPixels, "XPixels");
+_LIT8(KYPixels, "YPixels");
 
 //additional keys for music map.
 _LIT8( KMgSongName, "SongName" );

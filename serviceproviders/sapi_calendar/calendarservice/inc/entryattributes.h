@@ -347,26 +347,27 @@ class CEntryAttributes : public CBase
 	*/
 	enum TModifiedParameters
 		{
-		ESummary		=0x00001,
-		ESeqNum			=0x00002,
-		EStartTime		=0x00004,
-		EEndTime		=0x00008,
-		EReplication	=0x00010,
-		EDescription	=0x00020,
-		EPriority		=0x00040,
-		EMethod			=0x00080,
-		EAlarmTime		=0x00100,
-		ELocation		=0x00200,
-		EStatus			=0x00400,
-		ERepeatRule		=0x00800,
-		EExDates		=0x01000,
-		ERepeatDates	=0x02000,
-		EPhoneOwner		=0x04000,
-		EOrganizer		=0x08000,
-		EAttendees		=0x10000,
-		ELocalUid		=0x20000,
-		EEntryType		=0x40000,
-		EInsStartTime	=0x80000,
+		ESummary		=0x000001,
+		ESeqNum			=0x000002,
+		EStartTime		=0x000004,
+		EEndTime		=0x000008,
+		EReplication	=0x000010,
+		EDescription	=0x000020,
+		EPriority		=0x000040,
+		EMethod			=0x000080,
+		EAlarmTime		=0x000100,
+		ELocation		=0x000200,
+		EStatus			=0x000400,
+		ERepeatRule		=0x000800,
+		EExDates		=0x001000,
+		ERepeatDates	=0x002000,
+		EPhoneOwner		=0x004000,
+		EOrganizer		=0x008000,
+		EAttendees		=0x010000,
+		ELocalUid		=0x020000,
+		EEntryType		=0x040000,
+		EInsStartTime	=0x080000,
+		EGlobalUid      =0x100000,
 		};
 				
 	public:
@@ -539,6 +540,13 @@ class CEntryAttributes : public CBase
 		 * @return void
 		*/ 
 		IMPORT_C void SetLocalUid( const TCalLocalUid aLUid);
+        /**
+         * Sets the uid for the calendar entry.
+         * @param aUid It is the uid of the entry to be modified
+         * @return void
+        */ 
+        IMPORT_C void SetUidL( const TDesC8& aUid );
+		
 
 		/**
 		 * Gets the start time for the calendar entry.
@@ -669,6 +677,12 @@ class CEntryAttributes : public CBase
 		 * @return void
 		*/ 
 		IMPORT_C TCalLocalUid LocalUid();
+        /**
+         * Gets the GlobalUid for the calendar entry.
+         * @return void
+        */ 
+        IMPORT_C TPtrC8 GlobalUid();
+		
 		
 		/**
 		 * Gets the attributes that have changed for the calendar entry.
@@ -790,6 +804,11 @@ class CEntryAttributes : public CBase
 		 * Local Uid of an entry which can uniquely identify entries having the same Global Uid
 	  	*/ 
 		TCalLocalUid iLocal;
+        
+        /**
+         * Global Uid of an entry which can uniquely identify entries having the same Global Uid
+        */ 
+        HBufC8* iUid;
 		
 		/**
 		 * Indicates which entries have new values for the update operation

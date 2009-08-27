@@ -401,6 +401,9 @@ NONSHARABLE_CLASS(CTestProvider) : public CScriptBase,public MLiwNotifyCallback,
 //		virtual TInt ModifyGroup(CStifItemParser& aItem);
 		virtual TInt ExportVCard(CStifItemParser& /*aItem*/);
 		virtual TInt ImportVCard(CStifItemParser& /*aItem*/);
+		virtual TInt GetListNewFieldsTestSync(CStifItemParser& /*aItem*/) ;
+		virtual TInt AddContactNewFieldsSynTest(CStifItemParser& /*aItem */);
+		virtual TInt AddGroupSynTest(CStifItemParser& /*aItem */);
 		//virtual TInt GetLocationUpdateOpts(CStifItemParser& /*aItem*/) ;
         //virtual TInt MoveCoordinates(CStifItemParser& /*aItem*/) ;
     public:     // Data
@@ -416,6 +419,7 @@ NONSHARABLE_CLASS(CTestProvider) : public CScriptBase,public MLiwNotifyCallback,
         // ?one_line_short_description_of_data
         //?data_declaration;
         TInt CTestGetLocation() ;
+        TInt AddOneContactNewFieldsL();
 
         // Reserved pointer for future extension
         //TAny* iReserved;

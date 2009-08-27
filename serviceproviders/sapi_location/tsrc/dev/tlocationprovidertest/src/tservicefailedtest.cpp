@@ -81,7 +81,7 @@ TInt CallBack :: HandleNotifyL(
 
 TInt ServiceFailedFunctionL()
 {
-	
+    __UHEAP_MARK ;
 	CallBack MyUpdates ;
 	
 	_LIT8(KService, "Service.Location");
@@ -167,6 +167,7 @@ TInt ServiceFailedFunctionL()
 	locinterface->Close();
 	delete InputList ;
 	delete  OutParmList ;
+    __UHEAP_MARKEND ;	
 	return  MyUpdates.iRetStatus ;
     	
     	

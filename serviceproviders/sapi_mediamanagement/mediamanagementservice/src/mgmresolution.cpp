@@ -37,7 +37,7 @@ MResolution::~MResolution(){
 // -----------------------------------------------------------------------------
 
 
-MResolution* MediaResolutionFactory::CreateMediaResolutionobjL(TDesC& aMedia, TDesC& aUrl)
+EXPORT_C MResolution* MediaResolutionFactory::CreateMediaResolutionobjL(TDesC& aMedia, TDesC& aUrl)
     {
    MResolution* object = NULL;
    

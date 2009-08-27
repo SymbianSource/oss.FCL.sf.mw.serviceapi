@@ -70,6 +70,7 @@ LIBRARY         stiftestengine.lib
 LIBRARY         liwservicehandler.lib
 LIBRARY         hal.lib
 LIBRARY         efsrv.lib
+LIBRARY         cone.lib
 
 LANG            SC
 

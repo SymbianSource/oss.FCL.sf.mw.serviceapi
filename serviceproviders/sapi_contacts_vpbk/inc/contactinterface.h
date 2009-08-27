@@ -165,7 +165,8 @@ class CContactInterface : public CBase, public MLiwInterface
                              CLiwGenericParamList& aOutParamList,
                              MLiwNotifyCallback* aCallback,
                              TUint aCmdOptions,
-                             TInt aTransId);
+                             TInt aTransId,
+                             TCmdType aVal);
        /**
         * Parses  the input list and calls the Add API.
         *                      

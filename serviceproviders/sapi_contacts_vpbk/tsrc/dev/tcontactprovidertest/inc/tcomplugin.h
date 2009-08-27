@@ -83,7 +83,10 @@ NONSHARABLE_CLASS(CTestProvider) :public CScriptBase,public MLiwNotifyCallback,
         EVerifyOrganizeDelete,
         EModifyContact,
         EModifyContactComplete,
-        EModifyContactVerify            
+        EModifyContactVerify,        
+        EAddContactASyncTest,
+        EAddGroupASyncTest,
+        EGetListNewFieldsTest
         };
     public:  // Constructors and destructor
 
@@ -391,11 +394,18 @@ NONSHARABLE_CLASS(CTestProvider) :public CScriptBase,public MLiwNotifyCallback,
         virtual TInt CancelOrganiseAdd(CStifItemParser& /*aItem*/) ; 
         virtual TInt CancelDeleteContact(CStifItemParser& /*aItem*/) ; 
        	virtual TInt CancelExportL(CStifItemParser& /*aItem*/) ; 
-      	virtual TInt CancelImportL(CStifItemParser& /*aItem*/) ; 
-        
+      	virtual TInt CancelImportL(CStifItemParser& /*aItem*/) ;
+      	//virtual TInt AddContactSyncTestL(CStifItemParser& /*aItem*/) ;
+      	virtual TInt AddContactASyncTestL(CStifItemParser& /*aItem*/) ;
+      	virtual TInt AddGroupASyncTestL(CStifItemParser& /*aItem*/) ;
+      	virtual TInt GetListNewFieldsTestL(CStifItemParser& /*aItem*/) ;
+      	
+      	
+      	
         
         void AddOneContactL(const TDesC& aName);
-	    void AddOneGroupL(const TDesC& aName);       
+	    void AddOneGroupL(const TDesC& aName);  
+	    TInt AddOneContactNewFieldsL();
     public:     // Data
         // ?one_line_short_description_of_data
         //?data_declaration;

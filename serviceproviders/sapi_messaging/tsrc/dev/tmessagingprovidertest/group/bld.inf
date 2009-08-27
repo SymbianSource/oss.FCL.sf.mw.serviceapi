@@ -25,6 +25,7 @@
 #include "../tmsg_sendmessageiter3/group/bld.inf"
 #include "../tmsg_negitivecases/group/bld.inf"
 #include "../tmsg_misccases/group/bld.inf"
+#include "../tmsgget_async/group/bld.inf"
 
 PRJ_PLATFORMS
 DEFAULT

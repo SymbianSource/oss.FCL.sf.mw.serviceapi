@@ -64,7 +64,8 @@ class CContactCallback : public MContactCallback
         virtual void HandleReturnValue( TOperationEvent aEventId, const TInt& aError, TInt aTransId );
         
         virtual void HandleReturnIter( const TInt& aError, CContactIter* aIter, TInt aTransId );
-        
+        virtual void HandleReturnId( const TInt& aError, HBufC8* acntId, TInt aTransId );
+        virtual void HandleReturnArray(const TInt& aError,RPointerArray<HBufC8>& aArray,TInt aTransId );
 	   TInt iError;      
     };
 
@@ -194,7 +195,8 @@ NONSHARABLE_CLASS(Ctmanualcontacts) : public CScriptBase
         virtual TInt GetList_Test8L( CStifItemParser& aItem );   
         virtual TInt GetList_Test9L( CStifItemParser& aItem );  
         virtual TInt GetList_Test10L( CStifItemParser& aItem );     
-        //virtual TInt GetList_Test11L( CStifItemParser& aItem );     
+        virtual TInt GetList_Test11L( CStifItemParser& aItem );
+        virtual TInt GetList_Test12L( CStifItemParser& aItem );   
         //ADD NEW METHOD DEC HERE
 
     public:     // Data

@@ -37,7 +37,7 @@ extern int sendmessage_test7(int, char**);
 extern int sendmessage_test8(int, char**);
 extern int sendmessage_test9(int, char**);
 extern int sendmessage_test10(int, char**);
-
+extern int sendmessage_test11(int, char**);
 
 
 
@@ -168,6 +168,7 @@ NONSHARABLE_CLASS(Csapi_sendmessage) : public CScriptBase
         virtual TInt sendmessage_test8L( CStifItemParser& aItem );
         virtual TInt sendmessage_test9L( CStifItemParser& aItem );
         virtual TInt sendmessage_test10L( CStifItemParser& aItem );
+        virtual TInt sendmessage_test11L( CStifItemParser& aItem );
                            
     public:     // Data
         // ?one_line_short_description_of_data

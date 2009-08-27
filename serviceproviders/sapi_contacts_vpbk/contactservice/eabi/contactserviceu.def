@@ -25,8 +25,8 @@ EXPORTS
 	_ZN15CContactService6CancelEl @ 24 NONAME
 	_ZN15CContactService7DeleteLEP16MContactCallbackiR13RPointerArrayI6TDesC8ERK7TDesC16 @ 25 NONAME
 	_ZN15CContactService7DeleteLER13RPointerArrayI6TDesC8ERK7TDesC16 @ 26 NONAME
-	_ZN15CContactService8GetListLE5TtypeRK6TDesC8RK7TDesC16P13CSearchFields6TOrderS6_ @ 27 NONAME
-	_ZN15CContactService8GetListLEP16MContactCallbacki5TtypeRK6TDesC8RK7TDesC16P13CSearchFields6TOrderS8_ @ 28 NONAME
+	_ZN15CContactService8GetListLE5TtypeRK6TDesC8RK7TDesC16P13CSearchFields6TOrderS6_8TCmdType @ 27 NONAME
+	_ZN15CContactService8GetListLEP16MContactCallbacki5TtypeRK6TDesC8RK7TDesC16P13CSearchFields6TOrderS8_8TCmdType @ 28 NONAME
 	_ZN15CContactService8GetListLER12CContactIter @ 29 NONAME
 	_ZN19CSingleContactField11GetDateTimeEv @ 30 NONAME
 	_ZN19CSingleContactField13GetFieldDataLER6TPtrC8R7TPtrC16S3_ @ 31 NONAME
@@ -67,4 +67,9 @@ EXPORTS
 	_ZN13CSearchFields17GetFieldKeyFromIdEi @ 66 NONAME
 	_ZN13CSearchFields17GetIdFromFieldKeyER6TDesC8 @ 67 NONAME
 	_ZN15CContactService9GetErrKeyEv @ 68 NONAME
-
+	_ZN15CContactService7GetIdsLE5TtypeRK7TDesC16P13CSearchFields6TOrderS3_8TCmdType @ 69 NONAME
+	_ZN19CSingleContactField10SetUriDataE7TPtrC16 @ 70 NONAME	
+	_ZN19CSingleContactField13GetXspidDataLER13RPointerArrayI7HBufC16E @ 71 NONAME
+	_ZN19CSingleContactField13SetXspidDataLERK6TDesC8RK7TDesC16R13RPointerArrayI7HBufC16E @ 72 NONAME
+	_ZN19CSingleContactField17GetUriFieldParamLER13RPointerArrayI7HBufC16E @ 73 NONAME
+	_ZN19CSingleContactField18SetUriFieldParamsLERK6TDesC8RK7TDesC1613RPointerArrayI7HBufC16E @ 74 NONAME

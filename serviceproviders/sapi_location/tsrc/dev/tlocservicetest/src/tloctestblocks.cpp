@@ -77,7 +77,8 @@ TInt CTLocTest::RunMethodL(
         ENTRY("ConcurrentCallsGetLoc" , CTLocTest:: ConcurrentCallsGetLoc),
         ENTRY("ConcurrentCallsTrace" , CTLocTest:: ConcurrentCallsTrace),
         ENTRY("EmptyCancelTrace" , CTLocTest:: EmptyCancelTrace),
-        ENTRY("EmptyCancelLocAsynch" , CTLocTest:: EmptyCancelLocAsynch)
+            ENTRY("EmptyCancelLocAsynch" , CTLocTest:: EmptyCancelLocAsynch),
+            ENTRY("TraceTimeOut" , CTLocTest:: TraceTimeOut)
         
 
         };
@@ -99,6 +100,7 @@ TInt CTLocTest::GetLocation( CStifItemParser& /*aItem*/ )
     {
 
     // Print to UI
+    __UHEAP_MARK ;
     _LIT( KTLocTest, "TLocTest" );
     _LIT( KExample, "GetLocation" );
     iLog->Log(KTLocTest) ;
@@ -122,7 +124,7 @@ TInt CTLocTest::GetLocation( CStifItemParser& /*aItem*/ )
     
     
     
-    TInt Result =CoreObj->GetLocationL(&position) ;
+    TRAPD(Result,CoreObj->GetLocationL(&position)) ;
     TPosition pos ;
     
     position.GetPosition(pos) ;
@@ -131,7 +133,7 @@ TInt CTLocTest::GetLocation( CStifItemParser& /*aItem*/ )
     TReal32 aAltitude  = pos.Altitude() ;
     delete CoreObj ;
 
-
+    __UHEAP_MARKEND ;
     return Result ;
 
     }
@@ -171,11 +173,12 @@ TInt CTLocTest :: LastKnownLoc(CStifItemParser& /*aItem*/)
 	{
 	_LIT(KTLocTest , "TLocTest") ;
 	iLog->Log(KTLocTest) ;
-//	CLocationService *CoreObj = CLocationService :: NewL();
-//	TPosition LastKnownPos ;
-	
-//	CoreObj->GetLastKnownLoc(LastKnownPos) ;
-	return KErrNone ;
+    CLocationService *CoreObj = CLocationService :: NewL();
+    TPosition LastKnownPos ;
+
+    TInt err = CoreObj->GetLastKnownLoc(LastKnownPos) ;
+    delete CoreObj;
+    return err;
 	}
 	
 	
@@ -210,6 +213,7 @@ TInt  CTLocTest ::GetLocationAsynch(CStifItemParser& /*aItem*/)
 	
 TInt CTLocTest :: FindDistance(CStifItemParser& /*aItem*/)
 {
+    __UHEAP_MARK ;
   		CLocationService *CoreObj = CLocationService :: NewL();
   
   
@@ -413,6 +417,7 @@ TInt CTLocTest :: FindDistance(CStifItemParser& /*aItem*/)
  		
   		
   		delete CoreObj;
+    __UHEAP_MARKEND ;
   		return KErrNone ;
 }
   
@@ -420,6 +425,7 @@ TInt CTLocTest :: FindDistance(CStifItemParser& /*aItem*/)
  */
 TInt CTLocTest :: FindBearingTo(CStifItemParser& /*aItem*/)  
 	{
+    __UHEAP_MARK ;
 	CLocationService *CoreObj = CLocationService :: NewL();
 
 
@@ -621,6 +627,7 @@ TInt CTLocTest :: FindBearingTo(CStifItemParser& /*aItem*/)
 	
 	
 	delete CoreObj;
+    __UHEAP_MARKEND ;
 	return KErrNone ;	
 	}
 
@@ -631,6 +638,7 @@ TInt CTLocTest :: FindBearingTo(CStifItemParser& /*aItem*/)
  */
  TInt CTLocTest :: MoveCoordinates(CStifItemParser& /*aItem*/)  
 	{
+    __UHEAP_MARK ;
 	CLocationService *CoreObj = CLocationService :: NewL();
 
 
@@ -705,6 +713,7 @@ TInt CTLocTest :: FindBearingTo(CStifItemParser& /*aItem*/)
 	LogFile.Close() ;
 	LogSession.Close() ;
 	delete CoreObj;
+    __UHEAP_MARKEND ;
 	return KErrNone ;
 	}
 /*
@@ -786,7 +795,7 @@ TInt CTLocTest :: EmptyCancelTrace(CStifItemParser& /*aItem*/)
 	iLog->Log(KTLocTest) ;
 	_LIT(KLog , "EmptyCanceltest ") ;
 	iLog->Log(KTLocTest) ;*/
-	
+    __UHEAP_MARK ;
 	CLocationService *CoreObj = CLocationService ::NewL() ;
 	//not needed any more
 	/*RRequestorStack infostack;
@@ -799,10 +808,12 @@ TInt CTLocTest :: EmptyCancelTrace(CStifItemParser& /*aItem*/)
     if( error==KErrNotFound ) 
     {
     delete CoreObj;
+        __UHEAP_MARKEND ;
     return KErrNone;	
     }
     
     delete CoreObj;
+    __UHEAP_MARKEND ;
 }
 
 TInt CTLocTest :: EmptyCancelLocAsynch(CStifItemParser& /*aItem*/)
@@ -832,3 +843,89 @@ TInt CTLocTest :: EmptyCancelLocAsynch(CStifItemParser& /*aItem*/)
 }
 
 
+TInt CTLocTest :: TraceTimeOut(CStifItemParser& /*aItem*/)
+    {
+    _LIT(KTLocTest ,"TLocTest");
+    iLog->Log(KTLocTest) ;
+    _LIT(KLog , "TraceTimeOut ") ;
+    iLog->Log(KTLocTest) ;
+
+    TRequestStatus Status = KRequestPending  ;
+    RThread FunctionThread ;
+
+    TInt ret =  FunctionThread.Create(_L("TraceTimeOut Test") , TraceTimeOutFunc ,KDefaultStackSize , 
+            KMinHeapSize , 0x5000 ,(TAny *) NULL);;
+
+            if(!ret)
+                {
+
+                _LIT(Klog , "thread created ") ;
+                iLog->Log(Klog) ;
+                FunctionThread.Logon(Status)    ;
+                FunctionThread.Resume() ;
+
+                User :: WaitForRequest (Status) ;               
+                FunctionThread.Close();
+
+                ret = Status.Int() ;
+                }
+
+
+            return ret;  
+    }
+
+
+TInt CTLocTest:: ConcurrentCallsGetLoc(CStifItemParser& /*aItem*/)
+    {
+    _LIT(KTLocTest ,"TLocTest");
+    iLog->Log(KTLocTest) ;
+
+    TRequestStatus Status = KRequestPending  ;
+    RThread FunctionThread ;
+
+    TInt ret = FunctionThread.Create(_L(" ConcurrentCallsGetLoc Thread") , ConcurrentGetLocationCalls ,KDefaultStackSize , 
+            KMinHeapSize , 0x5000 ,(TAny *) NULL);
+
+    if(ret == KErrNone)
+        {
+        FunctionThread.Logon(Status)    ;
+        FunctionThread.Resume() ;
+
+        User :: WaitForRequest (Status) ;               
+
+
+        ret = Status.Int() ;
+        }
+    FunctionThread.Close();  
+
+
+    return ret;  
+    }
+
+
+TInt CTLocTest:: ConcurrentCallsTrace(CStifItemParser& /*aItem*/)
+    {
+    _LIT(KTLocTest ,"TLocTest");
+    iLog->Log(KTLocTest) ;
+
+    TRequestStatus Status = KRequestPending  ;
+    RThread FunctionThread ;
+
+    TInt ret = FunctionThread.Create(_L(" ConcurrentCallsGetLoc Thread") , ConcurrentTraceCalls ,KDefaultStackSize , 
+            KMinHeapSize , 0x5000 ,(TAny *) NULL);
+
+    if(ret == KErrNone)
+        {
+        FunctionThread.Logon(Status)    ;
+        FunctionThread.Resume() ;
+
+        User :: WaitForRequest (Status) ;               
+
+
+        ret = Status.Int() ;
+        }
+    FunctionThread.Close();  
+
+
+    return ret;  
+    }

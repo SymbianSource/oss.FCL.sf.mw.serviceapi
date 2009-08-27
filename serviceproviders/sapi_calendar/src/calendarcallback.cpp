@@ -23,6 +23,106 @@
 // Two-phase Constructor
 // ---------------------------------------------------------------------------
 //
+CCalCallbackCalEntryList* CCalCallbackCalEntryList::NewL( CCalendarInterface& aCalendarInterface, MLiwNotifyCallback *aPtrNotifyCallback, 
+        const TDesC& aCalendarName, 
+        TInt32 aTransactionId, TBool aIsEntryArray)
+    {
+	CCalCallbackCalEntryList* self = new(ELeave) CCalCallbackCalEntryList( aCalendarInterface, aPtrNotifyCallback, aTransactionId, aIsEntryArray );
+	CleanupStack::PushL( self ) ;
+	self->ConstructL(aCalendarName);
+	CleanupStack::Pop();
+	return self;
+
+ //   return new (ELeave) CCalCallbackCalEntryList( aCalendarInterface, aPtrNotifyCallback, aCalendarName, aTransactionId, aIsEntryArray );
+    }
+// ---------------------------------------------------------------------------
+// Two-Phase constructor
+// ---------------------------------------------------------------------------
+//
+void CCalCallbackCalEntryList::ConstructL( const TDesC& aCalendarName )
+	{
+	if( aCalendarName.Length() )
+		iCalendarName = aCalendarName.AllocL();
+	}
+// ---------------------------------------------------------------------------
+//  Constructor
+// ---------------------------------------------------------------------------
+//  
+CCalCallbackCalEntryList::CCalCallbackCalEntryList( CCalendarInterface& aCalendarInterface, MLiwNotifyCallback *aPtrNotifyCallback, 
+        TInt32 aTransactionId, 
+        TBool aIsEntryArray ):iInterface( aCalendarInterface )
+                                                
+    {
+    iPtrNotifyCallback = aPtrNotifyCallback; 
+	iTransactionId = aTransactionId;
+	iIsEntryArray = aIsEntryArray;
+    }
+CCalCallbackCalEntryList::~CCalCallbackCalEntryList()
+	{
+	delete iCalendarName;
+	}
+
+// -----------------------------------------------------------------------------
+// CCalendarCallback::GetTransactionId
+// Gets transaction id for ongoing asynchronous method execution.
+// -----------------------------------------------------------------------------
+//
+/*TInt32 CCalCallbackCalEntryList::GetTransactionID() 
+    {
+    return iTransactionId;
+    }*/
+// ---------------------------------------------------------------------------
+// Gives the result of asynchronous SAPI for Export
+// ---------------------------------------------------------------------------
+//
+void CCalCallbackCalEntryList::NotifyResultL( TInt aErrCode, TAny* aResult )
+    {
+    CleanupStack::PushL( this );
+    
+    CLiwGenericParamList* outParams = CLiwGenericParamList::NewL();
+
+    CleanupStack::PushL( outParams );
+	
+	TPtrC calendarName(	iCalendarName ? iCalendarName->Des() : TPtrC() );	
+
+    outParams->AppendL( TLiwGenericParam(KErrorCode, 
+                            TLiwVariant(CCalendarInterface::ErrCodeConversion(aErrCode))));  
+    if( aResult )
+        {
+        if(iIsEntryArray)
+             {
+             iInterface.SetCalEntryOutputL( *(RPointerArray<CCalEntry>*)( aResult ), *outParams, calendarName );
+             }
+         else
+             {
+             iInterface.SetCalInstanceOutputL(*(RPointerArray<CCalInstance>*)( aResult ), *outParams, calendarName);
+             }
+        }
+    TInt event = KLiwEventInProgress;
+    
+    if ( aErrCode == KErrCancel )
+        {
+        event = KLiwEventCanceled;
+        }
+    else if ( aErrCode != KErrNone )
+        {
+        event = KLiwEventStopped;
+        outParams->AppendL( TLiwGenericParam(KErrorMessage, 
+                            TLiwVariant(_L("Calendar:GetList:Error fetching entries"))));       
+        }
+
+    ((MLiwNotifyCallback*)iPtrNotifyCallback)->HandleNotifyL( iTransactionId, 
+                                                 event, 
+                                                 *outParams, 
+                                                 *((CLiwGenericParamList*)iPtrInParamList) ); 
+    CleanupStack::PopAndDestroy( 2,this );
+
+    }
+
+// ---------------------------------------------------------------------------
+// Two-phase Constructor
+// ---------------------------------------------------------------------------
+//
 CCalCallbackBaseBuffer* CCalCallbackBaseBuffer::NewL( MLiwNotifyCallback *aPtrNotifyCallback, 
 													const CLiwGenericParamList& aPtrInParamList, 
 													TInt32 aTransactionId  )

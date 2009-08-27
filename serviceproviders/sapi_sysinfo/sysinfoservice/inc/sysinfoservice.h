@@ -22,6 +22,7 @@
 //  INCLUDES
 #include "sysinfo.h"
 #include "sysrequest.h"
+#include "imagingconfigmanager.h"
 
 // FORWORD CLASS DECLARATION
 class CSysData;
@@ -272,6 +273,11 @@ NONSHARABLE_CLASS(CSysInfoService) : public CBase
     *	Retrieves Device Entity attribute values.
     */
     void GetDeviceInfoL(TPtrC aKey,CSysData*& aSysData);
+    
+    /*
+    *   Retrieves Camera Entity attribute values.
+    */
+    void GetCameraDataL(TPtrC aKey,CSysData*& aSysData);
 
     private: //DATA
 

@@ -290,6 +290,7 @@ TInt Cget_header_message::Test1L( CStifItemParser& aItem )
 	 headerarr->GetMessageId(message_id);
      filter->SetMessageIdFilter(message_id);
      delete headerarr; 
+     marray->Reset();
      delete marray;
      delete mfilter;           
      CleanupStack::PopAndDestroy(mservice);                  
@@ -475,9 +476,9 @@ TInt Cget_header_message::Test1L( CStifItemParser& aItem )
 			     TTime time;
 			     headers->GetTime(time);
 			     
-			     headers->SetPriorityFlag(TMsvPriority(0));
-			     headers->SetPriorityFlag(TMsvPriority(2));
-			     headers->SetPriorityFlag(TMsvPriority(6));
+			     //headers->SetPriorityFlag(TMsvPriority(0));
+			     //headers->SetPriorityFlag(TMsvPriority(2));
+			     //headers->SetPriorityFlag(TMsvPriority(6));
 
 			     TMsvId id_l = headers->MessageId();
 			     TBool fl_l = headers->AttachFlag();
@@ -504,6 +505,8 @@ TInt Cget_header_message::Test1L( CStifItemParser& aItem )
 					  } 
 				 	 else
 					  {
+					  delete headers;
+					  headers = NULL;
 					   test = FALSE;  		  
 					   break;
 					  }

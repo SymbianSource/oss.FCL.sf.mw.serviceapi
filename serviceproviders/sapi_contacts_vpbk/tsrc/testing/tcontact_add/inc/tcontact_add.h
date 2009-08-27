@@ -67,6 +67,10 @@ class CContactCallback : public MContactCallback
          
         virtual void HandleReturnIter(const TInt& aError, CContactIter* aIter, TInt aTransId );
         
+        virtual void HandleReturnId(const TInt& aError, HBufC8* acntId, TInt aTransId );
+        virtual void HandleReturnArray(const TInt& aError, 
+                     RPointerArray<HBufC8>& aArray,
+                                                   TInt aTransId );
     		   TInt iError;    
     	
     
@@ -201,7 +205,12 @@ class Ctdeleteadd : public CScriptBase
         virtual TInt Add_Test10L( CStifItemParser& aItem );   
         virtual TInt Add_Test11L( CStifItemParser& aItem );  
         virtual TInt Add_Test12L( CStifItemParser& aItem );  
-        virtual TInt Add_Test13L( CStifItemParser& aItem );  
+        virtual TInt Add_Test13L( CStifItemParser& aItem );
+        virtual TInt Add_Test14L( CStifItemParser& aItem );
+        virtual TInt Add_Test15L( CStifItemParser& aItem );
+        virtual TInt Add_Test16L( CStifItemParser& aItem );
+        virtual TInt Add_Test17L( CStifItemParser& aItem );
+        
         
         
         //ADD NEW METHOD DEC HERE

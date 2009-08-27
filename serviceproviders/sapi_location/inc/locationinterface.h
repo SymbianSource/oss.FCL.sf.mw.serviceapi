@@ -50,8 +50,8 @@ const TInt KLocMaxAge = 0;
 _LIT8( KCmdGetLocation , "GetLocation" ) ;
 _LIT8( KCmdTraceLocation, "Trace" ) ;
 _LIT8( KCmdCancelRequest, "CancelNotification" ) ;
-_LIT8( KCmdSetIdentity, "SetIdentity");
 
+_LIT8(KCmdLastLocation,"GetLastPosition");
 _LIT( KRequestTrace ,"TraceCancel") ;
 _LIT( KRequestGetLoc , "GetLocCancel" ) ;
 _LIT8( KRequestCalculate , "Calculate") ;
@@ -82,6 +82,10 @@ _LIT8(KUpdateOptionInterval,"UpdateInterval");
 _LIT8(KUpdateOptionTimeOut,"UpdateTimeOut");
 _LIT8(KUpdateOptionMaxAge,"UpdateMaxAge");
 _LIT8(KPartialUpdates , "PartialUpdates");
+/**
+ * EnableHighAccuracy parameter
+ */
+_LIT8(KEnableHighAccuracy,"EnableHighAccuracy");
 
 /**
  * Class of Location Information ;user is 
@@ -136,12 +140,6 @@ _LIT8(KPositionFieldTrueCourseError , "TrueCourseError") ;
 _LIT8(KPositionFieldMagneticCourse , "MagneticCourse") ;
 _LIT8(KPositionFieldMagneticCourseError , "MagneticCourseError") ;
 
-/**
- * NMEA information which will be part of outparam list 
- */
-
-_LIT8(KPositionFieldNMEASentences , "NMEASentence") ;
-_LIT8(KPositionFieldNMEASentencesStart , "NMEASentenceStart") ;
 
 /**
  * Enum specifier for postion Info Category
@@ -211,7 +209,7 @@ class CLocationInterface : public CBase ,public  MLiwInterface
     virtual void Close() {delete this;}                          
 
     private :
-    static void ConvertPosToGenricListL( TPosition &aPos , CLiwGenericParamList &aOutList ) ;
+   
 
     /**
      * Internal private function which extracts coordinate information from CLiwMap
@@ -233,6 +231,11 @@ class CLocationInterface : public CBase ,public  MLiwInterface
 	 TInt SetUpdateOption(TPositionUpdateOptions& aPositionUpdateoption,const CLiwMap* aUpdatemap);
 	 
     private :
+    /**
+     * By default Symbian 2nd phase constructor is private.
+     * 
+     */
+    void ConstructL();
     /**
      *Default constructor
      */
@@ -279,15 +282,7 @@ class CLocationInterface : public CBase ,public  MLiwInterface
      
 	void GetLocationInfo( CLiwGenericParamList& aOutParamList,TInt aPosInfoCategory) ;
 	
-	/**
-     * Internal function which cancels the asynchronous using transaction id of the 
-     * async request
-     *
-     * @param aTransactionId Transaction id of the asynchronous request to be cancelled
-     */   	
-     
-     MLiwNotifyCallback* RequestCancel(TInt32 aTransactionId/*,MLiwNotifyCallback** aCallBack*/) ;   	
-        
+	
             
     /**
      * Handle to core location class for performing location operations
@@ -310,6 +305,10 @@ class CLocationInterface : public CBase ,public  MLiwInterface
      * Class member which contains module information which is used for location esitmation
      */
     TPositionModuleInfo   iModuleInfo ;
+    /**
+     * Class member which is used to obtain updates of Last Known Position
+     */
+    TPosition iPosition;
 
     /**
      * Class member which contains all the field ids of all the supported Hposition info fields

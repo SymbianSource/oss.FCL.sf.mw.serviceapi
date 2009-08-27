@@ -54,6 +54,7 @@ class GetLoctionCancel : public MLiwNotifyCallback
 
 TInt GetLocCancelL()
 {
+    __UHEAP_MARK ;
 	GetLoctionCancel MyUpdates ;
 	
 	CActiveScheduler *Scheduler  = CActiveScheduler :: Current() ;
@@ -134,11 +135,12 @@ TInt GetLocCancelL()
    TInt ret = (errprm->Value()).AsTInt32() ;
     
     delete Scheduler ;
-    
+    a.ResetAndDestroy();
     locinterface->Close();
     delete InputList ;
     delete  OutParmList ;
-    
+    delete ServiceHandler;
+    __UHEAP_MARKEND ;
     return ret ;  
 }
 

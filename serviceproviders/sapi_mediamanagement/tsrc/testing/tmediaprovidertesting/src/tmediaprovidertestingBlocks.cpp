@@ -21,13 +21,16 @@
 #include <StifParser.h>
 #include <Stiftestinterface.h>
 #include <LiwServiceHandler.h>
-
+#include<f32file.h>
 #include "tmediaprovidertesting.h"
 #include "tmediaprovidertesting.hrh"
+#include "tmediaobserver.h"
 
 
 
 using namespace LIW;
+
+TInt count = 0; 
 
 // ============================ MEMBER FUNCTIONS ===============================
 
@@ -60,7 +63,8 @@ TInt Ctmediaprovidertesting::RunMethodL(CStifItemParser& aItem)
     {
     static TStifFunctionInfo const KFunctions[] =
         {          
-        ENTRY("GetFilesListL", Ctmediaprovidertesting::GetFilesListL)            
+        ENTRY("GetFilesListL", Ctmediaprovidertesting::GetFilesListL)  , 
+        ENTRY("GetListBackToBackCall",Ctmediaprovidertesting::GetListBackToBackCallL)
         };
     const TInt count = sizeof( KFunctions ) / 
                         sizeof( TStifFunctionInfo );
@@ -190,6 +194,7 @@ void Ctmediaprovidertesting :: LoadServiceL()
     
     criteria->SetServiceClass(TUid::Uid(KLiwClassBase));    
 	RCriteriaArray critArray;
+	CleanupClosePushL(critArray);
     critArray.AppendL(criteria);
     
     iServicehandler->AttachL(critArray);
@@ -208,6 +213,118 @@ void Ctmediaprovidertesting :: LoadServiceL()
         }                                             
     iInList->Reset();
     iOutList->Reset();    
+    CleanupStack :: PopAndDestroy(); 
     CleanupStack :: PopAndDestroy(criteria); 
-    critArray.Close();
     }           
+
+/*--------------------------------------------------------------------------
+ Ctmediaprovidertesting :: LoadServiceL
+ Loads the mediamanagement service.
+-----------------------------------------------------------------------------
+*/
+TInt Ctmediaprovidertesting::GetListBackToBackCallL( CStifItemParser& aItem )
+    {
+    TInt error = KErrGeneral;
+     
+     LoadServiceL(); 
+  //__UHEAP_MARK;
+     // Creating callback instance
+  TInt a  =User::CountAllocCells();
+     CMediaObserver* observer = CMediaObserver::NewL();
+     CleanupStack::PushL(observer);
+     //Parsing stiff input 
+     observer->ParseStiffInput(aItem);
+     
+     //Creating another callback
+     CMediaObserver* observer2 = CMediaObserver::NewL();
+     CleanupStack::PushL(observer2);
+     //Parsing stiff input 
+     observer2->ParseStiffInput(aItem);
+   
+   // Giving first call  
+     iIface->ExecuteCmdL(command8,
+                         *(observer->iInList),
+                         *(observer->iOutList),
+                         KLiwOptASyncronous,
+                         observer);    
+     TInt pos = 0;
+     const TLiwGenericParam* p = observer->iOutList->FindFirst(pos,
+                                                     KErrorCode); // Finding Error Code
+     //count++;
+     if(p)
+         {
+         TInt retcode = p->Value().AsTInt32();
+         if(KErrNone == retcode)
+             {
+   //          CActiveScheduler::Start();
+             //give second call 
+             
+            iIface->ExecuteCmdL(command8,
+                                  *(observer2->iInList),
+                                  *(observer2->iOutList),
+                                  KLiwOptASyncronous,
+                                  observer2);    
+             //count++;
+             pos =0 ;
+             
+             const TLiwGenericParam* p = observer2->iOutList->FindFirst(pos,
+                                                             KErrorCode); // Finding Error Code
+            
+             
+             if(p)
+                 {
+                 TInt retcode = p->Value().AsTInt32();
+                 if(KErrNone == retcode)
+                     {
+                     CActiveScheduler::Start();                     
+                     }
+                 else
+                     {
+                     if(observer2->iExpErrorCode == retcode)
+                         {
+                         observer2->iResult = KErrNone;
+                         }
+                     else
+                         {
+                         User::Leave(KErrGeneral);
+                         }             
+                     }
+
+                     }
+             
+             
+                 }
+         else
+             {  if(observer->iExpErrorCode == retcode)
+                 {
+                 observer->iResult = KErrNone;
+                 }
+             else
+                 {
+                 User::Leave(KErrGeneral);
+                 }          
+             }
+           }   
+
+     if( (KErrNone == observer->iResult) && (KErrNone == observer2->iResult) )
+         {
+         error = KErrNone ;
+         }
+     else
+         {
+         error = KErrGeneral;
+         }
+     
+observer->iInList->Reset();
+observer->iOutList->Reset();
+     
+observer2->iInList->Reset();
+observer2->iOutList->Reset();
+
+CleanupStack::PopAndDestroy(observer2);
+CleanupStack::PopAndDestroy(observer);
+a  =User::CountAllocCells();
+a = error;
+//__UHEAP_MARKEND;    
+    return a;
+    }

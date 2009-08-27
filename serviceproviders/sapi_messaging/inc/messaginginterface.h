@@ -323,9 +323,19 @@ class CMsgCallbackInt : public CMsgCallbackBase
 	     * Gives the result of asynchronous SAPI
 	     * @param aErrCode errcode
 	     * @param aResult Result
-	     * @return   void
 	    */		
 		void NotifyResultL(TInt aErrCode, TAny* aResult);
+		
+		/**
+	     * Gives the result of asynchronous SAPI
+	     * @param aErrCode errcode
+	     * @param aEntrySelection  Entryselection
+		 * @param aFilter  Filter
+	    */
+		
+		void HandleGetlistL (TInt aErrCode, CMsvEntrySelection* aEntrySelection, CFilterParamInfo* aFilter);
+		
+		 
 	};
 
 /**
@@ -339,7 +349,7 @@ class CMsgCallbackHeader : public CMsgCallbackBase
 	     * Two-phase Constructor
 	     * @return   CMsgCallbackHeader* 
 	    */		
-		static CMsgCallbackHeader* NewL();
+		static CMsgCallbackHeader* NewL(CMessagingService* aMsgService);
 		
 	  	/**
 	     * Destructor
@@ -351,17 +361,32 @@ class CMsgCallbackHeader : public CMsgCallbackBase
 	  	/**
 	     * Constructor
 	    */		
- 		CMsgCallbackHeader();
-		
+ 		CMsgCallbackHeader(CMessagingService* aMsgService);
+ 		
 	public:
 	
 	  	/**
 	     * Gives the result of asynchronous SAPI
 	     * @param aErrCode errcode
 	     * @param aResult Result
-	     * @return   void
 	    */
 		virtual void NotifyResultL(TInt aErrCode, TAny* aResult);
+		 
+		 /**
+	     * Gives the result of asynchronous SAPI
+	     * @param aErrCode errcode
+	     * @param aEntrySelection  Entryselection
+		 * @param aFilter  Filter
+	    */
+		 
+		 virtual void HandleGetlistL (TInt aErrCode, CMsvEntrySelection* aEntrySelection, CFilterParamInfo* aFilter);
+		 
+	private:
+	    
+	     /**
+	     * CMessagingService  class pointer
+	    */
+	    CMessagingService* iMsg;
 	};
 
 /**

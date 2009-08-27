@@ -21,6 +21,7 @@
 
 #include "contactiter.h"
 #include "contactviewobserver.h"
+#include <MVPbkContactLink.h>
 
 
 //---------------------------------------------------------------------------
@@ -31,32 +32,86 @@ void CContactViewObserver::SetupContactLinkArrayL(MVPbkContactViewBase& aView )
 {
 	if((iFlag == EContactFilteredView) || ((iFlag == EContactDefaultView) && (iDefaultView)))
 		{
-		CVPbkContactLinkArray* linkArray = CVPbkContactLinkArray::NewL();
-		CleanupStack::PushL(linkArray);
-		TInt viewCount = aView.ContactCountL();
-		if(viewCount)
-			{
-			for(TInt i=0; i < viewCount; i++)
+        TInt viewCount = aView.ContactCountL();
+        
+
+        if(viewCount)
+            {
+            CVPbkContactLinkArray* linkArray = CVPbkContactLinkArray::NewL();
+                                CleanupStack::PushL(linkArray);
+            RPointerArray<HBufC8> idArray(viewCount);
+            if(iVal == EGetList)
+             {
+             MVPbkContactLink* link = NULL;
+            for(TInt i=0; i < viewCount; i++)
+                 {
+                     
+                     link = aView.CreateLinkLC(i);
+                     linkArray->AppendL(link);
+                     CleanupStack::Pop();
+                 }
+             }
+             else
+                 {
+				 if(iSortOrder == EDesc)
 				 {
-				 linkArray->AppendL(aView.CreateLinkLC(i));
-				 }
-				 
-			//Set the params for iterator
-			iIter->SetParams(linkArray, *iStoreUri, iSortOrder, iTransId, EContacts, iContactService);
-			 
-			 //Notify the user				  
-			iCallback->HandleReturnIter(KErrNone, iIter, iTransId);
-			 
-			CleanupStack::Pop(viewCount);
-			}
+                 for(TInt i=(viewCount-1); i >= 0; i--)
+                  {
+                     MVPbkContactLink* link = NULL;
+                     link = aView.CreateLinkLC(i);
+                     idArray.AppendL( link->PackLC());
+                     CleanupStack::Pop();   //PackLC puts every element into cleanup stack
+                     //CleanupStack::PopAndDestroy();
+                  }
+				  }
+				  else 
+				  {
+					for(TInt j=0; j < viewCount; j++)
+                  {
+                     MVPbkContactLink* link = NULL;
+                     link = aView.CreateLinkLC(j);
+                     idArray.AppendL( link->PackLC());
+                     CleanupStack::Pop();   //PackLC puts every element into cleanup stack
+                     //CleanupStack::PopAndDestroy();
+                  }
+				  }
+                 }
+                 
+                 
+                 
+            if(iVal == EGetList)
+            {
+                //Set the params for iterator
+                iIter->SetParams(linkArray, *iStoreUri, iSortOrder, iTransId, EContacts, iContactService);
+                //Notify the user                
+                iCallback->HandleReturnIter(KErrNone, iIter, iTransId);
+              //  CleanupStack::Pop(viewCount);   //All Contacts are put in clean up stack. Pop em
+                CleanupStack::Pop(linkArray);
+                
+            }
+            else
+            {
+           //iContactService->RequestComplete(iTransId);
+           //Notify the user
+           //iCallback->HandleReturnIter(KErrNone, iIter, iTransId);
+      
+             iCallback->HandleReturnArray(KErrNone, idArray, iTransId);
+             CleanupStack::PopAndDestroy(viewCount);
+             CleanupStack::PopAndDestroy(linkArray);
+             //idArray.Reset();
+             delete iIter;
+            }
+             
+                
+            }
 		else
 			{
 			//Notify User
 			iCallback->HandleReturnValue(EOpComplete, KErrNotFound, iTransId);	
-			delete iIter;
+            delete iIter;
 			iIter = NULL;
 			}
-		CleanupStack::Pop(linkArray);
+               
 		}
 }
 
@@ -84,9 +139,9 @@ void CContactViewObserver::ContactViewReady(MVPbkContactViewBase& aView )
 // NewL()
 //---------------------------------------------------------------------------
 
-CContactViewObserver* CContactViewObserver::NewL( MContactCallback* aCallback, enum TViewFlag aFlag, CContactIter* iIter,CContactService* aContactService,const TDesC& aStoreUri, TOrder aSortOrder, TInt aTransId, CActiveSchedulerWait* aSchedulerWait)
+CContactViewObserver* CContactViewObserver::NewL( MContactCallback* aCallback, enum TViewFlag aFlag, CContactIter* iIter, CContactService* aContactService,const TDesC& aStoreUri, TOrder aSortOrder, TInt aTransId, CActiveSchedulerWait* aSchedulerWait, TCmdType val)
 {
-    CContactViewObserver* self = new( ELeave ) CContactViewObserver( aStoreUri, aFlag, iIter, aContactService, aCallback, aSortOrder, aTransId, aSchedulerWait);
+    CContactViewObserver* self = new( ELeave ) CContactViewObserver( aStoreUri, aFlag, iIter,aContactService, aCallback, aSortOrder, aTransId, aSchedulerWait, val);
     return self;
 }
 
@@ -96,7 +151,7 @@ CContactViewObserver* CContactViewObserver::NewL( MContactCallback* aCallback, e
 //---------------------------------------------------------------------------
     
 
-CContactViewObserver::CContactViewObserver(const TDesC& aStoreUri, enum TViewFlag aFlag, CContactIter* aIter, CContactService* aContactService, MContactCallback* aCallback, TOrder aSortOrder, TInt aTransId, CActiveSchedulerWait* aSchedulerWait )
+CContactViewObserver::CContactViewObserver(const TDesC& aStoreUri, enum TViewFlag aFlag, CContactIter* aIter, CContactService* aContactService, MContactCallback* aCallback, TOrder aSortOrder, TInt aTransId, CActiveSchedulerWait* aSchedulerWait, TCmdType val )
 :	iStoreUri (&aStoreUri),
 	iFlag (aFlag),
 	iIter (aIter),
@@ -105,7 +160,8 @@ CContactViewObserver::CContactViewObserver(const TDesC& aStoreUri, enum TViewFla
 	iTransId (aTransId),
 	iDefaultView (EFalse),
 	iSchedulerWait(aSchedulerWait),
-	iContactService(aContactService)
+	iContactService(aContactService),
+	iVal(val)
 {
 }
 

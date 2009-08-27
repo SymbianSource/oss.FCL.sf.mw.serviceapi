@@ -54,7 +54,8 @@ public:
                                       const TDesC& aStoreUri, 
                                       TOrder aSortOrder, 
                                       TInt aTransId, 
-                                      CActiveSchedulerWait* aSchedulerWait);
+                                      CActiveSchedulerWait* aSchedulerWait,
+                                      TCmdType val);
 
 
 
@@ -84,7 +85,8 @@ public:
 	                     MContactCallback* aCallback,
 	                     TOrder aSortOrder, 
 	                     TInt aTransId, 
-	                     CActiveSchedulerWait* aSchedulerWait);
+	                     CActiveSchedulerWait* aSchedulerWait,
+	                     TCmdType val = EGetList);
 	
 	void ReturnDefaultView();
 
@@ -130,6 +132,7 @@ private:
 	
 	//ContactService Handle
 	CContactService* iContactService;
+	TCmdType iVal;
 
 };
 

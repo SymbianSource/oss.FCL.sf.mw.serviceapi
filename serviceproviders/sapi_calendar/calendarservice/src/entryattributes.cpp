@@ -453,6 +453,7 @@ CEntryAttributes::~CEntryAttributes()
 	delete iLocation;
 	delete iPhoneOwner;
     delete iOrganizer;
+    delete iUid;
     iRepeatDates.Close();
 	iExDates.Close();
 
@@ -856,7 +857,18 @@ EXPORT_C void CEntryAttributes::SetLocalUid( const TCalLocalUid aLUid)
 	iLocal = aLUid;	
 	iSetAttributes |= ELocalUid;
 	}
-
+// ---------------------------------------------------------------------------
+// CEntryAttributes::SetUid
+// ---------------------------------------------------------------------------
+//  
+EXPORT_C void CEntryAttributes::SetUidL( const TDesC8& aUid )
+    {
+    if( aUid.Length() )
+        {
+        iUid = aUid.AllocL();
+        iSetAttributes |= EGlobalUid;
+        }
+    }
 // ---------------------------------------------------------------------------
 // CEntryAttributes::SetRepeatRule
 // ---------------------------------------------------------------------------
@@ -1058,6 +1070,14 @@ EXPORT_C TCalLocalUid CEntryAttributes::LocalUid()
 	{
 	return iLocal;	
 	}
+// ---------------------------------------------------------------------------
+// CEntryAttributes::GlobalUid
+// ---------------------------------------------------------------------------
+//  
+EXPORT_C TPtrC8 CEntryAttributes::GlobalUid()
+    {
+    return iUid ? TPtrC8( *iUid ) : TPtrC8();
+    }
 
 // ---------------------------------------------------------------------------
 // CEntryAttributes::ModifiedAttributes

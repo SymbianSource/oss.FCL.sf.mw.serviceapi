@@ -53,6 +53,7 @@ class TraceLoctionCancel : public MLiwNotifyCallback
 
 TInt TraceLocCancelL()
 {
+    __UHEAP_MARK ;
 	TraceLoctionCancel MyUpdates ;
 	
 	CActiveScheduler *Scheduler  = CActiveScheduler :: Current() ;
@@ -133,11 +134,12 @@ TInt TraceLocCancelL()
    TInt ret = (errprm->Value()).AsTInt32() ;
     
     delete Scheduler ;
-    
+    a.ResetAndDestroy();
     locinterface->Close();
     delete InputList ;
     delete  OutParmList ;
-    
+    delete ServiceHandler;
+    __UHEAP_MARKEND ;
     return ret ;  
 }
 

@@ -19,7 +19,7 @@
 #include <mclfitem.h>
 #include <pathinfo.h>
 #include <liwvariant.h>
-
+#include "mgmresolution.h"
 
 #include "mgmediaitem.h"
 
@@ -32,11 +32,15 @@ _LIT8( KMgFileDate, "FileDate" );
 _LIT8( KMgMediaType, "MediaType" );
 _LIT8( KMgMimeType, "MimeType" ); 
 _LIT8( KType, "Type");
+_LIT8(KXPixels, "XPixels");
+_LIT8(KYPixels, "YPixels");
 
 _LIT( EMgPhoneMemory,"C:" );
 _LIT( EMgMmc,"E:" );
 _LIT( KMediaType, "Media");
+_LIT( KImageType, "image");
 const TInt KMemoryNameLength = 2;
+const TInt KImgLen = 20;
 
 // ---------------------------------------------------------------------------
 // CMgMediaItem::FillCommonAttributesL
@@ -55,6 +59,8 @@ void CMgMediaItem::FillCommonAttributesL(CLiwDefaultMap* aOutputMap, const MCLFI
     TInt32 size;
     TPtrC mimeType;
     TInt32 mediaType;
+    TBuf<KImgLen> mediaImage;
+    mediaImage.Append( KImageType );
     
     if( KErrNone == aClfItem.GetField( ECLFFieldIdFileNameAndPath, fullName ) )
                                                         
@@ -91,8 +97,18 @@ void CMgMediaItem::FillCommonAttributesL(CLiwDefaultMap* aOutputMap, const MCLFI
     aOutputMap->InsertL( KMgFileDate,TLiwVariant( time ) );
     aOutputMap->InsertL( KMgFileSize,TLiwVariant( size ) );
     
+    if ( mediaType == ECLFMediaTypeImage )
+        {
+        TSize imageRes( 0,0 );
+        MResolution* mediaResObj = MediaResolutionFactory::CreateMediaResolutionobjL( mediaImage,fullName );
+        CleanupStack::PushL( mediaResObj );
+        mediaResObj->GetresolutionL( imageRes );        
+        aOutputMap->InsertL( KXPixels,(TInt32)imageRes.iWidth );
+        aOutputMap->InsertL( KYPixels,(TInt32)imageRes.iHeight );
+        CleanupStack::Pop( mediaResObj );
+        delete mediaResObj;
+        }         
     }
-
 
 
 

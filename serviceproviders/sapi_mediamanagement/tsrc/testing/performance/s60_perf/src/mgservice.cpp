@@ -68,14 +68,14 @@ CMgService::~CMgService()
     delete iEngine;
 
     //release filter class
-    delete iFilter;
+    //delete iFilter;
 
     // release sorting style
-    delete iSortingStyle;
+   // delete iSortingStyle;
 
 	// release clf observer class
 
-    delete iClfObserver;
+   // delete iClfObserver;
     
 
 	}
@@ -212,7 +212,8 @@ const TMgState& CMgService::State() const
 void CMgService::SetSortingFieldL(const TDesC8& aSortField ,
 								  const TDesC8&  aOrder ,
 								  const RArray<TInt>& aMediaTypes,
-								  MCLFItemListModel* alistModel )
+								  MCLFItemListModel* alistModel ,
+								  MCLFSortingStyle* aSortingStyle )
 	{
 
 	// Default sorting as per file name
@@ -236,30 +237,36 @@ void CMgService::SetSortingFieldL(const TDesC8& aSortField ,
 	 		User::Leave( KErrArgument );
 	 		}
     	}
-
-	iSortingStyle->ResetL();
+   	aSortingStyle->ResetL();
+	//iSortingStyle->ResetL();
 
 
  	//Set the field on which sorting has to perform
-	iSortingStyle->AddFieldL( metaDataId );
+   	aSortingStyle->AddFieldL( metaDataId );
+   	//iSortingStyle->AddFieldL( metaDataId );
 
 	// Set the sorting field data type
-	iSortingStyle->SetSortingDataType( metaDataType );
+   	aSortingStyle->SetSortingDataType( metaDataType );
+	//iSortingStyle->SetSortingDataType( metaDataType );
 
 	if( 0 == aOrder.CompareF( KMgDescending ) )
 		{
-		iSortingStyle->SetOrdering( ECLFOrderingDescending  );
+		
+		aSortingStyle->SetOrdering( ECLFOrderingDescending  );
+		//iSortingStyle->SetOrdering( ECLFOrderingDescending  );
 		}
 	else
 		{
-		iSortingStyle->SetOrdering( ECLFOrderingAscending );
+		aSortingStyle->SetOrdering( ECLFOrderingAscending   );
+		//iSortingStyle->SetOrdering( ECLFOrderingAscending );
 		}
 
 	//Items with undefined fields are placed after items with defined fields
-	iSortingStyle->SetUndefinedItemPosition( ECLFSortingStyleUndefinedEnd );
+	aSortingStyle->SetUndefinedItemPosition( ECLFSortingStyleUndefinedEnd );
+	//iSortingStyle->SetUndefinedItemPosition( ECLFSortingStyleUndefinedEnd );
 
 	// set sorting style in CLF.
-	alistModel->SetSortingStyle( iSortingStyle );
+	alistModel->SetSortingStyle( aSortingStyle );
 
 
 	}
@@ -273,7 +280,8 @@ void CMgService::SetFilterMetaDataL( const TDesC8& aFilterField,
 									 const TDesC& aStartVal,
 									 const TDesC& aEndVal,
 									 const RArray<TInt>& aMediaTypes, 
-									 MCLFItemListModel* alistModel )
+									 MCLFItemListModel* alistModel,
+									 CPostFilter* aFilter)
 	{
 	TCLFDefaultFieldId metaDataId;
     TCLFItemDataType  metaDataType;
@@ -286,7 +294,8 @@ void CMgService::SetFilterMetaDataL( const TDesC8& aFilterField,
     	{
        	metaDataId = ECLFFieldIdNull;
        	metaDataType = ECLFItemDataTypeDesC;	// Blank Descriptor
-        iFilter->SetFilterMetaData( metaDataId, metaDataType );
+       	aFilter->SetFilterMetaData( metaDataId, metaDataType );
+        //iFilter->SetFilterMetaData( metaDataId, metaDataType );
    		}
     else
     	{
@@ -301,14 +310,15 @@ void CMgService::SetFilterMetaDataL( const TDesC8& aFilterField,
 	 		User::Leave( KErrNotSupported );
 	 		}
 
-
-	 	iFilter->SetFilterMetaData( metaDataId, metaDataType );
+	 	aFilter->SetFilterMetaData( metaDataId, metaDataType );
+	 	//iFilter->SetFilterMetaData( metaDataId, metaDataType );
 
        	// set filter value of CLF
-	    iFilter->SetFilterValueL( aStartVal,aEndVal );
+	 	aFilter->SetFilterValueL( aStartVal,aEndVal );
+	    //iFilter->SetFilterValueL( aStartVal,aEndVal );
 
 		// Set Post Filter in CLF
-	    alistModel->SetPostFilter( iFilter );
+	    alistModel->SetPostFilter( aFilter );
 
 	 	}
 
@@ -328,14 +338,14 @@ void CMgService::ConstructL()
 
 
     // create the instance of CPostFilter and store it in member data
-    iFilter = CPostFilter::NewL();
+//    iFilter = CPostFilter::NewL();
 
     // Get the sorting style from CLF
-	iSortingStyle = ContentListingFactory::NewSortingStyleLC();
- 	CleanupStack::Pop();
+//	iSortingStyle = ContentListingFactory::NewSortingStyleLC();
+ //	CleanupStack::Pop();
 
  	//create the instance of clf observer
- 	iClfObserver = CClfOperationObserver::NewL();
+ //	iClfObserver = CClfOperationObserver::NewL();
 
 	}
 
@@ -349,9 +359,6 @@ void CMgService::ConstructL()
 CMgService::CMgService()
           : iState( EMgFree ),
             iEngine( NULL ),
-			iFilter( NULL ),
-			iSortingStyle( NULL ),
-			iClfObserver( NULL ),
 			iTransactionID( 0 )
 	{
 
@@ -418,7 +425,9 @@ void CMgService::SendRequestToClfL( const TDesC8& aFileType,
                 				    const TDesC&  aEndVal,
                 				    const TDesC8& aSortField,
                 				    const TDesC8&  aOrder,
-                				    MCLFItemListModel* alistModel )
+                				    MCLFItemListModel* alistModel ,
+                				    CPostFilter* aFilter,
+                				    MCLFSortingStyle* aSortingStyle)
     {
 
 
@@ -435,12 +444,12 @@ void CMgService::SendRequestToClfL( const TDesC8& aFileType,
 
 
 	// Set Filter Meta Data  and Value
-    SetFilterMetaDataL( aFilterField,aStartVal,aEndVal,mediaTypes,alistModel);
+    SetFilterMetaDataL( aFilterField,aStartVal,aEndVal,mediaTypes,alistModel,aFilter);
     
 
 
     // call set sorting field of CLF
-    SetSortingFieldL( aSortField,aOrder,mediaTypes,alistModel );
+    SetSortingFieldL( aSortField,aOrder,mediaTypes,alistModel, aSortingStyle);
    
  	// set the state = Busy
  	// till this request is complete

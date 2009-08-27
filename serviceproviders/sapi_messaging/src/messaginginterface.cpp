@@ -435,7 +435,7 @@ void CMessagingInterface::GetHeaderListL( const CLiwGenericParamList& aInParamLi
 					                       TUint aCmdOptions,
 					                       MLiwNotifyCallback* aCallback )
 	{
-	LeaveIfAsynchronousL( aCmdOptions, aCallback, KCmdGetHeaderList, KAsyncNotSupported );
+	
 	
 	const TLiwGenericParam* param = NULL;
 	
@@ -483,17 +483,36 @@ void CMessagingInterface::GetHeaderListL( const CLiwGenericParamList& aInParamLi
 			
 	CMsvEntrySelection* entrySelection = NULL;
 	
-	
+	CMsgCallbackBase* callback = NULL;
+
+	    if ( aCallback && ( KLiwOptASyncronous & aCmdOptions ))
+	        {
+	        callback = CMsgCallbackHeader::NewL(iMsgService);
+	        CleanupStack::PushL( callback );
+	        callback->iPtrInParamList = &aInParamList;
+	        callback->iPtrNotifyCallback = aCallback;
+	        callback->iTransactionId = aCallback->GetTransactionID();
+
+	        aOutParamList.AppendL(TLiwGenericParam( KTransactionID, 
+	                                TLiwVariant( callback->iTransactionId )));      
+	        }
 	
 	iMsgService->GetIdListL( filterParam, 
 									folderId, 
-									NULL/*Callback*/, 
+									callback/*Callback*/, 
 									entrySelection );
 	
+	if ( callback )
+	{
+	CleanupStack::Pop( callback );
+	CleanupStack::PopAndDestroy(filterParam);
+	}
+	if(!callback)
 	CleanupStack::Pop( filterParam );
 		
 	// Successfull completion
 	// filterParam and entrySelection ownership passed to called function
+	if(!callback)
 	UpdateOutputAsIdListL( &aOutParamList, entrySelection, iMsgService, filterParam );
 	}
 
@@ -518,7 +537,7 @@ void CMessagingInterface::RequestNotificationL( const CLiwGenericParamList& aInP
 	GetNotificationTypeL( aInParamList, notificationType, KCmdRegNotification );
 
 	CMsgCallbackBase* callback = NULL;
-	callback = CMsgCallbackHeader::NewL();
+	callback = CMsgCallbackHeader::NewL(iMsgService);
 	callback->iPtrInParamList = &aInParamList;
 	callback->iPtrNotifyCallback = aCallback;
 	callback->iTransactionId = aCallback->GetTransactionID();
@@ -1370,12 +1389,13 @@ CFilterParamInfo* CMessagingInterface::GetFilterParametersL(
 // Two-phase Constructor
 // ---------------------------------------------------------------------------
 //
-CMsgCallbackHeader* CMsgCallbackHeader::NewL()
+CMsgCallbackHeader* CMsgCallbackHeader::NewL(CMessagingService* aMsgService)
 	{
-	CMsgCallbackHeader* self = new (ELeave) CMsgCallbackHeader();
+	CMsgCallbackHeader* self = new (ELeave) CMsgCallbackHeader(aMsgService);
+	
 	return self;
 	}
-	
+
 // ---------------------------------------------------------------------------
 // Destructor
 // ---------------------------------------------------------------------------
@@ -1388,7 +1408,7 @@ CMsgCallbackHeader::~CMsgCallbackHeader()
 // Constructor
 // ---------------------------------------------------------------------------
 //		
-CMsgCallbackHeader::CMsgCallbackHeader()
+CMsgCallbackHeader::CMsgCallbackHeader(CMessagingService* aMsgService):iMsg(aMsgService)
 	{
     }
     
@@ -1428,7 +1448,57 @@ void CMsgCallbackHeader::NotifyResultL( TInt aErrCode, TAny* aResult )
 
 	CleanupStack::PopAndDestroy( outParams );
 	}
-	
+
+// ---------------------------------------------------------------------------
+// Gives the result of getlist asynchronous SAPI
+// ---------------------------------------------------------------------------
+//	
+void CMsgCallbackHeader::HandleGetlistL( TInt aErrCode, CMsvEntrySelection* aEntrySelection, CFilterParamInfo* aFilter )
+    {
+    CLiwGenericParamList* outParams = CLiwGenericParamList::NewL();
+
+    CleanupStack::PushL( outParams );
+
+    outParams->AppendL(TLiwGenericParam(KErrorCode, 
+                            TLiwVariant(ErrCodeConversion(aErrCode)))); 
+    
+    if ( aErrCode==KErrNone )
+        {
+        CIterableIdList* iter = CIterableIdList::NewL( aEntrySelection, iMsg, aFilter );
+        
+        CleanupStack::PushL( iter );
+        
+        TLiwVariant listVal;
+        
+        listVal.Set( iter );
+        
+        outParams->AppendL( TLiwGenericParam( KReturnValue/*KMessageList*/, listVal ));
+        
+        CleanupStack::Pop( iter );
+        
+        listVal.Reset();
+        
+        iter->DecRef();
+        }
+    
+    TInt event = KLiwEventCompleted;
+    
+    if ( aErrCode == KErrCancel )
+        {
+        event = KLiwEventCanceled;
+        }
+    else if ( aErrCode != KErrNone )
+        {
+        event = KLiwEventStopped;
+        }
+    
+    ((MLiwNotifyCallback*)iPtrNotifyCallback)->HandleNotifyL( iTransactionId, 
+                                                    event, 
+                                                    *(outParams), 
+                                                    *((CLiwGenericParamList*)iPtrInParamList) ); 
+
+    CleanupStack::PopAndDestroy( outParams );
+    }
 
 // ---------------------------------------------------------------------------
 // Two-phase Constructor
@@ -1477,6 +1547,11 @@ void CMsgCallbackInt::NotifyResultL( TInt aErrCode, TAny* /*aResult*/ )
 											 
 	CleanupStack::PopAndDestroy( outParams );
 	}
+
+void CMsgCallbackInt::HandleGetlistL( TInt aErrCode, CMsvEntrySelection* aEntrySelection, CFilterParamInfo* aFilter )
+    {
+    //Dummy Function
+    }
 
 // ---------------------------------------------------------------------------
 // Updates the output for message header

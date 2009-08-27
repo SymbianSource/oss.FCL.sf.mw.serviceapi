@@ -79,7 +79,27 @@
 TInt tCount=0;
  HBufC8* contactid;
  CSingleContact* myContact=NULL;
+ TBool newFields = EFalse; 
+ _LIT8(KFirstNameKey,"FirstName");
+ _LIT(KValue,"Barbie");
  
+ void CContactCallback::HandleReturnArray(const TInt& aError,RPointerArray<HBufC8>& aArray,TInt aTransId )
+     {
+     CActiveScheduler::Stop();
+     iError = aError;
+     }
+
+ void CContactCallback:: HandleReturnId( const TInt& aError, HBufC8* acntId, TInt aTransId )
+     {
+     CActiveScheduler::Stop();
+     //HBufC8* cntId = acntId;
+     iError = aError;
+     if(aError == KErrNone)
+         {
+              delete acntId;
+              acntId = NULL;
+         }
+     }
 void CContactCallback::HandleReturnValue( TOperationEvent aEventId, const TInt& aError, TInt aTransId )
 {
   iError= aError;
@@ -92,9 +112,8 @@ void CContactCallback::HandleReturnValue( TOperationEvent aEventId, const TInt& 
  
 
     CActiveScheduler::Stop();
-
+iError = aError;
     CSingleContactField* field = NULL; 
-    HBufC8* buf = NULL;
     TPtrC8 buf1;
     TPtrC buf2;
     TPtrC buf3;
@@ -104,9 +123,14 @@ void CContactCallback::HandleReturnValue( TOperationEvent aEventId, const TInt& 
 if(aError==KErrNone)
 {
    aIter->NextL(myContact,contactid);
+   if(contactid)
+   {   
+    delete contactid;
+    contactid = NULL;
+   }
 
   while(myContact)
- { 	
+  { 	
  	tCount++;
     if(myContact)
    {
@@ -119,23 +143,44 @@ if(aError==KErrNone)
          if(field!=NULL)
              {                
              field->GetFieldDataL(buf1,buf2,buf3);                
+             if(newFields != EFalse)
+                 {
+             if(buf1.CompareF(KFirstNameKey) == 0)
+                 {
+                 if(buf3.CompareF(KValue) != 0)
+                     {
+                     iError = KErrGeneral;
+                     newFields =EFalse;
+                     break;
+                     }
+                 }
+             newFields = EFalse;
+             break;
+                 }
                  //if(buf1.CompareF(_L8("emailgen"))==0) break;                            
              }
                           
        } //for 
            
    } //if
-    
+   if(myContact)
+   {
+    delete myContact;
+    myContact = NULL;
+   }
    aIter->NextL(myContact,contactid);
-
+   
+  if(contactid)
+   {   
+    delete contactid;
+    contactid = NULL;
+   }
                     
  } //while
- delete  aIter;
-} //if
-    
  
-
- } 
+} //if
+delete  aIter;   
+} 
 
  // -----------------------------------------------------------------------------
 // Ctmanualcontacts::Delete
@@ -172,7 +217,8 @@ TInt Ctmanualcontacts::RunMethodL(
         ENTRY( "GetList_Test8", Ctmanualcontacts::GetList_Test8L ), 
         ENTRY( "GetList_Test9", Ctmanualcontacts::GetList_Test9L ),  
         ENTRY( "GetList_Test10", Ctmanualcontacts::GetList_Test10L ),   
-        //ENTRY( "GetList_Test11", Ctmanualcontacts::GetList_Test11L ),       
+        ENTRY( "GetList_Test11", Ctmanualcontacts::GetList_Test11L ),
+        ENTRY( "GetList_Test12", Ctmanualcontacts::GetList_Test12L ),   
 
         };
 
@@ -193,7 +239,9 @@ TInt Ctmanualcontacts::RunMethodL(
  /* get database lists ,manual,only contacts.cdb will be listed*/ 	   
  TInt Ctmanualcontacts::GetList_Test1L( CStifItemParser& aItem )
     {
-
+	__UHEAP_MARK;
+	icontactservice=CContactService::NewL();
+     icallback=new(ELeave) CContactCallback;
   // Print to UI
     _LIT( Ktsapicontacts, "tsapicontacts" );
     _LIT( KExample, "In GetList_Test1L" );
@@ -213,6 +261,10 @@ TInt Ctmanualcontacts::RunMethodL(
           iter->NextL(buf);
   	  } 
 
+     delete iter;
+    delete icallback;
+    delete icontactservice;
+  __UHEAP_MARKEND;
     return KErrNone ;   
   
  }
@@ -221,7 +273,9 @@ TInt Ctmanualcontacts::RunMethodL(
 /* get all contacts from the phonebook ie contacts.cdb,manual*/
 TInt Ctmanualcontacts::GetList_Test2L( CStifItemParser& aItem )
 {
-
+__UHEAP_MARK;
+	icontactservice=CContactService::NewL();
+     icallback=new(ELeave) CContactCallback;
   // Print to UI
     _LIT( Ktsapicontacts, "tsapicontacts" );
     _LIT( KExample, "In GetList_Test1L" );
@@ -233,8 +287,10 @@ TInt Ctmanualcontacts::GetList_Test2L( CStifItemParser& aItem )
  icontactservice->GetListL(icallback,1,EContacts);  
   
  CActiveScheduler::Start();
+         delete icallback;
+    delete icontactservice;
      
-   
+ __UHEAP_MARKEND;
  return KErrNone ;   
   
     
@@ -256,23 +312,36 @@ TInt Ctmanualcontacts::GetList_Test2L( CStifItemParser& aItem )
    TBuf8<15> fstname(_L8("FirstName"));
     
     TBufC8<25> cid ;
-    CSearchFields *srchfield =CSearchFields :: NewL(icontactservice);
+	__UHEAP_MARK;
+	icontactservice=CContactService::NewL();
+    //CSearchFields *srchfield =CSearchFields :: NewL(icontactservice);
     TPtrC searchval(_L("Getlist_test"));  
-    srchfield->AppendL(fstname);
+   // srchfield->AppendL(fstname);
+    icallback=new(ELeave) CContactCallback;
+	
     icontactservice->GetListL(icallback,1,EGroups,KNullDesC8,searchval,NULL,EAsc,KCntDbUri);
   
    CActiveScheduler::Start();
-     
+   delete icallback;
+  // delete srchfield;
+   delete icontactservice;
+   __UHEAP_MARKEND;
    if(myContact ==NULL)
-        return KErrNone ;   
-  
+   {
+      return KErrNone ;   
+	}
+      //delete icallback;
+	//delete icontactservice;
+  //__UHEAP_MARKEND;
     return KErrGeneral;
   }
  
  /* get group list ,groups are there but no contacts in it */
    TInt Ctmanualcontacts::GetList_Test4L( CStifItemParser& aItem )
     {
-
+__UHEAP_MARK;
+	icontactservice=CContactService::NewL();
+     icallback=new(ELeave) CContactCallback;
   // Print to UI
     _LIT( Ktsapicontacts, "tsapicontacts" );
     _LIT( KExample, "In GetList_Test1L" );
@@ -292,7 +361,13 @@ TInt Ctmanualcontacts::GetList_Test2L( CStifItemParser& aItem )
     CActiveScheduler::Start();
      
     if(tCount!=0)
+	    delete icallback;
+    delete icontactservice;
+  __UHEAP_MARKEND;
     return KErrNone ;
+	    delete icallback;
+    delete icontactservice;
+  __UHEAP_MARKEND;
     
     return KErrGeneral;
   
@@ -304,7 +379,10 @@ TInt Ctmanualcontacts::GetList_Test2L( CStifItemParser& aItem )
   
   TInt Ctmanualcontacts::GetList_Test5L( CStifItemParser& aItem )
 {
-
+__UHEAP_MARK;
+	icontactservice=CContactService::NewL();
+     icallback=new(ELeave) CContactCallback;
+     
   // Print to UI
   	 _LIT(KCntDbUri1, "cntdb://c:tmp.cdb");
     _LIT( Ktsapicontacts, "tsapicontacts" );
@@ -353,8 +431,18 @@ TInt Ctmanualcontacts::GetList_Test2L( CStifItemParser& aItem )
   CActiveScheduler::Start();
      
   	  if(tCount!=0)
-     return KErrNone ;
+  	      {
+	      delete icallback;
+	      delete icontactservice;
+	      delete singleContact;
+	      __UHEAP_MARKEND;
+	      return KErrNone ;
+  	      }
            
+          delete icallback;
+          delete icontactservice;
+          delete singleContact;
+  __UHEAP_MARKEND;     
   
   	 return KErrGeneral ;
   }
@@ -363,7 +451,9 @@ TInt Ctmanualcontacts::GetList_Test2L( CStifItemParser& aItem )
   
  TInt Ctmanualcontacts::GetList_Test6L( CStifItemParser& aItem )
 {
-
+__UHEAP_MARK;
+	icontactservice=CContactService::NewL();
+     icallback=new(ELeave) CContactCallback;
   // Print to UI
     _LIT( Ktsapicontacts, "tsapicontacts" );
     _LIT(KCntDbUri, "cntdb://c:tmp.cdb");  	           
@@ -411,16 +501,29 @@ TInt Ctmanualcontacts::GetList_Test2L( CStifItemParser& aItem )
    CActiveScheduler::Start();  
      
      if(tCount ==0)
+	 {
+	     delete icallback;
+    delete icontactservice;
+    delete singleContact;
+  __UHEAP_MARKEND;
         return KErrNone ;   
-  
-    else
+  }
+	
+	    delete icallback;
+    delete icontactservice;
+    delete singleContact;
+  __UHEAP_MARKEND;
      return KErrGeneral;
      
-  }    
+   
+}  
   
  /* list contacts in descending order */ 
    TInt Ctmanualcontacts::GetList_Test7L( CStifItemParser& aItem )
 {
+__UHEAP_MARK;
+	icontactservice=CContactService::NewL();
+     icallback=new(ELeave) CContactCallback;
 	_LIT(KCntDbUri, "cntdb://c:tmp.cdb");  	    
      // Print to UI
     _LIT( Ktsapicontacts, "tsapicontacts" );
@@ -434,7 +537,9 @@ TInt Ctmanualcontacts::GetList_Test2L( CStifItemParser& aItem )
   
  CActiveScheduler::Start();
      
-   
+       delete icallback;
+   delete icontactservice;
+   __UHEAP_MARKEND;
  return KErrNone ;   
 
  } 
@@ -452,12 +557,16 @@ Listing in descending order can be done only on contacts not on groups,databases
     // Print to log file
     iLog->Log( KExample );
  
-
+__UHEAP_MARK;
+	icontactservice=CContactService::NewL();
+     icallback=new(ELeave) CContactCallback;
     icontactservice->GetListL(icallback,1,EGroups,KNullDesC8,KNullDesC,NULL,EDesc,KCntDbUri);  //,cid,KCntDbUri1,searchval,srchfield); 
   
     CActiveScheduler::Start();
      
-   
+       delete icallback;
+    delete icontactservice;
+  __UHEAP_MARKEND;
  return KErrNone ;   
 
 }
@@ -465,7 +574,9 @@ Listing in descending order can be done only on contacts not on groups,databases
  /* list contacts ,ENULL cannot be used in sortingorder*/
  TInt Ctmanualcontacts::GetList_Test9L( CStifItemParser& aItem )
 {
-
+__UHEAP_MARK;
+	icontactservice=CContactService::NewL();
+     icallback=new(ELeave) CContactCallback;
 	_LIT(KCntDbUri, "cntdb://c:tmp_ENul.cdb"); 
   // Print to UI
     _LIT( Ktsapicontacts, "tsapicontacts" );
@@ -479,7 +590,9 @@ Listing in descending order can be done only on contacts not on groups,databases
 icontactservice->GetListL(icallback,1,EContacts,KNullDesC8,KNullDesC,NULL,EAsc);  //,cid,KCntDbUri1,searchval,srchfield); 
   
  CActiveScheduler::Start();
-     
+         delete icallback;
+    delete icontactservice;
+  __UHEAP_MARKEND;
    
  return KErrNone ;   
 
@@ -496,7 +609,9 @@ TInt Ctmanualcontacts::GetList_Test10L( CStifItemParser& aItem )
     // Print to log file
     iLog->Log( KExample );
         
- 
+ __UHEAP_MARK;
+	icontactservice=CContactService::NewL();
+     icallback=new(ELeave) CContactCallback;
   _LIT(KCntDbUri1, "cntdb://c:tmp.cdb");  	   
  icontactservice->GetListL(icallback,1,EContacts,KNullDesC8,KNullDesC,NULL,EAsc,KCntDbUri1);  //,cid,KCntDbUri1,searchval,srchfield); 
   
@@ -504,7 +619,10 @@ TInt Ctmanualcontacts::GetList_Test10L( CStifItemParser& aItem )
         
     CContactIter* iter = CContactIter::NewL();
     icontactservice->GetListL(*iter);
-    
+    delete iter;
+	    delete icallback;
+    delete icontactservice;
+  __UHEAP_MARKEND;
     TPtrC buf(_L(""));
      
      iter->NextL(buf);
@@ -514,12 +632,397 @@ TInt Ctmanualcontacts::GetList_Test10L( CStifItemParser& aItem )
           iter->NextL(buf);
   	  } 
 	if(count==2)
+	{
+
     return KErrNone ;   
-	
+	}
+delete iter;
+	    delete icallback;
+    delete icontactservice;
+  //__UHEAP_MARKEND;	
 	return KErrGeneral;
 }
 
+/* get all contacts from the phonebook ie contacts.cdb,manual*/
+TInt Ctmanualcontacts::GetList_Test11L( CStifItemParser& aItem )
+{
+  // Print to UI
+    _LIT( Ktsapicontacts, "tsapicontacts" );
+    _LIT( KExample, "In GetList_Test11L" );
+    TestModuleIf().Printf( 0, Ktsapicontacts, KExample );
+    // Print to log file
+    __UHEAP_MARK;
+        icontactservice=CContactService::NewL();
+         icallback=new(ELeave) CContactCallback;
 
+    iLog->Log( KExample );
+//    TInt count =KErrGeneral ;
+        _LIT8(KFirstName,"FirstName");
+        _LIT(KFName,"Barbie");
+        _LIT8(KPrefix,"Prefix");
+        _LIT(KPfix,"Princess");
+        _LIT8(KNote,"Note");
+        _LIT(KNoteVal,"Lead role in Barbie, the island princess");
+        _LIT8(KAnniversary,"Anniversary");
+        //_LIT(KAniiVal,"08216666");
+         _LIT8(KBday,"Date");
+        _LIT8(KNickName,"SecondName");
+        _LIT(KNickNameVal,"Doll");
+        _LIT8(KPhoto,"CallerObjImg");
+        _LIT(KPhotoVal,"C:\\data\\images\\pic.jpg");
+        _LIT8(KImpp,"IMPP");
+        _LIT(KImppLabel,"IMPP");
+        
+        
+       //instantiate service class object
+         /* create contactitem to add */        
+CSingleContact* singleContact = CSingleContact::NewL();
+	CleanupStack::PushL(singleContact);
+        CSingleContactField* FName = CSingleContactField::NewL();
+CleanupStack::PushL(FName);
+        CSingleContactField* prefix = CSingleContactField::NewL();
+CleanupStack::PushL(prefix);
+        CSingleContactField* note = CSingleContactField::NewL();
+CleanupStack::PushL(note);
+         CSingleContactField* anni = CSingleContactField::NewL();
+CleanupStack::PushL(anni);
+        CSingleContactField* bday = CSingleContactField::NewL();
+CleanupStack::PushL(bday);
+         CSingleContactField* nkname = CSingleContactField::NewL();
+CleanupStack::PushL(nkname);
+        CSingleContactField* photo = CSingleContactField::NewL();
+CleanupStack::PushL(photo);
+        CSingleContactField* xspid = CSingleContactField::NewL();
+CleanupStack::PushL(xspid);
+          
+           
+        FName->SetFieldParamsL(KFirstName,KNullDesC,KFName);
+        singleContact->AddFieldToContactL(FName);
+        
+        prefix->SetFieldParamsL(KPrefix,KNullDesC,KPfix);
+        singleContact->AddFieldToContactL(prefix);
+        
+        note->SetFieldParamsL(KNote,KNullDesC,KNoteVal);
+        singleContact->AddFieldToContactL(note);
+        
+        anni->SetFieldParamsL(KAnniversary,KNullDesC,KNullDesC);
+        anni->SetDateTime(TTime(TDateTime(2007,EOctober,25,0,0,0,0)));
+       //anni->SetDateTime(annival);
+       singleContact->AddFieldToContactL(anni);
+       
+       
+       bday->SetFieldParamsL(KBday,KNullDesC,KNullDesC);
+       bday->SetDateTime(TTime(TDateTime(2007,EOctober,25,0,0,0,0)));
+       //bday->SetDateTime(bdayval);
+       singleContact->AddFieldToContactL(bday);
+              
+        nkname->SetFieldParamsL(KNickName,KNullDesC,KNickNameVal);
+        singleContact->AddFieldToContactL(nkname);
+        
+        photo->SetFieldParamsL(KPhoto,KNullDesC,KPhotoVal);    
+        singleContact->AddFieldToContactL(photo);
+        
+        _LIT(KYahooId,"Yahoo:barbie@yahoo.co.in");
+        //_LIT8();
+        RPointerArray<HBufC> xspidarr;
+        xspidarr.Append((_L("Yahoo:barbie@yahoo.co.in")).AllocL());
+        xspidarr.Append((_L("Google:barbie@gmail.com")).AllocL());
+        xspid->SetXspidDataL(KImpp,KImppLabel,xspidarr);
+        singleContact->AddFieldToContactL(xspid);
+
+        //aItem.GetNextInt(count) ;
+        _LIT( KLog4, "before calling add" );
+    iLog->Log( KLog4 );
+        /* Add the contactitem */
+        HBufC8* cntId;
+        TRAPD(err,cntId= icontactservice->AddL(singleContact));
+       
+        TPtr8 cntIdPtrVal(cntId->Des());
+         if(err != KErrNone)
+		 {CleanupStack::Pop(xspid);
+         CleanupStack::Pop(photo);
+         CleanupStack::Pop(nkname);
+         CleanupStack::Pop(bday);
+         CleanupStack::Pop(anni);
+         CleanupStack::Pop(note);
+         CleanupStack::Pop(prefix);
+         CleanupStack::Pop(FName);
+         CleanupStack::Pop(singleContact);
+         delete singleContact;
+delete cntId;
+		     delete icallback;
+    delete icontactservice;
+	_LIT( KLog1, "false case uheapmarkend" );
+    iLog->Log( KLog1 );
+  __UHEAP_MARKEND;
+             return KErrGeneral ;
+		}
+         /*else
+             {
+             CleanupStack::Pop(xspid);
+                           CleanupStack::Pop(photo);
+                           CleanupStack::Pop(nkname);
+                           CleanupStack::Pop(bday);
+                           CleanupStack::Pop(anni);
+                           CleanupStack::Pop(note);
+                           CleanupStack::Pop(prefix);
+                           CleanupStack::Pop(FName);
+                           CleanupStack::Pop(singleContact);
+                           delete singleContact;
+             delete cntId;
+                          delete icallback;
+                 delete icontactservice;
+                 _LIT( KLog1, "false case uheapmarkend" );
+                 iLog->Log( KLog1 );
+               __UHEAP_MARKEND;
+                          return KErrNone;
+
+             }
+         */
+         newFields = ETrue;
+         _LIT(KCntDbUri,"cntdb://c:contacts.cdb");
+         //icontactservice->GetListL(icallback,1,EContacts,KNullDesC8,KNullDesC,NULL,EAsc,KCntDbUri1);  
+         //icontactservice->GetListL(icallback,1,EContacts,KNullDesC8,KNullDesC,NULL,EAsc); 
+         icontactservice->GetListL(icallback,1,EContacts,cntIdPtrVal); //,KNullDesC,NULL,EAsc,KCntDbUri,EGetList);  
+  
+         CActiveScheduler::Start();
+     
+   if(icallback->iError == KErrNone)
+       {
+       CleanupStack::Pop(xspid);
+                                  CleanupStack::Pop(photo);
+                                  CleanupStack::Pop(nkname);
+                                  CleanupStack::Pop(bday);
+                                  CleanupStack::Pop(anni);
+                                  CleanupStack::Pop(note);
+                                  CleanupStack::Pop(prefix);
+                                  CleanupStack::Pop(FName);
+                                  CleanupStack::Pop(singleContact);
+                                  delete singleContact;
+delete cntId;
+	       delete icallback;
+    delete icontactservice;
+	_LIT( KLog2, "true case uheapmarkend" );
+    iLog->Log( KLog2 );
+  __UHEAP_MARKEND;
+ return KErrNone ;
+       }
+   CleanupStack::Pop(xspid);
+                              CleanupStack::Pop(photo);
+                              CleanupStack::Pop(nkname);
+                              CleanupStack::Pop(bday);
+                              CleanupStack::Pop(anni);
+                              CleanupStack::Pop(note);
+                              CleanupStack::Pop(prefix);
+                              CleanupStack::Pop(FName);
+                              CleanupStack::Pop(singleContact);
+                              delete singleContact;
+delete cntId;
+	       delete icallback;
+    delete icontactservice;
+	_LIT( KLog3, "false case uheapmarkend 2" );
+    iLog->Log( KLog3 );
+  __UHEAP_MARKEND;
+   return KErrGeneral;
+
+    
+  }
+
+
+/* get all contacts from the phonebook ie contacts.cdb,manual*/
+TInt Ctmanualcontacts::GetList_Test12L( CStifItemParser& aItem )
+{
+__UHEAP_MARK;
+icontactservice=CContactService::NewL();
+  // Print to UI
+    _LIT( Ktsapicontacts, "tsapicontacts" );
+    _LIT( KExample, "In GetList_Test11L" );
+    TestModuleIf().Printf( 0, Ktsapicontacts, KExample );
+    // Print to log file
+    iLog->Log( KExample );
+//    TInt count =KErrGeneral ;
+        _LIT8(KFirstName,"FirstName");
+        _LIT(KFName,"Kelly");
+        _LIT8(KPrefix,"Prefix");
+        _LIT(KPfix,"Princess");
+        _LIT8(KNote,"Note");
+        _LIT(KNoteVal,"Sister of Princess Barbie");
+        _LIT8(KAnniversary,"Anniversary");
+         _LIT8(KBday,"Date");
+        _LIT8(KNickName,"SecondName");
+        _LIT(KNickNameVal,"Doll");
+        _LIT8(KPhoto,"CallerObjImg");
+        _LIT(KPhotoVal,"C:\\data\\images\\pic.jpg");
+        _LIT8(KImpp,"IMPP");
+        _LIT(KImppLabel,"IMPP");
+        TPtrC8 fieldKey(KNullDesC8);
+         TPtrC  label(KNullDesC); 
+         TPtrC  value(KNullDesC);       
+        _LIT(KValue,"Kelly");
+       //instantiate service class object
+         /* create contactitem to add */
+        CSingleContact* singleContact = CSingleContact::NewL();
+	CleanupStack::PushL(singleContact);
+        CSingleContactField* FName = CSingleContactField::NewL();
+CleanupStack::PushL(FName);
+        CSingleContactField* prefix = CSingleContactField::NewL();
+CleanupStack::PushL(prefix);
+        CSingleContactField* note = CSingleContactField::NewL();
+CleanupStack::PushL(note);
+         CSingleContactField* anni = CSingleContactField::NewL();
+CleanupStack::PushL(anni);
+        CSingleContactField* bday = CSingleContactField::NewL();
+CleanupStack::PushL(bday);
+         CSingleContactField* nkname = CSingleContactField::NewL();
+CleanupStack::PushL(nkname);
+        CSingleContactField* photo = CSingleContactField::NewL();
+CleanupStack::PushL(photo);
+        CSingleContactField* xspid = CSingleContactField::NewL();
+CleanupStack::PushL(xspid);
+           
+        FName->SetFieldParamsL(KFirstName,KNullDesC,KFName);
+        singleContact->AddFieldToContactL(FName);
+        
+        prefix->SetFieldParamsL(KPrefix,KNullDesC,KPfix);
+        singleContact->AddFieldToContactL(prefix);
+        
+        note->SetFieldParamsL(KNote,KNullDesC,KNoteVal);
+        singleContact->AddFieldToContactL(note);
+        
+        anni->SetFieldParamsL(KAnniversary,KNullDesC,KNullDesC);
+       //anni->SetDateTime(annival);
+        anni->SetDateTime(TTime(TDateTime(2007,EOctober,25,0,0,0,0)));
+       singleContact->AddFieldToContactL(anni);
+       
+       
+       bday->SetFieldParamsL(KBday,KNullDesC,KNullDesC);
+       //bday->SetDateTime(bdayval);
+       bday->SetDateTime(TTime(TDateTime(2007,EOctober,25,0,0,0,0)));
+       singleContact->AddFieldToContactL(bday);
+              
+        nkname->SetFieldParamsL(KNickName,KNullDesC,KNickNameVal);
+        singleContact->AddFieldToContactL(nkname);
+        
+        photo->SetFieldParamsL(KPhoto,KNullDesC,KPhotoVal);    
+        singleContact->AddFieldToContactL(photo);
+        
+        _LIT(KYahooId,"Yahoo:kelly@yahoo.co.in");
+        //_LIT8();
+        RPointerArray<HBufC> xspidarr;
+        xspidarr.Append((_L("Yahoo:kelly@yahoo.co.in")).AllocL());
+        xspidarr.Append((_L("Google:kelly@gmail.com")).AllocL());
+        xspid->SetXspidDataL(KImpp,KImppLabel,xspidarr);
+		
+		
+        singleContact->AddFieldToContactL(xspid);
+
+  //      aItem.GetNextInt(count) ;
+
+        /* Add the contactitem */
+        HBufC8* cntId;
+        TRAPD(err,cntId= icontactservice->AddL(singleContact));
+        TPtr8 cntIdPtrVal(cntId->Des());
+        
+         if(err != KErrNone)
+		 {
+		 CleanupStack::Pop(xspid);
+		               CleanupStack::Pop(photo);
+		               CleanupStack::Pop(nkname);
+		               CleanupStack::Pop(bday);
+		               CleanupStack::Pop(anni);
+		               CleanupStack::Pop(note);
+		               CleanupStack::Pop(prefix);
+		               CleanupStack::Pop(FName);
+		               CleanupStack::Pop(singleContact);
+		               delete singleContact;
+delete cntId;
+    delete icontactservice;
+ __UHEAP_MARKEND;
+             return KErrGeneral ;
+			 }
+         newFields = ETrue;
+         CContactIter* iterVal;
+         
+         TPtr8 cntIdPtr(cntId->Des());
+         TRAPD(error, iterVal = icontactservice->GetListL(EContacts,cntIdPtr));  
+         
+         if(error != KErrNone)
+          {
+          CleanupStack::Pop(xspid);
+                        CleanupStack::Pop(photo);
+                        CleanupStack::Pop(nkname);
+                        CleanupStack::Pop(bday);
+                        CleanupStack::Pop(anni);
+                        CleanupStack::Pop(note);
+                        CleanupStack::Pop(prefix);
+                        CleanupStack::Pop(FName);
+                        CleanupStack::Pop(singleContact);
+                        delete singleContact;
+			delete cntId;
+			delete iterVal;
+			_LIT( KLog1, "false case uheapmarkend 1" );
+			iLog->Log( KLog1 );
+			__UHEAP_MARKEND;
+			  return KErrGeneral;
+          }
+         iterVal->NextL(myContact,contactid);
+		  if(contactid)
+		   {   
+		    delete contactid;
+		    contactid = NULL;
+		   }
+      if(myContact)
+          {
+          for(TInt i=0;i<myContact->FieldCount(); i++)
+              {
+          CSingleContactField* field = myContact->FieldAt(i);
+          field->GetFieldDataL(fieldKey,label,value);
+          if(value.Compare(KValue) == 0)
+              {
+              CleanupStack::Pop(xspid);
+                            CleanupStack::Pop(photo);
+                            CleanupStack::Pop(nkname);
+                            CleanupStack::Pop(bday);
+                            CleanupStack::Pop(anni);
+                            CleanupStack::Pop(note);
+                            CleanupStack::Pop(prefix);
+                            CleanupStack::Pop(FName);
+                            CleanupStack::Pop(singleContact);
+                            delete singleContact;
+				delete cntId;
+			   delete iterVal;
+			   delete myContact;
+			    delete icontactservice;
+				_LIT( KLog2, "true case uheapmarkend" );
+			    iLog->Log( KLog2 );
+			  __UHEAP_MARKEND;
+           return KErrNone;
+              }
+              }
+          delete myContact;
+          }
+      CleanupStack::Pop(xspid);
+                    CleanupStack::Pop(photo);
+                    CleanupStack::Pop(nkname);
+                    CleanupStack::Pop(bday);
+                    CleanupStack::Pop(anni);
+                    CleanupStack::Pop(note);
+                    CleanupStack::Pop(prefix);
+                    CleanupStack::Pop(FName);
+                    CleanupStack::Pop(singleContact);
+                    delete singleContact;
+delete cntId;
+  delete iterVal;
+    delete icontactservice;
+	_LIT( KLog3, "false case uheapmarkend" );
+    iLog->Log( KLog3 );
+  __UHEAP_MARKEND;
+    
+      return KErrGeneral;
+
+  
+    
+  }
 /* get group list ,groups are there in the simdatabase
    TInt Ctmanualcontacts::GetList_Test11L( CStifItemParser& aItem )
     {

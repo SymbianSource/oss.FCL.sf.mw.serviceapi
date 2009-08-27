@@ -55,7 +55,16 @@ CContactCallBack::~CContactCallBack()
 	
 
 	}
+void CContactCallBack::HandleReturnArray(const TInt& aError, RPointerArray<HBufC8>& aArray, TInt aTransId )
+    {
+    CActiveScheduler::Stop();
+    }
 
+void CContactCallBack::HandleReturnId( const TInt& aError, HBufC8* acntId, TInt aTransId )
+    {
+    CActiveScheduler::Stop();
+    }
+    
 
 void CContactCallBack::HandleReturnValue(TOperationEvent aEventId, const TInt& aError, TInt aTransId )
    {

@@ -89,7 +89,7 @@ MAPPING_TABLE mappingTable[SIZEOFTABLE] =
 		{R_VPBK_FIELD_TYPE_NOTE                    ,		_L8("Note")},
 //		{R_VPBK_FIELD_TYPE_THUMBNAILPIC            ,		_L8("ThumbNailPic")},
 		{R_VPBK_FIELD_TYPE_RINGTONE                ,		_L8("Ringtone")},
-//		{R_VPBK_FIELD_TYPE_CALLEROBJIMG            ,		_L8("CallerObjImg")},
+		{R_VPBK_FIELD_TYPE_CALLEROBJIMG            ,		_L8("CallerObjImg")},
 //		{R_VPBK_FIELD_TYPE_CALLEROBJTEXT           ,		_L8("CallerObjText")},
 		{R_VPBK_FIELD_TYPE_MIDDLENAME              ,		_L8("MiddleName")},
 		{R_VPBK_FIELD_TYPE_DEPARTMENT              ,		_L8("Department")},
@@ -102,6 +102,7 @@ MAPPING_TABLE mappingTable[SIZEOFTABLE] =
 		{R_VPBK_FIELD_TYPE_SYNCCLASS               ,		_L8("SyncClass")},
 		{R_VPBK_FIELD_TYPE_LOCPRIVACY              ,		_L8("LOCPrivacy")},
 //		{R_VPBK_FIELD_TYPE_GENLABEL   			   ,		_L8("GenLabel")},
+		{R_VPBK_FIELD_TYPE_IMPP                    ,        _L8("IMPP")},
 	};
 
 //Gets the size of the mappingTable

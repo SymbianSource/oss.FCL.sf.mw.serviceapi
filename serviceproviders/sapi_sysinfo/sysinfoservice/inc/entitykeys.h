@@ -29,6 +29,7 @@ _LIT(KFeatures,	"Features");
 _LIT(KDisplay,	"Display");
 _LIT(KMemory,	"Memory");
 _LIT(KDevice,	"Device");
+_LIT(KCameraInfo,   "Camera");
 
 
 _LIT(KSignalStrength,	"SignalStrength");
@@ -45,6 +46,7 @@ _LIT(KBatteryStrength,	"BatteryStrength");
 _LIT(KAccessoryStatus,		"AccessoryStatus");
 _LIT(KConnectedAccessories,	"ConnectedAccessories");
 _LIT(KInputLanguage,		"InputLanguage");
+_LIT(KDisplayLanguage,      "DisplayLanguage");
 _LIT(KSupportedLanguages,	"SupportedLanguages");
 _LIT(KPridictiveText,		"PredictiveText");
 _LIT(KVibraActive,			"VibraActive");
@@ -99,6 +101,8 @@ _LIT(KManufacturer,		"Manufacturer");
 _LIT(KMachineID,		"MachineID");
 _LIT(KPhoneModel,		"PhoneModel");
 _LIT(KIMEI,				"IMEI");
+
+_LIT(KCameraProperties,       "CameraProperties");
 
 enum TStatus
 	{

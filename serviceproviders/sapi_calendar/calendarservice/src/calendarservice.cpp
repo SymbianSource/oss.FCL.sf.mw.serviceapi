@@ -34,7 +34,7 @@
 #include "calendarexport.h"
 #include "addentry.h"
 #include "asyncreqobserver.h"
-
+#include "calendargetlist.h"
 
 // ---------------------------------------------------------------------------
 // Two-phased constructor.
@@ -206,7 +206,13 @@ EXPORT_C void CCalendarService::GetListL( const TDesC& aCalendarName, const TDes
 	CCalendarSessionInfo* sessionInfo = CalendarSessionInfoL( aCalendarName );
 	
 	// Get list of calendar entries using CCalEntryView 
-	sessionInfo->EntryView()->FetchL( aGuid, aEntryList );
+	CCalendarGetList* getlistObj = CCalendarGetList::NewL( sessionInfo, aGuid );
+    
+    CleanupStack::PushL( getlistObj );
+    
+    getlistObj->GetListL( aGuid, aEntryList );
+    
+    CleanupStack::PopAndDestroy( getlistObj );
 	}
 
 // ---------------------------------------------------------------------------
@@ -216,13 +222,15 @@ EXPORT_C void CCalendarService::GetListL( const TDesC& aCalendarName, const TDes
 EXPORT_C void CCalendarService::GetListL( const TDesC& aCalendarName, const TCalLocalUid aLocalUid, RPointerArray<CCalEntry>& aEntryList)
 	{
 	CCalendarSessionInfo* sessionInfo = CalendarSessionInfoL( aCalendarName );
-	
-	// Fetch only that entry having local uid aLocalUid
-	CCalEntry* entry = sessionInfo->EntryView()->FetchL( aLocalUid );
-	if( entry )
-		{
-		aEntryList.Append( entry );
-		}
+
+	CCalendarGetList* getlistObj = CCalendarGetList::NewL( sessionInfo, aLocalUid );
+    
+    CleanupStack::PushL( getlistObj );
+    
+    getlistObj->GetListL( aLocalUid, aEntryList );
+    
+    CleanupStack::PopAndDestroy( getlistObj );
+
 	}
 
 // ---------------------------------------------------------------------------
@@ -236,26 +244,80 @@ EXPORT_C void CCalendarService::GetListL( const TDesC& aCalendarName, CCalendarF
 		User::Leave( KErrArgument );
 	
 	CCalendarSessionInfo* sessionInfo = CalendarSessionInfoL( aCalendarName );
-	CalCommon::TCalTimeRange range =  aFilter->TimeRange();
-	if( (range.EndTime().TimeLocalL()) < (range.StartTime().TimeLocalL()) )
-		User::Leave( KErrArgument );
-	if ( aFilter->FilterText().Length() )
-		{
-		// Search and return all instances which match filter text and time range
-		CCalInstanceView::TCalSearchParams searchParam( aFilter->FilterText(), CalCommon::EFoldedTextSearch );
-		sessionInfo->InstanceView()->FindInstanceL( aInstanceList, 
-													aFilter->FilterType(), 
-													aFilter->TimeRange(), searchParam ) ;
-		}
-	else
-		{
-		// Search and return all instances which match filter type and time range
-		sessionInfo->InstanceView()->FindInstanceL( aInstanceList, 
-													aFilter->FilterType(), 
-													aFilter->TimeRange() ) ;
-		}	
+	
+	CCalendarGetList* getlistObj = CCalendarGetList::NewL( sessionInfo, aFilter );
+    
+    CleanupStack::PushL( getlistObj );
+    
+    getlistObj->GetListL( aInstanceList );
+    
+    CleanupStack::PopAndDestroy( getlistObj );
+    
 	}
 
+// ---------------------------------------------------------------------------
+// Returns list of calendar instances from given calendar based on input filter and callback.
+// ---------------------------------------------------------------------------
+//
+EXPORT_C void CCalendarService::GetListL( const TDesC& aCalendarName, CCalendarFilter* aFilter, 
+                                                  MCalCallbackBase*      aCallBack )
+    {
+    if ( !aFilter )
+        User::Leave( KErrArgument );
+    
+    CCalendarSessionInfo* sessionInfo = CalendarSessionInfoL( aCalendarName );
+
+    //Instantiate the getlist CoreClass Object
+    CCalendarGetList* getlistObj = CCalendarGetList::NewL( sessionInfo, aFilter, iAsyncReqObserver, aCallBack );
+    
+    //Push the GetlistObject onto the cleanup stack as the getlist function can Leave
+    CleanupStack::PushL( getlistObj );
+    
+    getlistObj->GetListL();
+    
+    AddAsyncObjL( aCallBack->iTransactionId, getlistObj );
+    
+    CleanupStack::Pop( getlistObj );
+
+    }
+// ---------------------------------------------------------------------------
+// Returns list of calendar entries from given calendar with the given Global UID.
+// ---------------------------------------------------------------------------
+//
+EXPORT_C void CCalendarService::GetListL( const TDesC& aCalendarName, const TDesC8& aGuid, MCalCallbackBase*      aCallBack)
+    {
+    CCalendarSessionInfo* sessionInfo = CalendarSessionInfoL( aCalendarName );
+
+    CCalendarGetList* getlistObj = CCalendarGetList::NewL( sessionInfo, aGuid, iAsyncReqObserver, aCallBack );
+    
+    CleanupStack::PushL( getlistObj );
+    
+    getlistObj->GetListL();
+    
+    AddAsyncObjL( aCallBack->iTransactionId, getlistObj );
+    
+    CleanupStack::Pop( getlistObj );
+
+    }
+// ---------------------------------------------------------------------------
+// Returns list of calendar entries from given calendar with the given Local UID.
+// ---------------------------------------------------------------------------
+//
+EXPORT_C void CCalendarService::GetListL( const TDesC& aCalendarName, const TCalLocalUid aLocalUid, MCalCallbackBase*      aCallBack)
+    {
+    CCalendarSessionInfo* sessionInfo = CalendarSessionInfoL( aCalendarName );
+
+    CCalendarGetList* getlistObj = CCalendarGetList::NewL( sessionInfo, aLocalUid, iAsyncReqObserver, aCallBack );
+    
+    CleanupStack::PushL( getlistObj );
+    
+    getlistObj->GetListL();
+    
+    AddAsyncObjL( aCallBack->iTransactionId, getlistObj );
+    
+    CleanupStack::Pop( getlistObj );
+
+    }
 // ---------------------------------------------------------------------------
 // Adds new calendar 
 // ---------------------------------------------------------------------------

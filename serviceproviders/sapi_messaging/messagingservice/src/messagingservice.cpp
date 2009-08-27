@@ -20,6 +20,7 @@
 #include <msvstd.h>
 #include <msvapi.h>
 #include <msvids.h>
+#include <senduiconsts.h>
 
 #include "messageheader.h"
 #include "messagingservice.h"
@@ -95,6 +96,18 @@ EXPORT_C void CMessagingService::SendMessageL( CSendMessageParams* aMessageParam
 	if ( aMessageParam->TemplateId() > 0 )
 		{
 		CMessageDetail* detailObj = NULL;
+		
+		CMsvEntry * messageEntry = iMsgServerSession->GetEntryL( aMessageParam->TemplateId() );
+		
+	    CleanupStack::PushL(messageEntry);
+		
+	    if ( aMessageParam->MessageType() == KSenduiMtmSmsUid && 
+	            messageEntry->Entry().iMtm == KSenduiMtmMmsUid )
+            {
+            User::Leave( KErrNotSupported );
+            }
+				
+	    CleanupStack::PopAndDestroy(messageEntry);
 		
 		detailObj = CMessageDetail::NewL( *iMsgServerSession );
 		
@@ -204,7 +217,7 @@ EXPORT_C TInt CMessagingService::CancelNotification( const TNotificationType /*a
 //
 EXPORT_C void CMessagingService::GetIdListL( CFilterParamInfo* aFilterParams,
 											TMsvId /*aFolderId*/,
-									        CMsgCallbackBase* 	/*aCallback*/,
+									        CMsgCallbackBase* 	aCallback,
 									        CMsvEntrySelection*& aEntrySelection )
 	{
 	// Hard coding for Inbox/Draft
@@ -215,9 +228,19 @@ EXPORT_C void CMessagingService::GetIdListL( CFilterParamInfo* aFilterParams,
 	
 	CleanupStack::PushL( obj );
 	
+	obj->SetInputParamsL(aCallback,this);
+	
+	if ( aCallback )
+	{
+	AddAsyncObjL( aCallback->iTransactionId,obj);
+	}
+	
 	obj->GetIdListL( folderId, aFilterParams, aEntrySelection );
 	
-	CleanupStack::PopAndDestroy( obj );
+	CleanupStack::Pop( obj );
+	
+	if ( !aCallback )
+	    delete obj;
 	}
 
 EXPORT_C void CMessagingService::GetNextHeaderL( CFilterParamInfo* aFilterParams,

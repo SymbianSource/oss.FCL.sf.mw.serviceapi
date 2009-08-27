@@ -99,9 +99,9 @@ void Ctmanualcontacts::ConstructL()
                           EFalse );
 
   
-     icontactservice=CContactService::NewL();
+    // icontactservice=CContactService::NewL();
                             
-     icallback=new(ELeave) CContactCallback;
+     //icallback=new(ELeave) CContactCallback;
 
     }
 
@@ -129,8 +129,8 @@ Ctmanualcontacts::~Ctmanualcontacts()
 
    // Delete resources allocated from test methods
     Delete();
-    delete icallback;
-    delete icontactservice;
+    //delete icallback;
+  //  delete icontactservice;
     // Delete logger
    
     delete iLog; 

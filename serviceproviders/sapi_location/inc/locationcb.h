@@ -33,7 +33,7 @@ const TInt KTraceCB   = 1 ;
  * @see MLocationCallBack in locationservice.h for details.
  */
 
-class LocationInterfaceCB : public MLocationCallBack
+class LocationInterfaceCB : public CBase , public MLocationCallBack
     {
     private :
     MLiwNotifyCallback  *iCallBack ;
@@ -119,23 +119,27 @@ class LocationInterfaceCB : public MLocationCallBack
      * object, 
      */
      
-     inline TUint GetRequestType(void) 
+    TUint GetRequestType(void) 
         {
         return iRequestType ;
         }
-     MLiwNotifyCallback* GetCallBackobj()
-	     {
-	     return iCallBack;	
-	     }
+    /**
+     * This function returns transcation id associated with the Async request for 
+     * which this callback is used
+     */
+    TInt32 GetTransactionId(void)
+        {
+        return iTransactionId ;
+        }
 
     /**
-     * GetTransactionId function returns transcation id associated with current async object
-     *
+     * Retruns the MLiwNotifyCallback object owned by this class
      */
-     inline TInt32 GetTransactionId(void)
-        {
-          return iTransactionId ;
-        }
+
+    MLiwNotifyCallback* GetCallBackobj()
+              {
+              return iCallBack;  
+              }
     /**
      * HandleL, an internal utility funtion which is called by HandleNotifyL method,
      * This methods encapsulates all the leaving methods which could be traped by 

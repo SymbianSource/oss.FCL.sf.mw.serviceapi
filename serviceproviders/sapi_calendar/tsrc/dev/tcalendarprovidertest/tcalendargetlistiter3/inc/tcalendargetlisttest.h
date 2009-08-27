@@ -152,6 +152,21 @@ NONSHARABLE_CLASS(CTCalendarGetListTest) : public CScriptBase
 		virtual TInt GetListInvalidLUID(CStifItemParser &aItem );
 		virtual TInt GetListInvalidGUID(CStifItemParser &aItem );
 		virtual TInt GetListInvalidCalName(CStifItemParser &aItem );
+		
+		virtual TInt GetListGUidFilterAsync(CStifItemParser &aItem );
+        virtual TInt GetListLocalUidFilterAsync(CStifItemParser &aItem );
+        virtual TInt GetListTimeRangeFilterAsync(CStifItemParser &aItem );
+        virtual TInt GetListTextFilterAsync(CStifItemParser &aItem );
+        virtual TInt GetListTypeFilterAsync(CStifItemParser &aItem );
+        virtual TInt GetListInvalidGUidFilterAsync(CStifItemParser &aItem );
+        virtual TInt GetListInvalidLocalUidFilterAsync(CStifItemParser &aItem );
+        
+        virtual TInt GetListGUidFilterCancelAsync(CStifItemParser &aItem );
+        virtual TInt GetListLocalUidFilterCancelAsync(CStifItemParser &aItem );
+        virtual TInt GetListTimeRangeFilterCancelAsync(CStifItemParser &aItem );
+        virtual TInt GetListTextFilterCancelAsync(CStifItemParser &aItem );
+        virtual TInt GetListTypeFilterCancelAsync(CStifItemParser &aItem );
+
 	
     public:     // Data
         

@@ -131,7 +131,10 @@ void CMgServiceObserver :: MgNotifyL( TUint  aTransactionID,
     iCmdId = EMgBlankCmdId;
     iCallBack = NULL;
     iInput=NULL;
-
+  
+    // For back to back call observer instance should be deleted here
+    delete this;
+    
 	}
 
 
@@ -170,6 +173,9 @@ void CMgServiceObserver::CancelL()
 	    iInput = NULL;
 	    iCmdId= EMgBlankCmdId;
 	    }
+	// For back to back call support
+	delete this;
+	
 	}
 
 

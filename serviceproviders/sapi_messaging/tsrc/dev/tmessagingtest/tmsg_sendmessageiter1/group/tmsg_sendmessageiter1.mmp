@@ -48,7 +48,8 @@ SOURCE          sendmessage6.cpp
 SOURCE          sendmessage7.cpp
 SOURCE          sendmessage8.cpp
 SOURCE          sendmessage9.cpp
-SOURCE          sendmessage10.cpp
+SOURCE          sendmessage10.cpp 
+SOURCE          sendmessage11.cpp
 
 
 //RESOURCE        resource_file

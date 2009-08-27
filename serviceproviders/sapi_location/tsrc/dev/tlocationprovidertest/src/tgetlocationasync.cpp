@@ -55,6 +55,7 @@ TInt ASyncLocCB :: HandleNotifyL(
             const CLiwGenericParamList& aInParamList)
 
 {
+    __UHEAP_MARK ;
 	TBuf8<50> data ;
    TRealFormat format ;
 
@@ -128,7 +129,29 @@ TInt ASyncLocCB :: HandleNotifyL(
 		LogFile.Write(_L8("   Altitude = "))	 ;
 		LogFile.Write(data) ;
 	//	LocMap->DecRef() ;
+    TLiwVariant Accuracy;
+    index = LocMap->FindL(_L8("HorizontalAccuracy"),Accuracy);
 
+    if(index)
+        {
+        TReal32 AccuracyVal = Accuracy.AsTReal();
+        data.Num(AccuracyVal , format) ;
+
+        LogFile.Write(_L8("Horizontal Acc = ")) ;
+        LogFile.Write(data) ;
+        }
+
+    Accuracy.Reset();
+    index = LocMap->FindL(_L8("VerticalAccuracy"),Accuracy);
+
+    if(index)
+        {
+        TReal32 AccuracyVal = Accuracy.AsTReal();
+        data.Num(AccuracyVal , format) ;
+
+        LogFile.Write(_L8("Vertical Acc = ")) ;
+        LogFile.Write(data) ;
+        }
  const TLiwGenericParam *Speed = aEventParamList.FindFirst(index , _L8("HorizontalSpeed")) ;
 	  
 	  if(index != -1)
@@ -382,7 +405,7 @@ TInt ASyncLocCB :: HandleNotifyL(
 	iRetStatus = KErrNone ;
 	CActiveScheduler *Current = CActiveScheduler :: Current() ;
 	Current->Stop() ;
-
+    __UHEAP_MARKEND ;
 	
 	return KErrNone ;
 }
@@ -480,6 +503,10 @@ TInt GetLocAsynchFunctionL()
 	locinterface->ExecuteCmdL(CmdBuf , *inputlist , *outputlist ,KLiwOptASyncronous ,  &MyUpdates);
     
     CActiveScheduler :: Start() ;
+    locinterface->ExecuteCmdL(CmdBuf , *inputlist , *outputlist ,KLiwOptASyncronous ,  &MyUpdates);
+
+
+    CActiveScheduler :: Start() ;
     delete Scheduler ;
     
     locinterface->Close();
@@ -514,3 +541,284 @@ TInt FindLocationAsynch(TAny * /*Arg*/)
 	 }
 	return ret ; 
 }
+TInt GetLocAsynchPosBased(TAny * /*Arg*/)
+    {
+    CTrapCleanup* cleanup = CTrapCleanup::New();
+
+    TInt ret = 0 ;
+    TRAPD(err , (ret = GetLocAsynchPosBasedL()) );
+    delete cleanup ;
+    //    __UHEAP_MARKEND;   
+
+    if(err)
+        {
+        return err ;
+        }
+    return ret ; 
+    }
+
+TInt GetLocAsynchPosBasedL()
+    {
+    __UHEAP_MARK;
+
+
+    TInt start = User::CountAllocCells();
+    ASyncLocCB MyUpdates ;
+
+    _LIT8(KService, "Service.Location");
+    _LIT8(KIDataSource,"ILocation");
+
+
+
+    CActiveScheduler *Scheduler  = CActiveScheduler :: Current() ;
+
+    if(!Scheduler)
+        {
+        Scheduler = new CActiveScheduler ;
+        }
+
+
+    CActiveScheduler :: Install(Scheduler) ;
+
+    CLiwServiceHandler* ServiceHandler = CLiwServiceHandler::NewL();
+
+    // Input and output parameter list
+    CLiwGenericParamList* inputlist = &(ServiceHandler->InParamListL());
+    CLiwGenericParamList* outputlist = &(ServiceHandler->OutParamListL());
+
+
+
+
+    //CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KContents, KService);
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KDataSource, KService);
+
+
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+
+    RCriteriaArray a;
+    a.AppendL(crit);
+
+    ServiceHandler->AttachL(a) ;
+
+
+    ServiceHandler->ExecuteServiceCmdL(*crit, *inputlist, *outputlist);    
+
+    TInt pos = 0;
+
+    const TLiwGenericParam *errorprm = outputlist->FindFirst(pos , KErrorCode) ;
+
+    if(!errorprm)
+        {
+        //_LIT(Klog , "Success/Failure error code missing from outputlist") ;
+        //iLog->Log(Klog) ;
+        return KErrGeneral ;
+        }
+
+
+    _LIT8(KDataSource, "ILocation");
+
+    pos = 0 ;
+
+    const TLiwGenericParam *genericparm = outputlist->FindFirst(pos,KIDataSource );
+
+    if(!genericparm)
+        {
+        //_LIT(KLog , "Interface not found");
+        //iLog->Log(KLog) ;
+        return KErrGeneral ;
+        }
+
+    MLiwInterface* locinterface = (genericparm->Value()).AsInterface();
+    // CLiwGenericParamList *OutParmList = CLiwGenericParamList :: NewL() ;
+
+
+    TBuf8<20>CmdBuf(KCmdGetLocation) ;
+
+    outputlist->Reset() ;
+    inputlist->Reset() ;
+    _LIT(KClass,"GenericLocationInfo");
+    inputlist->AppendL( TLiwGenericParam( KNullDesC8,TLiwVariant( KClass )  ) );
+    CLiwDefaultMap* updatemap = CLiwDefaultMap::NewL();
+
+    _LIT8(KInterval,"UpdateInterval");
+    _LIT8(KTimeout,"UpdateTimeOut");
+    _LIT8(KAge,"UpdateMaxAge");
+    _LIT8(KPartial,"PartialUpdates");
+    const TInt KTime = 1000000;
+
+    updatemap->InsertL(KInterval , TLiwVariant(TInt32(2*KTime)));
+    updatemap->InsertL(KTimeout , TLiwVariant(TInt32(30*KTime)));
+    updatemap->InsertL(KAge , TLiwVariant(TInt32(0)));
+    updatemap->InsertL(KPartial , TLiwVariant(TBool(FALSE)));
+
+    inputlist->AppendL(TLiwGenericParam(KNullDesC8,TLiwVariant(updatemap)));
+    updatemap->DecRef();
+
+
+    locinterface->ExecuteCmdL(CmdBuf , *inputlist , *outputlist ,KLiwOptASyncronous ,  &MyUpdates);
+
+    CActiveScheduler :: Start() ;
+    delete Scheduler ;
+
+    locinterface->Close();
+    delete ServiceHandler;
+    a.ResetAndDestroy();
+    a.Close();
+    //delete inputlist ;
+    //delete  outputlist ;
+
+    //delete ServiceHandler;
+    TInt end = User::CountAllocCells();
+
+    __UHEAP_MARKEND;
+    return MyUpdates.iRetStatus ;  
+    }
+
+
+
+TInt GetLocAsynchWrongVal(TAny * /*Arg*/)
+    {
+    CTrapCleanup* cleanup = CTrapCleanup::New();
+
+    TInt ret = 0 ;
+    TRAPD(err , (ret = GetLocAsynchWrongValL()) );
+    delete cleanup ;
+    //    __UHEAP_MARKEND;   
+
+    if(err)
+        {
+        return err ;
+        }
+
+    return ret = 0 ; 
+    }
+
+TInt GetLocAsynchWrongValL()
+    {
+
+    __UHEAP_MARK;
+    //TInt start = User::CountAllocCells();
+
+    ASyncLocCB MyUpdates ;
+    TInt errRet;
+    _LIT8(KService, "Service.Location");
+    _LIT8(KIDataSource,"ILocation");
+
+
+    CActiveScheduler *Scheduler  = CActiveScheduler :: Current() ;
+
+    if(!Scheduler)
+        {
+        Scheduler = new CActiveScheduler ;
+        }
+
+
+    CActiveScheduler :: Install(Scheduler) ;
+
+
+
+
+    CLiwServiceHandler* ServiceHandler = CLiwServiceHandler::NewL();
+
+    // Input and output parameter list
+    CLiwGenericParamList* inputlist = &(ServiceHandler->InParamListL());
+    CLiwGenericParamList* outputlist = &(ServiceHandler->OutParamListL());
+
+
+
+
+    //CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KContents, KService);
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KDataSource, KService);
+
+
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+
+    RCriteriaArray a;
+    a.AppendL(crit);
+
+    ServiceHandler->AttachL(a) ;
+
+
+    ServiceHandler->ExecuteServiceCmdL(*crit, *inputlist, *outputlist);    
+
+    TInt pos = 0;
+
+    const TLiwGenericParam *errorprm = outputlist->FindFirst(pos , KErrorCode) ;
+
+    if(!errorprm)
+        {
+        //_LIT(Klog , "Success/Failure error code missing from outputlist") ;
+        //iLog->Log(Klog) ;
+        return KErrGeneral ;
+        }
+
+
+    _LIT8(KDataSource, "ILocation");
+
+    pos = 0 ;
+
+    const TLiwGenericParam *genericparm = outputlist->FindFirst(pos,KIDataSource );
+
+    if(!genericparm)
+        {
+        //_LIT(KLog , "Interface not found");
+        //iLog->Log(KLog) ;
+        return KErrGeneral ;
+        }
+
+    MLiwInterface* locinterface = (genericparm->Value()).AsInterface();
+    // CLiwGenericParamList *OutParmList = CLiwGenericParamList :: NewL() ;
+
+
+    TBuf8<20>CmdBuf(KCmdGetLocation) ;
+
+    outputlist->Reset() ;
+    inputlist->Reset() ;
+    _LIT(KClass,"GenericLocationInfo");
+    inputlist->AppendL( TLiwGenericParam( KNullDesC8,TLiwVariant( KClass )  ) );
+
+    TInt updatemap = 12;
+
+    inputlist->AppendL(TLiwGenericParam(KNullDesC8,TLiwVariant(updatemap)));
+
+
+
+    locinterface->ExecuteCmdL(CmdBuf , *inputlist , *outputlist ,KLiwOptASyncronous ,  &MyUpdates);
+
+
+    pos = 0 ;
+
+    const TLiwGenericParam *ErrorParm =  outputlist->FindFirst(pos ,KErrorCode ) ;
+
+    if(!ErrorParm)
+        {
+        _LIT(Klog, "Success/Failure state not known") ;
+        //iLog->Log(Klog) ;
+        return KErrGeneral ;
+        }
+
+    if((ErrorParm->Value()).AsTInt32() != SErrBadArgumentType )
+        {
+        _LIT(KLog , "ExecutecmdL failed ");
+        //iLog->Log(KLog) ;
+        errRet =   KErrGeneral;
+        }
+
+
+
+    delete Scheduler ;
+
+    locinterface->Close();
+    delete ServiceHandler;
+    a.ResetAndDestroy();
+    a.Close();
+
+
+    //delete inputlist ;
+    //delete  outputlist ;
+
+    //delete ServiceHandler;
+    //TInt end = User::CountAllocCells();
+    __UHEAP_MARKEND;
+    return errRet;  
+    }

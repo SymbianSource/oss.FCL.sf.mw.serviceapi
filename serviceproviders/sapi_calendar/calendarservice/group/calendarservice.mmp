@@ -41,6 +41,7 @@ SOURCE				calendarimport.cpp
 SOURCE				calendarexport.cpp
 SOURCE				addentry.cpp
 SOURCE				entryattributes.cpp
+SOURCE              calendargetlist.cpp
 
 
 LIBRARY        	euser.lib

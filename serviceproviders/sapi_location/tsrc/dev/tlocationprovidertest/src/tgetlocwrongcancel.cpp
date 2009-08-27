@@ -53,6 +53,7 @@ class WrongNotificationGetLoc : public MLiwNotifyCallback
 
 TInt GetLocWrongCancelL()
 {
+    __UHEAP_MARK ;
 	WrongNotificationGetLoc MyUpdates ;
 	
     CActiveScheduler *Scheduler  = CActiveScheduler :: Current() ;
@@ -128,13 +129,14 @@ TInt GetLocWrongCancelL()
    const TLiwGenericParam *errprm = OutParmList->FindFirst(pos , KErrCode) ;
    
    TInt ret = (errprm->Value()).AsTInt32() ;
-    
+    a.ResetAndDestroy() ;
     delete Scheduler ;
     
     locinterface->Close();
     delete InputList ;
     delete  OutParmList ;
-    
+    delete ServiceHandler;
+    __UHEAP_MARKEND ;
     if ( SErrNotFound == ret )
 	    {
 	    return KErrNone;	

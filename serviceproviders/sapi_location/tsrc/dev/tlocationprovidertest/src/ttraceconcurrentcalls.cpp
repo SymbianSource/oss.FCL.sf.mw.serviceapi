@@ -37,7 +37,7 @@ class ConcurrentTraceLoc : public MLiwNotifyCallback
 
 	MLiwInterface *iLocationInterface ;
 	CLiwGenericParamList *iInputList ;
-	
+    TInt cnt;
 	public :
 	TInt iRetStatus ;
 
@@ -47,7 +47,7 @@ class ConcurrentTraceLoc : public MLiwNotifyCallback
 	    CLiwGenericParamList& aEventParamList,
 	    const CLiwGenericParamList& aInParamList) ;
 
-	ConcurrentTraceLoc() : iRetStatus(KErrGeneral) //Default constructor 
+    ConcurrentTraceLoc() : iRetStatus(KErrGeneral),cnt(0) //Default constructor 
 		{
 			;
 		}
@@ -57,7 +57,7 @@ class ConcurrentTraceLoc : public MLiwNotifyCallback
 
 ConcurrentTraceLoc :: ConcurrentTraceLoc(TInt aCmd ,MLiwInterface *aInterface , CLiwGenericParamList *aInputList)
 { 
-  
+    cnt = 0;
   iLocationInterface = aInterface ;
   iInputList = aInputList ;
   	
@@ -71,13 +71,30 @@ TInt ConcurrentTraceLoc ::  HandleNotifyL(
 {
 
 //DeRefrence Allocated Map first 
-	 return 0 ;
-}
+    cnt++;
+    TInt trid = aCmdId;
+
+    if(cnt == 2)
+        {
+
+        CActiveScheduler::Stop();
+        }
+    return 0 ;
+    }
   
   
 TInt TraceConcurrentCallsL()
 {
-	
+    __UHEAP_MARK ;
+    CActiveScheduler *Scheduler  = CActiveScheduler :: Current() ;
+
+    if(!Scheduler)
+        {
+        Scheduler = new CActiveScheduler ;
+        }
+
+
+    CActiveScheduler :: Install(Scheduler) ;
 	_LIT(KTraceFile , "C:\\Trace.txt") ;
 	
 	RFile TraceFile ;
@@ -93,10 +110,6 @@ TInt TraceConcurrentCallsL()
 		}
 
 	}
-    CActiveScheduler *Scheduler = new CActiveScheduler ;
-
-	CActiveScheduler :: Install(Scheduler) ;
-
 	 
     
 	
@@ -166,7 +179,7 @@ TInt TraceConcurrentCallsL()
 	
 	locinterface->ExecuteCmdL(CmdBuf , *InputList , *OutParmList ,KLiwOptASyncronous ,  &GetLoc);
 	pos = 0 ;
-	
+    CActiveScheduler :: Start() ;
 	const TLiwGenericParam *errparam = OutParmList->FindFirst(pos , KErrorCode) ;
 	
 	if(!errparam)
@@ -177,13 +190,14 @@ TInt TraceConcurrentCallsL()
 	
     TLiwVariant ErrVariant = errparam->Value() ;
     TInt ret = ErrVariant.AsTInt32() ;
-    
+    a.ResetAndDestroy() ;
 	locinterface->Close() ;
 	delete ServiceHandler ;
 	delete InputList ;
 	delete OutParmList ;
 	delete Scheduler ;
 	TraceFile.Write(_L8("Gracefully returned \n")) ;
+    __UHEAP_MARKEND ;
 	return  ret ; 
 }
 

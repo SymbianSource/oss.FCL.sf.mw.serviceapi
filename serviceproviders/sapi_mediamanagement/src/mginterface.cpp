@@ -125,8 +125,8 @@ CMgInterface::~CMgInterface()
 	{
 
     //Release the instance of service observer class
-    delete iServiceObserver;
-    iServiceObserver = NULL;
+  //  delete iServiceObserver;
+   // iServiceObserver = NULL;
 
 	//Release the instance of core class
     delete iCoreClass;
@@ -255,26 +255,15 @@ void CMgInterface::ExecuteCmdL(const TDesC8& aCmdName,
 				    || ( 0 == dsName.CompareF( KFile ) )  )
 				    {
 				// check if core class ready to accept request
-			    	if( EMgFree == iCoreClass->State() )
-					    {
+			    /*	if( EMgFree == iCoreClass->State() )
+					    {*/
 					    if( aCmdOptions & KLiwOptASyncronous ) //Asynchronous request
 						    {
 						    if( NULL != aCallBack ) // Asynchronous call
 								{
 								transactionID = aCallBack->GetTransactionID();
-								if( 0 == dsName.CompareF( KFileInfo ) )
-									{
-								    iServiceObserver->SetMemberVar( EMgGetFilesInfo,
-									NULL,aCallBack );
-									}
-								else
-									{
-								    iServiceObserver->SetMemberVar( EMgGetFiles,
-									NULL,aCallBack );
-									}
-
 							   	 //Sending request to core class
-							     TRAP (errCode,SendRequestL( aInParamList , transactionID ,postionbasedsearching ));
+							     TRAP (errCode,SendRequestL( aInParamList , transactionID ,postionbasedsearching,aCallBack ));
 
 						        }
 							else		//Callback  missing
@@ -291,12 +280,12 @@ void CMgInterface::ExecuteCmdL(const TDesC8& aCmdName,
 						    errCode = KErrNotFound;
 							}//synchronous request
 
-						}//Sapi status
+						/*}//Sapi status
 				    else
 				        {
 				        AppendErrorMessageL( aCmdName, KNullDesC8, KServerBusy );
 				        errCode = KErrServerBusy;
-				        }
+				        }*/
 
 					}//Data Source support
 				else
@@ -378,8 +367,8 @@ void CMgInterface::ExecuteCmdL(const TDesC8& aCmdName,
 // -----------------------------------------------------------------------------
 
 CMgInterface::CMgInterface()
-             :iCoreClass( NULL ),
-			  iServiceObserver( NULL )
+             :iCoreClass( NULL )
+			
 	{
 	
 	}
@@ -396,7 +385,7 @@ void CMgInterface::ConstructL()
 	iCoreClass = CMgService::NewL();
 
 	//Create the instance of service observer class
-	iServiceObserver = CMgServiceObserver::NewL();
+	//iServiceObserver = CMgServiceObserver::NewL();
 
 	}
 
@@ -407,7 +396,7 @@ void CMgInterface::ConstructL()
 // This function will send the request to Core class
 // -----------------------------------------------------------------------------
 
-void CMgInterface::SendRequestL(const CLiwGenericParamList& aInParamList , TUint aTransactionID , TBool aPostionBasedSearching )
+void CMgInterface::SendRequestL(const CLiwGenericParamList& aInParamList , TUint aTransactionID , TBool aPostionBasedSearching , MLiwNotifyCallback* aCallBack)
 
 	{
 	TInt   pos=0;
@@ -653,8 +642,18 @@ void CMgInterface::SendRequestL(const CLiwGenericParamList& aInParamList , TUint
 	    }//sort map
 
 
-	 iCoreClass->GetListL( requestParam,iServiceObserver ) ;
-	 
+	// Need to give seperate observer for each call
+	
+	// Creating instance of serviceobserver for back to back callback support
+	
+	CMgServiceObserver* serviceObserver = CMgServiceObserver::NewL();
+	CleanupStack::PushL(serviceObserver);
+	// For supporting back to back callback 
+	serviceObserver->SetMemberVar( EMgBlankCmdId,
+     NULL,aCallBack );
+	
+	 iCoreClass->GetListL( requestParam,serviceObserver ) ;
+	 CleanupStack::Pop(serviceObserver); 
 	 
 	 
 	  //Sorting is an optional parameter, if it is present only then sorting fields and order present in stack

@@ -41,6 +41,13 @@ class MContactCallback
          *Called after GetList async call is complete
          */
         virtual void HandleReturnIter(const TInt& aError, CContactIter* aIter, TInt aTransId ) = 0;
+        
+        virtual void HandleReturnId(const TInt& aError, 
+                                            HBufC8* aId,
+                                            TInt aTransId ) = 0;
+          virtual void HandleReturnArray(const TInt& aError, 
+                        RPointerArray<HBufC8>& aArray,
+                                                      TInt aTransId ) = 0;
                 
      };
 #endif // M_CONTACTCALLBACK_H

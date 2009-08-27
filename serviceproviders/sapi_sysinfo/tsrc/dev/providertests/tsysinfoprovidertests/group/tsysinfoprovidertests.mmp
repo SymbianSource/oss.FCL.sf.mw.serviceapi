@@ -71,6 +71,7 @@ LIBRARY         stiftestengine.lib
 LIBRARY         liwservicehandler.lib
 LIBRARY         hal.lib
 LIBRARY         efsrv.lib btengsettings.lib
+LIBRARY         cone.lib
 
 LANG            SC
 

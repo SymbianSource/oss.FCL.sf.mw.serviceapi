@@ -145,7 +145,9 @@ NONSHARABLE_CLASS(Ctcal_update) : public CScriptBase
         virtual TInt UpdateAptWithAttendees( CStifItemParser& aItem );
         virtual TInt UpdateRepeatDate( CStifItemParser& aItem );
         virtual TInt UpdateInstance( CStifItemParser& aItem );
-        
+     
+        virtual TInt UpdateToDoWithGlobalId( CStifItemParser& aItem );
+        virtual TInt UpdateInstanceWithGlobalId( CStifItemParser& aItem );
         //ADD NEW METHOD DEC HERE
 
     public:     // Data

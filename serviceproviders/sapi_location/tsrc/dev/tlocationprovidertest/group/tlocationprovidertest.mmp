@@ -48,6 +48,7 @@ SOURCE	    	tgetlocwrongcancel.cpp
 SOURCE          ttracelocwrongcancel.cpp
 SOURCE          tgetlocationcancel.cpp
 SOURCE          ttracelocationcancel.cpp
+SOURCE			TraceTO.cpp tenableHighAcc.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2
@@ -63,7 +64,7 @@ LIBRARY			lIWServiceHandler.lib
 LIBRARY         efsrv.lib
 LIBRARY         lbs.lib
 
-
+EPOCALLOWDLLDATA
 LANG            SC
 
 /*

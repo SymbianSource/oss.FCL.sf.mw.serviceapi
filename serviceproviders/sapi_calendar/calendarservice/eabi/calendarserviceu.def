@@ -141,4 +141,11 @@ EXPORTS
 	_ZTV20CCalendarSessionInfo @ 140 NONAME ; #<VT>#
 	_ZTV21CAsyncRequestObserver @ 141 NONAME ; #<VT>#
 	_ZTV21CCalendarExportParams @ 142 NONAME ; #<VT>#
+	_ZN16CCalendarService8GetListLERK7TDesC16P15CCalendarFilterP16MCalCallbackBase @ 143 NONAME
+	_ZTI16CCalendarGetList @ 144 NONAME ; #<TI>#
+	_ZTV16CCalendarGetList @ 145 NONAME ; #<VT>#
+	_ZN16CCalendarService8GetListLERK7TDesC16RK6TDesC8P16MCalCallbackBase @ 146 NONAME
+	_ZN16CCalendarService8GetListLERK7TDesC16mP16MCalCallbackBase @ 147 NONAME
+	_ZN16CEntryAttributes7SetUidLERK6TDesC8 @ 148 NONAME
+	_ZN16CEntryAttributes9GlobalUidEv @ 149 NONAME
 

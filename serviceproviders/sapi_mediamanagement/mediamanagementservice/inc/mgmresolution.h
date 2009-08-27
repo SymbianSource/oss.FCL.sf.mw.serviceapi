@@ -34,7 +34,7 @@ class MResolution
       *@ return TBool If it gets the resolution then ETrue or else EFalse                                 
       */                 
                
-        virtual TBool GetresolutionL(TSize& aSize) = 0 ;
+        IMPORT_C virtual TBool GetresolutionL(TSize& aSize) = 0 ;
     public:
 
         /**
@@ -54,7 +54,7 @@ class MResolution
 class MediaResolutionFactory
     {
     public:
-        static MResolution* CreateMediaResolutionobjL(TDesC& aMedia, TDesC& aUrl);
+        IMPORT_C static MResolution* CreateMediaResolutionobjL(TDesC& aMedia, TDesC& aUrl);
     };
 
 

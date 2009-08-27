@@ -20,7 +20,12 @@ class CGetLoc ; //Forward declaration
 #include "locationservice.h"
 #include <f32file.h>
 #include <e32const.h>
+#include<liwcommon.h>
+TInt TraceTimeOutFuncL();
 
+TInt reqErr;//To share the error value from callback
+#define TRACE 1 
+#define GETLOCATION 0
 
 _LIT(LogFileName , "C:\\Notifications.txt") ;
 _LIT(KRequestor,"testapp");
@@ -34,14 +39,35 @@ _LIT(KRequestor,"testapp");
  {
    TInt iCount ;
    TInt iRetStatus ;
-    public :
-    	TInt HandleNotifyL(HPositionGenericInfo *posinfo , TInt aError) ;
-    
-    	LocUpdateCallBack() :iCount(0) , iRetStatus(KErrGeneral)  //Default constructor 
-    	{
-    		;
-    	}
-  };
+    TInt iRequestType;
+    TInt iTransactionId;
+
+
+public :
+    TInt HandleNotifyL(HPositionGenericInfo *posinfo , TInt aError) ;
+
+
+    LocUpdateCallBack(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral)  //Default constructor 
+    	        {
+    	        iTransactionId = transId;
+    	        iRequestType = req;
+    	        }
+
+    inline TUint GetRequestType(void) 
+        {
+        return iRequestType ;
+        }
+
+
+    /**
+     * GetTransactionId function returns transcation id associated with current async object
+     *
+     */
+    inline TInt32 GetTransactionId(void)
+        {
+        return iTransactionId ;
+        }
+    };
   
   
   
@@ -51,10 +77,12 @@ TInt LocUpdateCallBack :: HandleNotifyL(HPositionGenericInfo *posinfo , TInt aEr
  if(aError != KErrNone)
  	{
  	 iRetStatus = aError ;
- 	 CActiveScheduler :: Stop() ;
- 	 return KErrNone ;
- 	}
-if(iCount > 2)
+        reqErr = KErrGeneral;
+        CActiveScheduler :: Stop() ;
+        return KErrGeneral ;
+        }
+    iCount++ ;
+    if(iCount > 1)
 	{
 	 iRetStatus = aError ;
 	 CActiveScheduler *Current = CActiveScheduler :: Current() ;
@@ -118,28 +146,23 @@ if(iCount > 2)
     	
 TInt GetLocFunctionL()
 {
-   
-    	
-    
-    LocUpdateCallBack MyUpdates  ;
+    __UHEAP_MARK ;
+    reqErr= KErrNone;
+
+    LocUpdateCallBack MyUpdates(9,TRACE)  ;
     CActiveScheduler *Scheduler = new CActiveScheduler ;
-    
+
     CActiveScheduler :: Install(Scheduler) ;
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
-    //not needed any more
-    /*RRequestorStack infostack;
-    
-    const CRequestor* identityInfo = CRequestor::NewL(CRequestor::ERequestorService,CRequestor::EFormatApplication,
-    												KRequestor) ;
-    infostack.Append(identityInfo);
-    CoreObj->SetRequestorIdentityL(infostack);*/
+
    
-   // GelocUpdateCallBack  MyUpdates(&CmdId  , (CLocationService *)NULL) ;
     CoreObj->TraceL(&MyUpdates,EBasicInfo) ;
-    
+
     CActiveScheduler :: Start() ;
-    return 0 ; // Controll never reaches here
+    delete CoreObj;
+    delete Scheduler;
+    __UHEAP_MARKEND ;
+    return  reqErr; 
 }
 
 TInt GetLocUpdates(TAny */*Arg*/)
@@ -161,13 +184,31 @@ TInt GetLocUpdates(TAny */*Arg*/)
  {
    TInt iCount ;
    TInt iRetStatus ;
-   public :
-    	TInt HandleNotifyL(HPositionGenericInfo* aPosInfo, TInt aError) ;
-    
-    	AsyncGetLoc() :iCount(0) , iRetStatus(KErrGeneral)  //Default constructor 
-    	{
-    		;
-    	}
+    TInt iRequestType;
+    TInt iTransactionId;
+    public :
+        TInt HandleNotifyL(HPositionGenericInfo* aPosInfo, TInt aError) ;
+
+        AsyncGetLoc(TInt aTransId,TInt aReqType) :iCount(0) , iRetStatus(KErrGeneral)  //Default constructor 
+    	        {
+    	        iTransactionId = aTransId;
+    	        iRequestType = aReqType;
+    	        }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
   };
   
   
@@ -182,6 +223,7 @@ TInt AsyncGetLoc :: HandleNotifyL(HPositionGenericInfo* aPosInfo , TInt aError)
  if(aError != KErrNone)
  	{
  	 iRetStatus = aError ;
+        reqErr = aError;
  	 CActiveScheduler :: Stop() ;
  	 return KErrNone ;
  	}
@@ -240,23 +282,28 @@ TInt AsyncGetLoc :: HandleNotifyL(HPositionGenericInfo* aPosInfo , TInt aError)
 
 TInt GetLocAsynchFunctionL()
 {
-	CActiveScheduler *Scheduler = new CActiveScheduler ;
-    
+    __UHEAP_MARK ;
+    reqErr = KErrNone;
+    CActiveScheduler *Scheduler = new CActiveScheduler ;
+
     CActiveScheduler :: Install(Scheduler) ;
     CLocationService *CoreObj = CLocationService ::NewL() ;
-  
-    AsyncGetLoc MyUpdates ;
+
+    AsyncGetLoc MyUpdates(10,GETLOCATION) ;
     //not needed any more
     /*RRequestorStack infostack;
-    
+
     const CRequestor* identityInfo = CRequestor::NewL(CRequestor::ERequestorService,CRequestor::EFormatApplication,
     												KRequestor) ;
     infostack.Append(identityInfo);
     CoreObj->SetRequestorIdentityL(infostack);*/
     CoreObj->GetLocationL(&MyUpdates,EBasicInfo) ;
-    
+
     CActiveScheduler :: Start() ; 
-    return 0 ;      //Controll never reaches here 
+    delete CoreObj;
+    delete Scheduler;
+    __UHEAP_MARKEND ;
+    return reqErr ; 
 }
 
 
@@ -280,24 +327,20 @@ TInt FindLocationAsynch(TAny * /*Arg*/)
 
 TInt ServiceFailedFunctionL()
 {
-		
-		CActiveScheduler *Scheduler = new CActiveScheduler ;
-		CActiveScheduler :: Install(Scheduler) ;
-		CLocationService *CoreObj = CLocationService ::NewL() ;
-		
-		//not needed any more
-		/*RRequestorStack infostack;
-    
-	    const CRequestor* identityInfo = CRequestor::NewL(CRequestor::ERequestorService,CRequestor::EFormatApplication,
-	    												KRequestor) ;
-	    infostack.Append(identityInfo);
-	    CoreObj->SetRequestorIdentityL(infostack);*/
-		
-		LocUpdateCallBack MyUpdates ;
-    
-    	CoreObj->TraceL(&MyUpdates,EBasicInfo) ;
-    	CActiveScheduler :: Start() ; 
-    	return  0 ;
+    reqErr = KErrNone;
+    __UHEAP_MARK ;
+    CActiveScheduler *Scheduler = new CActiveScheduler ;
+    CActiveScheduler :: Install(Scheduler) ;
+    CLocationService *CoreObj = CLocationService ::NewL() ;
+
+    LocUpdateCallBack MyUpdates(11,TRACE) ;
+
+    CoreObj->TraceL(&MyUpdates,EBasicInfo) ;
+    CActiveScheduler :: Start() ; 
+    delete CoreObj;
+    delete Scheduler;
+    __UHEAP_MARKEND ;
+    return  reqErr ;
     	
     	
 
@@ -307,10 +350,12 @@ TInt ServiceFailedFunctionL()
 
 TInt ServiceFailedTest(TAny */*Arg*/)
 {
-	CTrapCleanup* cleanup = CTrapCleanup::New();
-	TRAPD(err , ServiceFailedFunctionL()) ;
-	delete cleanup ;
-	return 0 ;
+    TInt errRet;
+    CTrapCleanup* cleanup = CTrapCleanup::New();
+    TRAPD(err , errRet = ServiceFailedFunctionL()) ;
+    delete cleanup ;
+
+    return errRet ;
 	
 }
 
@@ -318,27 +363,26 @@ TInt ServiceFailedTest(TAny */*Arg*/)
 
 TInt ConcurrentGetLocCallsL()
 	{
-	LocUpdateCallBack MyUpdates  ;
+    __UHEAP_MARK ;
+    reqErr = KErrNone;
+    LocUpdateCallBack MyUpdates(10,GETLOCATION)  ;
     CActiveScheduler *Scheduler = new CActiveScheduler ;
-    
+
     CActiveScheduler :: Install(Scheduler) ;
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
-    //not needed any more
-    /*RRequestorStack infostack;
-    
-    const CRequestor* identityInfo = CRequestor::NewL(CRequestor::ERequestorService,CRequestor::EFormatApplication,
-    												KRequestor) ;
-    infostack.Append(identityInfo);
-    CoreObj->SetRequestorIdentityL(infostack);*/
-   
-    
-     CoreObj->GetLocationL(&MyUpdates,EBasicInfo) ;
-    
-     TInt error = CoreObj->GetLocationL(&MyUpdates,EBasicInfo) ;
-    
-    
-    return error ; 
+
+
+
+    CoreObj->GetLocationL(&MyUpdates,EBasicInfo) ;
+
+    TRAPD(error, CoreObj->GetLocationL(&MyUpdates,EBasicInfo) );
+
+    CActiveScheduler :: Start() ; 
+    delete CoreObj;
+    delete Scheduler;
+    __UHEAP_MARKEND ;
+
+    return error | reqErr ; 
 
 		
 		
@@ -364,59 +408,37 @@ TInt ConcurrentGetLocationCalls(TAny */*Arg*/)
 
   
 
-TInt CTLocTest:: ConcurrentCallsGetLoc(CStifItemParser& /*aItem*/)
-	{
-	_LIT(KTLocTest ,"TLocTest");
-	iLog->Log(KTLocTest) ;
-	
-	TRequestStatus Status = KRequestPending  ;
-	RThread FunctionThread ;
-    
-    TInt ret = FunctionThread.Create(_L(" ConcurrentCallsGetLoc Thread") , ConcurrentGetLocationCalls ,KDefaultStackSize , 
-    						KMinHeapSize , 0x5000 ,(TAny *) NULL);
-    						
-    if(ret == KErrNone)
-	    {
-	    FunctionThread.Logon(Status)	;
-	    FunctionThread.Resume() ;
-	    
-	    User :: WaitForRequest (Status)	;				
-	    
 
-	   ret = Status.Int() ;
-	    }
-	  FunctionThread.Close();  
-	  
-	  if(ret == KErrInUse)
-	    return KErrNone ;
-	  
-	   return KErrGeneral;	
-	}
 
 
 TInt ConcurrentTraceCallsL()
 	{
-	LocUpdateCallBack MyUpdates  ;
+    __UHEAP_MARK ;
+    reqErr = KErrNone;
+    LocUpdateCallBack MyUpdates(12,TRACE)  ;
     CActiveScheduler *Scheduler = new CActiveScheduler ;
-    
+
     CActiveScheduler :: Install(Scheduler) ;
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
+
     //not needed any more
     /*RRequestorStack infostack;
-    
+
     const CRequestor* identityInfo = CRequestor::NewL(CRequestor::ERequestorService,CRequestor::EFormatApplication,
     												KRequestor) ;
     infostack.Append(identityInfo);
     CoreObj->SetRequestorIdentityL(infostack);*/
-   
-    
-     CoreObj->TraceL(&MyUpdates,EBasicInfo) ;(&MyUpdates,EBasicInfo) ;
-    
-     TInt error = CoreObj->TraceL(&MyUpdates,EBasicInfo) ;
-    
-    
-    return error ; 
+
+
+    CoreObj->TraceL(&MyUpdates,EBasicInfo) ;
+
+    TRAPD(error,CoreObj->TraceL(&MyUpdates,EBasicInfo)) ;
+
+    CActiveScheduler :: Start() ; 
+    delete CoreObj;
+    delete Scheduler;
+    __UHEAP_MARKEND ;
+    return error | reqErr ; 
 
 		
 		
@@ -441,32 +463,104 @@ TInt ConcurrentTraceCalls(TAny */*Arg*/)
 }
 
 	
-TInt CTLocTest:: ConcurrentCallsTrace(CStifItemParser& /*aItem*/)
-	{
-	_LIT(KTLocTest ,"TLocTest");
-	iLog->Log(KTLocTest) ;
-	
-	TRequestStatus Status = KRequestPending  ;
-	RThread FunctionThread ;
-    
-    TInt ret = FunctionThread.Create(_L(" ConcurrentCallsGetLoc Thread") , ConcurrentTraceCalls ,KDefaultStackSize , 
-    						KMinHeapSize , 0x5000 ,(TAny *) NULL);
-    						
-    if(ret == KErrNone)
-	    {
-	    FunctionThread.Logon(Status)	;
-	    FunctionThread.Resume() ;
-	    
-	    User :: WaitForRequest (Status)	;				
-	    
 
-	   ret = Status.Int() ;
-	    }
-	  FunctionThread.Close();  
-	  
-	  if(ret == KErrInUse)
-	    return KErrNone ;
-	  
-	   return KErrGeneral;	
-	}
+TInt TraceTimeOutFunc(TAny */*Arg*/)
+    {
 
+    CTrapCleanup* cleanup = CTrapCleanup::New();
+    TInt  Val ;
+    //Install a new active scheduler to this thread 
+    TRAPD(err ,( Val = TraceTimeOutFuncL()) );
+    delete cleanup ;
+
+    if(err)
+        {
+        return err ;
+        }
+    return Val ;
+    }
+
+
+class LocUpdateCallBackTO : public MLocationCallBack
+    {
+    TInt iCount ;
+    TInt iRetStatus ;
+    TInt iRequestType;
+    TInt iTransactionId;
+    public :
+        TInt HandleNotifyL(HPositionGenericInfo *posinfo , TInt aError) ;
+
+        LocUpdateCallBackTO(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral)  //Default constructor 
+               {
+               iTransactionId = transId;
+               iRequestType = req;
+               }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+
+
+    };
+
+
+
+TInt LocUpdateCallBackTO :: HandleNotifyL(HPositionGenericInfo *posinfo , TInt aError)
+    {
+    iCount++;
+    if(aError != KErrTimedOut)
+        {
+        iRetStatus = aError ;
+        CActiveScheduler *Current = CActiveScheduler :: Current() ;
+        reqErr = KErrGeneral;
+        Current->Stop() ;
+
+        return KErrGeneral ;
+        }
+
+    else if(iCount > 2)
+        {
+        iRetStatus = aError ;
+        CActiveScheduler *Current = CActiveScheduler :: Current() ;
+        Current->Stop() ;
+
+        }
+    return KErrNone ;   
+    }
+
+
+TInt TraceTimeOutFuncL()
+    {
+    __UHEAP_MARK ;
+    reqErr = KErrNone;
+    LocUpdateCallBackTO MyUpdates(14,TRACE)  ;
+    CActiveScheduler *Scheduler = new CActiveScheduler ;
+
+    CActiveScheduler :: Install(Scheduler) ;
+    CLocationService *CoreObj = CLocationService ::NewL() ;
+
+
+
+    TPositionUpdateOptions updateopts ;
+    updateopts.SetUpdateTimeOut(3);
+    TPositionFieldId FieldList[10] ;
+    CoreObj->TraceL(&MyUpdates,EBasicInfo,FieldList,&updateopts) ;
+
+
+    CActiveScheduler :: Start() ; 
+    delete CoreObj;
+    delete Scheduler;
+    __UHEAP_MARKEND ;
+    return reqErr;    
+    }

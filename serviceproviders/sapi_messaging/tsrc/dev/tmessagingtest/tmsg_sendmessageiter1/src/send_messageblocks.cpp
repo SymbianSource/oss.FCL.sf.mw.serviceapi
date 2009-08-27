@@ -111,6 +111,7 @@ TInt Csapi_sendmessage::RunMethodL(
         ENTRY( "sendmessage_test8", Csapi_sendmessage::sendmessage_test8L ),
         ENTRY( "sendmessage_test9", Csapi_sendmessage::sendmessage_test9L ),
         ENTRY( "sendmessage_test10", Csapi_sendmessage::sendmessage_test10L ),
+        ENTRY( "sendmessage_test11", Csapi_sendmessage::sendmessage_test11L )
 
         };
 
@@ -290,7 +291,24 @@ TInt Csapi_sendmessage::sendmessage_test10L( CStifItemParser& /*aItem*/ )
 		else	
 			return KErrGeneral;
 
-    }    
+    } 
+// -----------------------------------------------------------------------------
+// Csapi_sendmessage::accum11_testL
+// Example test method function.
+// (other items were commented in a header).
+// -----------------------------------------------------------------------------
+//
+TInt Csapi_sendmessage::sendmessage_test11L( CStifItemParser& /*aItem*/ )
+    {
+        int ret=0;
+    ret = sendmessage_test11(0, NULL);
+    
+    if(ret==0)
+            return KErrNone;
+        else    
+            return KErrGeneral;
+
+    }
 // -----------------------------------------------------------------------------
 // Csapi_sendmessage::?member_function
 // ?implementation_description

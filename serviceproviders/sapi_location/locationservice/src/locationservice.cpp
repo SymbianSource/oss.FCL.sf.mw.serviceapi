@@ -21,11 +21,6 @@
 #include "locationcoreimp.h"
 #include "locationservice.h"
 
-/**
- * Maximum number of active objects that can be created : at present only each corresponding
- * to location-asynch and trace
- */
-const TInt  KMAXAO = 2;
 
 
 
@@ -60,7 +55,6 @@ EXPORT_C CLocationService :: ~CLocationService()
                     iRegTable[iter]->Deque() ;
                     }
                 delete iRegTable[iter];
-                iRegTable[iter] = NULL ;
 
                 }
         }
@@ -88,110 +82,154 @@ EXPORT_C  CLocationService *CLocationService :: NewL()
 /**
  * CLocationService::ConstructL
  * Symbian 2nd phase constructor can leave.
- */
-
-void CLocationService::ConstructL()
-    {
-
-    DoInitialiseL();
-    }
-
-
-
-/**
- * CLocationService::DoInitialiseL
  * Initialises position server and positioner and
  * begins the position request sequence.
  */
 
-EXPORT_C void CLocationService :: DoInitialiseL()
+void CLocationService::ConstructL()
     {
-    TInt error = iPosServer.Connect( );
-    // The connection failed
-  
-    User :: LeaveIfError(error) ;
+    User :: LeaveIfError(iPosServer.Connect());
+    CleanupClosePushL(iPosServer);
     
-    // Open subsession to the position server
-    error = iPositioner.Open(iPosServer);
+    //Get the module id of the default module available
+    User :: LeaveIfError(iPosServer.GetDefaultModuleId(iModuleId));
 
-    // The opening of a subsession failed
-    if ( KErrNone != error )
-        {
-        iPosServer.Close();
-        User :: Leave( error );
-        }
-
-
-    //setting identity for this requestor
-    User::LeaveIfError( iPositioner.SetRequestor( CRequestor::ERequestorService,
-												  CRequestor::EFormatApplication,
-												  KIdentity ) );
-    
-    //Initialise index which means there is no 
-    //active object created yet
-    iIndex = 0 ;
-    //Initialising array pointer to NULL 
-
-    for ( TInt count = 0;count < KMAXAO;count++)
-        {
-        iRegTable.Insert(NULL,count);
-        }
-    
-       
-     //Getthe module id used by location server for sapi location calls.
-    error = iPosServer.GetDefaultModuleId(iModuleId);
-
-    User :: LeaveIfError(error) ;
-
+    CleanupStack::Pop(&iPosServer);
     }
 
+/**
+ * CLocationService::GetHighAccuracyModule
+ * This function returns the module id of highest accuracy 
+ * module that is available on the phone currently.
+ */
+void CLocationService::GetHighAccuracyModuleL(TPositionModuleId* aModId)
+    {
+    TPositionModuleId moduleId;
+    TPositionModuleInfo modInfo;
+    TUint numOfModules = 0;
+
+    //Flags used for indicating if a particular module is found
+    TInt termInternalFlag = 0;   
+    TInt termFlag = 0 ,assisFlag = 0 ,networkFlag = 0,unknownFlag = 0;
+    TInt err;
+    
+    User::LeaveIfError(iPosServer.GetNumModules(numOfModules));
+        
+
+    for( TInt i=0;i< numOfModules;i++ )
+        {
+        iPosServer.GetModuleInfoByIndex(i,modInfo);
+
+				if( modInfo.TechnologyType() == modInfo.ETechnologyAssisted  && 
+                 modInfo.IsAvailable())
+            {
+
+            assisFlag = 1;
+            moduleId = modInfo.ModuleId();
+						break;
+            }
+            
+        if( modInfo.TechnologyType() == modInfo.ETechnologyTerminal  && 
+                !assisFlag && !termInternalFlag && modInfo.IsAvailable() )
+            {
+
+            termFlag = 1;
+            moduleId = modInfo.ModuleId();
+
+            //Internal Module takes higher priority than External module 
+            if(modInfo.DeviceLocation() == modInfo.EDeviceInternal)
+                {
+                termInternalFlag = 1;                
+                }
+
+            }
+
+        if(modInfo.TechnologyType() == modInfo.ETechnologyNetwork && 
+                !assisFlag  && !termFlag && modInfo.IsAvailable())
+            {
+
+            networkFlag = 1;
+            moduleId = modInfo.ModuleId();
+
+            }
+
+        if( modInfo.TechnologyType() == modInfo.ETechnologyUnknown && 
+                !assisFlag  && !termFlag && 
+                !networkFlag && modInfo.IsAvailable() )
+            {
+
+            unknownFlag = 1;
+            moduleId = modInfo.ModuleId();                            
+            }
+        }
+    *aModId =  moduleId;
+    }
 
 /**
  * CLocationService :: GetLocationL with update options, this function gets users current location
  * returns 0 on success and Symbian specific error codes on failure
  */
 
-EXPORT_C TInt  CLocationService :: GetLocationL( TPositionInfoBase* aInfoBase , const TPositionUpdateOptions* aUpdateOpts )
+EXPORT_C void  CLocationService :: GetLocationL( TPositionInfoBase* aInfoBase ,
+        const TPositionUpdateOptions* aUpdateOpts,TBool aEnableHighAcc )
     {
-
-    TRequestStatus status  ;
-
-    if(aUpdateOpts)
+    // Open subsession to the position server
+    TPositionModuleId ModuleId;
+    TInt error;
+    if(aEnableHighAcc)
         {
-        TInt error;
-        error = iPositioner.SetUpdateOptions(*aUpdateOpts);
-        if( error)
-	    	{
-            return error ;
-            }
+        GetHighAccuracyModuleL(&ModuleId);
+       
+        User::LeaveIfError(iPositioner.Open(iPosServer,ModuleId));
         
         }
     else
         {
+        User::LeaveIfError(iPositioner.Open(iPosServer));
+        }
+
+    
+    CleanupClosePushL(iPositioner);
+
+    //setting identity for this requestor
+    User::LeaveIfError( iPositioner.SetRequestor( CRequestor::ERequestorService,
+            CRequestor::EFormatApplication,
+            KIdentity ) );
+
+    TRequestStatus status;
+
+    if(aUpdateOpts)
+        {
+        User::LeaveIfError(iPositioner.SetUpdateOptions(*aUpdateOpts));
+        }
+
+    else
+        {
         TPositionUpdateOptions updateopts ;
-        
+
         // Set update interval to one second to receive one position data per second
-	    updateopts.SetUpdateInterval(TTimeIntervalMicroSeconds(KSUpdateInterval));
+        updateopts.SetUpdateInterval(TTimeIntervalMicroSeconds(KSUpdateInterval));
 
-	    // If position server could not get position
-	    // In two minutes it will terminate the position request
-	    updateopts.SetUpdateTimeOut(TTimeIntervalMicroSeconds(KSUpdateTimeOut));
+        // If position server could not get position
+        // In two minutes it will terminate the position request
+        updateopts.SetUpdateTimeOut(TTimeIntervalMicroSeconds(KSUpdateTimeOut));
 
-	    // Positions which have time stamp below KMaxAge can be reused
-	    updateopts.SetMaxUpdateAge(TTimeIntervalMicroSeconds(KSMaxAge));
+        // Positions which have time stamp below KMaxAge can be reused
+        updateopts.SetMaxUpdateAge(TTimeIntervalMicroSeconds(KSMaxAge));
 
-	    // Enables location framework to send partial position data
-	    updateopts.SetAcceptPartialUpdates(FALSE);
+        // Enables location framework to send partial position data
+        updateopts.SetAcceptPartialUpdates(FALSE);
 
-        
+
         iPositioner.SetUpdateOptions(updateopts) ;
         }
 
 
     iPositioner.NotifyPositionUpdate( *aInfoBase, status );
     User :: WaitForRequest(status) ;
-
-    return status.Int() ;
+    CleanupStack::PopAndDestroy(&iPositioner);
+    
+    User::LeaveIfError(status.Int());
     }
 
 /**
@@ -212,46 +250,44 @@ EXPORT_C TInt  CLocationService :: GetLocationL( TPositionInfoBase* aInfoBase , 
  * This function gets users current location
  * returns status of job submitted 
  */
-EXPORT_C TInt CLocationService :: GetLocationL( MLocationCallBack* aCallBackObj ,
-													TInt aLocationInfoCategory, 
-													TPositionFieldIdList aFieldList ,
-													const TPositionUpdateOptions* aUpateOptions
-													 )
-    {
-
-    if(iRegTable[KARRAY_INDEX_GETLOCATION])
+EXPORT_C void CLocationService :: GetLocationL( MLocationCallBack* aCallBackObj ,
+        TInt aLocationInfoCategory,
+        TPositionFieldIdList aFieldList ,
+        const TPositionUpdateOptions* aUpateOptions,
+        TBool aEnableHighAcc 
+)
+    {  
+    TPositionModuleId ModuleId;
+    if(aEnableHighAcc)
         {
-        if(iRegTable[KARRAY_INDEX_GETLOCATION]->IsActive())
-            {
-            return KErrInUse ;                //Return Error is Already registred 
-            }
-
-        delete iRegTable[KARRAY_INDEX_GETLOCATION] ;
-        iRegTable[KARRAY_INDEX_GETLOCATION] = NULL ;
-
-        }
-
-    CGetLoc *activeGetLoc = CGetLoc :: NewL(iPosServer ,
-    									    aFieldList ,	
-                                            KGetLocationRequest,
-                                            aLocationInfoCategory ) ;
-    	//after creation of each active object increment counter by 1
-    
-    TInt err = 	activeGetLoc->GetLocation(aCallBackObj , aUpateOptions) ;
-    	
-    if ( KErrNone == err  )
-        {
-
-        iIndex = KARRAY_INDEX_GETLOCATION;  //for getlocation we are storing the pointer in 0th slot
-        iRegTable[KARRAY_INDEX_GETLOCATION] = activeGetLoc ;
-        }
+        GetHighAccuracyModuleL(&ModuleId);
         
-    else 
+        }
+    else
         {
-        delete activeGetLoc ;	//Clean up
-        }	
+        //Indicates that when opening the subsession ,moudleId need not be specified
+        ModuleId.iUid = 0;       
+        }
 
-    return err;	
+    TInt err = KErrGeneral;
+
+    CGetLoc* activeGetLoc = CGetLoc :: NewL(iPosServer ,
+            aFieldList ,
+            KGetLocationRequest,
+            aLocationInfoCategory,
+            ModuleId) ;
+
+    err = activeGetLoc->GetLocationUpdates(this,aCallBackObj,aUpateOptions);
+
+    if ( KErrNone == err )
+        {
+        iRegTable.Append(activeGetLoc);
+        }
+    else
+        {
+        delete activeGetLoc; //Clean up
+        User::Leave(err);
+        }
     }
 
 
@@ -262,42 +298,46 @@ EXPORT_C TInt CLocationService :: GetLocationL( MLocationCallBack* aCallBackObj 
  * Returns 0 on success and symbian specific error codes on failures
  */
 
-EXPORT_C TInt CLocationService :: TraceL( MLocationCallBack* aCallBackObj ,
-												TInt aLocationInfoCategory, 
-												TPositionFieldIdList aFiledList ,
-												const TPositionUpdateOptions* aUpateOptions )
+EXPORT_C void CLocationService :: TraceL( MLocationCallBack* aCallBackObj ,
+        TInt aLocationInfoCategory,
+        TPositionFieldIdList aFiledList ,
+        const TPositionUpdateOptions* aUpateOptions,
+        TBool aEnableHighAcc )
     {
-
-    if(iRegTable[KARRAY_INDEX_TRACE]) //Return Error to user is the reg table slot is not free
+    TPositionModuleId ModuleId;
+    if(aEnableHighAcc)
         {
-        if(iRegTable[KARRAY_INDEX_TRACE]->IsAdded())  
+        GetHighAccuracyModuleL(&ModuleId);
+        if(ModuleId.iUid == NULL)
             {
-            return KErrInUse ;            
+            User::Leave(KErrGeneral);
             }
-        //Reuse the existing inactive object
-        delete iRegTable[KARRAY_INDEX_TRACE]  ; //Activate this asynchronous job
-        iRegTable[KARRAY_INDEX_TRACE] = NULL ;
-
-        }
-
-    CGetLoc *activeTrace = CGetLoc :: NewL(iPosServer ,
-                                           aFiledList , 
-                                           KTraceRequest,
-                                           aLocationInfoCategory) ;
-
-    TInt ret  = activeTrace->GetLocationUpdates(aCallBackObj , aUpateOptions) ;
-
-    if (ret == KErrNone)  
-        {
-        iIndex = KARRAY_INDEX_TRACE;	
-        iRegTable[KARRAY_INDEX_TRACE] = activeTrace ;
         }
     else
-        {         //Cleanup the allocated object
-        delete activeTrace ;
-        }	
-       
-    return ret;
+        {
+        //Indicates that when opening the subsession ,moudleId need not be specified
+        ModuleId.iUid = 0;          
+        }
+    
+    CGetLoc* activeTrace = CGetLoc :: NewL(iPosServer ,
+            aFiledList ,
+            KTraceRequest,
+            aLocationInfoCategory,
+            ModuleId) ;
+
+    TInt ret = activeTrace->GetLocationUpdates(this,aCallBackObj , aUpateOptions);
+
+    if (ret == KErrNone)
+        {        
+        iRegTable.Append(activeTrace);
+        }
+    else
+        { 
+        //Cleanup the allocated object
+        delete activeTrace;
+        User::Leave(ret);
+        }
+
     }
 
 /**
@@ -339,8 +379,29 @@ EXPORT_C TInt CLocationService :: MathOperation( inpparam& aInput )
  * Synchronous function which returns users last known position
  */
 
-TInt CLocationService :: GetLastKnownLoc( TPosition& aResultPos )
+EXPORT_C TInt CLocationService :: GetLastKnownLoc( TPosition& aResultPos )
     {
+    TInt error = iPositioner.Open(iPosServer);
+
+
+    // The opening of a subsession failed
+    if ( KErrNone != error )
+        {
+        iPosServer.Close();
+        return error ;
+        }
+		
+    //setting identity for this requestor
+    error = iPositioner.SetRequestor( CRequestor::ERequestorService,
+            CRequestor::EFormatApplication,
+            KIdentity ) ;
+
+	  if ( KErrNone != error )
+        {
+        iPositioner.Close();
+        return error ;
+        }
+	
     TRequestStatus Status  = KRequestPending ;
     TPositionInfo  posinfo  ;
     TPositionInfoBase *posinfoBase =  &posinfo ;	
@@ -348,7 +409,8 @@ TInt CLocationService :: GetLastKnownLoc( TPosition& aResultPos )
     iPositioner.GetLastKnownPosition(*posinfoBase,Status);
     User::WaitForRequest(Status);
     posinfo.GetPosition(aResultPos) ;
-
+    
+    iPositioner.Close();
     return Status.Int() ;
 
     }
@@ -363,24 +425,79 @@ EXPORT_C TInt CLocationService::CancelOnGoingService( TInt aCancelparam )
     {
     if ( (aCancelparam == ECancelGetLocation ) || (aCancelparam == ECancelTrace))
         {
-        CGetLoc* ptr = iRegTable[aCancelparam];
-        if(iRegTable[aCancelparam])
+        TInt i;
+        for( i = 0; i< iRegTable.Count(); i++)
             {
-            if(iRegTable[aCancelparam]->IsAdded())
+            if(iRegTable[i] )
                 {
-                iRegTable[aCancelparam]->Deque() ;
-                }
-            if( ( aCancelparam == ECancelTrace ) )
-            	iRegTable[aCancelparam]->SetStatusComplete();
-            	delete iRegTable[aCancelparam] ;
-            iRegTable[aCancelparam] = NULL ;
-            return KErrNone;
-            }
-        return KErrNotFound ;
 
+                if((((iRegTable[i]->GetCallBackobj())->GetRequestType()) == 
+                KGetLocationReq) && (aCancelparam == ECancelGetLocation ))              
+                    {                  
+                    if(iRegTable[i]->IsAdded())
+                        {         
+                        iRegTable[i]->Deque();
+                        }
+
+
+                    delete iRegTable[i];
+                    iRegTable[i] = NULL;
+                    return KErrNone;
+                    }
+
+                else if ((((iRegTable[i]->GetCallBackobj())->GetRequestType()) == 
+                KTraceReq) &&  (aCancelparam == ECancelTrace ))
+                    {
+                    if(iRegTable[i]->IsAdded())
+                        {
+                        iRegTable[i]->Deque();
+                        }
+
+                    iRegTable[i]->SetStatusComplete();
+
+                    delete iRegTable[i];
+                    iRegTable[i] = NULL;
+                    return KErrNone;
+                    }
+                }  
+            }    
+        return KErrNotFound;
         }
 
     return KErrArgument;
-
     }
 
+/**
+ * CancelService : Cancels Requested asynchronous requests,
+ * Input : TransactionId returned by the Async request,
+ * Returns success(KErrNone) if service canceled or else error if 
+ * input parameter is invalid
+ */
+EXPORT_C TInt CLocationService::CancelService( TInt aTransId)
+    {
+    TInt i;
+    for( i = 0; i< iRegTable.Count(); i++)
+        {
+        if(iRegTable[i])
+            {
+            if(aTransId == 
+            (iRegTable[i]->GetCallBackobj())->GetTransactionId())
+                {
+                if(iRegTable[i]->IsAdded())
+                    {
+                    iRegTable[i]->Deque();
+                    }
+                if(((iRegTable[i]->GetCallBackobj())->GetRequestType()) == 
+                KTraceReq)
+                    {
+                    iRegTable[i]->SetStatusComplete();
+                    }
+                delete iRegTable[i];
+                iRegTable[i] = NULL;
+                return KErrNone;
+                }
+            }
+        }
+
+    return KErrNotFound;
+    }

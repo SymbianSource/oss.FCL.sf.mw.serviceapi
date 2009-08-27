@@ -157,6 +157,9 @@ NONSHARABLE_CLASS(Ctsysinfoprovidertests) : public CScriptBase
 	    virtual TInt GetDriveInfoL(CStifItemParser &aItem );
 	    virtual TInt UserInactivityNotify(CStifItemParser &aItem );
 	    
+	    virtual TInt GetCameraInfoTestNegative(CStifItemParser &aItem ); // During CJSE 2.0
+	    virtual TInt GetCameraInfoNegEntity(CStifItemParser &aItem ); // During CJSE 2.0
+	    virtual TInt GetCameraInfoNegKey(CStifItemParser &aItem ); // During CJSE 2.0
     public:    
     	CLiwServiceHandler* iServiceHandler;
     	

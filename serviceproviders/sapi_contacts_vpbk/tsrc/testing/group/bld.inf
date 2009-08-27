@@ -25,6 +25,7 @@
 #include "../tContact_export/group/bld.inf"
 #include "../tContact_getlist/group/bld.inf"
 #include "../tContact_organise/group/bld.inf"
+#include "../tcontact_getIds/group/bld.inf"
 
 //  End of File
 

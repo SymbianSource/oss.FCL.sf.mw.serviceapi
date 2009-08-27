@@ -149,8 +149,14 @@ NONSHARABLE_CLASS(CTCalendarUpdateTest) : public CScriptBase
        	virtual TInt UpdateDayEventL(CStifItemParser &aItem );
        	virtual TInt UpdateReminderL(CStifItemParser &aItem );
         virtual TInt UpdateTodoEntryL(CStifItemParser &aItem );
-
-        
+ 
+        virtual TInt UpdateAppointmentEntryWithGlobalIdL(CStifItemParser &aItem );
+        virtual TInt UpdateAnniversaryWithGlobalIdL(CStifItemParser &aItem );
+        virtual TInt UpdateDayEventWithGlobalIdL(CStifItemParser &aItem );
+        virtual TInt UpdateReminderWithGlobalIdL(CStifItemParser &aItem );
+        virtual TInt UpdateTodoEntryWithGlobalIdL(CStifItemParser &aItem );
+        virtual TInt UpdateAppointmentEntryWithNewTimeAndGlobalIdL(CStifItemParser &aItem );
+       
     public:     // Data
         
         //?data_declaration;

@@ -28,13 +28,13 @@ using namespace LIW;
  * Default constructor
  */
  
-LocationInterfaceCB ::LocationInterfaceCB()
-    {
-    iCallBack = NULL	; 
-    iOutParmList = NULL ;
-    iInParmList = NULL ;
-    iTransactionId = 0 ;
-    }
+LocationInterfaceCB ::LocationInterfaceCB():iCallBack(NULL), 
+iOutParmList(NULL),
+iInParmList(NULL),
+iTransactionId(0)
+        {
+
+        }
 
 /**
  * OverLoaded constructor which accepts the callback adderss 
@@ -49,14 +49,6 @@ LocationInterfaceCB :: LocationInterfaceCB( MLiwNotifyCallback* aCallBack ,
     {
     iModuleInfo = aPositionModuleInfo	;
     
-    //Store the outparam and in param list
-    
-    iOutParmList = CLiwGenericParamList :: NewL(); //(*aOutParmList) ;
-     
-    
-    //Currently we dont use inputparam list, but when need it has to be 
-    //initalised as done above for iOutParamList
-    iInParmList = iOutParmList ;
     //Extract the location info category from inputparamlist
     TInt index = 0;
     const TLiwGenericParam *smapparam = aInParmList->FindFirst(index , KLocationInfoCategory) ;
@@ -78,6 +70,15 @@ LocationInterfaceCB :: LocationInterfaceCB( MLiwNotifyCallback* aCallBack ,
     }
 
 /**
+ * Default destructor 
+ */
+LocationInterfaceCB :: ~LocationInterfaceCB()
+    {
+
+    delete iOutParmList;
+
+    }
+/**
  * overloaded NewL function for creating local call back objects
  * as required by locationinterface.cpp 
  */
@@ -89,7 +90,17 @@ LocationInterfaceCB *LocationInterfaceCB :: NewL(MLiwNotifyCallback* aCallBack  
     {
     LocationInterfaceCB *self = new(ELeave) LocationInterfaceCB(aCallBack , aInParmList ,
     															aPositionModuleInfo, aTransactionid) ;
+    CleanupStack::PushL(self);
 
+    //Store the outparam and in param list
+
+    self->iOutParmList = CLiwGenericParamList::NewL();
+
+    //Currently we dont use inputparam list, but when need it has to be 
+    //initalised as done above for iOutParamList
+    self->iInParmList = self->iOutParmList;
+
+    CleanupStack::Pop(self);
      return self ;
     }
 
@@ -110,7 +121,6 @@ LocationInterfaceCB *LocationInterfaceCB :: NewL(MLiwNotifyCallback* aCallBack  
         {
 
         iCallBack->HandleNotifyL(iTransactionId , KLiwEventError , *iOutParmList , *iInParmList) ;
-        iOutParmList = NULL ;
         //delete this ;
         return KErrGeneral ;
         }
@@ -121,7 +131,6 @@ LocationInterfaceCB *LocationInterfaceCB :: NewL(MLiwNotifyCallback* aCallBack  
     if(error != KErrNone)
     	{
     	 iCallBack->HandleNotifyL(iTransactionId , KLiwEventError , *iOutParmList , *iInParmList) ;
-    	 iOutParmList = NULL ;
          //delete this ;
          return KErrGeneral ;
     	}
@@ -167,10 +176,23 @@ void LocationInterfaceCB :: HandleL(HPositionGenericInfo* aGenericInfo , TInt /*
     result->InsertL(KLatitudeKey , TLiwVariant((TReal)Val)) ; //Inserting latitude into map    
 
     Val = pos.Altitude() ;
-
-    result->InsertL(KAltitudeKey , TLiwVariant((TReal)Val))   ;  //Inserting altitude into map 
+    if (!(Math::IsNaN(Val)))
+        {
+        result->InsertL(KAltitudeKey , TLiwVariant((TReal)Val))   ;  //Inserting altitude into map
+        }
     //TLiwVariant resVar(result) ;
+    TReal32 Val1;
+    Val1 = pos.HorizontalAccuracy();
+    if (!(Math::IsNaN(Val1)))
+        {
+        result->InsertL(KHorAccuracy, TLiwVariant((TReal)Val1)) ;
+        }
 
+    Val1 = pos.VerticalAccuracy();
+    if (!(Math::IsNaN(Val1)))
+        {
+        result->InsertL(KVerAccuracy, TLiwVariant((TReal)Val1)) ;
+        }
     
     TPositionModuleInfo :: TCapabilities  currCapability  = iModuleInfo->Capabilities() ;
     
@@ -310,13 +332,5 @@ void LocationInterfaceCB :: HandleL(HPositionGenericInfo* aGenericInfo , TInt /*
 
 	}
     
-/**
- * Default destructor 
- */
- 
- LocationInterfaceCB :: ~LocationInterfaceCB()
- {
- 	
- 	delete iOutParmList;
- 
- }
+
+

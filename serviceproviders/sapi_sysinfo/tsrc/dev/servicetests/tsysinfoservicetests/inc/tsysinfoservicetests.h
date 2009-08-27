@@ -156,6 +156,9 @@ NONSHARABLE_CLASS(Ctsysinfoservicetests) : public CScriptBase
 	    virtual TInt AvailableUSBModes(CStifItemParser &aItem );
 	    virtual TInt ActiveUSBModes(CStifItemParser &aItem );
 	    virtual TInt NotificationCancelVibra(CStifItemParser &aItem );
+	    virtual TInt CameraData(CStifItemParser &aItem );
+	    virtual TInt CameraDataNegativeEntity(CStifItemParser &aItem );
+	    virtual TInt CameraDataNegativeKey(CStifItemParser &aItem );
 	    
         virtual TInt IRStatus(CStifItemParser &aItem );
 	    virtual TInt ConnBluetooth(CStifItemParser &aItem );

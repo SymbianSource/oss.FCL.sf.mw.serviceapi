@@ -54,7 +54,8 @@ public:
 										   CContactIter* aIter,
 										   Ttype atype,
 										   TInt aTransId,
-										   MVPbkContactStore* aContactStore);
+										   MVPbkContactStore* aContactStore,
+										   TCmdType val);
    
     ~CGetListStoreListObserver();
 
@@ -109,7 +110,7 @@ private:
             				  TOrder aSortOrder,MContactCallback *aCallback,
             				   CContactService *aContactService,
             				  CContactIter* aIter, enum Ttype atype, 
-            				  TInt aTransId,MVPbkContactStore* aContactStore);
+            				  TInt aTransId,MVPbkContactStore* aContactStore, TCmdType val);
     				 
    /**
 	*  Sets the view of the database and also creates a filtered view
@@ -157,6 +158,7 @@ private:
       * RetrieveL() Handle
       */
 	 MVPbkContactOperationBase* iRetOp;
+	 TCmdType iVal;
 };
 
 #endif//C_GETLISTSTORELISTOBSERVER_H

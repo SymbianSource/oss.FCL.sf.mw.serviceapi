@@ -17,10 +17,13 @@
 
 
 #include <mclfitemlistmodel.h>
+#include <mclfsortingstyle.h>
 
 #include "mgclfoperationobserver.h"
 #include "mgservice.h"
 #include "mgoperationobserver.h"
+#include "asynchrequestmanager.h"
+#include "mgpostfilter.h"
 
 
 // -----------------------------------------------------------------------------
@@ -59,6 +62,9 @@ void CClfOperationObserver::HandleOperationEventL(
     	{
          
          iServiceObserver->MgNotifyL( iTransactionID,iListModel, mgEvent, aError );
+        
+         // calling request complete on asyncrequestmanager
+         iAsyncRequestManager->RequestComplete( iTransactionID );
          
          //Ownership of the List model is transfered to the Iterator class
          iListModel = NULL;
@@ -66,6 +72,8 @@ void CClfOperationObserver::HandleOperationEventL(
 		//call delete this	
          iServiceObserver = NULL;
   	     iMGService = NULL;
+  	     
+  	     delete this;
   	     
     	}
     	
@@ -81,14 +89,18 @@ void CClfOperationObserver::HandleOperationEventL(
 void CClfOperationObserver::SetMemberVar( TUint  aTransactionID,
                                           MMgOperationObserver* aServiceObserver,
 										  MCLFItemListModel* aListModel,
-										  CMgService* aMGService )
+										  CMgService* aMGService,CAsynchRequestManager* aAsyncReqManager,
+										  CPostFilter* aFilter,MCLFSortingStyle* aSortingStyle)
 	{
 
 	iServiceObserver = aServiceObserver;
   	iListModel = aListModel;
     iMGService = aMGService;
     iTransactionID = aTransactionID;
-
+    iAsyncRequestManager = aAsyncReqManager;
+    iFilter = aFilter;
+    iSortingStyle= aSortingStyle;
+    
 	}
 
 
@@ -124,7 +136,7 @@ void CClfOperationObserver::CancelL()
 CClfOperationObserver::~CClfOperationObserver()
                        
     {
-        
+       
         // If this observer is waiting for response
         // then cancel the request
         if( iListModel )
@@ -134,10 +146,22 @@ CClfOperationObserver::~CClfOperationObserver()
 			iListModel = NULL;*/
 			CancelL();
 			}
-    
+        if(iAsyncRequestManager)
+            {
+            iAsyncRequestManager = NULL;
+            }
+        
+        if(iFilter)
+            {
+            delete iFilter;
+            }
+        if(iSortingStyle)
+            {
+            delete iSortingStyle;
+            }
 	//In future at the time of supporting 
 	// back to back Calls we have to delete the iServiceOberver
-	
+    iServiceObserver = NULL;
 	}
 
 // -----------------------------------------------------------------------------

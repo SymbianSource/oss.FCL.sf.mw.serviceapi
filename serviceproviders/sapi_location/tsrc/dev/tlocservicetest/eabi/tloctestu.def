@@ -10,4 +10,6 @@ EXPORTS
 	_ZTV17LocUpdateCallBack @ 9 NONAME ; #<VT>#
 	_ZTV23CancelLocUpdateCallBack @ 10 NONAME ; #<VT>#
 	_ZTV7ASyncCB @ 11 NONAME ; #<VT>#
+	_ZTI19LocUpdateCallBackTO @ 12 NONAME ; #<TI>#
+	_ZTV19LocUpdateCallBackTO @ 13 NONAME ; #<VT>#
 

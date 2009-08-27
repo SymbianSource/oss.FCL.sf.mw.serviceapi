@@ -46,11 +46,17 @@ CMessagingAccessFolder::~CMessagingAccessFolder()
 		{
 		iEntrySelection->Reset();
 		}
+	if ( IsActive() )
+	    {
+	    iCallNotifyForCancelFlag = EFalse;
+	    Cancel();
+	    }
 	
 	iMtmArrayId.Reset();
 	
 	delete iEntrySelection;
 	delete iFilter;
+	delete iNotifyCallback;
 	}
 
 // ---------------------------------------------------------------------------
@@ -58,9 +64,94 @@ CMessagingAccessFolder::~CMessagingAccessFolder()
 // ---------------------------------------------------------------------------
 //
 CMessagingAccessFolder::CMessagingAccessFolder( CMsvSession& aServerSession ):
-				iServerSession(aServerSession)
+				iServerSession(aServerSession),
+				CActive( EPriorityStandard ),
+				iCallNotifyForCancelFlag(ETrue)
 	{
 	}
+
+// ---------------------------------------------------------------------------
+// Activates the asynchronous request
+// ---------------------------------------------------------------------------
+//
+void CMessagingAccessFolder::ActivateRequest( TInt aReason )
+    {
+    iStatus = KRequestPending;
+    SetActive();
+    TRequestStatus* temp = &iStatus;
+    User::RequestComplete( temp, aReason );
+    }
+
+// ---------------------------------------------------------------------------
+// Inherited from CActive class 
+// ---------------------------------------------------------------------------
+//
+void CMessagingAccessFolder::DoCancel()
+    {
+    NotifyRequestResult( KErrCancel,iEntrySelection, iFilter );
+    }
+
+// ---------------------------------------------------------------------------
+// Inherited from CActive class 
+// ---------------------------------------------------------------------------
+//
+void CMessagingAccessFolder::RunL()
+    {
+    TInt err = iStatus.Int();
+    if ( err == KErrNone )
+       {
+       TInt groupingKey = KMsvNoGrouping;
+       TMsvSelectionOrdering order( groupingKey, iFilter->SortType() );
+       CMsvEntry* entry = iServerSession.GetEntryL( iFolderId );
+       CleanupStack::PushL( entry );
+       
+       // Getlist can be performed on Folders entries only
+       if ( entry->Entry().iType != KUidMsvFolderEntry )
+           {
+           User::Leave( KErrArgument );
+           }
+       
+       entry->SetSortTypeL( order );
+       
+       InitializeMtmArray();
+       
+       if ( iEntrySelection )
+           {
+           iEntrySelection->Reset();
+           delete iEntrySelection;
+           iEntrySelection = NULL;
+           }
+       
+       if ( iMtmArrayId.Count() == 1 )
+           {
+           iEntrySelection = entry->ChildrenWithMtmL( iMtmArrayId[0] );
+           }
+       else
+           {
+           iEntrySelection = entry->ChildrenL();
+           }
+       
+       CleanupStack::PopAndDestroy( entry );
+       NotifyRequestResult( KErrNone, iEntrySelection, iFilter);
+       }
+    else
+        {
+        NotifyRequestResult( err, iEntrySelection, iFilter);
+        }
+    }
+
+// ---------------------------------------------------------------------------
+// Sets message input parameters 
+// aMessageParam/aNotifyCallback ownership is passed to this
+// ---------------------------------------------------------------------------
+//
+void CMessagingAccessFolder::SetInputParamsL(CMsgCallbackBase* aNotifyCallback ,
+                                              MAsyncRequestObserver* aAsyncRequestObserver )
+    {
+    
+    iNotifyCallback = aNotifyCallback;
+    iAsyncRequestObserver = aAsyncRequestObserver;
+    }
 	
 void CMessagingAccessFolder::GetIdListL(TMsvId aFolderId ,
 										CFilterParamInfo* aFilter,
@@ -104,39 +195,71 @@ void CMessagingAccessFolder::GetNextHeaderL( CFilterParamInfo* aFilter,
 //
 void CMessagingAccessFolder::GetListL()
 	{
-	TInt groupingKey = KMsvNoGrouping;
-	TMsvSelectionOrdering order( groupingKey, iFilter->SortType() );
-	CMsvEntry* entry = iServerSession.GetEntryL( iFolderId );
-	CleanupStack::PushL( entry );
-	
-	// Getlist can be performed on Folders entries only
-	if ( entry->Entry().iType != KUidMsvFolderEntry )
-		{
-		User::Leave( KErrArgument );
-		}
-	
-	entry->SetSortTypeL( order );
-	
-	InitializeMtmArray();
-	
-	if ( iEntrySelection )
-		{
-		iEntrySelection->Reset();
-		delete iEntrySelection;
-		iEntrySelection = NULL;
-		}
-	
-	if ( iMtmArrayId.Count() == 1 )
-		{
-		iEntrySelection = entry->ChildrenWithMtmL( iMtmArrayId[0] );
-		}
+	if ( iNotifyCallback ) // making call as asynchronous
+        {
+        CActiveScheduler::Add( this );
+        ActivateRequest( KErrNone );
+        }
 	else
-		{
-		iEntrySelection = entry->ChildrenL();
-		}
-
-	CleanupStack::PopAndDestroy( entry );	
+	    {
+        TInt groupingKey = KMsvNoGrouping;
+        TMsvSelectionOrdering order( groupingKey, iFilter->SortType() );
+        CMsvEntry* entry = iServerSession.GetEntryL( iFolderId );
+        CleanupStack::PushL( entry );
+        
+        // Getlist can be performed on Folders entries only
+        if ( entry->Entry().iType != KUidMsvFolderEntry )
+            {
+            User::Leave( KErrArgument );
+            }
+        
+        entry->SetSortTypeL( order );
+        
+        InitializeMtmArray();
+        
+        if ( iEntrySelection )
+            {
+            iEntrySelection->Reset();
+            delete iEntrySelection;
+            iEntrySelection = NULL;
+            }
+        
+        if ( iMtmArrayId.Count() == 1 )
+            {
+            iEntrySelection = entry->ChildrenWithMtmL( iMtmArrayId[0] );
+            }
+        else
+            {
+            iEntrySelection = entry->ChildrenL();
+            }
+        
+        CleanupStack::PopAndDestroy( entry );
+	    } 
 	}
+
+// ---------------------------------------------------------------------------
+// Notifies callback the result for asynchronous request.
+// ---------------------------------------------------------------------------
+//
+void CMessagingAccessFolder::NotifyRequestResult( TInt aReason,CMsvEntrySelection* aEntrySelection ,CFilterParamInfo* aFilter )
+        
+    {
+    if ( iNotifyCallback )
+        {
+        iEntrySelection=NULL;
+        iFilter=NULL;
+        iAsyncRequestObserver->RequestComplete( iNotifyCallback->iTransactionId );
+        
+        if( iCallNotifyForCancelFlag )
+           {
+           TRAPD( err, iNotifyCallback->HandleGetlistL( aReason, aEntrySelection, aFilter ));   
+           }
+        
+        }
+    // caller will delete the object in case of cancel
+    if ( aReason != KErrCancel )
+        delete this;
+    }
 
 // ---------------------------------------------------------------------------
 // Initializes the MtmID array by the Mtm string passed

@@ -34,6 +34,8 @@ TInt returnCode;
 RFile LogFile ;
 RFs LogSession ;
 
+#define GETLOCATION 0
+#define TRACE 1
 void OpenFile()
 	{
 	LogSession.Connect() ;
@@ -401,7 +403,7 @@ TInt CSAPILocTest::GetPosition1( CStifItemParser& /*aItem*/ )
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
 
     
-    TRAPD( error,aRet = CoreObj->GetLocationL(&currPos) );
+    TRAP(aRet , CoreObj->GetLocationL(&currPos) );
     
     if( KErrNone == aRet )
     	{
@@ -469,138 +471,158 @@ TInt CSAPILocTest::GetPosition2( CStifItemParser& /*aItem*/ )
     aRequestorStack.Insert(identityInfo,0);
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
 	
-	User::After(120000000) ;	
-    aRet1 = CoreObj->GetLocationL(&currPos1) ;
-    
-    
-    if (KErrNone == aRet1)
-    	{
-        aRet2 = CoreObj->GetLocationL(&currPos2) ;
-        
-        OpenFile();
-    	LogFile.Write(_L8("\n<GetPosition2 Test>\n"));
-    	CloseFile();
-    	
-    	currPos1.GetPosition(currPosition1);
-    	currPos2.GetPosition(currPosition2);
-    	aFlag1 = ValidatePosition(currPosition1);
-    	aFlag2 = ValidatePosition(currPosition2);
-    	
-       	if((KErrNone == aFlag1) && (KErrNone == aFlag2))
-    		{
-    		OpenFile();
-	    	LogFile.Write(_L8("Passed..\n"));
-	    	CloseFile();
-	    	returnCode = KErrNone;
-    		}
-    	else
-    		{
-    		OpenFile();
-    		LogFile.Write(_L8("Failed..\n"));
-    		CloseFile();
-    		returnCode = KErrGeneral;	
-    		}
-    	}
-    else
-    	{
-       	OpenFile();
-    	LogFile.Write(_L8("\n<GetPosition2 Test>\n"));
-    	LogFile.Write(_L8("Failed(getloc error)..\n"));
-    	CloseFile();
-    	returnCode = KErrGeneral;
-    	}
-    
-     /*aRequestorStack.Close();
-	 delete identityInfo;*/
-	 delete CoreObj;
-    
-    __UHEAP_MARKEND;
-    
-    return returnCode;	
-    
-    }
-	    
-    
+    //User::After(120000000) ;	
+    TRAP(aRet1,CoreObj->GetLocationL(&currPos1) );
 
-    
+
+    if (KErrNone == aRet1)
+        {
+        TRAPD(aRet2,CoreObj->GetLocationL(&currPos2)) ;
+
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPosition2 Test>\n"));
+        CloseFile();
+
+        currPos1.GetPosition(currPosition1);
+        currPos2.GetPosition(currPosition2);
+        aFlag1 = ValidatePosition(currPosition1);
+        aFlag2 = ValidatePosition(currPosition2);
+
+        if((KErrNone == aFlag1) && (KErrNone == aFlag2))
+            {
+            OpenFile();
+            LogFile.Write(_L8("Passed..\n"));
+            CloseFile();
+            returnCode = KErrNone;
+            }
+        else
+            {
+            OpenFile();
+            LogFile.Write(_L8("Failed..\n"));
+            CloseFile();
+            returnCode = KErrGeneral;	
+            }
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPosition2 Test>\n"));
+        LogFile.Write(_L8("Failed(getloc error)..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    /*aRequestorStack.Close();
+	 delete identityInfo;*/
+    delete CoreObj;
+
+    __UHEAP_MARKEND;
+
+    return returnCode;	
+
+    }
+
+
+
+
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetPositionAsync
 // -----------------------------------------------------------------------------
 //
 
 class LocUpdateCallBack : public MLocationCallBack
-	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
+    TInt iRequestType;
+    TInt iTransactionId;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    LocUpdateCallBack() :iCount(0) , iRetStatus(KErrGeneral){;}
-	};
-  
-   
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        LocUpdateCallBack(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral){
+        iTransactionId = transId;
+        iRequestType = req;
+        }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+    };
+
+
 TInt LocUpdateCallBack :: HandleNotifyL(HPositionGenericInfo *currPos , TInt /*aError*/)
-	{
-//	User::After(60000000);
-	TInt aRetVal = KErrNone;
-	
-	OpenFile();
-	LogFile.Write(_L8("\n<GetPositionAsync Test>\n "));
-	CloseFile();
-	TPosition outPos ;
-  	currPos->GetPosition(outPos) ;
-	aRetVal = ValidatePosition(outPos);
-    
+    {
+    //	User::After(60000000);
+    TInt aRetVal = KErrNone;
+
+    OpenFile();
+    LogFile.Write(_L8("\n<GetPositionAsync Test>\n "));
+    CloseFile();
+    TPosition outPos ;
+    currPos->GetPosition(outPos) ;
+    aRetVal = ValidatePosition(outPos);
+
     if( KErrNone == aRetVal )
-	    {
-    	OpenFile();
-    	LogFile.Write(_L8("Passed..\n"));
-    	CloseFile();
-    	returnCode = KErrNone;
-	    }
-   else
-	   	{
-   		OpenFile();
-   		LogFile.Write(_L8("Failed..\n"));
-   		CloseFile();
-   		returnCode = KErrGeneral;
-	   	}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("Passed..\n"));
+        CloseFile();
+        returnCode = KErrNone;
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
     CActiveScheduler *Current = CActiveScheduler :: Current() ;
-	Current->Stop() ;
-	return KErrNone ;
-	}
+    Current->Stop() ;
+    return KErrNone ;
+    }
 
 TInt GetLocFunctionL()
-	{
+    {
     TBuf8<20> retBuf;
     TRealFormat retFormat;
-  
+    __UHEAP_MARK ;
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
+
     if( NULL == CoreObj )
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetPositionAsync Test>\n"));
-	    LogFile.Write(_L8("Failed(CoreObj Creation)..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionAsync Test>\n"));
+        LogFile.Write(_L8("Failed(CoreObj Creation)..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-		
-    LocUpdateCallBack MyUpdates  ;
-    
+
+    LocUpdateCallBack MyUpdates(10,GETLOCATION)  ;
+
     CoreObj->GetLocationL(&MyUpdates) ;
-    
-    User::After(60000000);
+
+    // User::After(60000000);
     CActiveScheduler :: Start() ;
-        
+
     retBuf.Num(returnCode,retFormat) ;
     OpenFile();
     LogFile.Write(_L8("\nreturnCode : "));
@@ -609,11 +631,12 @@ TInt GetLocFunctionL()
     /*aRequestorStack.Close();
     delete identityInfo;*/
     delete CoreObj;
+    __UHEAP_MARKEND ;
     return 0;
-	}
+    }
 
 TInt CSAPILocTest::GetPositionAsync( CStifItemParser& /*aItem*/ )
-	{
+    {
     TRequestStatus status = KRequestPending;
     TInt aRet = KErrNone;
     returnCode = KErrNone;
@@ -621,132 +644,154 @@ TInt CSAPILocTest::GetPositionAsync( CStifItemParser& /*aItem*/ )
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetPositionAsync" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-     __UHEAP_MARK;
-    
+
+    __UHEAP_MARK;
+
     TRAPD(err , aRet = GetLocFunctionL()) ;
     if( err || aRet )
-    returnCode = KErrGeneral; 
-    
+        returnCode = KErrGeneral; 
+
     __UHEAP_MARKEND;
- 
+
     return returnCode;  
     }
-    
-   
+
+
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetPositionAsyncOpts1
 // -----------------------------------------------------------------------------
 //
 class LocUpdateCallBackOpts1 : public MLocationCallBack
-	{
-	TInt iCount ;
-	TInt iRetStatus ;
-	public :
-	TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-	LocUpdateCallBackOpts1() :iCount(0) , iRetStatus(KErrGeneral)  //Default constructor 
-		{;}
-	};
-   
+    {
+    TInt iCount ;
+    TInt iRetStatus ;
+    TInt iTransactionId;
+    TInt iRequestType;
+    public :
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        LocUpdateCallBackOpts1(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral)  //Default constructor 
+		        {
+		        iTransactionId  = transId;
+		        iRequestType = req;
+		        }
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+    };
+
 TInt LocUpdateCallBackOpts1 :: HandleNotifyL(HPositionGenericInfo* /*currPos*/ , TInt aError)
-	{
-	if(KErrTimedOut == aError)
- 		{
-	    OpenFile();
-	    LogFile.Write(_L8("\n<GetPositionAsyncOpts1 Async test>\n "));
-	    LogFile.Write(_L8("Passed..\n "));
-	    CloseFile(); 
-	 	returnCode = KErrNone;
-	    }
- 
- 	else
-	 	{
-	 	OpenFile();
-	 	LogFile.Write(_L8("GetPositionAsyncOpts1 Async failed "));
-	    CloseFile();
-	  	returnCode = KErrGeneral;
-		}
- 
- 
-  CActiveScheduler *Current = CActiveScheduler :: Current() ;
-  Current->Stop() ;
-  
-  return KErrNone ;
-	}
+    {
+    if(KErrTimedOut == aError)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionAsyncOpts1 Async test>\n "));
+        LogFile.Write(_L8("Passed..\n "));
+        CloseFile(); 
+        returnCode = KErrNone;
+        }
+
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("GetPositionAsyncOpts1 Async failed "));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+
+    CActiveScheduler *Current = CActiveScheduler :: Current() ;
+    Current->Stop() ;
+
+    return KErrNone ;
+    }
 
 TInt GetLocFunctionOpts1L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret;
     TPositionUpdateOptions aOptions;
     TTimeIntervalMicroSeconds aTimeOut = 100;
-  
+
     CLocationService *CoreObj = CLocationService ::NewL() ;
     if( NULL == CoreObj )
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetPositionAsyncOpts1 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionAsyncOpts1 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
-	
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
+
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-		
-    LocUpdateCallBackOpts1 MyUpdates ;
-    
+
+    LocUpdateCallBackOpts1 MyUpdates(11,GETLOCATION) ;
+
     aOptions.SetUpdateTimeOut(aTimeOut);
-    
-    ret = CoreObj->GetLocationL(&MyUpdates,0,NULL ,&aOptions) ;
-    
+
+    TRAP(ret,CoreObj->GetLocationL(&MyUpdates,0,NULL ,&aOptions)) ;
+
     if(KErrNone == ret)
-	    {
-	    CActiveScheduler :: Start() ;	
-	    }
-    
+        {
+        CActiveScheduler :: Start() ;	
+        }
+
     else
-    	{
-    	returnCode = KErrGeneral;	
-    	}
-        
+        {
+        returnCode = KErrGeneral;	
+        }
+
     //aRequestorStack.Close();
-    
+
     delete CoreObj;
+    
+    __UHEAP_MARKEND ;
     return KErrNone;;
-	}
+    }
 
 
 TInt CSAPILocTest::GetPositionAsyncOpts1( CStifItemParser& /*aItem*/ )
-	{
+    {
     TRequestStatus status = KRequestPending;
     TInt aRet = KErrNone;
     returnCode = KErrNone;
-    
+
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetPositionAsyncOpts1" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-	__UHEAP_MARK;
-	
+
+    __UHEAP_MARK;
+
     TInt start = User::CountAllocCells();
     TRAPD(err ,aRet = GetLocFunctionOpts1L()) ;
     if( err || aRet)
-    returnCode = KErrGeneral;
-    
+        returnCode = KErrGeneral;
+
     TInt end = User::CountAllocCells();
-    
+
     __UHEAP_MARKEND;
-    
-     return returnCode;  
-	}
+
+    return returnCode;  
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -755,142 +800,165 @@ TInt CSAPILocTest::GetPositionAsyncOpts1( CStifItemParser& /*aItem*/ )
 //
 
 class LocUpdateCallBackOpts2 : public MLocationCallBack
-	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
+    TInt iRequestType;
+    TInt iTransactionId;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    LocUpdateCallBackOpts2() :iCount(0) , iRetStatus(KErrGeneral){;}
-	};
-  
-   
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        LocUpdateCallBackOpts2(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral){
+        iTransactionId = transId;
+        iRequestType = req;
+        }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+    };
+
+
 TInt LocUpdateCallBackOpts2 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt aError)
-	{
-    User::After(60000000);
+    {
+    // User::After(60000000);
     if(KErrNone == aError)
-   		{
-	 	 TPosition currPos1;
-	 	 currPos->GetPosition(currPos1);
-	 //	 ValidatePosition(currPos1);
-		 TBuf8<50> buf;
-		 TRealFormat format ;
-		 TInt64 aTime1;;
-		 TTime aTimeStamp1;
-		 aTimeStamp1 = currPos1.Time();
-         aTime1 = aTimeStamp1.Int64();
-         buf.Num(aTime1 , format) ;
-         if(aTime1) 
-         	{
-          	OpenFile();
+        {
+        TPosition currPos1;
+        currPos->GetPosition(currPos1);
+        //	 ValidatePosition(currPos1);
+        TBuf8<50> buf;
+        TRealFormat format ;
+        TInt64 aTime1;;
+        TTime aTimeStamp1;
+        aTimeStamp1 = currPos1.Time();
+        aTime1 = aTimeStamp1.Int64();
+        buf.Num(aTime1 , format) ;
+        if(aTime1) 
+            {
+            OpenFile();
             LogFile.Write(_L8("Time = "));
-		    LogFile.Write(buf) ;
-		    CloseFile();
-		    returnCode = KErrNone;
-	     	}
-	     else
-	    	{
-	    	OpenFile();
+            LogFile.Write(buf) ;
+            CloseFile();
+            returnCode = KErrNone;
+            }
+        else
+            {
+            OpenFile();
             LogFile.Write(_L8("\nFailed(Time value).."));
-		    CloseFile();
-		    returnCode = KErrGeneral;
-	    	}
-		 
-	  	 }
-	 
-	 else
-	 	{
-	 	OpenFile();
+            CloseFile();
+            returnCode = KErrGeneral;
+            }
+
+        }
+
+    else
+        {
+        OpenFile();
         LogFile.Write(_L8("\nFailed(Handlenotifyl error).."));
-		CloseFile();
-		returnCode = KErrGeneral;
-		}
-	 
-	  CActiveScheduler *Current = CActiveScheduler :: Current() ;
-	  Current->Stop() ;
-	  return KErrNone ;
-}
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    CActiveScheduler *Current = CActiveScheduler :: Current() ;
+    Current->Stop() ;
+    return KErrNone ;
+    }
 
 
 TInt GetLocFunctionOpts2L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret;
     TPositionInfo aPosition1,aPosition2,aPosition3;  
     TPosition aPos1,aPos2,aPos3;
     TPositionUpdateOptions aOptions;
     TTime start,end;
     TTimeIntervalMicroSeconds aTimeOut =  6000000;
-	TTimeIntervalMicroSeconds aInterval = 60000000;
+    TTimeIntervalMicroSeconds aInterval = 60000000;
     TTimeIntervalMicroSeconds aActualInterval;
-    
+
     CLocationService *CoreObj = CLocationService ::NewL() ;
-   
+
     if( NULL == CoreObj )
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetPositionAsyncOpts2 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-   	
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionAsyncOpts2 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-			
-   	LocUpdateCallBackOpts2 MyUpdates ;
+
+    LocUpdateCallBackOpts2 MyUpdates(12,GETLOCATION) ;
     aOptions.SetUpdateTimeOut(aTimeOut);
     aOptions.SetUpdateInterval(aInterval);
-    
-    ret = CoreObj->GetLocationL(&MyUpdates,0,NULL,&aOptions) ;
-    
+
+    TRAP(ret ,CoreObj->GetLocationL(&MyUpdates,0,NULL,&aOptions) );
+
     if( KErrArgument == ret )
-    	{
+        {
         OpenFile();
-		LogFile.Write(_L8("\n<GetPositionAsyncOpts1 test>\n"));
-    	LogFile.Write(_L8("Passed\n"));
-    	CloseFile();
+        LogFile.Write(_L8("\n<GetPositionAsyncOpts1 test>\n"));
+        LogFile.Write(_L8("Passed\n"));
+        CloseFile();
         returnCode = KErrNone;
-	    /*aRequestorStack.Close();
-	    delete identityInfo;*/
-	    delete CoreObj;
-	    return returnCode;	
-	   	}
-   	
-   	else
-    	{
         /*aRequestorStack.Close();
 	    delete identityInfo;*/
-	    delete CoreObj;
-    	returnCode = KErrGeneral;
-    	return returnCode;
-    	}
- }
+        delete CoreObj;
+        __UHEAP_MARKEND ;
+        return returnCode;	
+        }
+
+    else
+        {
+        /*aRequestorStack.Close();
+	    delete identityInfo;*/
+        delete CoreObj;
+        returnCode = KErrGeneral;
+        __UHEAP_MARKEND ;
+        return returnCode;
+        }
+    }
 
 
 TInt CSAPILocTest::GetPositionAsyncOpts2( CStifItemParser& /*aItem*/ )
-	{
+    {
     TRequestStatus status = KRequestPending;
-	TInt aRet = KErrNone;
-	returnCode = KErrNone;	    
+    TInt aRet = KErrNone;
+    returnCode = KErrNone;	    
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetPositionAsyncOpts2" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-   
+
     __UHEAP_MARK;
-    
+
     TRAPD(err ,aRet = GetLocFunctionOpts2L()) ;
     if( err || aRet )
-    returnCode = KErrGeneral;
-  
+        returnCode = KErrGeneral;
+
     __UHEAP_MARKEND;
-    
+
     return returnCode;  
-	}
+    }
 
 
 
@@ -900,171 +968,196 @@ TInt CSAPILocTest::GetPositionAsyncOpts2( CStifItemParser& /*aItem*/ )
 //
 
 class LocUpdateCallBackOpts3 : public MLocationCallBack
-	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
+    TInt iTransactionId;
+    TInt iRequestType;
+
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    LocUpdateCallBackOpts3() :iCount(0) , iRetStatus(KErrGeneral){;}
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        LocUpdateCallBackOpts3(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral){
+        iTransactionId = transId;
+        iRequestType = req;
+        }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
     };
- 
-   
+
+
 TInt LocUpdateCallBackOpts3 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt aError)
-	{
-    User::After(60000000);
+    {
+    //  User::After(60000000);
     if(KErrNone == aError)
-		 {
-		 OpenFile();
-		 LogFile.Write(_L8("\n<GetPositionAsyncOpts3 test>\n"));
-	     CloseFile();
-	     TBuf8<50> buf;
-		 TRealFormat format ;
-		 TInt64 aTime1;;
-		 TTime aTimeStamp1;
-		 TPosition currPos1;
-		 currPos->GetPosition(currPos1);
-		 aTimeStamp1 = currPos1.Time();
-	     aTime1 = aTimeStamp1.Int64();
-	     buf.Num(aTime1 , format) ;
-	     if(aTime1) 
-	     	{
-	        OpenFile();
-	        LogFile.Write(_L8("Time = "));
-			LogFile.Write(buf) ;
-			LogFile.Write(_L8("\n"));
-			CloseFile();
-			returnCode = KErrNone;
-		    }
-		 else
-		    {
-		    OpenFile();
-	        LogFile.Write(_L8("\nFailed to write Time value"));
-		    CloseFile();
-		    returnCode = KErrGeneral;
-		    }
-		 }
-		
-     else
-	 	{
-	 	OpenFile();
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionAsyncOpts3 test>\n"));
+        CloseFile();
+        TBuf8<50> buf;
+        TRealFormat format ;
+        TInt64 aTime1;;
+        TTime aTimeStamp1;
+        TPosition currPos1;
+        currPos->GetPosition(currPos1);
+        aTimeStamp1 = currPos1.Time();
+        aTime1 = aTimeStamp1.Int64();
+        buf.Num(aTime1 , format) ;
+        if(aTime1) 
+            {
+            OpenFile();
+            LogFile.Write(_L8("Time = "));
+            LogFile.Write(buf) ;
+            LogFile.Write(_L8("\n"));
+            CloseFile();
+            returnCode = KErrNone;
+            }
+        else
+            {
+            OpenFile();
+            LogFile.Write(_L8("\nFailed to write Time value"));
+            CloseFile();
+            returnCode = KErrGeneral;
+            }
+        }
+
+    else
+        {
+        OpenFile();
         LogFile.Write(_L8("\nFailed.."));
-		CloseFile();
-		returnCode = KErrGeneral;
-	 	}
-		 
-	  CActiveScheduler *Current = CActiveScheduler :: Current() ;
-	  Current->Stop() ;
-	  return KErrNone ;
-}
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    CActiveScheduler *Current = CActiveScheduler :: Current() ;
+    Current->Stop() ;
+    return KErrNone ;
+    }
 
 
 TInt GetLocFunctionOpts3L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret;
     TPositionInfo aPosition1,aPosition2,aPosition3;  
     TPosition aPos1,aPos2,aPos3;
     TPositionUpdateOptions aOptions;
     TTimeIntervalMicroSeconds aTimeOut =  60000000;
-	TTimeIntervalMicroSeconds aInterval = 6000000;
-	TBool aAcceptPartialUpdates = ETrue;
-    
+    TTimeIntervalMicroSeconds aInterval = 6000000;
+    TBool aAcceptPartialUpdates = ETrue;
+
     CLocationService *CoreObj = CLocationService ::NewL() ;
     if( NULL == CoreObj )
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetPositionAsyncOpts3 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-   	
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionAsyncOpts3 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-			
-    LocUpdateCallBackOpts3 MyUpdates ;
-    
+
+    LocUpdateCallBackOpts3 MyUpdates(29,GETLOCATION) ;
+
     aOptions.SetUpdateTimeOut(aTimeOut);
     aOptions.SetUpdateInterval(aInterval);
     aOptions.SetAcceptPartialUpdates(aAcceptPartialUpdates);
-    
-    ret = CoreObj->GetLocationL(&MyUpdates,0,NULL,&aOptions) ;
-    
+
+    TRAP(ret,CoreObj->GetLocationL(&MyUpdates,0,NULL,&aOptions)) ;
+
     if( KErrNone == ret)
-    	{
-    	CActiveScheduler :: Start() ;
-	    if( KErrNone == returnCode )
-	    	{
-		    CoreObj->GetLocationL(&aPosition1,&aOptions);
-		    //CoreObj->GetLocationL(&aPosition2,&aOptions);
-		    //CoreObj->GetLocationL(&aPosition3,&aOptions);
-		    
-		    aPosition1.GetPosition(aPos1);
-		    
-		    returnCode = ValidatePosition(aPos1);
-			    
-			/*    if( KErrNone == returnCode)
+        {
+        CActiveScheduler :: Start() ;
+        if( KErrNone == returnCode )
+            {
+            CoreObj->GetLocationL(&aPosition1,&aOptions);
+            //CoreObj->GetLocationL(&aPosition2,&aOptions);
+            //CoreObj->GetLocationL(&aPosition3,&aOptions);
+
+            aPosition1.GetPosition(aPos1);
+
+            returnCode = ValidatePosition(aPos1);
+
+            /*    if( KErrNone == returnCode)
 			    	{
 			       	aPosition2.GetPosition(aPos2);
 			       	returnCode = ValidatePosition(aPos2);
 			    	}
-			    
+
 			    if( KErrNone == returnCode)
 			    	{
 			       	aPosition3.GetPosition(aPos3);
 			    	returnCode = ValidatePosition(aPos3);
 			    	}
-		    */
-		    //aRequestorStack.Close();
-		    
-		    delete CoreObj;
-			return returnCode;	
-	    	}
-	    else
-	    	{
-	    	//aRequestorStack.Close();
-			
-			delete CoreObj;
-	    	return returnCode;
-	    	}
-	   	}
-    
+             */
+            //aRequestorStack.Close();
+
+            delete CoreObj;
+            __UHEAP_MARKEND ;
+            return returnCode;	
+            }
+        else
+            {
+            //aRequestorStack.Close();
+
+            delete CoreObj;
+            __UHEAP_MARKEND ;
+            return returnCode;
+            }
+        }
+
     else
-    	{
-    	/*aRequestorStack.Close();
+        {
+        /*aRequestorStack.Close();
 	    delete identityInfo;*/
-	    delete CoreObj;
-    	return KErrGeneral;
-    	}
-	}
+        delete CoreObj;
+        __UHEAP_MARKEND ;
+        return KErrGeneral;
+        }
+    }
 
 
 TInt CSAPILocTest::GetPositionAsyncOpts3( CStifItemParser& /*aItem*/ )
-{
-    
-   TRequestStatus status = KRequestPending;
-   TInt aRet = KErrNone;
-   returnCode = KErrNone;
-	    
+    {
+
+    TRequestStatus status = KRequestPending;
+    TInt aRet = KErrNone;
+    returnCode = KErrNone;
+
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetPositionAsyncOpts3" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-   
+
     TRAPD(err , aRet = GetLocFunctionOpts3L()) ;
     if( err || aRet )
-    returnCode = KErrGeneral;
-   
+        returnCode = KErrGeneral;
+
     __UHEAP_MARKEND;
-    
-     return returnCode;  
-}
+
+    return returnCode;  
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -1073,158 +1166,182 @@ TInt CSAPILocTest::GetPositionAsyncOpts3( CStifItemParser& /*aItem*/ )
 //
 
 class LocUpdateCallBackOpts4 : public MLocationCallBack
-	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
+    TInt iTransactionId;
+    TInt iRequestType;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    LocUpdateCallBackOpts4() :iCount(0) , iRetStatus(KErrGeneral){;}
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        LocUpdateCallBackOpts4(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral){
+        iTransactionId = transId;
+        iRequestType = req;
+        }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
     };
-  
-   
+
+
 TInt LocUpdateCallBackOpts4 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt aError)
-	{
-    User::After(120000000);
+    {
+    //User::After(120000000);
 
     if(KErrNone == aError)
-    {
- 	TPosition currPos1;
- 	currPos->GetPosition(currPos1);
- 	
-	TBuf8<50> buf;
-	TRealFormat format ;
-	TInt64 aTime1;
-	TTime aTimeStamp1;
-	
-	aTimeStamp1 = currPos1.Time();
-    aTime1 = aTimeStamp1.Int64();
-    buf.Num(aTime1 , format) ;
-    
-    if(aTime1) 
-    	{
-      	OpenFile();
-        LogFile.Write(_L8("Time = "));
-	    LogFile.Write(buf) ;
-	    LogFile.Write(_L8("\n"));
-	    CloseFile();
-	    returnCode = KErrNone;
-     	}
+        {
+        TPosition currPos1;
+        currPos->GetPosition(currPos1);
+
+        TBuf8<50> buf;
+        TRealFormat format ;
+        TInt64 aTime1;
+        TTime aTimeStamp1;
+
+        aTimeStamp1 = currPos1.Time();
+        aTime1 = aTimeStamp1.Int64();
+        buf.Num(aTime1 , format) ;
+
+        if(aTime1) 
+            {
+            OpenFile();
+            LogFile.Write(_L8("Time = "));
+            LogFile.Write(buf) ;
+            LogFile.Write(_L8("\n"));
+            CloseFile();
+            returnCode = KErrNone;
+            }
+        else
+            {
+            OpenFile();
+            LogFile.Write(_L8("\nFailed(No TimeStamp).. "));
+            CloseFile();
+            returnCode = KErrGeneral;
+            }
+        }
+
     else
-    	{
-    	OpenFile();
-        LogFile.Write(_L8("\nFailed(No TimeStamp).. "));
-	    CloseFile();
-	    returnCode = KErrGeneral;
-    	}
-	}
-	
- else
- 	{
- 	OpenFile();
-    LogFile.Write(_L8("\nFailed(HandleNotifyL error).."));
-	CloseFile();
-	returnCode = KErrGeneral;
- 	}
-	 
-  CActiveScheduler *Current = CActiveScheduler :: Current() ;
-  Current->Stop() ;
-  return returnCode ;
-}
+        {
+        OpenFile();
+        LogFile.Write(_L8("\nFailed(HandleNotifyL error).."));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    CActiveScheduler *Current = CActiveScheduler :: Current() ;
+    Current->Stop() ;
+    return returnCode ;
+    }
 
 
 TInt GetLocFunctionOpts4L()
-{
+    {
+    __UHEAP_MARK ;
     TInt ret;
     TPositionInfo aPosition1;  
     TPosition aPos1;
     TPositionUpdateOptions aOptions;
     TTimeIntervalMicroSeconds aTimeOut =  10000000;
-	TTimeIntervalMicroSeconds aInterval = 6000000;
-	TBool aAcceptPartialUpdates = EFalse;
-    
+    TTimeIntervalMicroSeconds aInterval = 6000000;
+    TBool aAcceptPartialUpdates = EFalse;
+
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
+
     if( NULL == CoreObj )
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetPositionAsyncOpts4 Test>\n"));
-	    LogFile.Write(_L8("Failed(Null CoreObj)..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionAsyncOpts4 Test>\n"));
+        LogFile.Write(_L8("Failed(Null CoreObj)..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-		
-    LocUpdateCallBackOpts4 MyUpdates ;
-    
+
+    LocUpdateCallBackOpts4 MyUpdates(30,GETLOCATION) ;
+
     aOptions.SetUpdateTimeOut(aTimeOut);
     aOptions.SetUpdateInterval(aInterval);
     aOptions.SetAcceptPartialUpdates(aAcceptPartialUpdates);
-    
-   	OpenFile();
-	LogFile.Write(_L8("\n<GetPositionAsyncOpts4 test>\n"));
-	CloseFile();
-    ret = CoreObj->GetLocationL(&MyUpdates,0,NULL,&aOptions) ;
+
+    OpenFile();
+    LogFile.Write(_L8("\n<GetPositionAsyncOpts4 test>\n"));
+    CloseFile();
+    TRAP(ret , CoreObj->GetLocationL(&MyUpdates,0,NULL,&aOptions) );
     if( KErrNone == ret)
-    	{
-    	CActiveScheduler :: Start() ;
-	    if( KErrNone == returnCode )
-		    {
-		    CoreObj->GetLocationL(&aPosition1,&aOptions);
-		    aPosition1.GetPosition(aPos1);
-		    
-		   // ValidatePosition(aPos1);
-	
-			/*aRequestorStack.Close();
+        {
+        CActiveScheduler :: Start() ;
+        if( KErrNone == returnCode )
+            {
+            CoreObj->GetLocationL(&aPosition1,&aOptions);
+            aPosition1.GetPosition(aPos1);
+
+            // ValidatePosition(aPos1);
+
+            /*aRequestorStack.Close();
 		    delete identityInfo;*/
-		    delete CoreObj;
-			return returnCode;	
-		    }
-		  else
-		  	{
-		  	/*aRequestorStack.Close();
+            delete CoreObj;
+            __UHEAP_MARKEND ;
+            return returnCode;	
+            }
+        else
+            {
+            /*aRequestorStack.Close();
 		    delete identityInfo;*/
-		    delete CoreObj;
-		  	return returnCode;
-		  	}
-    	}
-    
+            delete CoreObj;
+            __UHEAP_MARKEND ;
+            return returnCode;
+            }
+        }
+
     else
-    	{
-    	/*aRequestorStack.Close();
+        {
+        /*aRequestorStack.Close();
 	    delete identityInfo;*/
-	    delete CoreObj;
-    	return returnCode;
-    	}
-}
+        delete CoreObj;
+        __UHEAP_MARKEND ;
+        return returnCode;
+        }
+    }
 
 
 TInt CSAPILocTest::GetPositionAsyncOpts4( CStifItemParser& /*aItem*/ )
-	{
-    
+    {
+
     TInt aRet = KErrNone;
     returnCode = KErrNone;
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetPositionAsyncOpts4" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     TRAPD(err , aRet = GetLocFunctionOpts4L()) ;
     if( err )
-    returnCode = KErrGeneral; 
-    
+        returnCode = KErrGeneral; 
+
     __UHEAP_MARKEND;
-    
-     return returnCode;  
-	}
+
+    return returnCode;  
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -1233,91 +1350,92 @@ TInt CSAPILocTest::GetPositionAsyncOpts4( CStifItemParser& /*aItem*/ )
 //
 
 TInt GetLocFunctionOpts5L()
-	{
+    {
     TInt ret1,ret2;
     TPositionInfo aPosition1,aPosition2,aPosition3;  
     TPosition aPos1,aPos2,aPos3;
     TPositionUpdateOptions aOptions;
     TTimeIntervalMicroSeconds aTimeOut =  10000000;
-	TTimeIntervalMicroSeconds aInterval = 6000000;
-	TBool aAcceptPartialUpdates = ETrue;
-    
+    TTimeIntervalMicroSeconds aInterval = 6000000;
+    TBool aAcceptPartialUpdates = ETrue;
+    __UHEAP_MARK ;
     CLocationService *CoreObj = CLocationService ::NewL() ;
     if( NULL == CoreObj )
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetPositionAsyncOpts5 Test>\n"));
-	    LogFile.Write(_L8("Failed(CoreObj Creation)..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionAsyncOpts5 Test>\n"));
+        LogFile.Write(_L8("Failed(CoreObj Creation)..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-		
-    LocUpdateCallBackOpts4 MyUpdates1 ;
-    LocUpdateCallBackOpts4 MyUpdates2 ;
-    
+
+    LocUpdateCallBackOpts4 MyUpdates1(32,GETLOCATION) ;
+    LocUpdateCallBackOpts4 MyUpdates2(33,GETLOCATION) ;
+
     aOptions.SetUpdateTimeOut(aTimeOut);
     aOptions.SetUpdateInterval(aInterval);
     aOptions.SetAcceptPartialUpdates(aAcceptPartialUpdates);
-    
-   	OpenFile();
-	LogFile.Write(_L8("\n<GetPositionAsyncOpts5 test>\n"));
-	CloseFile();
-	
-	ret1 = CoreObj->GetLocationL(&MyUpdates1) ;
-    
-    ret2 = CoreObj->GetLocationL(&MyUpdates2) ;
-    
-    if( KErrNone == ret1 && KErrInUse == ret2 )
-    	{
-    	TBuf8<20> retBuf;
-    	TRealFormat retFormat;
-    	
-    	CActiveScheduler :: Start() ;
-		
-		OpenFile();
-		LogFile.Write(_L8("\nreturnCode : "));
-		LogFile.Write(retBuf);
-		CloseFile();
-		}
-    
+
+    OpenFile();
+    LogFile.Write(_L8("\n<GetPositionAsyncOpts5 test>\n"));
+    CloseFile();
+
+    TRAP(ret1 ,CoreObj->GetLocationL(&MyUpdates1) );
+
+    TRAP(ret2, CoreObj->GetLocationL(&MyUpdates2)) ;
+
+    if( KErrNone == ret1 && KErrNone == ret2 )
+        {
+        TBuf8<20> retBuf;
+        TRealFormat retFormat;
+
+        CActiveScheduler :: Start() ;
+
+        OpenFile();
+        LogFile.Write(_L8("\nreturnCode : "));
+        LogFile.Write(retBuf);
+        CloseFile();
+        }
+
     else
-    	{
-    	returnCode = KErrGeneral;	
-    	}
+        {
+        returnCode = KErrGeneral;	
+        }
     //aRequestorStack.Close();
-    
+
     delete CoreObj;
+    __UHEAP_MARKEND ;
     return 0;
-	}
+    }
 
 
 TInt CSAPILocTest::GetPositionAsyncOpts5( CStifItemParser& /*aItem*/ )
-	{
-     TInt aRet = KErrNone;
-     returnCode = KErrNone;
-     // Print to UI
-     _LIT( KSAPILocTest, "SAPILocTest" );
-     _LIT( KExample, "GetPositionAsyncOpts5" );
-     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-     __UHEAP_MARK;
-   
+    {
+    TInt aRet = KErrNone;
+    returnCode = KErrNone;
+    // Print to UI
+    _LIT( KSAPILocTest, "SAPILocTest" );
+    _LIT( KExample, "GetPositionAsyncOpts5" );
+    TestModuleIf().Printf( 0, KSAPILocTest, KExample );
+
+    __UHEAP_MARK;
+
     TRAPD(err ,aRet =  GetLocFunctionOpts5L()) ;
     if( err || aRet )
-    returnCode = KErrGeneral;
-   
+        returnCode = KErrGeneral;
+
     __UHEAP_MARKEND;
-   
+
     return returnCode;  
-	}
+    }
 
 
 
@@ -1326,94 +1444,96 @@ TInt CSAPILocTest::GetPositionAsyncOpts5( CStifItemParser& /*aItem*/ )
 // -----------------------------------------------------------------------------
 //
 TInt GetLocFunctionOpts6L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt aRet,aRet1;
     TPosition aPosition1;  
     TPositionUpdateOptions aOptions;
     TTimeIntervalMicroSeconds aTimeOut =  60000000;
-	TTimeIntervalMicroSeconds aInterval = 6000000;
-	TBool aAcceptPartialUpdates = ETrue;
-    
+    TTimeIntervalMicroSeconds aInterval = 6000000;
+    TBool aAcceptPartialUpdates = ETrue;
+
     CLocationService *CoreObj = CLocationService ::NewL() ;
     if( NULL == CoreObj )
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetPositionAsyncOpts6 Test>\n"));
-	    LogFile.Write(_L8("Failed(Null CoreObj)..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-   
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionAsyncOpts6 Test>\n"));
+        LogFile.Write(_L8("Failed(Null CoreObj)..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-				
-    LocUpdateCallBackOpts2 MyUpdates ;
-    
+
+    LocUpdateCallBackOpts2 MyUpdates(13,GETLOCATION) ;
+
     aOptions.SetUpdateTimeOut(aTimeOut);
     aOptions.SetUpdateInterval(aInterval);
     aOptions.SetAcceptPartialUpdates(aAcceptPartialUpdates);
-    
-    aRet = CoreObj->GetLocationL(&MyUpdates) ;
-    
+
+    TRAP(aRet , CoreObj->GetLocationL(&MyUpdates) );
+
     if( KErrNone == aRet )
-    	{
-    	aRet1 = CoreObj->CancelOnGoingService(0);
-    	if( KErrNone == aRet1 )
-    		{
-    	    TBuf8<20> retBuf;
-    	    TRealFormat retFormat;
-    	    aRet = CoreObj->GetLocationL(&MyUpdates) ;
-    	    if( KErrNone == aRet)
-    	    OpenFile();
-		 	LogFile.Write(_L8("\n<GetPositionAsyncOpts6 test>\n"));
-    	 	CloseFile();
-    	    CActiveScheduler :: Start() ;
-    		retBuf.Num(returnCode,retFormat);
-    		OpenFile();
-    		LogFile.Write(_L8("\nreturnCode : "));
-    		LogFile.Write(retBuf);
-    		CloseFile();
-    		}
-    	else
-    		{
-    		returnCode = KErrGeneral;
-    		}
-    	}
+        {
+        aRet1 = CoreObj->CancelOnGoingService(0);
+        if( KErrNone == aRet1 )
+            {
+            TBuf8<20> retBuf;
+            TRealFormat retFormat;
+            TRAP(aRet ,CoreObj->GetLocationL(&MyUpdates)) ;
+            if( KErrNone == aRet)
+                OpenFile();
+            LogFile.Write(_L8("\n<GetPositionAsyncOpts6 test>\n"));
+            CloseFile();
+            CActiveScheduler :: Start() ;
+            retBuf.Num(returnCode,retFormat);
+            OpenFile();
+            LogFile.Write(_L8("\nreturnCode : "));
+            LogFile.Write(retBuf);
+            CloseFile();
+            }
+        else
+            {
+            returnCode = KErrGeneral;
+            }
+        }
     else
-    	{
-    	returnCode = KErrGeneral;	
-    	}
-    
+        {
+        returnCode = KErrGeneral;	
+        }
+
     //aRequestorStack.Close();
-	
-	delete CoreObj;
+
+    delete CoreObj;
+    __UHEAP_MARKEND ;
     return 0;
-	}
+    }
 
 
 TInt CSAPILocTest::GetPositionAsyncOpts6( CStifItemParser& /*aItem*/ )
-	{
+    {
     TInt aRet = KErrNone;
     returnCode = KErrNone;
-   
+
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetPositionAsyncOpts6" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     TRAPD(err , aRet = GetLocFunctionOpts6L()) ;
-    
+
     __UHEAP_MARKEND;
-   
+
     return returnCode;  
-	}
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -1422,111 +1542,133 @@ TInt CSAPILocTest::GetPositionAsyncOpts6( CStifItemParser& /*aItem*/ )
 //
 
 class TraceLCallBack : public MLocationCallBack
-	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
+    TInt iRequestType;
+    TInt iTransactionId;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    TraceLCallBack() :iCount(0) , iRetStatus(KErrGeneral){;}
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        TraceLCallBack(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral){
+        iTransactionId = transId;
+        iRequestType = req;
+        }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
     };
-  
-  
-  
+
+
+
 TInt TraceLCallBack :: HandleNotifyL(HPositionGenericInfo* currPos , TInt aError)
-	{
-//	User::After(60000000);
-	if(KErrNone == aError && iCount<2)
-		{
-		TPosition currPos1;
-		currPos->GetPosition(currPos1);
-	//	ValidatePosition(currPos1);
-	    iCount++;	 
-		}
-	 else
-	 	{
-	 	 CActiveScheduler *Current = CActiveScheduler :: Current() ;
-	  	 Current->Stop() ;
-	  	// returnCode = KErrNone;
-	  	}
-	 return returnCode;
-	 }
-	 
+    {
+    //	User::After(60000000);
+    if(KErrNone == aError && iCount<2)
+        {
+        TPosition currPos1;
+        currPos->GetPosition(currPos1);
+        //	ValidatePosition(currPos1);
+        iCount++;	 
+        }
+    else
+        {
+        CActiveScheduler *Current = CActiveScheduler :: Current() ;
+        Current->Stop() ;
+        // returnCode = KErrNone;
+        }
+    return returnCode;
+    }
+
 
 TInt TraceLFunctionL()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret;
     TPosition aPosition1;  
-    
+
     CLocationService *CoreObj = CLocationService ::NewL() ;
     if( NULL == CoreObj )
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<TraceLPosition Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<TraceLPosition Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-		
-    TraceLCallBack MyUpdates ;
-    
-    ret = CoreObj->TraceL(&MyUpdates) ;
+
+    TraceLCallBack MyUpdates(14,TRACE) ;
+
+    TRAP(ret, CoreObj->TraceL(&MyUpdates) );
     if( KErrNone == ret)
-    	{
+        {
         TBuf8<20> retBuf;
         TRealFormat retFormat;
-        
+
         OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPosition test>\n"));
-	 	CloseFile();
+        LogFile.Write(_L8("\n<TraceLPosition test>\n"));
+        CloseFile();
         CActiveScheduler :: Start() ;
-		
-		retBuf.Num(returnCode,retFormat);
-		OpenFile();
-		LogFile.Write(_L8("\nreturnCode : "));
-		LogFile.Write(retBuf);
-		CloseFile();
-		}
+
+        retBuf.Num(returnCode,retFormat);
+        OpenFile();
+        LogFile.Write(_L8("\nreturnCode : "));
+        LogFile.Write(retBuf);
+        CloseFile();
+        }
     else
-    	{
-    	returnCode = KErrGeneral;	
-    	}
-    
- 	//aRequestorStack.Close();
-    
+        {
+        returnCode = KErrGeneral;	
+        }
+
+    //aRequestorStack.Close();
+
     delete CoreObj;
-	return 0;
-	}	
+    __UHEAP_MARKEND ;
+    return 0;
+    }	
 
 
 TInt CSAPILocTest::TraceLPosition( CStifItemParser& /*aItem*/ )
-	{
+    {
     TInt aRet = KErrNone;
     returnCode = KErrNone;
-   
+
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "TraceLPosition" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     TRAPD(err ,aRet = TraceLFunctionL() ) ;
-    
+
     if( err || aRet )
-    returnCode = KErrGeneral;
-    
+        returnCode = KErrGeneral;
+
     __UHEAP_MARKEND;
-  
-     return returnCode;  
-	}
+
+    return returnCode;  
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -1534,83 +1676,84 @@ TInt CSAPILocTest::TraceLPosition( CStifItemParser& /*aItem*/ )
 // -----------------------------------------------------------------------------
 //
 TInt TraceLFunction1L()
-	{
+    {
     TInt ret1,ret2;
     TPosition aPosition1;  
-    
+    __UHEAP_MARK ;
     CLocationService *CoreObj = CLocationService ::NewL() ;
     if( NULL == CoreObj )
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<TraceLPosition1 Test>\n"));
-	    LogFile.Write(_L8("Failed(Null CoreObj)..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<TraceLPosition1 Test>\n"));
+        LogFile.Write(_L8("Failed(Null CoreObj)..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-		
-    TraceLCallBack MyUpdates ;
-    
-    ret1 = CoreObj->TraceL(&MyUpdates) ;
-    ret2 = CoreObj->TraceL(&MyUpdates) ;
-    
-    if( KErrNone == ret1 && KErrInUse == ret2)
-    	{
+
+    TraceLCallBack MyUpdates(15,TRACE) ;
+
+    TRAP(ret1, CoreObj->TraceL(&MyUpdates)) ;
+    TRAP(ret2 , CoreObj->TraceL(&MyUpdates) );
+
+    if( KErrNone == ret1 && KErrNone == ret2)
+        {
         TBuf8<20> retBuf;
         TRealFormat retFormat;
-        
+
         OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPosition1 test>\n"));
-	 	CloseFile();
-        
+        LogFile.Write(_L8("\n<TraceLPosition1 test>\n"));
+        CloseFile();
+
         CActiveScheduler :: Start() ;
-		
-		retBuf.Num(returnCode,retFormat);
-		OpenFile();
-		LogFile.Write(_L8("\nreturnCode : "));
-		LogFile.Write(retBuf);
-		CloseFile();
-		}
-    
+
+        retBuf.Num(returnCode,retFormat);
+        OpenFile();
+        LogFile.Write(_L8("\nreturnCode : "));
+        LogFile.Write(retBuf);
+        CloseFile();
+        }
+
     else
-      	{
-    	returnCode = KErrGeneral;	
-    	}
+        {
+        returnCode = KErrGeneral;	
+        }
     //aRequestorStack.Close();
-    
+
     delete CoreObj;
+    __UHEAP_MARKEND ;
     return 0;
-	}
+    }
 
 
 TInt CSAPILocTest::TraceLPosition1( CStifItemParser& /*aItem*/ )
-	{
-     TInt aRet = KErrNone;
-     returnCode = KErrNone;
-     
+    {
+    TInt aRet = KErrNone;
+    returnCode = KErrNone;
+
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "TraceLPosition1" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     TRAPD(err ,aRet = TraceLFunction1L()) ;
-    
+
     if( err || aRet )
-    returnCode = KErrGeneral;
-    
+        returnCode = KErrGeneral;
+
     __UHEAP_MARKEND;
-    
-     return returnCode;  
-	}
+
+    return returnCode;  
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -1619,146 +1762,167 @@ TInt CSAPILocTest::TraceLPosition1( CStifItemParser& /*aItem*/ )
 //
 
 class TraceLCallBack2 : public MLocationCallBack
-	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
+    TInt iRequestType;
+    TInt iTransactionId;
     CLocationService *CoreObj;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    TraceLCallBack2(CLocationService* LocObj,TInt count = 0,TInt status = KErrGeneral)
-   		{
-   	    iCount = count;
-   	    iRetStatus = status;
-   	    CoreObj = LocObj;	
-   		}
- 	};
-  
-  
-  
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        TraceLCallBack2(TInt transId,TInt req,CLocationService* LocObj,TInt count = 0,TInt status = KErrGeneral)
+            {
+            iRequestType = req;
+            iCount = count;
+            iTransactionId = transId;
+            iRetStatus = status;
+            CoreObj = LocObj;	
+            }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+    };
+
+
+
 TInt TraceLCallBack2 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt aError)
-	{
-//	 User::After(60000000);
-	 TInt aRet1;
-	 if(KErrNone == aError && iCount<2)
-	 	{
-	  	TBuf8<20> retBuf;
+    {
+    //	 User::After(60000000);
+    TInt aRet1;
+    if(iCount<2)
+        {
+        TBuf8<20> retBuf;
         TRealFormat retFormat;
         retBuf.Num(aError,retFormat);
-        
+
         OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPosition2 HandleNotifyL>\n"));
-	 	LogFile.Write(retBuf);
-	 	CloseFile();
-	  	TPosition currPos1;
-	  	currPos->GetPosition(currPos1);
-	  //	ValidatePosition(currPos1);
-    	iCount++;	 
-	 	
-	 	}
-		
-     else
-	 	{
-	 	aRet1 = CoreObj->CancelOnGoingService(1);
-    		TBuf8<20> retBuf;
+        LogFile.Write(_L8("\n<TraceLPosition2 HandleNotifyL>\n"));
+        LogFile.Write(retBuf);
+        CloseFile();
+        TPosition currPos1;
+        currPos->GetPosition(currPos1);
+        //	ValidatePosition(currPos1);
+        iCount++;	 
+
+        }
+
+    else
+        {
+        aRet1 = CoreObj->CancelOnGoingService(1);
+        TBuf8<20> retBuf;
         TRealFormat retFormat;
         retBuf.Num(aRet1,retFormat);
-        
+
         OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPosition2 CancelOnGoingService>\n"));
-	 	LogFile.Write(retBuf);
-	 	CloseFile();
-    	if( KErrNone == aRet1 )
-    		{
-    		returnCode = KErrNone;
-    		CActiveScheduler *Current = CActiveScheduler :: Current() ;
-	  	    Current->Stop() ;
-       		}
-    	else
-    		{
-    		returnCode = KErrGeneral;
-    		CActiveScheduler *Current = CActiveScheduler :: Current() ;
-	  	    Current->Stop() ;
-    		}
-    			
-	 	}
-	return KErrNone; 
-	}
+        LogFile.Write(_L8("\n<TraceLPosition2 CancelOnGoingService>\n"));
+        LogFile.Write(retBuf);
+        CloseFile();
+        if( KErrNone == aRet1 )
+            {
+            returnCode = KErrNone;
+            CActiveScheduler *Current = CActiveScheduler :: Current() ;
+            Current->Stop() ;
+            }
+        else
+            {
+            returnCode = KErrGeneral;
+            CActiveScheduler *Current = CActiveScheduler :: Current() ;
+            Current->Stop() ;
+            }
+
+        }
+    return KErrNone; 
+    }
 
 
 TInt TraceLFunction2L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret;
     TPosition aPosition1;  
-    
+
     CLocationService *CoreObj = CLocationService ::NewL() ;
     if( NULL == CoreObj )
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<TraceLPosition2 Test>\n"));
-	    LogFile.Write(_L8("Failed(CoreObj Creation)..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<TraceLPosition2 Test>\n"));
+        LogFile.Write(_L8("Failed(CoreObj Creation)..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
     //not needed any more
-	
-	/*RRequestorStack aRequestorStack;
+
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-		
-    TraceLCallBack2 MyUpdates(CoreObj) ;
-    
-    ret = CoreObj->TraceL(&MyUpdates) ;
-    
+
+    TraceLCallBack2 MyUpdates(16,TRACE,CoreObj) ;
+
+    TRAP(ret,CoreObj->TraceL(&MyUpdates) );
+
     if( KErrNone == ret)
-    	{
+        {
         TBuf8<20> retBuf;
         TRealFormat retFormat;
         OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPosition2 test>\n"));
-	 	CloseFile();
+        LogFile.Write(_L8("\n<TraceLPosition2 test>\n"));
+        CloseFile();
         CActiveScheduler :: Start() ;
         retBuf.Num(returnCode,retFormat);
         OpenFile();
         LogFile.Write(_L8("\nreturnCode : "));
         LogFile.Write(retBuf);
         CloseFile();
-		}
+        }
     else
-    	{
-    	returnCode = KErrGeneral;	
-    	}
-    	
+        {
+        returnCode = KErrGeneral;	
+        }
+
     //aRequestorStack.Close();
-	
-	delete CoreObj;
+
+    delete CoreObj;
+    __UHEAP_MARKEND ;
     return 0;
-	}
+    }
 
 
 TInt CSAPILocTest::TraceLPosition2( CStifItemParser& /*aItem*/ )
-	{
+    {
     TInt aRet = KErrNone;
     returnCode = KErrNone; 
-   
+
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "TraceLPosition2" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     TRAPD(err , aRet = TraceLFunction2L()) ;
     if( err || aRet )
-    returnCode = KErrGeneral;
-    
-     __UHEAP_MARKEND;
-    
-     return returnCode;  
-	}
+        returnCode = KErrGeneral;
+
+    __UHEAP_MARKEND;
+
+    return returnCode;  
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -1766,219 +1930,242 @@ TInt CSAPILocTest::TraceLPosition2( CStifItemParser& /*aItem*/ )
 // -----------------------------------------------------------------------------
 //
 TInt TraceLFunction3L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret1,ret2,ret3;
     TPosition aPosition1;  
-    
+
     CLocationService *CoreObj = CLocationService ::NewL() ;
     if( NULL == CoreObj )
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<TraceLPosition3 Test>\n"));
-	    LogFile.Write(_L8("Failed(Null CoreObj)..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-   	
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<TraceLPosition3 Test>\n"));
+        LogFile.Write(_L8("Failed(Null CoreObj)..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
     //not needed any more
-	
-	/*RRequestorStack aRequestorStack;
+
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-			
-    TraceLCallBack MyUpdates ;
-    
-    ret1 = CoreObj->TraceL(&MyUpdates) ;
-    
-    ret2 = CoreObj->TraceL(&MyUpdates) ;
-    
-    if( KErrNone == ret1 && KErrInUse == ret2)
-    	{
+
+    TraceLCallBack MyUpdates(31,TRACE) ;
+
+    TRAP(ret1 , CoreObj->TraceL(&MyUpdates) );
+
+    // ret2 = CoreObj->TraceL(&MyUpdates) ;
+
+    if( KErrNone == ret1 )
+        {
         ret3 = CoreObj->CancelOnGoingService(1);
-        
+
         if( KErrNone == ret3 )
             {
-        	TBuf8<20> retBuf;
-        	TRealFormat retFormat;
-        	OpenFile();
-		 	LogFile.Write(_L8("\n<TraceLPosition3 test>\n"));
-		 	CloseFile();
-		 	ret1 = CoreObj->TraceL(&MyUpdates) ;
-		 	if(KErrNone == ret1)
-	        CActiveScheduler :: Start() ;
-        	retBuf.Num(returnCode,retFormat);
-			OpenFile();
-			LogFile.Write(_L8("\nreturnCode : "));
-			LogFile.Write(retBuf);
-			CloseFile();
-			}
+            TBuf8<20> retBuf;
+            TRealFormat retFormat;
+            OpenFile();
+            LogFile.Write(_L8("\n<TraceLPosition3 test>\n"));
+            CloseFile();
+            TRAP(ret1 , CoreObj->TraceL(&MyUpdates) );
+            if(KErrNone == ret1)
+                CActiveScheduler :: Start() ;
+            retBuf.Num(returnCode,retFormat);
+            OpenFile();
+            LogFile.Write(_L8("\nreturnCode : "));
+            LogFile.Write(retBuf);
+            CloseFile();
+            }
         else
-        	{
-        	returnCode = KErrGeneral;
-        	}
-    	}
-    
+            {
+            returnCode = KErrGeneral;
+            }
+        }
+
     else
-   		{
-		returnCode = KErrGeneral;
-   		}
-	
+        {
+        returnCode = KErrGeneral;
+        }
+
     //aRequestorStack.Close();
-    
+
     delete CoreObj;
-	return KErrNone;
-	}
+    __UHEAP_MARKEND ;
+    return KErrNone;
+    }
 
 
 TInt CSAPILocTest::TraceLPosition3( CStifItemParser& /*aItem*/ )
-	{
+    {
     TInt aRet = KErrNone;
     returnCode = KErrNone;
-    
+
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "TraceLPosition3" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     TRAPD(err , aRet = TraceLFunction3L()) ;
     if( err || aRet )
-      returnCode = KErrGeneral;
-   
+        returnCode = KErrGeneral;
+
     __UHEAP_MARKEND;
-    
+
     return returnCode;  
-	}
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::TraceLPosition4
 // -----------------------------------------------------------------------------
 //
 class TraceLCallBack4 : public MLocationCallBack
-	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
     TInt iCallIdentity;
+    TInt iRequestType;
+    TInt iTransactionId;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    TraceLCallBack4(TInt identity, TInt count = 0 , TInt status = KErrGeneral)
-   		{
-   		iCallIdentity = identity;
-   		iCount = count;
-        iRetStatus = status;  
-   		}
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        TraceLCallBack4(TInt transId,TInt req,TInt identity, TInt count = 0 , TInt status = KErrGeneral)
+            {
+            iTransactionId = transId;
+            iRequestType = req;
+            iCallIdentity = identity;
+            iCount = count;
+            iRetStatus = status;  
+            }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
     };
- 
-  
+
+
 TInt TraceLCallBack4 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt aError)
-	{
-	  if(iCallIdentity == 1 && KErrNone == aError )
-	  	{
-	  	TPosition currPos1;
-	  	currPos->GetPosition(currPos1);
-	//  	ValidatePosition(currPos1);
-    //  	returnCode = KErrNone ;
-	  	}
-	  else if(KErrNone == aError && iCount<2)
-	  	{
-		 TPosition currPos1;
-		 currPos->GetPosition(currPos1);
-	//	 ValidatePosition(currPos1);
-	     iCount++;	 
-	  	}
-			
-  	  else if(iCount>=2)
-	  	{
-		CActiveScheduler *Current = CActiveScheduler :: Current() ;
-  	    Current->Stop() ;
-  	    returnCode = KErrNone; 
-	  	}
-	  else
-	  	{
-	  	returnCode = KErrGeneral;	
-	  	}
-	  	
-	return returnCode;
-	}
-	
+    {
+    if(iCallIdentity == 1 && KErrNone == aError )
+        {
+        TPosition currPos1;
+        currPos->GetPosition(currPos1);
+        //  	ValidatePosition(currPos1);
+        //  	returnCode = KErrNone ;
+        }
+    else if(KErrNone == aError && iCount<2)
+        {
+        TPosition currPos1;
+        currPos->GetPosition(currPos1);
+        //	 ValidatePosition(currPos1);
+        iCount++;	 
+        }
+
+    else if(iCount>=2)
+        {
+        CActiveScheduler *Current = CActiveScheduler :: Current() ;
+        Current->Stop() ;
+        returnCode = KErrNone; 
+        }
+    else
+        {
+        returnCode = KErrGeneral;	
+        }
+
+    return returnCode;
+    }
+
 TInt TraceLFunction4L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret1,ret2;
     TPosition aPosition1;  
-    
+
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
-    TraceLCallBack4 MyUpdates1(1) ;
-    
-    TraceLCallBack4 MyUpdates2(2) ;
-    
+
+    TraceLCallBack4 MyUpdates1(17,GETLOCATION,1) ;
+
+    TraceLCallBack4 MyUpdates2(18,TRACE,2) ;
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
     //not needed any more
-	
-	/*RRequestorStack aRequestorStack;
+
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-		
-    ret1 = CoreObj->GetLocationL(&MyUpdates1) ;
-    
-    ret2 = CoreObj->TraceL(&MyUpdates2) ;
-    
-    
+
+    TRAP(ret1 , CoreObj->GetLocationL(&MyUpdates1) );
+
+    TRAP(ret2 , CoreObj->TraceL(&MyUpdates2) );
+
+
     if( KErrNone == ret1 && KErrNone == ret2)
-    	{
-       	TBuf8<50> buf ;
-		TRealFormat format ;
-		
-       	OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPosition4 test>\n"));
-	 	CActiveScheduler :: Start() ;
-    	
-	    //Logging returnCode 
-		buf.Num(returnCode , format) ;
-		LogFile.Write(_L8("returnCode = "));
-		LogFile.Write(buf) ;
-		LogFile.Write(_L8("\n")) ;
-	    CloseFile();
-	    }
+        {
+        TBuf8<50> buf ;
+        TRealFormat format ;
+
+        OpenFile();
+        LogFile.Write(_L8("\n<TraceLPosition4 test>\n"));
+        CActiveScheduler :: Start() ;
+
+        //Logging returnCode 
+        buf.Num(returnCode , format) ;
+        LogFile.Write(_L8("returnCode = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+        }
     else
-    	{
-      	returnCode = KErrGeneral;
-    	}
+        {
+        returnCode = KErrGeneral;
+        }
     //aRequestorStack.Close();
-	
-	delete CoreObj;
+
+    delete CoreObj;
+    __UHEAP_MARKEND ;
     return KErrNone;
-        
-	}
+
+    }
 
 
 
 TInt CSAPILocTest::TraceLPosition4( CStifItemParser& /*aItem*/ )
-	{
+    {
     TInt aRet = KErrNone;
     returnCode = KErrNone;
-    
+
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "TraceLPosition4" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     TRAPD(err ,aRet = TraceLFunction4L()) ;
     if( err || aRet )
-    returnCode = KErrGeneral;
-    
+        returnCode = KErrGeneral;
+
     __UHEAP_MARKEND;
-    
-     return returnCode;  
-	}
+
+    return returnCode;  
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -1987,172 +2174,214 @@ TInt CSAPILocTest::TraceLPosition4( CStifItemParser& /*aItem*/ )
 //
 
 class CTraceLCallBack5 : public CBase , public MLocationCallBack 
-	{
-   TInt iCount ;
-   TInt iRetStatus ;
-   CLocationService *CoreObj;
-   CTraceLCallBack5* iSelf;  
-   public :
-   TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-   CTraceLCallBack5(CLocationService* LocObj,TInt count = 0,TInt status = KErrGeneral)
-   		{
-   	    iCount = count;
-   	    iRetStatus = status;
-   	    CoreObj = LocObj;	
-   		}
-   
-   virtual ~CTraceLCallBack5();
-   static CTraceLCallBack5* NewL(CLocationService*) ;
- 	};
-  
- CTraceLCallBack5* CTraceLCallBack5 :: NewL(CLocationService* obj)
- 	{
- 	CTraceLCallBack5* temp = new(ELeave) CTraceLCallBack5(obj);
- 	temp->iSelf = temp;
- 	return temp;
- 	}
- 
- CTraceLCallBack5 :: ~CTraceLCallBack5()
- 	{
-  	delete (this->CoreObj);
-  	}
-  
-TInt CTraceLCallBack5 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt aError)
-	{
-	 User::After(30000000);
-	 TInt aRet1;
-	 if(KErrNone == aError && iCount<2)
-	 	{
-	    TPosition currPos1;
-	    currPos->GetPosition(currPos1);
-	    ValidatePosition(currPos1);
-        iCount++;	 
-	 	}
-		
-     else
-	 	{
-	   	aRet1 = CoreObj->CancelOnGoingService(1);
-    	if( KErrNone == aRet1 )
-    		{	
-    		returnCode = KErrNone;
-    		delete this;
-    		CActiveScheduler *Current = CActiveScheduler :: Current() ;
-    		Current->Stop() ;
-       		}
-    	else
-    		{
-    		returnCode = KErrGeneral;
-       		delete this;
-       		CActiveScheduler *Current = CActiveScheduler :: Current() ;
-    		Current->Stop() ;
-       		}	
-	 	}
-	
-	return KErrNone; 
-	}
-	
-class LocUpdateCallBack5 : public MLocationCallBack
- 	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
+    CLocationService *CoreObj;
+    CTraceLCallBack5* iSelf;  
+    TInt iRequestType;
+    TInt iTransactionId;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    LocUpdateCallBack5() :iCount(0) , iRetStatus(KErrGeneral){;}
-  	};
-  
-    
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        CTraceLCallBack5(TInt transId,TInt req,CLocationService* LocObj,TInt count = 0,TInt status = KErrGeneral)
+            {
+            iTransactionId = transId;
+            iRequestType = req;
+            iCount = count;
+            iRetStatus = status;
+            CoreObj = LocObj;	
+            }
+
+        virtual ~CTraceLCallBack5();
+        static CTraceLCallBack5* NewL(TInt aTransId,TInt req,CLocationService*) ;
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+    };
+
+CTraceLCallBack5* CTraceLCallBack5 :: NewL(TInt aTransId,TInt req,CLocationService* obj)
+    {
+    CTraceLCallBack5* temp = new(ELeave) CTraceLCallBack5(aTransId,req,obj);
+    temp->iSelf = temp;
+    return temp;
+    }
+
+CTraceLCallBack5 :: ~CTraceLCallBack5()
+    {
+    delete (this->CoreObj);
+    this->CoreObj = NULL;
+    }
+
+TInt CTraceLCallBack5 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt aError)
+    {
+    // User::After(30000000);
+    TInt aRet1;
+    if(KErrNone == aError && iCount<2)
+        {
+        TPosition currPos1;
+        currPos->GetPosition(currPos1);
+        ValidatePosition(currPos1);
+        iCount++;	 
+        }
+
+    else
+        {
+        aRet1 = CoreObj->CancelOnGoingService(1);
+        if( KErrNone == aRet1 )
+            {	
+            returnCode = KErrNone;
+            delete this;
+            CActiveScheduler *Current = CActiveScheduler :: Current() ;
+            Current->Stop() ;
+            }
+        else
+            {
+            returnCode = KErrGeneral;
+            delete this;
+            CActiveScheduler *Current = CActiveScheduler :: Current() ;
+            Current->Stop() ;
+            }	
+        }
+
+    return KErrNone; 
+    }
+
+class LocUpdateCallBack5 : public MLocationCallBack
+    {
+    TInt iCount ;
+    TInt iRetStatus ;
+    TInt iRequestType;
+    TInt iTransactionId;
+    public :
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        LocUpdateCallBack5(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral){
+        iTransactionId = transId;
+        iRequestType = req;
+        }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+    };
+
+
 TInt LocUpdateCallBack5 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt /*aError*/)
-	{
-	  
-	 TInt aRet;
-	 TPosition currPos1;
-	 currPos->GetPosition(currPos1);
-	 aRet = ValidatePosition(currPos1);
-     
-     if ( KErrNone == aRet )
-     	{
-      	TPosition aPosition2;  
-	    CLocationService *CoreObj1 = CLocationService ::NewL() ;
-	    
-	    _LIT(Kidentity ,"Coreclass Testing" ) ;
-		//not needed any more
-		/*RRequestorStack aRequestorStack;
+    {
+
+    TInt aRet;
+    TPosition currPos1;
+    currPos->GetPosition(currPos1);
+    aRet = ValidatePosition(currPos1);
+
+    if ( KErrNone == aRet )
+        {
+        TPosition aPosition2;  
+        CLocationService *CoreObj1 = CLocationService ::NewL() ;
+
+        _LIT(Kidentity ,"Coreclass Testing" ) ;
+        //not needed any more
+        /*RRequestorStack aRequestorStack;
 		const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
 	    aRequestorStack.Insert(identityInfo,0);
-	    
+
 	    CoreObj1->SetRequestorIdentityL(aRequestorStack) ;*/
-		
-	    CTraceLCallBack5 *MyUpdates2 = CTraceLCallBack5::NewL(CoreObj1);
-	    
-	    CoreObj1->TraceL(MyUpdates2) ;
-	    
-	    //aRequestorStack.Close();
-		
-	    }
-     return KErrNone ;
-	}
+
+        CTraceLCallBack5 *MyUpdates2 = CTraceLCallBack5::NewL(18,TRACE,CoreObj1);
+
+        CoreObj1->TraceL(MyUpdates2) ;
+
+        //aRequestorStack.Close();
+
+        }
+    return KErrNone ;
+    }
 
 
 TInt TraceLFunction5L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret1;
     TPosition aPosition1;  
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    LocUpdateCallBack5 MyUpdates1 ;
-    
+    LocUpdateCallBack5 MyUpdates1(28,GETLOCATION) ;
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-		
-    ret1 = CoreObj->GetLocationL(&MyUpdates1) ;
-    
+
+    TRAP(ret1 ,CoreObj->GetLocationL(&MyUpdates1) );
+
     if( KErrNone == ret1)
-    	{
-       	TBuf8<20> retBuf;
-       	TRealFormat retFormat;
-       	OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPosition5 test>\n"));
-	 	CloseFile();
-	 	CActiveScheduler :: Start() ;
-    	retBuf.Num(returnCode,retFormat);
-    	OpenFile();
-    	LogFile.Write(_L8("\nreturn code : "));
-    	LogFile.Write(retBuf);
-    	CloseFile();
-    	}
+        {
+        TBuf8<20> retBuf;
+        TRealFormat retFormat;
+        OpenFile();
+        LogFile.Write(_L8("\n<TraceLPosition5 test>\n"));
+        CloseFile();
+        CActiveScheduler :: Start() ;
+        retBuf.Num(returnCode,retFormat);
+        OpenFile();
+        LogFile.Write(_L8("\nreturn code : "));
+        LogFile.Write(retBuf);
+        CloseFile();
+        }
     else
-    	{
-      	returnCode = KErrGeneral;
-    	}
-    
+        {
+        returnCode = KErrGeneral;
+        }
+
     //aRequestorStack.Close();
-	
-	delete CoreObj;
+
+    delete CoreObj;
+    __UHEAP_MARKEND ;
     return KErrNone;
-	}
+    }
 
 TInt CSAPILocTest::TraceLPosition5( CStifItemParser& /*aItem*/ )
-	{
+    {
     returnCode = KErrNone;
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "TraceLPosition5" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     TRAPD(err , TraceLFunction5L()) ;
     if(err)
-    returnCode = KErrGeneral;
-    
-     __UHEAP_MARKEND;
-  
-     return returnCode;  
-	}
+        returnCode = KErrGeneral;
+
+    __UHEAP_MARKEND;
+
+    return returnCode;  
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::TraceLPosition6
@@ -2160,594 +2389,757 @@ TInt CSAPILocTest::TraceLPosition5( CStifItemParser& /*aItem*/ )
 //
 
 class CLocUpdateCallBack6 : public CBase , public MLocationCallBack
-	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
     CLocUpdateCallBack6* iSelf;
     CLocationService *CoreObj;
+    TInt iTransactionId;
+    TInt iRequestType;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    CLocUpdateCallBack6(CLocationService* LocObj,TInt count = 0,TInt status = KErrGeneral) 
-   		{
-    	iCount = count;
-   	    iRetStatus = status;
-   	 	CoreObj = LocObj;	
-   		}
-    static CLocUpdateCallBack6* NewL(CLocationService* obj);
-    virtual ~CLocUpdateCallBack6();
-  	};
-  
- CLocUpdateCallBack6* CLocUpdateCallBack6 :: NewL(CLocationService* obj)
- 	{
- 	CLocUpdateCallBack6* temp = new(ELeave) CLocUpdateCallBack6(obj);
- 	temp->iSelf = temp;
- 	return temp;
- 	}
- 
- CLocUpdateCallBack6 :: ~CLocUpdateCallBack6()
-	 {
- 	 delete (this->CoreObj);
- 	 }
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        CLocUpdateCallBack6(TInt transId,TInt req,CLocationService* LocObj,TInt count = 0,TInt status = KErrGeneral) 
+            {
+            iCount = count;
+            iRetStatus = status;
+            CoreObj = LocObj;
+            iTransactionId =transId;
+            iRequestType = req;
+            }
+        static CLocUpdateCallBack6* NewL(TInt transid,TInt req,CLocationService* obj);
+        virtual ~CLocUpdateCallBack6();
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+
+    };
+
+CLocUpdateCallBack6* CLocUpdateCallBack6 :: NewL(TInt transid,TInt req,CLocationService* obj)
+    {
+    CLocUpdateCallBack6* temp = new(ELeave) CLocUpdateCallBack6(transid,req,obj);
+    temp->iSelf = temp;
+    return temp;
+    }
+
+CLocUpdateCallBack6 :: ~CLocUpdateCallBack6()
+    {
+    delete (this->CoreObj);
+    }
 TInt CLocUpdateCallBack6 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt /*aError*/)
-	{
-	TInt aRet;
-	TPosition currPos1;
-	
-	currPos->GetPosition(currPos1);
-	
-	aRet = ValidatePosition(currPos1);
-    
+    {
+    TInt aRet;
+    TPosition currPos1;
+    currPos->GetPosition(currPos1);
+
+    aRet = ValidatePosition(currPos1);
+
     if( KErrNone == aRet )
-    	{
-      	CActiveScheduler *Current = CActiveScheduler :: Current() ;
-	  	Current->Stop() ;
+        {
+        CActiveScheduler *Current = CActiveScheduler :: Current() ;
+        Current->Stop() ;
         returnCode = KErrNone;
         delete this;
         }
     else  
-	    {
-	 	CActiveScheduler *Current = CActiveScheduler :: Current() ;
-	 	Current->Stop() ;
-	  	returnCode = KErrGeneral;
-	  	delete this;
-	    }
+        {
+        CActiveScheduler *Current = CActiveScheduler :: Current() ;
+        Current->Stop() ;
+        returnCode = KErrGeneral;
+        delete this;
+        }
+    OpenFile();  
+    LogFile.Write(_L8("CLocUpdateCallBack6 :: Before retrunin to runl"));
+    LogFile.Write(_L8("\n")) ;
+    CloseFile();
     return KErrNone ;
- 	}
- 	
+    }
+
 class TraceLCallBack6 : public MLocationCallBack
- 	{
-  	TInt iCount ;
+    {
+    TInt iCount ;
     TInt iRetStatus ;
     CLocationService *CoreObj;
+    TInt iTransactionId;
+    TInt iRequestType;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    TraceLCallBack6(CLocationService* LocObj,TInt count = 0,TInt status = KErrGeneral)
-   		{
-   	 	iCount = count;
-   	 	iRetStatus = status;
-   	 	CoreObj = LocObj;	
-   		}
- 	};
-  
-    
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        TraceLCallBack6(TInt transId,TInt req,CLocationService* LocObj,TInt count = 0,TInt status = KErrGeneral)
+            {
+            iTransactionId = transId;
+            iRequestType = req;
+            iCount = count;
+            iRetStatus = status;
+            CoreObj = LocObj;	
+            }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+
+
+
+    };
+
+
 TInt TraceLCallBack6 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt aError)
-	{
-	 TInt aRet1;
-	 if(KErrNone == aError && iCount<1)
-	 	{
-	    TPosition currPos1;
-	   	currPos->GetPosition(currPos1);
-	   	ValidatePosition(currPos1);
-    	iCount++;	 
-	 	}
-		
-     else
-	 	{
-	   	aRet1 = CoreObj->CancelOnGoingService(1);
-    	
-    	if( KErrNone == aRet1 )
-    		{
-    		TPosition aPosition2;  
-		    CLocationService *CoreObj1 = CLocationService ::NewL() ;
-		    
-	    	_LIT(Kidentity ,"Coreclass Testing" ) ;
-			//not needed any more
-			/*RRequestorStack aRequestorStack;
+    {
+    TInt aRet1;
+    if(KErrNone == aError && iCount<1)
+        {
+        TPosition currPos1;
+        currPos->GetPosition(currPos1);
+        ValidatePosition(currPos1);
+        iCount++;	 
+        }
+
+    else
+        {
+        aRet1 = CoreObj->CancelOnGoingService(1);
+
+        if( KErrNone == aRet1 )
+            {
+            TPosition aPosition2;  
+            CLocationService *CoreObj1 = CLocationService ::NewL() ;
+
+            _LIT(Kidentity ,"Coreclass Testing" ) ;
+            //not needed any more
+            /*RRequestorStack aRequestorStack;
 			const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
 		    aRequestorStack.Insert(identityInfo,0);
-		    
+
 		    CoreObj1->SetRequestorIdentityL(aRequestorStack) ;*/
-    
-		    CLocUpdateCallBack6 *MyUpdates1 =  CLocUpdateCallBack6 :: NewL(CoreObj1);
-		    
-		    CoreObj1->GetLocationL(MyUpdates1) ;
-		    
-		    //aRequestorStack.Close();
-    		
-		    
-		    returnCode = KErrNone;
-    		}
-    	else
-    		{
-    		returnCode = KErrGeneral;
-       		}	
-	 	}
-	return KErrNone; 
-	}
-  
-  
+
+            CLocUpdateCallBack6 *MyUpdates1 =  CLocUpdateCallBack6 :: NewL(26,GETLOCATION,CoreObj1);
+
+            CoreObj1->GetLocationL(MyUpdates1) ;
+
+            //aRequestorStack.Close();
+
+
+            returnCode = KErrNone;
+            }
+        else
+            {
+            returnCode = KErrGeneral;
+            }	
+        }
+    return KErrNone; 
+    }
+
+
 TInt TraceLFunction6L()
-	{
+    {
+    __UHEAP_MARK;
+
+    CActiveScheduler *Scheduler = new CActiveScheduler ;
+
+    CActiveScheduler :: Install(Scheduler) ;
     TInt ret1;
     TPosition aPosition1;  
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    TraceLCallBack6 MyUpdates2(CoreObj) ;
-    
+    TraceLCallBack6 MyUpdates2(36,TRACE,CoreObj) ;
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
-    ret1 = CoreObj->TraceL(&MyUpdates2) ;
-    
+    TPositionUpdateOptions updateOpts;
+    updateOpts.SetUpdateInterval(5000000);
+
+    TRAP(ret1 , CoreObj->TraceL(&MyUpdates2,0,NULL,&updateOpts) );
+
     if( KErrNone == ret1)
-    	{	
-       	OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPosition6 test>\n"));
-	 	CloseFile();
-	 	CActiveScheduler :: Start() ;
-    	}
+        {	
+        OpenFile();
+        LogFile.Write(_L8("\n<TraceLPosition6 test>\n"));
+        CloseFile();
+        CActiveScheduler :: Start() ;
+        }
     else
-    	{
-      	returnCode = KErrGeneral;
-    	}
-   
+        {
+        returnCode = KErrGeneral;
+        }
+
     //aRequestorStack.Close();
-    
+
     delete CoreObj;
-   return KErrNone;
-   }
+    delete Scheduler ;
+    __UHEAP_MARKEND;
+    OpenFile();
+    LogFile.Write(_L8("\n<TraceLPosition6 test after uheap>\n"));
+    CloseFile();
+    return KErrNone;
+    }
 
 
 
 TInt CSAPILocTest::TraceLPosition6( CStifItemParser& /*aItem*/ )
-	{
+    {
+
+    _LIT(KTLocTest ,"TLocTest");
+    iLog->Log(KTLocTest) ;
+
+    TRequestStatus Status = KRequestPending  ;
+    RThread FunctionThread ;
+
+    FunctionThread.Create(_L("GetLocationAsynch Thread") , TraceLPosition6T ,KDefaultStackSize , 
+            KMinHeapSize , KDefaultStackSize ,(TAny *) NULL);
+
+    FunctionThread.Logon(Status)    ;
+    FunctionThread.Resume() ;
+
+    User :: WaitForRequest (Status) ;               
+    FunctionThread.Close();
+
+    return Status.Int() ;   
+    }
+
+TInt TraceLPosition6T( TAny */*Arg*/)
+    {
     returnCode = KErrNone;
-     // Print to UI
-    _LIT( KSAPILocTest, "SAPILocTest" );
-    _LIT( KExample, "TraceLPosition6" );
-    TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-   __UHEAP_MARK;
-   
-   TRAPD(err , TraceLFunction6L()) ;
-   if(err)
-   returnCode = KErrGeneral;
-   
-   __UHEAP_MARKEND;
-    
-   return returnCode;  
-	}
-	
-	
+
+    TInt err = KErrNone;
+
+    CTrapCleanup* cleanup = CTrapCleanup::New();
+    TRAP(err , TraceLFunction6L()) ;
+    if(err)
+        {
+
+        returnCode = KErrGeneral;
+        }
+    //TInt alloc1 = User::CountAllocCells();
+
+
+    delete cleanup ;
+    return returnCode;
+    }
+
+
 // -----------------------------------------------------------------------------
 // CSAPILocTest::TraceLPosition7
 // -----------------------------------------------------------------------------
 //
- 	
+
 class TraceLCallBack7 : public MLocationCallBack
- 	{
-  	TInt iCount ;
+    {
+    TInt iCount ;
     TInt iRetStatus ;
     CLocationService *CoreObj;
+    TInt iTransactionId;
+    TInt iRequestType;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    TraceLCallBack7(CLocationService* LocObj,TInt count = 0,TInt status = KErrGeneral)
-   		{
-   	 	iCount = count;
-   	 	iRetStatus = status;
-   	 	CoreObj = LocObj;	
-   		}
- 	};
-  
-    
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        TraceLCallBack7(TInt transId,TInt req,CLocationService* LocObj,TInt count = 0,TInt status = KErrGeneral)
+            {
+            iTransactionId= transId;
+            iRequestType = req;
+            iCount = count;
+            iRetStatus = status;
+            CoreObj = LocObj;	
+            }
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+    };
+
+
 TInt TraceLCallBack7 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt aError)
-	{
-	 User::After(30000000);
-	 TInt aRet1;
-	 if(KErrNone == aError && iCount<2)
-	 	{
-	   	TPosition currPos1;
-	   	currPos->GetPosition(currPos1);
-	//   	ValidatePosition(currPos1);
-    	iCount++;	 
-	 	}
-		
-     else
-	 	{
-	   	aRet1 = CoreObj->CancelOnGoingService(1);
-    	if( KErrNone == aRet1 )
-    		{
-    		TPosition aPosition2;  
-		    CLocationService *CoreObj1 = CLocationService ::NewL() ;
-		    
-		    _LIT(Kidentity ,"Coreclass Testing" ) ;
-			//not needed any more
-			/*RRequestorStack aRequestorStack;
+    {
+    //User::After(30000000);
+    TInt aRet1;
+    if(KErrNone == aError && iCount<2)
+        {
+        TPosition currPos1;
+        currPos->GetPosition(currPos1);
+        //   	ValidatePosition(currPos1);
+        iCount++;	 
+        }
+
+    else
+        {
+        aRet1 = CoreObj->CancelOnGoingService(1);
+        if( KErrNone == aRet1 )
+            {
+            TPosition aPosition2;  
+            CLocationService *CoreObj1 = CLocationService ::NewL() ;
+
+            _LIT(Kidentity ,"Coreclass Testing" ) ;
+            //not needed any more
+            /*RRequestorStack aRequestorStack;
 			const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
 		    aRequestorStack.Insert(identityInfo,0);
-		    
+
 		    CoreObj1->SetRequestorIdentityL(aRequestorStack) ;*/
-    
-		    CTraceLCallBack5 *MyUpdates2 = CTraceLCallBack5::NewL(CoreObj1);
-	    	
-	    	CoreObj1->TraceL(MyUpdates2) ;
-		    
-		    User::After(30000000) ;
-		    //aRequestorStack.Close();
-    		
-		    
-		    returnCode = KErrNone;
-    		}
-    	else
-    		{
-    		returnCode = KErrGeneral;
-       		}	
-	 	}
-	return KErrNone; 
-	}
-  
-  
+
+            CTraceLCallBack5 *MyUpdates2 = CTraceLCallBack5::NewL(19,TRACE,CoreObj1);
+
+            CoreObj1->TraceL(MyUpdates2) ;
+
+            // User::After(30000000) ;
+            //aRequestorStack.Close();
+
+
+            returnCode = KErrNone;
+            }
+        else
+            {
+            returnCode = KErrGeneral;
+            }	
+        }
+    return KErrNone; 
+    }
+
+
 TInt TraceLFunction7L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret1;
     TPosition aPosition1;  
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
     //not needed any more
-	
-	/*RRequestorStack aRequestorStack;
+
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
-    TraceLCallBack7 MyUpdates1(CoreObj) ;
-    
-    ret1 = CoreObj->TraceL(&MyUpdates1) ;
-    
+
+    TraceLCallBack7 MyUpdates1(20,TRACE,CoreObj) ;
+
+    TRAP(ret1 , CoreObj->TraceL(&MyUpdates1) );
+
     if( KErrNone == ret1)
-    	{	
-       	OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPosition7 test>\n"));
-	 	CloseFile();
-	 	CActiveScheduler :: Start() ;
-    	}
+        {	
+        OpenFile();
+        LogFile.Write(_L8("\n<TraceLPosition7 test>\n"));
+        CloseFile();
+        CActiveScheduler :: Start() ;
+        }
     else
-    	{
-      	returnCode = KErrGeneral;
-    	}
-   
-   //aRequestorStack.Close();
-   
-   delete CoreObj;
-   return KErrNone;
-   }
+        {
+        returnCode = KErrGeneral;
+        }
+
+    //aRequestorStack.Close();
+
+    delete CoreObj;
+    __UHEAP_MARKEND ;
+    return KErrNone;
+    }
 
 
 
 TInt CSAPILocTest::TraceLPosition7( CStifItemParser& /*aItem*/ )
-	{
+    {
     returnCode = KErrNone;
-     // Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "TraceLPosition7" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-   __UHEAP_MARK;
-   
-   TRAPD(err , TraceLFunction7L()) ;
-   if(err)
-   returnCode = KErrGeneral;
-   
-   __UHEAP_MARKEND;
-    
-   return returnCode;  
-	}
+
+    __UHEAP_MARK;
+
+    TRAPD(err , TraceLFunction7L()) ;
+    if(err)
+        returnCode = KErrGeneral;
+
+    __UHEAP_MARKEND;
+
+    return returnCode;  
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::TraceLPosition8
 // -----------------------------------------------------------------------------
 //
-	
+
 class LocUpdateCallBack8 : public MLocationCallBack
- 	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
+    TInt iRequestType;
+    TInt iTransactionId;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    LocUpdateCallBack8() :iCount(0) , iRetStatus(KErrGeneral){;}
-  	};
-  
-    
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        LocUpdateCallBack8(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral){
+        iTransactionId = transId;
+        iRequestType = req;
+        }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+    };
+
+
 TInt LocUpdateCallBack8 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt /*aError*/)
-	{
-	  
-	 TInt aRet;
-	 TPosition currPos1;
-	 currPos->GetPosition(currPos1);
-	 aRet = ValidatePosition(currPos1);
-     if ( KErrNone == aRet)
-     	{
-      	TPosition aPosition2;  
-	    CLocationService *CoreObj1 = CLocationService ::NewL() ;
-	    
-	    _LIT(Kidentity ,"Coreclass Testing" ) ;
-		//not needed any more
-		/*RRequestorStack aRequestorStack;
+    {
+
+    TInt aRet;
+    TPosition currPos1;
+    currPos->GetPosition(currPos1);
+    aRet = ValidatePosition(currPos1);
+    if ( KErrNone == aRet)
+        {
+        TPosition aPosition2;  
+        CLocationService *CoreObj1 = CLocationService ::NewL() ;
+
+        _LIT(Kidentity ,"Coreclass Testing" ) ;
+        //not needed any more
+        /*RRequestorStack aRequestorStack;
 		const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
-	    
+
 	    aRequestorStack.Insert(identityInfo,0);
-	    	    
+
 	    CoreObj1->SetRequestorIdentityL(aRequestorStack) ;*/
-    
-	    CLocUpdateCallBack6 *MyUpdates2 =  CLocUpdateCallBack6 :: NewL(CoreObj1);
-		
-		CoreObj1->GetLocationL(MyUpdates2) ;
-	    
-	    /*aRequestorStack.Close();
+
+        CLocUpdateCallBack6 *MyUpdates2 =  CLocUpdateCallBack6 :: NewL(27,GETLOCATION,CoreObj1);
+
+        CoreObj1->GetLocationL(MyUpdates2) ;
+
+        /*aRequestorStack.Close();
     	delete identityInfo;*/
-	    }
-     return KErrNone ;
-	}
+        }
+    return KErrNone ;
+    }
 
 
 TInt TraceLFunction8L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret1;
     TPosition aPosition1;  
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    LocUpdateCallBack8 MyUpdates1 ;
-    
+    LocUpdateCallBack8 MyUpdates1(21,GETLOCATION) ;
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
-    ret1 = CoreObj->GetLocationL(&MyUpdates1) ;
-    
+    TPositionUpdateOptions updateOpts;
+    updateOpts.SetUpdateInterval(5000000);      
+
+    TRAP(ret1 , CoreObj->GetLocationL(&MyUpdates1,0,NULL,&updateOpts) );
+
     if( KErrNone == ret1)
-    	{
-       	OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPosition8 test>\n"));
-	 	CloseFile();
-	 	CActiveScheduler :: Start() ;
-    	}
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<TraceLPosition8 test>\n"));
+        CloseFile();
+        CActiveScheduler :: Start() ;
+        }
     else
-    	{
-      	returnCode = KErrGeneral;
-    	}
-    
+        {
+        returnCode = KErrGeneral;
+        }
+
     /*aRequestorStack.Close();
     delete identityInfo;*/
     delete CoreObj;
-    
+    __UHEAP_MARKEND ;
     return KErrNone;
-	}
+    }
 
 TInt CSAPILocTest::TraceLPosition8( CStifItemParser& /*aItem*/ )
-	{
+    {
     returnCode = KErrNone;
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "TraceLPosition8" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    
+
+
     __UHEAP_MARK;
-    
+
     TRAPD(err , TraceLFunction8L()) ;
     if(err)
-    returnCode = KErrGeneral;
-    
-     __UHEAP_MARKEND;
-  
-     return returnCode;  
-	}
-	
-	
+        returnCode = KErrGeneral;
+
+    __UHEAP_MARKEND;
+
+    return returnCode;  
+    }
+
+
 // -----------------------------------------------------------------------------
 // CSAPILocTest::TraceLPositionOpts
 // -----------------------------------------------------------------------------
 //
 class TraceLCallBackTO : public MLocationCallBack
-	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
+    TInt iTransactionId;
+    TInt iRequestType;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    TraceLCallBackTO() :iCount(0) , iRetStatus(KErrGeneral){;}
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        TraceLCallBackTO(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral){
+        iTransactionId = transId;
+        iRequestType = req;
+        }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
     };
-  
+
 TInt TraceLCallBackTO :: HandleNotifyL(HPositionGenericInfo* /*currPos*/ , TInt aError)
-	{
-	if(KErrTimedOut == aError)
-		 {
-	 	 CActiveScheduler *Current = CActiveScheduler :: Current() ;
-	  	 Current->Stop() ;
-	  	 OpenFile();
-	  	 LogFile.Write(_L8("Passed..\n"));
-	  	 CloseFile();
-	  	 returnCode = KErrNone;
-	  	 return KErrNone ;	
-    	 }
+    {
+    if(KErrTimedOut == aError)
+        {
+        CActiveScheduler *Current = CActiveScheduler :: Current() ;
+        Current->Stop() ;
+        OpenFile();
+        LogFile.Write(_L8("Passed..\n"));
+        CloseFile();
+        returnCode = KErrNone;
+        return KErrNone ;	
+        }
     else
-		 {
-	 	 CActiveScheduler *Current = CActiveScheduler :: Current() ;
-	  	 Current->Stop() ;
-	  	 OpenFile();
-	  	 LogFile.Write(_L8("Failed..\n"));
-	  	 CloseFile();
-	  	 returnCode = KErrGeneral;
-	 	 return KErrNone; 
-		 }
-	}
+        {
+        CActiveScheduler *Current = CActiveScheduler :: Current() ;
+        Current->Stop() ;
+        OpenFile();
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        return KErrNone; 
+        }
+    }
 
 
 TInt TraceLFunctionOptsL()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret1;
     TPosition aPosition1;
     TPositionUpdateOptions aOptions;
     TTimeIntervalMicroSeconds aTimeOut = 10;  
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
+
     aOptions.SetUpdateTimeOut(aTimeOut);
-    
-    TraceLCallBackTO MyUpdates;
-    
-    ret1 = CoreObj->TraceL(&MyUpdates,0,NULL,&aOptions) ;
-    
+
+    TraceLCallBackTO MyUpdates(22,TRACE);
+
+    TRAP(ret1 , CoreObj->TraceL(&MyUpdates,0,NULL,&aOptions) );
+
     if( KErrNone == ret1)
-    	{
+        {
         OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPositionOpts test>\n"));
-	 	CloseFile();
-	 	CActiveScheduler::Start();
-   		}
-    
+        LogFile.Write(_L8("\n<TraceLPositionOpts test>\n"));
+        CloseFile();
+        CActiveScheduler::Start();
+        }
+
     else
-    	{
-    	returnCode = KErrGeneral;	
-    	}
+        {
+        returnCode = KErrGeneral;	
+        }
     /*aRequestorStack.Close();
     delete identityInfo;*/
     delete CoreObj;
+    __UHEAP_MARKEND ;
     return 0;
-	}
+    }
 
 TInt CSAPILocTest::TraceLPositionOpts( CStifItemParser& /*aItem*/ )
-	{
+    {
     returnCode = KErrNone;
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "TraceLPositionOpts" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-   
-	 __UHEAP_MARK;
-    
+
+    __UHEAP_MARK;
+
     TRAPD(err , TraceLFunctionOptsL()) ;
     if(err)
-    returnCode = KErrGeneral;
-    
+        returnCode = KErrGeneral;
+
     __UHEAP_MARKEND;
-    
+
     return returnCode;  
-	}
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::TraceLPositionOpts1
 // -----------------------------------------------------------------------------
 //
 class TraceLCallBackOpts1 : public MLocationCallBack
-	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
     CLocationService *CoreObj;
+    TInt iTransactionId;
+    TInt iRequestType;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    TraceLCallBackOpts1(TInt count = 0,TInt status = KErrGeneral)
-   		{
-   	 	iCount = count;
-   	 	iRetStatus = status;
-   		}
-  	};
-  
- 
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        TraceLCallBackOpts1(TInt transId,TInt req,TInt count = 0,TInt status = KErrGeneral)
+            {
+            iRequestType = req;
+            iTransactionId = transId;
+            iCount = count;
+            iRetStatus = status;
+            }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+    };
+
+
 TInt TraceLCallBackOpts1 :: HandleNotifyL(HPositionGenericInfo* /*currPos*/ , TInt /*aError*/){return 0;}
 
 
 
 TInt TraceLFunctionOpts1L()
-	{
+    {
     TInt ret1;
     TPosition aPosition1;
     TPositionUpdateOptions aOptions;
     TTimeIntervalMicroSeconds aTimeOut = 10000000; 
     TTimeIntervalMicroSeconds aTimeInterval = 30000000; 
-    
+
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
+
     aOptions.SetUpdateTimeOut(aTimeOut);
     aOptions.SetUpdateInterval(aTimeInterval);
-    
-    TraceLCallBackOpts1 MyUpdates;
-    
-    ret1 = CoreObj->TraceL(&MyUpdates,0,NULL,&aOptions) ;
-    
+
+    TraceLCallBackOpts1 MyUpdates(23,TRACE);
+
+    TRAP(ret1 , CoreObj->TraceL(&MyUpdates,0,NULL,&aOptions) );
+
     if( KErrArgument == ret1)
-    	{
+        {
         OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPositionOpts1 test>\n"));
-	 	LogFile.Write(_L8("Passed\n"));
-	 	CloseFile();
-	 	returnCode = KErrNone;
-	 	}
-    
+        LogFile.Write(_L8("\n<TraceLPositionOpts1 test>\n"));
+        LogFile.Write(_L8("Passed\n"));
+        CloseFile();
+        returnCode = KErrNone;
+        }
+
     else
-    	{
-    	returnCode = KErrGeneral;
-    	}
-   	
-   	/*aRequestorStack.Close();
+        {
+        returnCode = KErrGeneral;
+        }
+
+    /*aRequestorStack.Close();
     delete identityInfo;*/
     delete CoreObj;
     return 0;
-	}
+    }
 
 
 TInt CSAPILocTest::TraceLPositionOpts1( CStifItemParser& /*aItem*/ )
-	{
+    {
     returnCode = KErrNone;
-   
+
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "TraceLPositionOpts1" );
-     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-     __UHEAP_MARK;
-   
+    TestModuleIf().Printf( 0, KSAPILocTest, KExample );
+
+    __UHEAP_MARK;
+
     TRAPD(err , TraceLFunctionOpts1L()) ;
     if(err)
-    returnCode = KErrGeneral;
-   
-     __UHEAP_MARKEND;
-    
+        returnCode = KErrGeneral;
+
+    __UHEAP_MARKEND;
+
     return returnCode;  
-	}
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -2755,7 +3147,8 @@ TInt CSAPILocTest::TraceLPositionOpts1( CStifItemParser& /*aItem*/ )
 // -----------------------------------------------------------------------------
 //
 TInt TraceLFunctionOpts2L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret1;
     TPosition aPosition1;
     TPositionUpdateOptions aOptions;
@@ -2763,121 +3156,143 @@ TInt TraceLFunctionOpts2L()
     TTimeIntervalMicroSeconds aTimeInterval = 30000000;
     TTimeIntervalMicroSeconds aInterval;
     TTime start,end;
-    
+
     CLocationService *CoreObj = CLocationService ::NewL() ;
     //not needed any more
     /*_LIT(Kidentity ,"Coreclass Testing" ) ;
 	RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
+
     aOptions.SetUpdateTimeOut(aTimeOut);
     aOptions.SetUpdateInterval(aTimeInterval);
-    
-    TraceLCallBack MyUpdates;
-    
-    ret1 = CoreObj->TraceL(&MyUpdates,0,NULL,&aOptions) ;
-    
+
+    TraceLCallBack MyUpdates(34,TRACE);
+
+    TRAP(ret1 , CoreObj->TraceL(&MyUpdates,0,NULL,&aOptions) );
+
     if( KErrNone == ret1)
-    	{
+        {
         OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPositionOpts2 test>\n"));
-	 	CloseFile();
-	 	start.HomeTime();
-	 	CActiveScheduler::Start();
-	 	end.HomeTime();
-	 	aInterval = end.MicroSecondsFrom(start);
-//	 	if(aInterval<150000000)
-//	 	returnCode = KErrGeneral;
-   		}
-    
+        LogFile.Write(_L8("\n<TraceLPositionOpts2 test>\n"));
+        CloseFile();
+        start.HomeTime();
+        CActiveScheduler::Start();
+        end.HomeTime();
+        aInterval = end.MicroSecondsFrom(start);
+        //	 	if(aInterval<150000000)
+        //	 	returnCode = KErrGeneral;
+        }
+
     else
-    	{
-    	returnCode = KErrGeneral;	
-    	}
-    
+        {
+        returnCode = KErrGeneral;	
+        }
+
     /*aRequestorStack.Close();
     delete identityInfo;*/
     delete CoreObj;
+    __UHEAP_MARKEND ;
     return 0;
-	}
+    }
 
 TInt CSAPILocTest::TraceLPositionOpts2( CStifItemParser& /*aItem*/ )
-	{
+    {
     returnCode = KErrNone;
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "TraceLPositionOpts2" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-   
+
     __UHEAP_MARK;
-    
+
     TRAPD(err , TraceLFunctionOpts2L()) ;
     if(err)
-    returnCode = KErrGeneral;
-    
+        returnCode = KErrGeneral;
+
     __UHEAP_MARKEND;
-    
+
     return returnCode;  
-	}
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::TraceLPositionOpts3
 // -----------------------------------------------------------------------------
 //
 class TraceLCallBackOpts3 : public MLocationCallBack
-	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
+    TInt iTransactionId;
+    TInt iRequestType;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    TraceLCallBackOpts3() :iCount(0) , iRetStatus(KErrGeneral){;}
-  	};
-  
-  
-  
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        TraceLCallBackOpts3(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral){+
+        iTransactionId = transId;
+        iRequestType = req;
+        }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+    };
+
+
+
 TInt TraceLCallBackOpts3 :: HandleNotifyL(HPositionGenericInfo* currPos , TInt aError)
-	{
-	 TTime timeStamp;
-	 TInt64 timeInt;
-	 TBuf8<50> buf ;
- 	 TRealFormat format ;
-	 if(KErrNone == aError && iCount<2)
-	 	{
-	 	User::After(60000000);
-	 	TPosition currPos1;
-	 	currPos->GetPosition(currPos1);
-	 	timeStamp = currPos1.Time();
+    {
+    TTime timeStamp;
+    TInt64 timeInt;
+    TBuf8<50> buf ;
+    TRealFormat format ;
+    if(KErrNone == aError && iCount<2)
+        {
+        //User::After(60000000);
+        TPosition currPos1;
+        currPos->GetPosition(currPos1);
+        timeStamp = currPos1.Time();
         timeInt = timeStamp.Int64();
         if(timeInt)
-        	{
+            {
             OpenFile();
-	        buf.Num(timeInt , format) ;
- 		    LogFile.Write(_L8("\nTimestamp = "));
- 		    LogFile.Write(buf) ;
-	        CloseFile();
-	        returnCode = KErrNone;
-	        }
+            buf.Num(timeInt , format) ;
+            LogFile.Write(_L8("\nTimestamp = "));
+            LogFile.Write(buf) ;
+            CloseFile();
+            returnCode = KErrNone;
+            }
         else
-        	{
-        	returnCode = KErrGeneral;
-        	return 0;
-        	}
-    	 iCount++;	 
-	 	}
-		
-     else
-	 	{
-	 	CActiveScheduler *Current = CActiveScheduler :: Current() ;
-	  	Current->Stop() ;
-	 	}
-	 return 0;
-	}
+            {
+            returnCode = KErrGeneral;
+            return 0;
+            }
+        iCount++;	 
+        }
+
+    else
+        {
+        CActiveScheduler *Current = CActiveScheduler :: Current() ;
+        Current->Stop() ;
+        }
+    return 0;
+    }
 
 TInt TraceLFunctionOpts3L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret1;
     TPosition aPosition1;
     TPositionUpdateOptions aOptions;
@@ -2885,479 +3300,484 @@ TInt TraceLFunctionOpts3L()
     TTimeIntervalMicroSeconds aTimeInterval = 5000000;
     TTimeIntervalMicroSeconds aInterval;
     TTime start,end;
-   	TBool aAcceptPartialUpdates = ETrue;
-    
+    TBool aAcceptPartialUpdates = ETrue;
+
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-   
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
+
     aOptions.SetUpdateTimeOut(aTimeOut);
     aOptions.SetUpdateInterval(aTimeInterval);
     aOptions.SetAcceptPartialUpdates(aAcceptPartialUpdates);
-    
-    TraceLCallBackOpts3 MyUpdates;
-    
-    ret1 = CoreObj->TraceL(&MyUpdates,0,NULL,&aOptions) ;
-    
+
+    TraceLCallBackOpts3 MyUpdates(24,TRACE);
+
+    TRAP(ret1 , CoreObj->TraceL(&MyUpdates,0,NULL,&aOptions) );
+
     if( KErrNone == ret1)
-    	{
+        {
         TBuf8<20> retBuf;
         TRealFormat retFormat;
         OpenFile();
-	 	LogFile.Write(_L8("\n<TraceLPositionOpts3 test>\n"));
-	 	CloseFile();
+        LogFile.Write(_L8("\n<TraceLPositionOpts3 test>\n"));
+        CloseFile();
 
-	 	start.HomeTime();
-	 	CActiveScheduler::Start();
-	 	end.HomeTime();
-	 	aInterval = end.MicroSecondsFrom(start);
-	// 	if(aInterval<150000000)
-	// 	returnCode = KErrGeneral;
+        start.HomeTime();
+        CActiveScheduler::Start();
+        end.HomeTime();
+        aInterval = end.MicroSecondsFrom(start);
+        // 	if(aInterval<150000000)
+        // 	returnCode = KErrGeneral;
         retBuf.Num(returnCode,retFormat);
         OpenFile();
         LogFile.Write(_L8("\nreturnCode : "));
         LogFile.Write(retBuf);
         CloseFile();
-   		}
-    
+        }
+
     else
-      	{
-    	returnCode = KErrGeneral;	
-    	}
+        {
+        returnCode = KErrGeneral;	
+        }
     /*aRequestorStack.Close();
     delete identityInfo;*/
     delete CoreObj;
+    __UHEAP_MARKEND ;
     return 0;
-	}
+    }
 
 
 TInt CSAPILocTest::TraceLPositionOpts3( CStifItemParser& /*aItem*/ )
-	{
+    {
     returnCode = KErrNone;      
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "TraceLPositionOpts3" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-   __UHEAP_MARK;
-   
-   TRAPD(err , TraceLFunctionOpts3L()) ;
-   
-   if(err)
-   returnCode = KErrGeneral;
-   
-   __UHEAP_MARKEND;
-    
-     return returnCode;  
-	}
+
+    __UHEAP_MARK;
+
+    TRAPD(err , TraceLFunctionOpts3L()) ;
+
+    if(err)
+        returnCode = KErrGeneral;
+
+    __UHEAP_MARKEND;
+
+    return returnCode;  
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::CancelService1
 // -----------------------------------------------------------------------------
 //
 TInt CancelFunction1L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret1,ret2;
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
+
     ret1 = CoreObj->CancelOnGoingService(0) ;
-    
+
     ret2 = CoreObj->CancelOnGoingService(1) ;
-    
+
     if( KErrNotFound == ret1 && KErrNotFound == ret2 )
-    	{
-      	OpenFile();
-	 	LogFile.Write(_L8("\n<CancelService1 test>\n"));
-	 	LogFile.Write(_L8("Passed..\n"));
-	 	CloseFile();
-	 	returnCode = KErrNone; 
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<CancelService1 test>\n"));
+        LogFile.Write(_L8("Passed..\n"));
+        CloseFile();
+        returnCode = KErrNone; 
+        }
+
     else
-    	{
-    	returnCode = KErrGeneral;	
-    	}
-    	
+        {
+        returnCode = KErrGeneral;	
+        }
+
     /*aRequestorStack.Close();
     delete identityInfo;*/
     delete CoreObj;
+    __UHEAP_MARKEND ;
     return 0;
-	}
+    }
 
 TInt CSAPILocTest::CancelService1( CStifItemParser& /*aItem*/ )
-	{
+    {
     returnCode = KErrNone;
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "CancelService1" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     TRAPD(err , CancelFunction1L()) ;
     if(err)
-    returnCode = KErrGeneral;
-    
+        returnCode = KErrGeneral;
+
     __UHEAP_MARKEND;
-    
+
     return returnCode;  
-	}
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::CancelService2
 // -----------------------------------------------------------------------------
 //
 TInt CancelFunction2L()
-	{
+    {
+    __UHEAP_MARK ;
     TInt ret1,ret2;
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
+
     ret1 = CoreObj->CancelOnGoingService(4) ;
-    
+
     ret2 = CoreObj->CancelOnGoingService(6) ;
-    
+
     if( KErrArgument == ret1 && KErrArgument == ret2 )
-    	{
-      	OpenFile();
-	 	LogFile.Write(_L8("\n<CancelService2 test>\n"));
-	 	LogFile.Write(_L8("Passed..\n"));
-	 	CloseFile();
-	 	returnCode = KErrNone; 
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<CancelService2 test>\n"));
+        LogFile.Write(_L8("Passed..\n"));
+        CloseFile();
+        returnCode = KErrNone; 
+        }
+
     else
-       	{
-    	returnCode = KErrGeneral;	
-    	}
-    	
+        {
+        returnCode = KErrGeneral;	
+        }
+
     /*aRequestorStack.Close();
     delete identityInfo;*/
     delete CoreObj;
+    __UHEAP_MARKEND ;
     return 0;
-	}
+    }
 
 
 TInt CSAPILocTest::CancelService2( CStifItemParser& /*aItem*/ )
-	{
+    {
     returnCode = KErrNone;
-     // Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "CancelService2" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
     __UHEAP_MARK;
-    
+
     TRAPD(err , CancelFunction2L()) ;
     if(err)
-    returnCode = KErrGeneral;
+        returnCode = KErrGeneral;
     __UHEAP_MARKEND;
-    
-     return returnCode;  
-	}
+
+    return returnCode;  
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetTime
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetTime( CStifItemParser& /*aItem*/ )
-	{
-	TInt ret;
-	TPositionInfo currPos;
-	TPosition currPos1;
-	TTime currPosTime;
-	TDateTime currPosDateTime;
-	TBuf8<50> buf ;
-	TRealFormat format ;
-  	returnCode = KErrNone;
-  	// Print to UI
- 	_LIT( KSAPILocTest, "SAPILocTest" );
-  	_LIT( KExample, "GetTime" );
-  	TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
- 	 __UHEAP_MARK;
-  
- 	 CLocationService *CoreObj = CLocationService :: NewL();
-  
- 	 if( NULL == CoreObj)
-  		{
-  		OpenFile();
-		LogFile.Write(_L8("\n<GetTime Test>\n"));
-		LogFile.Write(_L8("Failed..\n"));
-		CloseFile();
-   		returnCode = KErrGeneral;
- 		}
-  
+    {
+    TInt ret;
+    TPositionInfo currPos;
+    TPosition currPos1;
+    TTime currPosTime;
+    TDateTime currPosDateTime;
+    TBuf8<50> buf ;
+    TRealFormat format ;
+    returnCode = KErrNone;
+    // Print to UI
+    _LIT( KSAPILocTest, "SAPILocTest" );
+    _LIT( KExample, "GetTime" );
+    TestModuleIf().Printf( 0, KSAPILocTest, KExample );
+
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetTime Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
-  	ret = CoreObj->GetLocationL(&currPos);
-  	
-  	if(KErrNone == ret)
-  	  {
-      currPos.GetPosition(currPos1);
-	  currPosTime = currPos1.Time();
-	  currPosDateTime = currPosTime.DateTime();
-	  
-	  TInt aDay = currPosDateTime.Day();
-	  TInt aHour = currPosDateTime.Hour();
-	  TInt aMicroSecond = currPosDateTime.MicroSecond();
-	  TInt aMinute = currPosDateTime.Minute();
-	  TInt aMonth = currPosDateTime.Month();
-	  TInt aSecond = currPosDateTime.Second();
-	  TInt aYear = currPosDateTime.Year();
-	  TReal32 aVerAcc = currPos1.VerticalAccuracy();
-	  TReal32 aHorAcc = currPos1.HorizontalAccuracy();
-	    
-	  OpenFile();
 
-  	  LogFile.Write(_L8("\n<GetTime test> \n"));
-	  buf.Num(aHorAcc,format);
-	  LogFile.Write(_L8("Horizontal Acc = "));
-	  LogFile.Write(buf) ;
-	  LogFile.Write(_L8("\n")) ;
-	
-  	  buf.Num(aVerAcc,format);
-	  LogFile.Write(_L8("Vertical Acc = "));
-	  LogFile.Write(buf) ;
-	  LogFile.Write(_L8("\n")) ;
-	
-  	  buf.Num(aDay , format) ;
-	  LogFile.Write(_L8("Time = "));
-	  LogFile.Write(buf) ;
-	  LogFile.Write(_L8("-")) ;
-	
- 	  buf.Num(aMonth , format) ;
-  	  LogFile.Write(buf) ;
-	  LogFile.Write(_L8("-")) ;
-	
-	  buf.Num(aYear , format) ;
-	  LogFile.Write(buf) ;
-	  LogFile.Write(_L8("  ")) ;
-	
-	  buf.Num(aHour , format) ;
-	  LogFile.Write(buf) ;
-	  LogFile.Write(_L8(":")) ;
-	
-	  buf.Num(aMinute , format) ;
-	  LogFile.Write(buf) ;
-	  LogFile.Write(_L8(":")) ;
-	
-	  buf.Num(aSecond , format) ;
-	  LogFile.Write(buf) ;
-	  LogFile.Write(_L8(":")) ;
-	
-	  buf.Num(aMicroSecond , format) ;
-	  LogFile.Write(buf) ;
-	  LogFile.Write(_L8("\n")) ;
-	  CloseFile();
-		
-	  ValidatePosition(currPos1);
-      }
-	else
-		{
-	  	OpenFile();
-	  	LogFile.Write(_L8("\n<GetTime Test>\n"));
-	  	LogFile.Write(_L8("Failed..\n"));
-	  	CloseFile();
-	  	returnCode = KErrGeneral;	
-  		}
-	  	 /*aRequestorStack.Close();
+    TRAP(ret , CoreObj->GetLocationL(&currPos));
+
+    if(KErrNone == ret)
+        {
+        currPos.GetPosition(currPos1);
+        currPosTime = currPos1.Time();
+        currPosDateTime = currPosTime.DateTime();
+
+        TInt aDay = currPosDateTime.Day();
+        TInt aHour = currPosDateTime.Hour();
+        TInt aMicroSecond = currPosDateTime.MicroSecond();
+        TInt aMinute = currPosDateTime.Minute();
+        TInt aMonth = currPosDateTime.Month();
+        TInt aSecond = currPosDateTime.Second();
+        TInt aYear = currPosDateTime.Year();
+        TReal32 aVerAcc = currPos1.VerticalAccuracy();
+        TReal32 aHorAcc = currPos1.HorizontalAccuracy();
+
+        OpenFile();
+
+        LogFile.Write(_L8("\n<GetTime test> \n"));
+        buf.Num(aHorAcc,format);
+        LogFile.Write(_L8("Horizontal Acc = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+
+        buf.Num(aVerAcc,format);
+        LogFile.Write(_L8("Vertical Acc = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+
+        buf.Num(aDay , format) ;
+        LogFile.Write(_L8("Time = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("-")) ;
+
+        buf.Num(aMonth , format) ;
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("-")) ;
+
+        buf.Num(aYear , format) ;
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("  ")) ;
+
+        buf.Num(aHour , format) ;
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8(":")) ;
+
+        buf.Num(aMinute , format) ;
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8(":")) ;
+
+        buf.Num(aSecond , format) ;
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8(":")) ;
+
+        buf.Num(aMicroSecond , format) ;
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+
+        ValidatePosition(currPos1);
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetTime Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;	
+        }
+    /*aRequestorStack.Close();
 	    delete identityInfo;*/
-	    delete CoreObj;
-	    
-	__UHEAP_MARKEND;       
-	    
-	return returnCode;    
-	}
+    delete CoreObj;
+
+    __UHEAP_MARKEND;       
+
+    return returnCode;    
+    }
 
 
-    
+
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetSpeed
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetSpeed( CStifItemParser& /*aItem*/ )
     {
-	TInt ret;
-	TPositionInfo currPos;
-	TPosition currPos1,fromPos;
-	TTime currPosTime;
-	TTime fromPosTime;
-	TDateTime currPosDateTime;
-	TReal64 aLatitude1  = 8;
-	TReal64 aLongitude1 = 70;
-	TReal32 aAltitude1  = 700;
-	TReal32 aSpeed;
-	fromPosTime = 63342890700000000;
-	
-	fromPos.SetCoordinate(aLatitude1,aLongitude1,aAltitude1);
-	fromPos.SetTime(fromPosTime);
-	
-	returnCode =KErrNone;
-		
+    TInt ret;
+    TPositionInfo currPos;
+    TPosition currPos1,fromPos;
+    TTime currPosTime;
+    TTime fromPosTime;
+    TDateTime currPosDateTime;
+    TReal64 aLatitude1  = 8;
+    TReal64 aLongitude1 = 70;
+    TReal32 aAltitude1  = 700;
+    TReal32 aSpeed;
+    fromPosTime = 63342890700000000;
+
+    fromPos.SetCoordinate(aLatitude1,aLongitude1,aAltitude1);
+    fromPos.SetTime(fromPosTime);
+
+    returnCode =KErrNone;
+
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetSpeed" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-   
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetSpeed Test>\n"));
-	    LogFile.Write(_L8("Failed(CoreObj creation)..\n"));
-	    CloseFile();
-	   	returnCode = KErrGeneral;
-   		}
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetSpeed Test>\n"));
+        LogFile.Write(_L8("Failed(CoreObj creation)..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
     //not needed any more
     /*_LIT(Kidentity ,"Coreclass Testing" ) ;
 	RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    	
-    User::After(120000000);
-    ret = CoreObj->GetLocationL(&currPos);
-    
+
+    // User::After(120000000);
+    TRAP(ret , CoreObj->GetLocationL(&currPos));
+
     if(KErrNone == ret)
-    	{
-    	currPos.GetPosition(currPos1);
-	    currPos1.Speed(fromPos,aSpeed);
-	    
-		OpenFile();
-		TBuf8<50> buf ;
-		TRealFormat format ;
-		LogFile.Write(_L8("\n<GetSpeed test> \n"));
-		buf.Num(aSpeed , format) ;
-		LogFile.Write(_L8("Speed = "));
-		LogFile.Write(buf) ;
-		LogFile.Write(_L8("\n")) ;
-		CloseFile();
-	    ValidatePosition(currPos1);
-	    returnCode = KErrNone;
-	   	}
-	  else
-	  	{
-	  	OpenFile();
-	  	LogFile.Write(_L8("\n<GetSpeed Test>\n"));
-	  	LogFile.Write(_L8("Failed(getloc error)..\n"));
-	  	
-		TBuf8<50> buf ;
-		TRealFormat format ;
-		LogFile.Write(_L8("\n<GetSpeed test> \n"));
-		buf.Num(ret , format) ;
-	  	LogFile.Write(buf);
-	  	CloseFile();
-	   	returnCode = KErrGeneral;
-    	
-	  	}
-    
+        {
+        currPos.GetPosition(currPos1);
+        currPos1.Speed(fromPos,aSpeed);
+
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format ;
+        LogFile.Write(_L8("\n<GetSpeed test> \n"));
+        buf.Num(aSpeed , format) ;
+        LogFile.Write(_L8("Speed = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+        ValidatePosition(currPos1);
+        returnCode = KErrNone;
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetSpeed Test>\n"));
+        LogFile.Write(_L8("Failed(getloc error)..\n"));
+
+        TBuf8<50> buf ;
+        TRealFormat format ;
+        LogFile.Write(_L8("\n<GetSpeed test> \n"));
+        buf.Num(ret , format) ;
+        LogFile.Write(buf);
+        CloseFile();
+        returnCode = KErrGeneral;
+
+        }
+
     /*aRequestorStack.Close();
 	delete identityInfo;*/
-	delete CoreObj;
+    delete CoreObj;
     __UHEAP_MARKEND;       
-   
+
     return returnCode;    
     }
-    
-    
+
+
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetPositionOpts
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetPositionOpts( CStifItemParser& /*aItem*/ )
-	{
-	TInt ret;
-	TPositionInfo currPos;
-	TPosition currPos1;
-	TPositionUpdateOptions aOptions;
-	TTimeIntervalMicroSeconds aTimeOut = 100;
-	returnCode = KErrNone;
-	
-	// Print to UI
-	_LIT( KSAPILocTest, "SAPILocTest" );
-	_LIT( KExample, "GetPositionOpts" );
-	TestModuleIf().Printf( 0, KSAPILocTest, KExample );
+    {
+    TInt ret;
+    TPositionInfo currPos;
+    TPosition currPos1;
+    TPositionUpdateOptions aOptions;
+    TTimeIntervalMicroSeconds aTimeOut = 100;
+    returnCode = KErrNone;
 
-	 __UHEAP_MARK;
-	
-	CLocationService *CoreObj = CLocationService :: NewL();
+    // Print to UI
+    _LIT( KSAPILocTest, "SAPILocTest" );
+    _LIT( KExample, "GetPositionOpts" );
+    TestModuleIf().Printf( 0, KSAPILocTest, KExample );
 
-	if( NULL == CoreObj)
-		{
-		OpenFile();
-		LogFile.Write(_L8("\n<GetPositionOpts Test>\n"));
-		LogFile.Write(_L8("Failed..\n"));
-		CloseFile();
-		return KErrGeneral;
-		}
-	//not needed any more
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+    //not needed any more
     /*_LIT(Kidentity ,"Coreclass Testing" ) ;
 	RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
-	aOptions.SetUpdateTimeOut(aTimeOut);
-	
-	ret = CoreObj->GetLocationL(&currPos,&aOptions);
-	    
-	if(KErrTimedOut==ret)
-		{
-		OpenFile();
-		LogFile.Write(_L8("\n<GetPositionOpts Test>\n"));
-		LogFile.Write(_L8("Passed..\n"));
-		CloseFile();
-	  	returnCode = KErrNone;	
-		}
-	else
-		{
-		OpenFile();
-		LogFile.Write(_L8("\n<GetPositionOpts Test>\n"));
-		LogFile.Write(_L8("Failed..\n"));
-		CloseFile();
-		returnCode = KErrGeneral;
-		}
-		
-	/*aRequestorStack.Close();
+
+    aOptions.SetUpdateTimeOut(aTimeOut);
+
+    TRAP(ret , CoreObj->GetLocationL(&currPos,&aOptions));
+
+    if(KErrTimedOut==ret)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts Test>\n"));
+        LogFile.Write(_L8("Passed..\n"));
+        CloseFile();
+        returnCode = KErrNone;	
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    /*aRequestorStack.Close();
     delete identityInfo;*/
     delete CoreObj;
-	
-	__UHEAP_MARKEND; 
-	
-	return returnCode;
-	
-	}
-    
+
+    __UHEAP_MARKEND; 
+
+    return returnCode;
+
+    }
+
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetPositionOpts1
@@ -3370,450 +3790,445 @@ TInt CSAPILocTest::GetPositionOpts1( CStifItemParser& /*aItem*/ )
     TPositionUpdateOptions options;
     TTimeIntervalMicroSeconds aTimeOut = 0;
     returnCode = KErrNone;
-    
+
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetPositionOpts1" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-   
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-		LogFile.Write(_L8("\n<GetPositionOpts1 Test>\n"));
-		LogFile.Write(_L8("Failed..\n"));
-		CloseFile();
-	   	return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts1 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;
-    
+
     options.SetUpdateTimeOut(aTimeOut);
-    
+
     ret = CoreObj->GetLocationL(&currPos,&options);*/
-        
+
     if(KErrTimedOut==ret)
-    	{
-    	OpenFile();
-    	LogFile.Write(_L8("\n<GetPositionOpts1 Test>\n"));
-    	LogFile.Write(_L8("Failed(timed out)..\n"));
-    	CloseFile();
-    	returnCode = KErrGeneral;	
-    	}
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts1 Test>\n"));
+        LogFile.Write(_L8("Failed(timed out)..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;	
+        }
     else
-    	{
-    	OpenFile();
-    	LogFile.Write(_L8("\n<GetPositionOpts1 Test>\n"));
-    	LogFile.Write(_L8("Passed..\n"));
-    	CloseFile();
-    	returnCode = KErrNone;
-    	}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts1 Test>\n"));
+        LogFile.Write(_L8("Passed..\n"));
+        CloseFile();
+        returnCode = KErrNone;
+        }
+
     /*aRequestorStack.Close();
     delete identityInfo;*/
     delete CoreObj;
-     __UHEAP_MARKEND; 
-     
-     return returnCode;
-     }
-    
-    
- // -----------------------------------------------------------------------------
+    __UHEAP_MARKEND; 
+
+    return returnCode;
+    }
+
+
+// -----------------------------------------------------------------------------
 // CSAPILocTest::GetPositionOpts2
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetPositionOpts2( CStifItemParser& /*aItem*/ )
-	{
-	TInt ret1,ret2;
-	TPositionInfo currPos1,currPos2;
-	TPosition cPos1,cPos2;
-	TPositionUpdateOptions options;
-//	TTimeIntervalMicroSeconds aTimeOut = 0;
-//	TTimeIntervalMicroSeconds aInterval = 30000000;
-	TTimeIntervalMicroSeconds aActualInterval;
-	TTime start;
-	TTime end;
-	TInt64 aActualInt;
-	returnCode = KErrNone;
-	
-  	// Print to UI
-  	_LIT( KSAPILocTest, "SAPILocTest" );
- 	_LIT( KExample, "GetPostionOpts2" );
- 	TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-  
-  	__UHEAP_MARK;
-  	
-  	CLocationService *CoreObj = CLocationService :: NewL();
-    
- 	 if( NULL == CoreObj)
-  		{
-    	OpenFile();
-  		LogFile.Write(_L8("\n<GetPositionOpts2 Test>\n"));
-  		LogFile.Write(_L8("Failed..\n"));
-  		CloseFile();
-   		return KErrGeneral;
-   		}
-    
+    {
+    TInt ret1,ret2;
+    TPositionInfo currPos1,currPos2;
+    TPosition cPos1,cPos2;
+    TPositionUpdateOptions options;
+    //	TTimeIntervalMicroSeconds aTimeOut = 0;
+    //	TTimeIntervalMicroSeconds aInterval = 30000000;
+    TTimeIntervalMicroSeconds aActualInterval;
+    TTime start;
+    TTime end;
+    TInt64 aActualInt;
+    returnCode = KErrNone;
+
+    // Print to UI
+    _LIT( KSAPILocTest, "SAPILocTest" );
+    _LIT( KExample, "GetPostionOpts2" );
+    TestModuleIf().Printf( 0, KSAPILocTest, KExample );
+
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts2 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
- //   options.SetUpdateTimeOut(aTimeOut);
-    
- //   options.SetUpdateInterval(aInterval);
-    
-    User::After(120000000);
-    ret1 = CoreObj->GetLocationL(&currPos1/*,&options*/);
-    
-    
-    
+
+    //   options.SetUpdateTimeOut(aTimeOut);
+
+    //   options.SetUpdateInterval(aInterval);
+
+    //User::After(120000000);
+    TRAP(ret1 , CoreObj->GetLocationL(&currPos1/*,&options*/));
+
+
+
     if( (KErrNone != ret1))
-    	{
-    	OpenFile();
-    	LogFile.Write(_L8("\n<GetPositionOpts2 Test>\n"));
-    	LogFile.Write(_L8("Failed(coreobj 1)..\n"));
-    	CloseFile();
-    	returnCode = KErrGeneral;
-    	}
-    else
-   	    {
-		
-		start.HomeTime();
-	    ret2 = CoreObj->GetLocationL(&currPos2/*,&options*/);
-	    end.HomeTime();
-	    
-	    aActualInterval=end.MicroSecondsFrom(start);
-	    aActualInt = aActualInterval.Int64();
-	    if(KErrNone == ret2)
-		    {
-		    OpenFile();
-		   	TBuf8<50> buf ;
-			TRealFormat format ;
-			LogFile.Write(_L8("\n<GetPositionOpts2 Test>\n"));
-			buf.Num(aActualInt, format) ;
-			LogFile.Write(_L8("TimeTaken = "));
-		 	LogFile.Write(buf) ;
-		    CloseFile();
-		    currPos1.GetPosition(cPos1);
-		    currPos2.GetPosition(cPos2);
-		    ValidatePosition(cPos1);
-		    ValidatePosition(cPos2);
-		    returnCode = KErrNone;	
-		    }
-		 else
-		 	{
-		 	OpenFile();
-	    	LogFile.Write(_L8("\n<GetPositionOpts2 Test>\n"));
-	    	LogFile.Write(_L8("Failed(coreObj 2)..\n"));
-	    	CloseFile();
-	    	returnCode = KErrGeneral;	
-		 	}
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts2 Test>\n"));
+        LogFile.Write(_L8("Failed(coreobj 1)..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
         }
-   
+    else
+        {
+
+        start.HomeTime();
+        TRAP(ret2 , CoreObj->GetLocationL(&currPos2/*,&options*/));
+        end.HomeTime();
+
+        aActualInterval=end.MicroSecondsFrom(start);
+        aActualInt = aActualInterval.Int64();
+        if(KErrNone == ret2)
+            {
+            OpenFile();
+            TBuf8<50> buf ;
+            TRealFormat format ;
+            LogFile.Write(_L8("\n<GetPositionOpts2 Test>\n"));
+            buf.Num(aActualInt, format) ;
+            LogFile.Write(_L8("TimeTaken = "));
+            LogFile.Write(buf) ;
+            CloseFile();
+            currPos1.GetPosition(cPos1);
+            currPos2.GetPosition(cPos2);
+            ValidatePosition(cPos1);
+            ValidatePosition(cPos2);
+            returnCode = KErrNone;	
+            }
+        else
+            {
+            OpenFile();
+            LogFile.Write(_L8("\n<GetPositionOpts2 Test>\n"));
+            LogFile.Write(_L8("Failed(coreObj 2)..\n"));
+            CloseFile();
+            returnCode = KErrGeneral;	
+            }
+        }
+
     /*aRequestorStack.Close();
     delete identityInfo;*/
     delete CoreObj;
 
     __UHEAP_MARKEND; 
-   
+
     return returnCode;
-	}
-   
-   
+    }
+
+
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetPositionOpts3
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetPositionOpts3( CStifItemParser& /*aItem*/ )
-	{
-	TInt ret1,ret2,ret3;
-	TPositionInfo currPos1,currPos2,currPos3;
-	TPosition cPos1,cPos2,cPos3;
-	TPositionUpdateOptions options;
-	TTimeIntervalMicroSeconds aTimeOut =  30000000;
-	TTimeIntervalMicroSeconds aInterval = 120000000;
-	TTimeIntervalMicroSeconds aActualInterval;
-	returnCode = KErrNone;
-    
-  // Print to UI
-  _LIT( KSAPILocTest, "SAPILocTest" );
-  _LIT( KExample, "GetPostionOpts3");
-  TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-  
-  __UHEAP_MARK;
-  
-  CLocationService *CoreObj = CLocationService :: NewL();
-  
-  if( NULL == CoreObj)
-  	{
-  	OpenFile();
-    LogFile.Write(_L8("\n<GetPositionOpts3 Test>\n"));
-    LogFile.Write(_L8("Failed..\n"));
-    CloseFile();
-   	return KErrGeneral;
- 	}
-  
+    {
+    TInt ret1,ret2,ret3;
+    TPositionInfo currPos1,currPos2,currPos3;
+    TPosition cPos1,cPos2,cPos3;
+    TPositionUpdateOptions options;
+    TTimeIntervalMicroSeconds aTimeOut =  30000000;
+    TTimeIntervalMicroSeconds aInterval = 120000000;
+    TTimeIntervalMicroSeconds aActualInterval;
+    returnCode = KErrNone;
+
+    // Print to UI
+    _LIT( KSAPILocTest, "SAPILocTest" );
+    _LIT( KExample, "GetPostionOpts3");
+    TestModuleIf().Printf( 0, KSAPILocTest, KExample );
+
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts3 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
-	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
-    aRequestorStack.Insert(identityInfo,0);
-    
-    CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
+  
+
     options.SetUpdateTimeOut(aTimeOut);
     options.SetUpdateInterval(aInterval);
-  
-    ret1 = CoreObj->GetLocationL(&currPos1,&options);
-    ret2 = CoreObj->GetLocationL(&currPos2,&options);
-    ret3 = CoreObj->GetLocationL(&currPos2,&options);
-   
-  
-  if( KErrArgument == ret1 && KErrArgument == ret2 && KErrArgument == ret3 )
-	  {
-	  OpenFile();
-	  LogFile.Write(_L8("\n<GetPositionOpts3 Test>\n"));
-	  LogFile.Write(_L8("Passed..\n"));
-	  CloseFile();
-	  returnCode = KErrNone;
-	  }
-  
-  else
-  	  {
-      OpenFile();
-	  LogFile.Write(_L8("\n<GetPositionOpts3 Test>\n"));
-	  LogFile.Write(_L8("Failed..\n"));
-	  CloseFile();
-   	  returnCode = KErrGeneral;
-      }
-  
-  /*aRequestorStack.Close();
+
+    TRAP(ret1 , CoreObj->GetLocationL(&currPos1,&options));
+    TRAP(ret2 , CoreObj->GetLocationL(&currPos2,&options));
+    TRAP(ret3 , CoreObj->GetLocationL(&currPos2,&options));
+
+
+    if( KErrArgument == ret1 && KErrArgument == ret2 && KErrArgument == ret3 )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts3 Test>\n"));
+        LogFile.Write(_L8("Passed..\n"));
+        CloseFile();
+        returnCode = KErrNone;
+        }
+
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts3 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    /*aRequestorStack.Close();
   delete identityInfo;*/
-  delete CoreObj;
-	 
-  __UHEAP_MARKEND; 
-   
-  return returnCode; 
- }
-   
+    delete CoreObj;
+
+    __UHEAP_MARKEND; 
+
+    return returnCode; 
+    }
+
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetPositionOpts4
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetPositionOpts4( CStifItemParser& /*aItem*/ )
-	{
-	TInt ret1,ret2;
-	TPositionInfo currPos1,currPos2,currPos3;
-	TPosition cPos1,cPos2,cPos3;
-	TPositionUpdateOptions options;
-	TTimeIntervalMicroSeconds aTimeOut =  80000000;
-	TTimeIntervalMicroSeconds aInterval = 10000000;
-	TTimeIntervalMicroSeconds aMaxAge = 5000000;
-	TTimeIntervalMicroSeconds aActualInterval;
-	TTime start;
-	TTime end;
-	TInt64 aActualInt;
+    {
+    TInt ret1,ret2;
+    TPositionInfo currPos1,currPos2,currPos3;
+    TPosition cPos1,cPos2,cPos3;
+    TPositionUpdateOptions options;
+    TTimeIntervalMicroSeconds aTimeOut =  80000000;
+    TTimeIntervalMicroSeconds aInterval = 10000000;
+    TTimeIntervalMicroSeconds aMaxAge = 5000000;
+    TTimeIntervalMicroSeconds aActualInterval;
+    TTime start;
+    TTime end;
+    TInt64 aActualInt;
     returnCode = KErrNone;
-    
-  // Print to UI
-  _LIT( KSAPILocTest, "SAPILocTest" );
-  _LIT( KExample, "GetPostionOpts4");
-  TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-  
-  __UHEAP_MARK;
-  
-  CLocationService *CoreObj = CLocationService :: NewL();
-    
-  if( NULL == CoreObj)
-  	{
-  	OpenFile();
-  	LogFile.Write(_L8("\n<GetPositionOpts4 Test>\n"));
-  	LogFile.Write(_L8("Failed..\n"));
-  	CloseFile();
-   	return KErrGeneral;
- 	}
-    
+
+    // Print to UI
+    _LIT( KSAPILocTest, "SAPILocTest" );
+    _LIT( KExample, "GetPostionOpts4");
+    TestModuleIf().Printf( 0, KSAPILocTest, KExample );
+
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts4 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
+
     options.SetUpdateTimeOut(aTimeOut);
     options.SetUpdateInterval(aInterval);
     options.SetMaxUpdateAge(aMaxAge);
-    
-    ret1 = CoreObj->GetLocationL(&currPos1,&options);
-    
+
+    TRAP(ret1 , CoreObj->GetLocationL(&currPos1,&options));
+
     start.HomeTime();
-    ret2 = CoreObj->GetLocationL(&currPos2,&options);
+    TRAP(ret2 , CoreObj->GetLocationL(&currPos2,&options));
     end.HomeTime();
-    
+
     aActualInterval=end.MicroSecondsFrom(start);
-    
-  //  if( aActualInterval<=10000000 || ret1 || ret2 )
+
+    //  if( aActualInterval<=10000000 || ret1 || ret2 )
     if( (KErrNone == ret1) && (KErrNone == ret2 ))
-    	{
-      	aActualInt = aActualInterval.Int64();
-    	OpenFile();
-    	TBuf8<50> buf ;
- 		TRealFormat format ;
- 		LogFile.Write(_L8("\n<GetPositionOpts4 Test> \n"));
- 		buf.Num(aActualInt, format) ;
- 		LogFile.Write(_L8("TimeTaken = "));
- 		LogFile.Write(buf) ;
-     	CloseFile();
-     	currPos1.GetPosition(cPos1);
-     	currPos2.GetPosition(cPos2);
-     //	ValidatePosition(cPos1);
-     //	ValidatePosition(cPos2);
-     	returnCode = KErrNone;	
-      	
-    	}
-    else
-    	{
+        {
+        aActualInt = aActualInterval.Int64();
         OpenFile();
-    	LogFile.Write(_L8("\n<GetPositionOpts4 Test>\n"));
-    	LogFile.Write(_L8("Failed(error in ret values)..\n"));
-    	CloseFile();	
-    	returnCode = KErrGeneral;
+        TBuf8<50> buf ;
+        TRealFormat format ;
+        LogFile.Write(_L8("\n<GetPositionOpts4 Test> \n"));
+        buf.Num(aActualInt, format) ;
+        LogFile.Write(_L8("TimeTaken = "));
+        LogFile.Write(buf) ;
+        CloseFile();
+        currPos1.GetPosition(cPos1);
+        currPos2.GetPosition(cPos2);
+        //	ValidatePosition(cPos1);
+        //	ValidatePosition(cPos2);
+        returnCode = KErrNone;	
+
         }
-        
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts4 Test>\n"));
+        LogFile.Write(_L8("Failed(error in ret values)..\n"));
+        CloseFile();	
+        returnCode = KErrGeneral;
+        }
+
     /*aRequestorStack.Close();
     delete identityInfo;*/
     delete CoreObj;
-    
+
     __UHEAP_MARKEND; 
-    
-	  return returnCode;
-	}
-   
+
+    return returnCode;
+    }
+
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetPositionOpts5
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetPositionOpts5( CStifItemParser& /*aItem*/ )
-	{
-	TInt ret1,ret2;
-	TInt64 aTime1,aTime2;
-	TPositionInfo currPos1,currPos2;
-	TPosition cPos1,cPos2;
-	TPositionUpdateOptions options;
-	TTimeIntervalMicroSeconds aTimeOut =  10000000;
-	TTimeIntervalMicroSeconds aInterval = 2000000;
-	TTimeIntervalMicroSeconds aActualInterval;
-	TTime aTimeStamp1,aTimeStamp2;
-	TBool aAcceptPartialUpdates = ETrue;
+    {
+    TInt ret1,ret2;
+    TInt64 aTime1,aTime2;
+    TPositionInfo currPos1,currPos2;
+    TPosition cPos1,cPos2;
+    TPositionUpdateOptions options;
+    TTimeIntervalMicroSeconds aTimeOut =  10000000;
+    TTimeIntervalMicroSeconds aInterval = 2000000;
+    TTimeIntervalMicroSeconds aActualInterval;
+    TTime aTimeStamp1,aTimeStamp2;
+    TBool aAcceptPartialUpdates = ETrue;
     returnCode = KErrNone;
-  
-  // Print to UI
-  _LIT( KSAPILocTest, "SAPILocTest" );
-  _LIT( KExample, "GetPostionOpts5");
-  TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-  
-  __UHEAP_MARK;
-  
-  CLocationService *CoreObj = CLocationService :: NewL();
-  
-  if( NULL == CoreObj)
-  	{
-  	OpenFile();
-    LogFile.Write(_L8("\n<GetPositionOpts5 Test>\n"));
-    LogFile.Write(_L8("Failed(Null CoreObj)..\n"));
-    CloseFile();
-   	return KErrGeneral;
-   	}
-    
+
+    // Print to UI
+    _LIT( KSAPILocTest, "SAPILocTest" );
+    _LIT( KExample, "GetPostionOpts5");
+    TestModuleIf().Printf( 0, KSAPILocTest, KExample );
+
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts5 Test>\n"));
+        LogFile.Write(_L8("Failed(Null CoreObj)..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-  
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
+
     options.SetUpdateTimeOut(aTimeOut);
     options.SetUpdateInterval(aInterval);
     options.SetAcceptPartialUpdates(aAcceptPartialUpdates);
-    
-    User::After(120000000);
-    ret1 = CoreObj->GetLocationL(&currPos1,&options);
-  
-    if(KErrNone == ret1)
-    	{
-	    ret2 = CoreObj->GetLocationL(&currPos2,&options);
-	    if(KErrNone == ret2)
-		    {
-		    currPos1.GetPosition(cPos1);
-		    currPos2.GetPosition(cPos2);
-		    aTimeStamp1 = cPos1.Time();
-		    aTimeStamp2 = cPos2.Time();
-		    aTime1 = aTimeStamp1.Int64();
-		    aTime2 = aTimeStamp2.Int64();
-		    if((aTime1) && (aTime2))
-		      	{
-		        OpenFile();
-		       	LogFile.Write(_L8("\n<GetPositionOpts5 Test>\n"));
-		       	LogFile.Write(_L8("Passed..\n"));
-		       	CloseFile();
-		        returnCode = KErrNone;	
-		        }
-		     else
-		      	{
-		        OpenFile();
-		    	LogFile.Write(_L8("\n<GetPositionOpts5 Test>\n"));
-		    	LogFile.Write(_L8("Failed(no timeStamp)..\n"));
-		    	CloseFile();
-		       	returnCode = KErrGeneral;	
-		      	}
-		    }
-		 else
-		 	{
-		 	OpenFile();
-		    LogFile.Write(_L8("\n<GetPositionOpts5 Test>\n"));
-		    LogFile.Write(_L8("Failed(getLoc2 error)..\n"));
-		    CloseFile();
-		    returnCode = KErrGeneral;		
-		 	}
-    	}
-   
-    else
-    	{
-	    OpenFile();
-	    LogFile.Write(_L8("\n<GetPositionOpts5 Test>\n"));
-	    LogFile.Write(_L8("Failed(getLoc error)..\n"));
-	    CloseFile();
-	    returnCode = KErrGeneral;	
-   		}
 
-	/*aRequestorStack.Close();
+    //User::After(120000000);
+    TRAP(ret1 , CoreObj->GetLocationL(&currPos1,&options));
+
+    if(KErrNone == ret1)
+        {
+        TRAP(ret2 , CoreObj->GetLocationL(&currPos2,&options));
+        if(KErrNone == ret2)
+            {
+            currPos1.GetPosition(cPos1);
+            currPos2.GetPosition(cPos2);
+            aTimeStamp1 = cPos1.Time();
+            aTimeStamp2 = cPos2.Time();
+            aTime1 = aTimeStamp1.Int64();
+            aTime2 = aTimeStamp2.Int64();
+            if((aTime1) && (aTime2))
+                {
+                OpenFile();
+                LogFile.Write(_L8("\n<GetPositionOpts5 Test>\n"));
+                LogFile.Write(_L8("Passed..\n"));
+                CloseFile();
+                returnCode = KErrNone;	
+                }
+            else
+                {
+                OpenFile();
+                LogFile.Write(_L8("\n<GetPositionOpts5 Test>\n"));
+                LogFile.Write(_L8("Failed(no timeStamp)..\n"));
+                CloseFile();
+                returnCode = KErrGeneral;	
+                }
+            }
+        else
+            {
+            OpenFile();
+            LogFile.Write(_L8("\n<GetPositionOpts5 Test>\n"));
+            LogFile.Write(_L8("Failed(getLoc2 error)..\n"));
+            CloseFile();
+            returnCode = KErrGeneral;		
+            }
+        }
+
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetPositionOpts5 Test>\n"));
+        LogFile.Write(_L8("Failed(getLoc error)..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;	
+        }
+
+    /*aRequestorStack.Close();
 	delete identityInfo;*/
-	delete CoreObj;
-	__UHEAP_MARKEND;   
-	return returnCode;
-	}
-   
- // -----------------------------------------------------------------------------
+    delete CoreObj;
+    __UHEAP_MARKEND;   
+    return returnCode;
+    }
+
+// -----------------------------------------------------------------------------
 // CSAPILocTest::GetLastPosition
 // -----------------------------------------------------------------------------
 //
 //TInt CSAPILocTest::GetLastPosition( CStifItemParser& /*aItem*/ )
-  /*  {
+/*  {
     	TInt ret;
     	TPosition currPos;
     	TTime currPosTime;
@@ -3822,19 +4237,19 @@ TInt CSAPILocTest::GetPositionOpts5( CStifItemParser& /*aItem*/ )
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetLastPosition" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     // Print to log file
     iLog->Log( KExample );
 
     __UHEAP_MARK;
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
     {
     	iLog->Log( _L("CLocationService object creation failed") );	
    		return KErrGeneral;
    	}
-    
+
     ret = CoreObj->GetLastKnownLoc(currPos);
     if( KErrUnknown==ret )
     {
@@ -3845,7 +4260,7 @@ TInt CSAPILocTest::GetPositionOpts5( CStifItemParser& /*aItem*/ )
     	 __UHEAP_MARKEND;
     	return KErrNone;	
     }
-    
+
     else
     {
     	iLog->Log( _L("GetLastLocation returned") );
@@ -3855,12 +4270,12 @@ TInt CSAPILocTest::GetPositionOpts5( CStifItemParser& /*aItem*/ )
     	 __UHEAP_MARKEND;
     	return KErrGeneral;
     }
-    
-       
+
+
     }*/
-    
-    
- // -----------------------------------------------------------------------------
+
+
+// -----------------------------------------------------------------------------
 // CSAPILocTest::GetLastPosition1
 // -----------------------------------------------------------------------------
 //
@@ -3877,20 +4292,20 @@ TInt CSAPILocTest::GetPositionOpts5( CStifItemParser& /*aItem*/ )
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetLastPosition1" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     // Print to log file
     iLog->Log( KExample );
 
     __UHEAP_MARK;
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
     {
     	iLog->Log( _L("CLocationService object creation failed") );	
    		__UHEAP_MARKEND;
    		return KErrGeneral;
    	}
-    
+
     aRet = CoreObj->GetLocationL(aCurrPos);
     if(aRet)
     {
@@ -3901,7 +4316,7 @@ TInt CSAPILocTest::GetPositionOpts5( CStifItemParser& /*aItem*/ )
     	__UHEAP_MARKEND;
     	return KErrGeneral;	
     }
-    
+
     aCurrPosTime = aCurrPos.Time();
     aRet1 = CoreObj->GetLastKnownLoc(aLastPos);
     if(!aRet1)
@@ -3924,7 +4339,7 @@ TInt CSAPILocTest::GetPositionOpts5( CStifItemParser& /*aItem*/ )
             aLatitude2  = aLastPos.Latitude();
     		aLongitude2 = aLastPos.Longitude();
     		aAltitude2 = aLastPos.Altitude();
-    		
+
     		if( (aLatitude1 != aLatitude2) || (aLongitude1 != aLongitude2) || (aAltitude1 != aAltitude2 ))
     		{
     			iLog->Log( _L("Returned coordinates are wrong") );
@@ -3943,11 +4358,11 @@ TInt CSAPILocTest::GetPositionOpts5( CStifItemParser& /*aItem*/ )
     			__UHEAP_MARKEND;
     			return KErrNone;	
             }  
-               
+
         }
     }
-    
-       
+
+
     else
     {
     	iLog->Log( _L("GetLastKnownLoc failed"));
@@ -3957,11 +4372,11 @@ TInt CSAPILocTest::GetPositionOpts5( CStifItemParser& /*aItem*/ )
 	    __UHEAP_MARKEND;       
         return KErrNone;    
     }
-    
-    
+
+
     }*/
-    
-    
+
+
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetDistance
 // -----------------------------------------------------------------------------
@@ -3971,133 +4386,133 @@ TInt CSAPILocTest::GetDistance( CStifItemParser& /*aItem*/ )
     TInt aRet;
     inpparam aInputParam;
     returnCode = KErrNone;
-     // Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetDistance" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-  
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-  
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetDistance Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     aInputParam.servicechoice = 0;
     aRet = CoreObj->MathOperation(aInputParam);
     if( KErrArgument == aRet )
-		{
-		OpenFile();
-    	LogFile.Write(_L8("\n<GetDistance test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
     else
-    	{
- 		OpenFile();
- 		LogFile.Write(_L8("\n<GetDistance test> \n"));
- 		LogFile.Write(_L8("Failed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrGeneral;     	
-    	}		
-   
-   
-   delete CoreObj;
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance test> \n"));
+        LogFile.Write(_L8("Failed..\n")) ;
+        CloseFile();
+        returnCode = KErrGeneral;     	
+        }		
 
-	__UHEAP_MARKEND;       
+
+    delete CoreObj;
+
+    __UHEAP_MARKEND;       
     return KErrNone;    
-  }
-    
+    }
+
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetDistance2
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetDistance2( CStifItemParser& /*aItem*/ )
     {
-  	TInt aRet;
- // 	TPositionInfo currPos[2];
-  	TPosition currPos1[2];
-  	inpparam aInputParam;
+    TInt aRet;
+    // 	TPositionInfo currPos[2];
+    TPosition currPos1[2];
+    inpparam aInputParam;
     TReal64 aLatitude1 = 10,aLatitude2 = 20;
-	TReal64 aLongitude1 = 120,aLongitude2 = 140;
-	TReal32 aAltitude1 = 500,aAltitude2 = 500; 
-  	returnCode = KErrNone;
-  	
+    TReal64 aLongitude1 = 120,aLongitude2 = 140;
+    TReal32 aAltitude1 = 500,aAltitude2 = 500; 
+    returnCode = KErrNone;
+
     // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetDistance2" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-  
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetDistance2 Test>\n"));
-	    LogFile.Write(_L8("Failed(CoreObj Creation)..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance2 Test>\n"));
+        LogFile.Write(_L8("Failed(CoreObj Creation)..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
+
     /*for( TInt i=0;i<2;i++)
     	{
         ret[i] = CoreObj->GetLocationL(&currPos[i]);
     	}
     if( !ret[0] && !ret[1])
     	{
-    
-    	
+
+
    		currPos[0].GetPosition(currPos1[0]);
     	currPos[1].GetPosition(currPos1[1]);
-    	
+
     	aLatitude1  = currPos1[0].Latitude();
 		aLongitude1 = currPos1[0].Longitude() ;
 		aAltitude1  = currPos1[0].Altitude() ;
 	   	aLatitude2  = currPos1[1].Latitude();
 		aLongitude2 = currPos1[1].Longitude() ;
 		aAltitude2  = currPos1[1].Altitude() ;
-	*/	
-    	aInputParam.servicechoice = 10;
-    	aInputParam.source.SetCoordinate(aLatitude1,aLongitude1,aAltitude1);
-    	aInputParam.destination.SetCoordinate(aLatitude2,aLongitude2,aAltitude2);
-    	
-    	aRet = CoreObj->MathOperation(aInputParam);
-    	
-    	if(KErrNotSupported == aRet)
-    		{
-    		OpenFile();
-	    	TBuf8<50> buf ;
-	 		TRealFormat format; 
-	 		LogFile.Write(_L8("\n<GetDistance2 test> \n"));
-	 		LogFile.Write(_L8("Passed..\n"));
-	 		CloseFile();
-	        returnCode = KErrNone;  
-    		}
-	    else
-       		{
-   			OpenFile();
-     		LogFile.Write(_L8("\n<GetDistance2 test> \n"));
- 		 	LogFile.Write(_L8("Failed(Wrong error)..\n"));
- 		 	CloseFile();
- 		 	returnCode = KErrGeneral;
-       		}
+     */	
+    aInputParam.servicechoice = 10;
+    aInputParam.source.SetCoordinate(aLatitude1,aLongitude1,aAltitude1);
+    aInputParam.destination.SetCoordinate(aLatitude2,aLongitude2,aAltitude2);
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if(KErrNotSupported == aRet)
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetDistance2 test> \n"));
+        LogFile.Write(_L8("Passed..\n"));
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance2 test> \n"));
+        LogFile.Write(_L8("Failed(Wrong error)..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
     /*	}
     else
     	{
@@ -4107,13 +4522,13 @@ TInt CSAPILocTest::GetDistance2( CStifItemParser& /*aItem*/ )
  	    CloseFile();
  	    returnCode = KErrGeneral;	
     	}
-    */
-   /*aRequestorStack.Close();
+     */
+    /*aRequestorStack.Close();
    delete identityInfo;*/
-   delete CoreObj;
-   
-   __UHEAP_MARKEND;
-   return returnCode;
+    delete CoreObj;
+
+    __UHEAP_MARKEND;
+    return returnCode;
     }
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetDistance3
@@ -4121,108 +4536,108 @@ TInt CSAPILocTest::GetDistance2( CStifItemParser& /*aItem*/ )
 //
 TInt CSAPILocTest::GetDistance3( CStifItemParser& /*aItem*/ )
     {
-  	TInt ret[2],aRet;
-  	TPositionInfo currPos[2];
-  	TPosition currPos1[2];
-  	inpparam aInputParam;
+    TInt ret[2],aRet;
+    TPositionInfo currPos[2];
+    TPosition currPos1[2];
+    inpparam aInputParam;
     returnCode = KErrNone;
     TReal64 aLatitude1,aLatitude2;
-	TReal64 aLongitude1,aLongitude2;
-	TReal32 aAltitude1,aAltitude2; 
-      // Print to UI
+    TReal64 aLongitude1,aLongitude2;
+    TReal32 aAltitude1,aAltitude2; 
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetDistance3" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-  
+
     __UHEAP_MARK;
-  
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetDistance3 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance3 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
     //not needed any more
-	/*RRequestorStack aRequestorStack;
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
+
     for( TInt i=0;i<2;i++)
-    	{
-        ret[i] = CoreObj->GetLocationL(&currPos[i]);
-    	}
+        {
+        TRAP(ret[i] , CoreObj->GetLocationL(&currPos[i]));
+        }
     if( (KErrNone == ret[0]) && (KErrNone == ret[1] ))
-    	{
-    	currPos[0].GetPosition(currPos1[0]);
-    	currPos[1].GetPosition(currPos1[1]);
-    	aLatitude1  = currPos1[0].Latitude();
-		aLongitude1 = currPos1[0].Longitude() ;
-		aAltitude1  = currPos1[0].Altitude() ;
-	   	aLatitude2  = currPos1[1].Latitude();
-		aLongitude2 = currPos1[1].Longitude() ;
-		aAltitude2  = currPos1[1].Altitude() ;
-	    
-	    aInputParam.servicechoice = 0;
-    	aInputParam.source.SetCoordinate(aLatitude1,aLongitude1,aAltitude1);
-    	aInputParam.destination.SetCoordinate(aLatitude2,aLongitude2,aAltitude2);
-    	
-    	aRet = CoreObj->MathOperation(aInputParam);
-    	
-    	if( KErrNone == aRet )
-    		{
-    		OpenFile();
-	    	TBuf8<50> buf ;
-	 		TRealFormat format; 
-	 		LogFile.Write(_L8("\n<GetDistance3 test> \n"));
-	 		buf.Num(aInputParam.result, format) ;
-	 		LogFile.Write(_L8("Distance = "));
-	 		LogFile.Write(buf) ;
-	 		LogFile.Write(_L8("\n")) ;
-	 		CloseFile();
-	      	if( aInputParam.result<0 )
-	      		{
-	      		returnCode = KErrGeneral; 
-	      		}
-	      	else
-	      		{
-	      		returnCode = KErrNone;  
-	      		}
-	      	}
-    	else
-    		{
-    		OpenFile();
-       		LogFile.Write(_L8("\n<GetDistance3 test> \n"));
-	    	LogFile.Write(_L8("Failed(Math op).. \n"));
-	 	    CloseFile();
-	 	    returnCode = KErrGeneral;
-    		}
-	   	}
+        {
+        currPos[0].GetPosition(currPos1[0]);
+        currPos[1].GetPosition(currPos1[1]);
+        aLatitude1  = currPos1[0].Latitude();
+        aLongitude1 = currPos1[0].Longitude() ;
+        aAltitude1  = currPos1[0].Altitude() ;
+        aLatitude2  = currPos1[1].Latitude();
+        aLongitude2 = currPos1[1].Longitude() ;
+        aAltitude2  = currPos1[1].Altitude() ;
+
+        aInputParam.servicechoice = 0;
+        aInputParam.source.SetCoordinate(aLatitude1,aLongitude1,aAltitude1);
+        aInputParam.destination.SetCoordinate(aLatitude2,aLongitude2,aAltitude2);
+
+        aRet = CoreObj->MathOperation(aInputParam);
+
+        if( KErrNone == aRet )
+            {
+            OpenFile();
+            TBuf8<50> buf ;
+            TRealFormat format; 
+            LogFile.Write(_L8("\n<GetDistance3 test> \n"));
+            buf.Num(aInputParam.result, format) ;
+            LogFile.Write(_L8("Distance = "));
+            LogFile.Write(buf) ;
+            LogFile.Write(_L8("\n")) ;
+            CloseFile();
+            if( aInputParam.result<0 )
+                {
+                returnCode = KErrGeneral; 
+                }
+            else
+                {
+                returnCode = KErrNone;  
+                }
+            }
+        else
+            {
+            OpenFile();
+            LogFile.Write(_L8("\n<GetDistance3 test> \n"));
+            LogFile.Write(_L8("Failed(Math op).. \n"));
+            CloseFile();
+            returnCode = KErrGeneral;
+            }
+        }
     else
-    	{  
-    	OpenFile();
-     	LogFile.Write(_L8("\n<GetDistance3 test> \n"));
-	   	LogFile.Write(_L8("Failed(getloc error).. \n"));
-	    CloseFile();
-	    returnCode = KErrGeneral;	
-    	}
-   
-   /*aRequestorStack.Close();
+        {  
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance3 test> \n"));
+        LogFile.Write(_L8("Failed(getloc error).. \n"));
+        CloseFile();
+        returnCode = KErrGeneral;	
+        }
+
+    /*aRequestorStack.Close();
    delete identityInfo;*/
-   delete CoreObj;
-	  
-	  __UHEAP_MARKEND; 	
-   
+    delete CoreObj;
+
+    __UHEAP_MARKEND; 	
+
     return returnCode;
     }
-        
+
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetDistance4
 // -----------------------------------------------------------------------------
@@ -4230,77 +4645,77 @@ TInt CSAPILocTest::GetDistance3( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetDistance4( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     TTime aCurrentTime;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCoordinate1(90,180),aCoordinate2(-90,0);
-//	TLocality aLocality1(aCordinate1,5),aLocality2(aCordinate2,5);
-//	TPosition aPosition1(aLocality1,aCurrentTime),aPosition2(aLocality2,aCurrentTime);
-		 
-		// Print to UI
+    //	TLocality aLocality1(aCordinate1,5),aLocality2(aCordinate2,5);
+    //	TPosition aPosition1(aLocality1,aCurrentTime),aPosition2(aLocality2,aCurrentTime);
+
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetDistance4" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-  
+
     __UHEAP_MARK;
-  
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetDistance4 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
-   		
-    	aInputParam.servicechoice = 0;
-      	aInputParam.source = aCoordinate1;
-      	aInputParam.destination = aCoordinate2;
-    //	aInputParam.source.SetPosition(aPosition1);
-    //	aInputParam.destination.SetPosition(aPosition2);
-    	
-    	aRet = CoreObj->MathOperation(aInputParam);
-    	if(KErrNone == aRet)
-    		{
-    		OpenFile();
-	    	TBuf8<50> buf ;
-	 		TRealFormat format; 
-	 		LogFile.Write(_L8("\n<GetDistance4 test> \n"));
-	 		buf.Num(aInputParam.result, format) ;
-	 		LogFile.Write(_L8("Distance = "));
-	 		LogFile.Write(buf) ;
-	 		LogFile.Write(_L8("\n")) ;
-	 		CloseFile();
-	        
-	        if( aInputParam.result<0 )
-	      		{
-	      		returnCode = KErrGeneral; 
-	      		}
-	      	else
-	      		{
-	      		returnCode = KErrNone;  
-	      		}
-    		
-    		}
-	    
-     else
         {
         OpenFile();
-    	LogFile.Write(_L8("\n<GetDistance4 test> \n"));
- 	    LogFile.Write(_L8("Failed..\n"));
- 	    CloseFile();
- 	    returnCode = KErrGeneral;	
+        LogFile.Write(_L8("\n<GetDistance4 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
+
+    aInputParam.servicechoice = 0;
+    aInputParam.source = aCoordinate1;
+    aInputParam.destination = aCoordinate2;
+    //	aInputParam.source.SetPosition(aPosition1);
+    //	aInputParam.destination.SetPosition(aPosition2);
+
+    aRet = CoreObj->MathOperation(aInputParam);
+    if(KErrNone == aRet)
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetDistance4 test> \n"));
+        buf.Num(aInputParam.result, format) ;
+        LogFile.Write(_L8("Distance = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+
+        if( aInputParam.result<0 )
+            {
+            returnCode = KErrGeneral; 
+            }
+        else
+            {
+            returnCode = KErrNone;  
+            }
+
+        }
+
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance4 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;	
         }
     delete CoreObj;
-    
+
     __UHEAP_MARKEND;	
-    
+
     return returnCode;	
-	}
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -4310,76 +4725,76 @@ TInt CSAPILocTest::GetDistance4( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetDistance5( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     TTime aCurrentTime;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCoordinate1(0,0),aCoordinate2(0,0);
-//	TLocality aLocality1(aCordinate1,5),aLocality2(aCordinate2,5);
-//	TPosition aPosition1(aLocality1,aCurrentTime),aPosition2(aLocality2,aCurrentTime);
-	 
-		// Print to UI
+    //	TLocality aLocality1(aCordinate1,5),aLocality2(aCordinate2,5);
+    //	TPosition aPosition1(aLocality1,aCurrentTime),aPosition2(aLocality2,aCurrentTime);
+
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetDistance5" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-  
-   __UHEAP_MARK;
-  
-   CLocationService *CoreObj = CLocationService :: NewL();
-    
+
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetDistance5 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
-   	
-    	aInputParam.servicechoice = 0;
-    	aInputParam.source = aCoordinate1;
-    	aInputParam.destination = aCoordinate2;
-    //	aInputParam.source.SetPosition(aPosition1);
-    //	aInputParam.destination.SetPosition(aPosition2);
-    	
-    	aRet = CoreObj->MathOperation(aInputParam);
-    	
-    	if(( KErrNone == aRet ) && (aInputParam.result == 0))
-    		{
-    		OpenFile();
-	    	TBuf8<50> buf ;
-	 		TRealFormat format; 
-	 		LogFile.Write(_L8("\n<GetDistance5 test> \n"));
-	 		buf.Num(aInputParam.result, format) ;
-	 		LogFile.Write(_L8("Distance = "));
-	 		LogFile.Write(buf) ;
-	 		LogFile.Write(_L8("\n")) ;
-	 		CloseFile();
-	      	
-	      	if( aInputParam.result<0 )
-	      		{
-	      		returnCode = KErrGeneral; 
-	      		}
-	      	else
-	      		{
-	      		returnCode = KErrNone;  
-	      		} 
-    		}
-	   
-	    else
         {
         OpenFile();
-    	LogFile.Write(_L8("\n<GetDistance5 test> \n"));
- 	    LogFile.Write(_L8("Failed..\n"));
- 	    CloseFile();
- 	    returnCode = KErrGeneral;	
+        LogFile.Write(_L8("\n<GetDistance5 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
         }
-        
-     delete CoreObj;
-	  __UHEAP_MARKEND;
- 	  return returnCode;  		
-   	 }
+
+
+    aInputParam.servicechoice = 0;
+    aInputParam.source = aCoordinate1;
+    aInputParam.destination = aCoordinate2;
+    //	aInputParam.source.SetPosition(aPosition1);
+    //	aInputParam.destination.SetPosition(aPosition2);
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if(( KErrNone == aRet ) && (aInputParam.result == 0))
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetDistance5 test> \n"));
+        buf.Num(aInputParam.result, format) ;
+        LogFile.Write(_L8("Distance = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+
+        if( aInputParam.result<0 )
+            {
+            returnCode = KErrGeneral; 
+            }
+        else
+            {
+            returnCode = KErrNone;  
+            } 
+        }
+
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance5 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;	
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;  		
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetDistance6
@@ -4388,75 +4803,75 @@ TInt CSAPILocTest::GetDistance5( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetDistance6( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     TTime aCurrentTime;
     returnCode = KErrNone;
     TCoordinate  aCordinate1(80,190),aCordinate2(-80,-210);
-//	TLocality aLocality1(aCordinate1,5),aLocality2(aCordinate2,5);
-//	TPosition aPosition1(aLocality1,aCurrentTime),aPosition2(aLocality2,aCurrentTime);
-	 
-		// Print to UI
+    //	TLocality aLocality1(aCordinate1,5),aLocality2(aCordinate2,5);
+    //	TPosition aPosition1(aLocality1,aCurrentTime),aPosition2(aLocality2,aCurrentTime);
+
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetDistance6" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-  
+
     __UHEAP_MARK;
-  
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetDistance6 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
-   	
-    	aInputParam.servicechoice = 0;
-    	aInputParam.source = aCordinate1;
-    	aInputParam.destination = aCordinate2;
-  //  	aInputParam.source.SetPosition(aPosition1);
-  //  	aInputParam.destination.SetPosition(aPosition2);
-    	
-    	aRet = CoreObj->MathOperation(aInputParam);
-    	
-    	if( KErrNone == aRet )
-    		{
-    		OpenFile();
-	    	TBuf8<50> buf ;
-	 		TRealFormat format; 
-	 		LogFile.Write(_L8("\n<GetDistance6 test> \n"));
-	 		buf.Num(aInputParam.result, format) ;
-	 		LogFile.Write(_L8("Distance = "));
-	 		LogFile.Write(buf) ;
-	 		LogFile.Write(_L8("\n")) ;
-	 		CloseFile();
-      		
-      		if( aInputParam.result<0 )
-	      		{
-	      		returnCode = KErrGeneral; 
-	      		}
-	      	else
-	      		{
-	      		returnCode = KErrNone;  
-	      		}
-    		}
-	    
-       else
-       	{
-       	OpenFile();
-    	LogFile.Write(_L8("\n<GetDistance6 test> \n"));
- 	    LogFile.Write(_L8("Failed..\n"));
- 	    CloseFile();
- 	    returnCode = KErrGeneral;	
-       	} 
-       	
-   delete CoreObj;
-   __UHEAP_MARKEND; 
-   return returnCode; 		
-   }
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance6 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
+
+    aInputParam.servicechoice = 0;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+    //  	aInputParam.source.SetPosition(aPosition1);
+    //  	aInputParam.destination.SetPosition(aPosition2);
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetDistance6 test> \n"));
+        buf.Num(aInputParam.result, format) ;
+        LogFile.Write(_L8("Distance = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+
+        if( aInputParam.result<0 )
+            {
+            returnCode = KErrGeneral; 
+            }
+        else
+            {
+            returnCode = KErrNone;  
+            }
+        }
+
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance6 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;	
+        } 
+
+    delete CoreObj;
+    __UHEAP_MARKEND; 
+    return returnCode; 		
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -4466,209 +4881,209 @@ TInt CSAPILocTest::GetDistance6( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetDistance7( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     TTime aCurrentTime;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCordinate1(105,190),aCordinate2(-105,-210);
-//	TLocality aLocality1(aCordinate1,5),aLocality2(aCordinate2,5);
-//	TPosition aPosition1(aLocality1,aCurrentTime),aPosition2(aLocality2,aCurrentTime);
-	 
-		// Print to UI
+    //	TLocality aLocality1(aCordinate1,5),aLocality2(aCordinate2,5);
+    //	TPosition aPosition1(aLocality1,aCurrentTime),aPosition2(aLocality2,aCurrentTime);
+
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetDistance7" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetDistance7 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-    	aInputParam.servicechoice = 0;
-    	aInputParam.source = aCordinate1;
-    	aInputParam.destination = aCordinate2;
-//    	aInputParam.source.SetPosition(aPosition1);
-//    	aInputParam.destination.SetPosition(aPosition2);
-    	aRet = CoreObj->MathOperation(aInputParam);
-    	
-    	if( KErrNone == aRet)
-    		{
-    		OpenFile();
-	    	TBuf8<50> buf ;
-	 		TRealFormat format; 
-	 		LogFile.Write(_L8("\n<GetDistance7 test> \n"));
-	 		buf.Num(aInputParam.result, format) ;
-	 		LogFile.Write(_L8("Distance = "));
-	 		LogFile.Write(buf) ;
-	 		LogFile.Write(_L8("\n")) ;
-	 		CloseFile();
-	      	
-	      	if( aInputParam.result<0 )
-	      		{
-	      		returnCode = KErrGeneral; 
-	      		}
-	      	else
-	      		{
-	      		returnCode = KErrNone;  
-	      		}
-    		}
-	    else
-        	{
-       		OpenFile();
-	    	LogFile.Write(_L8("\n<GetDistance7 position returned error> \n"));
-	 	    LogFile.Write(_L8("Failed..\n"));
-	 	    CloseFile();
-	 	    returnCode = KErrGeneral;
-	 	  	}
-	 	  
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance7 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 0;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+    //    	aInputParam.source.SetPosition(aPosition1);
+    //    	aInputParam.destination.SetPosition(aPosition2);
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet)
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetDistance7 test> \n"));
+        buf.Num(aInputParam.result, format) ;
+        LogFile.Write(_L8("Distance = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+
+        if( aInputParam.result<0 )
+            {
+            returnCode = KErrGeneral; 
+            }
+        else
+            {
+            returnCode = KErrNone;  
+            }
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance7 position returned error> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetDistance8
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetDistance8( CStifItemParser& /*aItem*/ )
-	{
+    {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     TTime aCurrentTime;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCordinate1(360,400),aCordinate2(200,480);
-//	TLocality aLocality1(aCordinate1,5),aLocality2(aCordinate2,5);
-//	TPosition aPosition1(aLocality1,aCurrentTime),aPosition2(aLocality2,aCurrentTime);
-		 
-		// Print to UI
+    //	TLocality aLocality1(aCordinate1,5),aLocality2(aCordinate2,5);
+    //	TPosition aPosition1(aLocality1,aCurrentTime),aPosition2(aLocality2,aCurrentTime);
+
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetDistance8" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-   
+
     __UHEAP_MARK;
-   
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetDistance8 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
-   	
-    	aInputParam.servicechoice = 0;
-    	aInputParam.source = aCordinate1;
-    	aInputParam.destination = aCordinate2;
-//    	aInputParam.source.SetPosition(aPosition1);
-//    	aInputParam.destination.SetPosition(aPosition2);
-    	
-    	aRet = CoreObj->MathOperation(aInputParam);
-    
-    	if( KErrNone == aRet )
-    		{
-    		OpenFile();
-	    	TBuf8<50> buf ;
-	 		TRealFormat format; 
-	 		LogFile.Write(_L8("\n<GetDistance8 test> \n"));
-	 		buf.Num(aInputParam.result, format) ;
-	 		LogFile.Write(_L8("Distance = "));
-	 		LogFile.Write(buf) ;
-	 		LogFile.Write(_L8("\n")) ;
-	 		CloseFile();
-	      	if( aInputParam.result<0 )
-	      		{
-	      		returnCode = KErrGeneral; 
-	      		}
-	      	else
-	      		{
-	      		returnCode = KErrNone;  
-	      		}  
-    		}
-	   	else
-	   		{
-		   	OpenFile();
-		   	LogFile.Write(_L8("\n<GetDistance8 test> \n"));
-		   	LogFile.Write(_L8("Failed..\n"));
-            CloseFile();
-		    returnCode = KErrGeneral;
-		 	}
-		 	
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance8 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
+
+    aInputParam.servicechoice = 0;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+    //    	aInputParam.source.SetPosition(aPosition1);
+    //    	aInputParam.destination.SetPosition(aPosition2);
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetDistance8 test> \n"));
+        buf.Num(aInputParam.result, format) ;
+        LogFile.Write(_L8("Distance = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+        if( aInputParam.result<0 )
+            {
+            returnCode = KErrGeneral; 
+            }
+        else
+            {
+            returnCode = KErrNone;  
+            }  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance8 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
     delete CoreObj;
- 	__UHEAP_MARKEND;
+    __UHEAP_MARKEND;
     return returnCode;	
-   }
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetDistance9
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetDistance9( CStifItemParser& /*aItem*/ )
-	{
+    {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     TTime aCurrentTime;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(nan,170),aCordinate2(70,170);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetDistance9" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-   
+
     __UHEAP_MARK;
-   
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetDistance9 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
-   	
-    	aInputParam.servicechoice = 0;
-    	aInputParam.source = aCordinate1;
-    	aInputParam.destination = aCordinate2;
-  		aRet = CoreObj->MathOperation(aInputParam);
-    
-    	if( KErrArgument == aRet )
-    		{
-    		OpenFile();
-	    	LogFile.Write(_L8("\n<GetDistance9 test> \n"));
-	 		LogFile.Write(_L8("Passed..\n")) ;
-	 		CloseFile();
-	      	returnCode = KErrNone;  
-    		}
-	   	else
-	   		{
-		   	OpenFile();
-		   	LogFile.Write(_L8("\n<GetDistance9 test> \n"));
-		   	LogFile.Write(_L8("Failed..\n"));
-            CloseFile();
-		    returnCode = KErrGeneral;
-		 	}
-		 	
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance9 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
+
+    aInputParam.servicechoice = 0;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrArgument == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance9 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance9 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
     delete CoreObj;
- 	__UHEAP_MARKEND;
+    __UHEAP_MARKEND;
     return returnCode;	
-   }
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -4676,60 +5091,60 @@ TInt CSAPILocTest::GetDistance9( CStifItemParser& /*aItem*/ )
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetDistance10( CStifItemParser& /*aItem*/ )
-	{
+    {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     TTime aCurrentTime;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(30,nan),aCordinate2(70,170);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetDistance10" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-   
+
     __UHEAP_MARK;
-   
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetDistance10 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
-   	
-    	aInputParam.servicechoice = 0;
-    	aInputParam.source = aCordinate1;
-    	aInputParam.destination = aCordinate2;
-  		aRet = CoreObj->MathOperation(aInputParam);
-    
-    	if( KErrArgument == aRet )
-    		{
-    		OpenFile();
-	    	LogFile.Write(_L8("\n<GetDistance10 test> \n"));
-	 		LogFile.Write(_L8("Passed..\n")) ;
-	 		CloseFile();
-	      	returnCode = KErrNone;  
-    		}
-	   	else
-	   		{
-		   	OpenFile();
-		   	LogFile.Write(_L8("\n<GetDistance10 test> \n"));
-		   	LogFile.Write(_L8("Failed..\n"));
-            CloseFile();
-		    returnCode = KErrGeneral;
-		 	}
-		 	
-   delete CoreObj;
- 	__UHEAP_MARKEND;
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance10 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
+
+    aInputParam.servicechoice = 0;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrArgument == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance10 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance10 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
     return returnCode;	
-   }
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -4737,60 +5152,60 @@ TInt CSAPILocTest::GetDistance10( CStifItemParser& /*aItem*/ )
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetDistance11( CStifItemParser& /*aItem*/ )
-	{
+    {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     TTime aCurrentTime;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(30,110),aCordinate2(nan,170);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetDistance11" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-   
-    __UHEAP_MARK;
-   
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetDistance11 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
-   	
-	aInputParam.servicechoice = 0;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
-	aRet = CoreObj->MathOperation(aInputParam);
 
-	if( KErrArgument == aRet )
-		{
-		OpenFile();
-    	LogFile.Write(_L8("\n<GetDistance11 test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetDistance11 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance11 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-		 	
+        return KErrGeneral;
+        }
+
+
+    aInputParam.servicechoice = 0;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrArgument == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance11 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance11 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
     delete CoreObj;
- 	__UHEAP_MARKEND;
+    __UHEAP_MARKEND;
     return returnCode;	
-   }
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -4798,115 +5213,115 @@ TInt CSAPILocTest::GetDistance11( CStifItemParser& /*aItem*/ )
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetDistance12( CStifItemParser& /*aItem*/ )
-	{
+    {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     TTime aCurrentTime;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(30,110),aCordinate2(40,nan);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetDistance12" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-   
-    __UHEAP_MARK;
-   
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetDistance12 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
-   	
-	aInputParam.servicechoice = 0;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
-	aRet = CoreObj->MathOperation(aInputParam);
 
-	if( KErrArgument == aRet )
-		{
-		OpenFile();
-    	LogFile.Write(_L8("\n<GetDistance12 test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetDistance12 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance12 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-		 	
+        return KErrGeneral;
+        }
+
+
+    aInputParam.servicechoice = 0;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrArgument == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance12 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetDistance12 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
     delete CoreObj;
- 	__UHEAP_MARKEND;
+    __UHEAP_MARKEND;
     return returnCode;	
-   }
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetBearing
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetBearing( CStifItemParser& /*aItem*/ )
-	{
+    {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     TTime aCurrentTime;
     returnCode = KErrNone;
-    
-	// Print to UI
+
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-   
-    __UHEAP_MARK;
-   
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
-   	
-	aInputParam.servicechoice = 1;
-	aRet = CoreObj->MathOperation(aInputParam);
 
-	if( KErrArgument == aRet )
-		{
-		OpenFile();
-    	LogFile.Write(_L8("\n<GetBearing test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-		 	
+        return KErrGeneral;
+        }
+
+
+    aInputParam.servicechoice = 1;
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrArgument == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
     delete CoreObj;
- 	__UHEAP_MARKEND;
+    __UHEAP_MARKEND;
     return returnCode;	
-   }
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -4914,114 +5329,114 @@ TInt CSAPILocTest::GetBearing( CStifItemParser& /*aItem*/ )
 // -----------------------------------------------------------------------------
 //
 TInt CSAPILocTest::GetBearing1( CStifItemParser& /*aItem*/ )
-	{
+    {
     TInt ret[2],aRet;
-  	TPositionInfo currPos[2];
-  	TPosition currPos1[2];
-  	inpparam aInputParam;
+    TPositionInfo currPos[2];
+    TPosition currPos1[2];
+    inpparam aInputParam;
     TReal64 aLatitude1,aLatitude2;
-	TReal64 aLongitude1,aLongitude2;
-	TReal32 aAltitude1,aAltitude2; 
-  	returnCode = KErrNone;
-    
-	// Print to UI
+    TReal64 aLongitude1,aLongitude2;
+    TReal32 aAltitude1,aAltitude2; 
+    returnCode = KErrNone;
+
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing1" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-   
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing1 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing1 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
-	//not needed any more
-	/*RRequestorStack aRequestorStack;
+    //not needed any more
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
-    
+
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-    
-   /* for( TInt i=0;i<2;i++)
+
+    /* for( TInt i=0;i<2;i++)
     	{
       ret[i] = CoreObj->GetLocationL(&currPos[i]);
     	}
-   */
-    
-    ret[0] = CoreObj->GetLocationL(&currPos[0]) ;
-    
-    User::After(30000000) ;
-    
-    ret[1] = CoreObj->GetLocationL(&currPos[1]) ;
-    
+     */
+
+    TRAP(ret[0] , CoreObj->GetLocationL(&currPos[0]) );
+
+    //User::After(30000000) ;
+
+    TRAP(ret[1] , CoreObj->GetLocationL(&currPos[1]) );
+
     if( !ret[0] && !ret[1])
-    	{
-    	aInputParam.servicechoice = 1;
-    	currPos[0].GetPosition(currPos1[0]);
-    	currPos[1].GetPosition(currPos1[1]);
-    	aLatitude1  = currPos1[0].Latitude();
-		aLongitude1 = currPos1[0].Longitude() ;
-		//aAltitude1  = currPos1[0].Altitude() ;
-		//aAltitude1  = NaN;
-	   	aLatitude2  = currPos1[1].Latitude();
-		aLongitude2 = currPos1[1].Longitude() ;
-		//aAltitude2  = currPos1[1].Altitude() ;
-		
-    	aInputParam.source.SetCoordinate(aLatitude1,aLongitude1/*,aAltitude1*/);
-    	aInputParam.destination.SetCoordinate(aLatitude2,aLongitude2/*,aAltitude2*/);
-    	
-    	aRet = CoreObj->MathOperation(aInputParam);
-    	
-    	if(KErrNone == aRet)
-    		{
-    		OpenFile();
-	    	TBuf8<50> buf ;
-	 		TRealFormat format; 
-	 		LogFile.Write(_L8("\n<GetBearing1 test> \n"));
-	 		buf.Num(aInputParam.result, format) ;
-	 		LogFile.Write(_L8("Bearing = "));
-	 		LogFile.Write(buf) ;
-	 		LogFile.Write(_L8("\n")) ;
-	 		CloseFile();
-	      	returnCode = KErrNone;  
-    		}
-    	else if(aRet == KErrPositionIncalculable )
-	    	{
-	    	CloseFile();
-	      	returnCode = KErrNone; 
-	    		
-	    	}
-	    else
-       		{
-   			OpenFile();
-     		LogFile.Write(_L8("\n<GetBearing1 test> \n"));
- 		 	LogFile.Write(_L8("Failed @ math op..\n"));
- 		 	CloseFile();
- 		 	returnCode = KErrGeneral;
-       		}
-    	}
+        {
+        aInputParam.servicechoice = 1;
+        currPos[0].GetPosition(currPos1[0]);
+        currPos[1].GetPosition(currPos1[1]);
+        aLatitude1  = currPos1[0].Latitude();
+        aLongitude1 = currPos1[0].Longitude() ;
+        //aAltitude1  = currPos1[0].Altitude() ;
+        //aAltitude1  = NaN;
+        aLatitude2  = currPos1[1].Latitude();
+        aLongitude2 = currPos1[1].Longitude() ;
+        //aAltitude2  = currPos1[1].Altitude() ;
+
+        aInputParam.source.SetCoordinate(aLatitude1,aLongitude1/*,aAltitude1*/);
+        aInputParam.destination.SetCoordinate(aLatitude2,aLongitude2/*,aAltitude2*/);
+
+        aRet = CoreObj->MathOperation(aInputParam);
+
+        if(KErrNone == aRet)
+            {
+            OpenFile();
+            TBuf8<50> buf ;
+            TRealFormat format; 
+            LogFile.Write(_L8("\n<GetBearing1 test> \n"));
+            buf.Num(aInputParam.result, format) ;
+            LogFile.Write(_L8("Bearing = "));
+            LogFile.Write(buf) ;
+            LogFile.Write(_L8("\n")) ;
+            CloseFile();
+            returnCode = KErrNone;  
+            }
+        else if(aRet == KErrPositionIncalculable )
+            {
+            CloseFile();
+            returnCode = KErrNone; 
+
+            }
+        else
+            {
+            OpenFile();
+            LogFile.Write(_L8("\n<GetBearing1 test> \n"));
+            LogFile.Write(_L8("Failed @ math op..\n"));
+            CloseFile();
+            returnCode = KErrGeneral;
+            }
+        }
     else
-    	{
-    	OpenFile();
-    	LogFile.Write(_L8("\n<GetBearing1 test> \n"));
- 	    LogFile.Write(_L8("Failed * coreob..\n"));
- 	    CloseFile();
- 	    returnCode = KErrGeneral;	
-    	}
-    
-   
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;
-   }
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing1 test> \n"));
+        LogFile.Write(_L8("Failed * coreob..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;	
+        }
+
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -5031,57 +5446,57 @@ TInt CSAPILocTest::GetBearing1( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing2( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCordinate1(90,90),aCordinate2(90,90);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing2" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing2 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if(KErrPositionIncalculable == aRet)
-		{
-		OpenFile();
-    	TBuf8<50> buf ;
- 		TRealFormat format; 
- 		LogFile.Write(_L8("\n<GetBearing2 test> \n"));
- 		LogFile.Write(_L8("Passed..\n"));
- 		CloseFile();
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing2 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if(KErrPositionIncalculable == aRet)
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetBearing2 test> \n"));
+        LogFile.Write(_L8("Passed..\n"));
+        CloseFile();
         returnCode = KErrNone;  
-		}
+        }
     else
-   		{
-		OpenFile();
- 		LogFile.Write(_L8("\n<GetBearing2 test> \n"));
-	 	LogFile.Write(_L8("Failed..\n"));
-	 	CloseFile();
-	 	returnCode = KErrGeneral;
-   		}
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing2 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -5091,57 +5506,57 @@ TInt CSAPILocTest::GetBearing2( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing3( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCordinate1(0,0),aCordinate2(0,0);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing3" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing3 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if(KErrPositionIncalculable == aRet )
-		{
-		OpenFile();
-    	TBuf8<50> buf ;
- 		TRealFormat format; 
- 		LogFile.Write(_L8("\n<GetBearing3 test> \n"));
- 		LogFile.Write(_L8("Passed..\n"));
- 		CloseFile();
-        returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing3 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing3 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if(KErrPositionIncalculable == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetBearing3 test> \n"));
+        LogFile.Write(_L8("Passed..\n"));
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing3 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -5151,60 +5566,60 @@ TInt CSAPILocTest::GetBearing3( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing4( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCordinate1(40,90),aCordinate2(30,120);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing4" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing4 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrNone == aRet )
-		{
-		OpenFile();
-    	TBuf8<50> buf ;
- 		TRealFormat format; 
- 		LogFile.Write(_L8("\n<GetBearing4 test> \n"));
- 		buf.Num(aInputParam.result, format) ;
- 		LogFile.Write(_L8("Bearing = "));
- 		LogFile.Write(buf) ;
- 		LogFile.Write(_L8("\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing4 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing4 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetBearing4 test> \n"));
+        buf.Num(aInputParam.result, format) ;
+        LogFile.Write(_L8("Bearing = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing4 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -5214,57 +5629,57 @@ TInt CSAPILocTest::GetBearing4( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing5( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCordinate1(90,180),aCordinate2(-90,-180);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing5" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing5 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if(KErrPositionIncalculable == aRet )
-		{
-		OpenFile();
-    	TBuf8<50> buf ;
- 		TRealFormat format; 
- 		LogFile.Write(_L8("\n<GetBearing5 test> \n"));
- 		LogFile.Write(_L8("Passed..\n"));
- 		CloseFile();
-        returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing5 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing5 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if(KErrPositionIncalculable == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetBearing5 test> \n"));
+        LogFile.Write(_L8("Passed..\n"));
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing5 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -5274,61 +5689,61 @@ TInt CSAPILocTest::GetBearing5( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing6( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCordinate1(-120,-180),aCordinate2(160,180);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing6" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing6 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrNone == aRet )
-		{
-		OpenFile();
-    	TBuf8<50> buf ;
- 		TRealFormat format; 
- 		LogFile.Write(_L8("\n<GetBearing6 test> \n"));
- 		buf.Num(aInputParam.result, format) ;
- 		LogFile.Write(_L8("Bearing = "));
- 		LogFile.Write(buf) ;
- 		LogFile.Write(_L8("\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing6 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing6 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
- 	  
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetBearing6 test> \n"));
+        buf.Num(aInputParam.result, format) ;
+        LogFile.Write(_L8("Bearing = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing6 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -5338,61 +5753,61 @@ TInt CSAPILocTest::GetBearing6( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing7( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCordinate1(35,360),aCordinate2(-80,-200);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing7" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing7 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrNone == aRet )
-		{
-		OpenFile();
-    	TBuf8<50> buf ;
- 		TRealFormat format; 
- 		LogFile.Write(_L8("\n<GetBearing7 test> \n"));
- 		buf.Num(aInputParam.result, format) ;
- 		LogFile.Write(_L8("Bearing = "));
- 		LogFile.Write(buf) ;
- 		LogFile.Write(_L8("\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing7 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing7 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-	 	
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetBearing7 test> \n"));
+        buf.Num(aInputParam.result, format) ;
+        LogFile.Write(_L8("Bearing = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing7 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -5402,62 +5817,62 @@ TInt CSAPILocTest::GetBearing7( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing8( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCordinate1(-30,160),aCordinate2(120,240);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing8" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing8 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-   	if( KErrNone == aRet )
-		{
-		OpenFile();
-    	TBuf8<50> buf ;
- 		TRealFormat format; 
- 		LogFile.Write(_L8("\n<GetBearing8 test> \n"));
- 		buf.Num(aInputParam.result, format) ;
- 		LogFile.Write(_L8("Bearing = "));
- 		LogFile.Write(buf) ;
- 		LogFile.Write(_L8("\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing8 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing8 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-	 	
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
-   
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetBearing8 test> \n"));
+        buf.Num(aInputParam.result, format) ;
+        LogFile.Write(_L8("Bearing = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing8 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
+
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::GetBearing9
@@ -5466,61 +5881,61 @@ TInt CSAPILocTest::GetBearing8( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing9( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCordinate1(105,190),aCordinate2(-105,-210);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing9" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing9 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-    	
-    if( KErrNone == aRet )
-		{
-		OpenFile();
-    	TBuf8<50> buf ;
- 		TRealFormat format; 
- 		LogFile.Write(_L8("\n<GetBearing9 test> \n"));
- 		buf.Num(aInputParam.result, format) ;
- 		LogFile.Write(_L8("Bearing = "));
- 		LogFile.Write(buf) ;
- 		LogFile.Write(_L8("\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing9 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing9 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-	 	  
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetBearing9 test> \n"));
+        buf.Num(aInputParam.result, format) ;
+        LogFile.Write(_L8("Bearing = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing9 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -5530,61 +5945,61 @@ TInt CSAPILocTest::GetBearing9( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing10( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
-    
+
     TCoordinate  aCordinate1(75,190),aCordinate2(-20,-220);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing10" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing10 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-    	
-	if( KErrNone == aRet )
-		{
-		OpenFile();
-    	TBuf8<50> buf ;
- 		TRealFormat format; 
- 		LogFile.Write(_L8("\n<GetBearing10 test> \n"));
- 		buf.Num(aInputParam.result, format) ;
- 		LogFile.Write(_L8("Bearing = "));
- 		LogFile.Write(buf) ;
- 		LogFile.Write(_L8("\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing10 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing10 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-	 	
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<GetBearing10 test> \n"));
+        buf.Num(aInputParam.result, format) ;
+        LogFile.Write(_L8("Bearing = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing10 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -5594,56 +6009,56 @@ TInt CSAPILocTest::GetBearing10( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing11( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(nan,190),aCordinate2(-20,-220);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing11" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing11 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrArgument == aRet )
-		{
-		OpenFile();
-    	LogFile.Write(_L8("\n<GetBearing11 test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing11 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing11 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrArgument == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing11 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing11 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -5653,56 +6068,56 @@ TInt CSAPILocTest::GetBearing11( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing12( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(40,nan),aCordinate2(-20,-220);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing12" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing12 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-    if( KErrArgument == aRet )
-    	{
-		OpenFile();
-    	LogFile.Write(_L8("\n<GetBearing12 test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing12 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing12 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrArgument == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing12 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing12 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 
@@ -5713,57 +6128,57 @@ TInt CSAPILocTest::GetBearing12( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing13( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(40,140),aCordinate2(nan,-220);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing13" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing13 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrArgument == aRet )
-		{
-		OpenFile();
-    	LogFile.Write(_L8("\n<GetBearing13 test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing13 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing13 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-	 	  
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrArgument == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing13 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing13 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 
@@ -5774,56 +6189,56 @@ TInt CSAPILocTest::GetBearing13( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::GetBearing14( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(40,140),aCordinate2(60,nan);
 
-	// Print to UI
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "GetBearing14" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-    __UHEAP_MARK;
-    
-    CLocationService *CoreObj = CLocationService :: NewL();
-    
-    if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<GetBearing14 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 1;
-	aInputParam.source = aCordinate1;
-	aInputParam.destination = aCordinate2;
 
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrArgument == aRet )
-		{
-		OpenFile();
-    	LogFile.Write(_L8("\n<GetBearing14 test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<GetBearing14 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+    __UHEAP_MARK;
+
+    CLocationService *CoreObj = CLocationService :: NewL();
+
+    if( NULL == CoreObj)
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing14 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 1;
+    aInputParam.source = aCordinate1;
+    aInputParam.destination = aCordinate2;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrArgument == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing14 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<GetBearing14 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -5833,57 +6248,57 @@ TInt CSAPILocTest::GetBearing14( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::Move1( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(nan,140);
-	TReal32 aDist=1000,aBearing=100;
-	// Print to UI
+    TReal32 aDist=1000,aBearing=100;
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "Move1" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<Move1 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 2;
-	aInputParam.source = aCordinate1;
-	aInputParam.bearing = aBearing;
-	aInputParam.distance = aDist;
-	
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrArgument == aRet )
-		{
-		OpenFile();
-    	LogFile.Write(_L8("\n<Move1 test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<Move1 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move1 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 2;
+    aInputParam.source = aCordinate1;
+    aInputParam.bearing = aBearing;
+    aInputParam.distance = aDist;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrArgument == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move1 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move1 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 
@@ -5894,57 +6309,57 @@ TInt CSAPILocTest::Move1( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::Move2( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(40,nan);
-	TReal32 aDist=1000,aBearing=100;
-	// Print to UI
+    TReal32 aDist=1000,aBearing=100;
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "Move2" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<Move2 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 2;
-	aInputParam.source = aCordinate1;
-	aInputParam.bearing = aBearing;
-	aInputParam.distance = aDist;
-	
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrArgument == aRet )
-		{
-		OpenFile();
-    	LogFile.Write(_L8("\n<Move2 test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<Move2 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move2 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 2;
+    aInputParam.source = aCordinate1;
+    aInputParam.bearing = aBearing;
+    aInputParam.distance = aDist;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrArgument == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move2 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move2 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 
@@ -5955,58 +6370,58 @@ TInt CSAPILocTest::Move2( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::Move3( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(90,0);
-	TReal32 aDist=1000,aBearing=100;
-	// Print to UI
+    TReal32 aDist=1000,aBearing=100;
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "Move3" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<Move3 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 2;
-	aInputParam.source = aCordinate1;
-	aInputParam.bearing = aBearing;
-	aInputParam.distance = aDist;
-	
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrPositionIncalculable == aRet )
-		{
-		OpenFile();
-    	LogFile.Write(_L8("\n<Move3 test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<Move3 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move3 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-	 	  
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 2;
+    aInputParam.source = aCordinate1;
+    aInputParam.bearing = aBearing;
+    aInputParam.distance = aDist;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrPositionIncalculable == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move3 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move3 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 
@@ -6018,58 +6433,58 @@ TInt CSAPILocTest::Move3( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::Move4( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(-90,0);
-	TReal32 aDist=1000,aBearing=100;
-	// Print to UI
+    TReal32 aDist=1000,aBearing=100;
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "Move4" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<Move4 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 2;
-	aInputParam.source = aCordinate1;
-	aInputParam.bearing = aBearing;
-	aInputParam.distance = aDist;
-	
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrPositionIncalculable == aRet )
-		{
-		OpenFile();
-    	LogFile.Write(_L8("\n<Move4 test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<Move4 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move4 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-	 	  
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 2;
+    aInputParam.source = aCordinate1;
+    aInputParam.bearing = aBearing;
+    aInputParam.distance = aDist;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrPositionIncalculable == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move4 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move4 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 
@@ -6081,58 +6496,58 @@ TInt CSAPILocTest::Move4( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::Move5( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(0,0);
-	TReal32 aDist=1000,aBearing=100;
-	// Print to UI
+    TReal32 aDist=1000,aBearing=100;
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "Move5" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<Move5 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 2;
-	aInputParam.source = aCordinate1;
-	aInputParam.bearing = aBearing;
-	aInputParam.distance = aDist;
-	
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrNone == aRet )
-		{
-		OpenFile();
-    	LogFile.Write(_L8("\n<Move5 test> \n"));
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<Move5 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move5 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-	 	  
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 2;
+    aInputParam.source = aCordinate1;
+    aInputParam.bearing = aBearing;
+    aInputParam.distance = aDist;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet )
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move5 test> \n"));
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move5 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -6142,68 +6557,68 @@ TInt CSAPILocTest::Move5( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::Move6( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(20,120);
-	TReal32 aDist=1000,aBearing=100;
-	// Print to UI
+    TReal32 aDist=1000,aBearing=100;
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "Move6" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<Move6 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 2;
-	aInputParam.source = aCordinate1;
-	aInputParam.bearing = aBearing;
-	aInputParam.distance = aDist;
-	
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrNone == aRet )
-		{
-		OpenFile();
-		TBuf8<50> buf ;
- 		TRealFormat format; 
- 	   	LogFile.Write(_L8("\n<Move6 test> \n"));
- 		TReal64 aLatitude  = aCordinate1.Latitude();
- 		buf.Num(aLatitude, format) ;
- 		LogFile.Write(_L8("Latitude = "));
- 		LogFile.Write(buf) ;
- 		TReal64 aLongitude  = aCordinate1.Longitude();
- 		buf.Num(aLongitude, format) ;
- 		LogFile.Write(_L8("Longitude = "));
- 		LogFile.Write(buf) ;
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<Move6 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move6 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-	 	  
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 2;
+    aInputParam.source = aCordinate1;
+    aInputParam.bearing = aBearing;
+    aInputParam.distance = aDist;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<Move6 test> \n"));
+        TReal64 aLatitude  = aCordinate1.Latitude();
+        buf.Num(aLatitude, format) ;
+        LogFile.Write(_L8("Latitude = "));
+        LogFile.Write(buf) ;
+        TReal64 aLongitude  = aCordinate1.Longitude();
+        buf.Num(aLongitude, format) ;
+        LogFile.Write(_L8("Longitude = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move6 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::Move7
@@ -6212,68 +6627,68 @@ TInt CSAPILocTest::Move6( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::Move7( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(-30,-70);
-	TReal32 aDist=1000,aBearing=100;
-	// Print to UI
+    TReal32 aDist=1000,aBearing=100;
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "Move7" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<Move7 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 2;
-	aInputParam.source = aCordinate1;
-	aInputParam.bearing = aBearing;
-	aInputParam.distance = aDist;
-	
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrNone == aRet )
-		{
-		OpenFile();
-		TBuf8<50> buf ;
- 		TRealFormat format; 
- 	   	LogFile.Write(_L8("\n<Move7 test> \n"));
- 		TReal64 aLatitude  = aCordinate1.Latitude();
- 		buf.Num(aLatitude, format) ;
- 		LogFile.Write(_L8("Latitude = "));
- 		LogFile.Write(buf) ;
- 		TReal64 aLongitude  = aCordinate1.Longitude();
- 		buf.Num(aLongitude, format) ;
- 		LogFile.Write(_L8("Longitude = "));
- 		LogFile.Write(buf) ;
- 		LogFile.Write(_L8("Passed..\n")) ;
- 		CloseFile();
-      	returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<Move7 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move7 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-	 	  
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 2;
+    aInputParam.source = aCordinate1;
+    aInputParam.bearing = aBearing;
+    aInputParam.distance = aDist;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<Move7 test> \n"));
+        TReal64 aLatitude  = aCordinate1.Latitude();
+        buf.Num(aLatitude, format) ;
+        LogFile.Write(_L8("Latitude = "));
+        LogFile.Write(buf) ;
+        TReal64 aLongitude  = aCordinate1.Longitude();
+        buf.Num(aLongitude, format) ;
+        LogFile.Write(_L8("Longitude = "));
+        LogFile.Write(buf) ;
+        LogFile.Write(_L8("Passed..\n")) ;
+        CloseFile();
+        returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move7 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
     delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 
 // -----------------------------------------------------------------------------
@@ -6283,77 +6698,77 @@ TInt CSAPILocTest::Move7( CStifItemParser& /*aItem*/ )
 TInt CSAPILocTest::Move8( CStifItemParser& /*aItem*/ )
     {
     TInt aRet;
-  	inpparam aInputParam;
+    inpparam aInputParam;
     returnCode = KErrNone;
     TRealX nan;
     nan.SetNaN();
     TCoordinate  aCordinate1(20,120);
-	TReal32 aDist=0,aBearing=0;
-	// Print to UI
+    TReal32 aDist=0,aBearing=0;
+    // Print to UI
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "Move8" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<Move8 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-       	
-	aInputParam.servicechoice = 2;
-	aInputParam.source = aCordinate1;
-	aInputParam.bearing = aBearing;
-	aInputParam.distance = aDist;
-	
-	aRet = CoreObj->MathOperation(aInputParam);
-	
-	if( KErrNone == aRet )
-		{
-		OpenFile();
-		TBuf8<50> buf ;
- 		TRealFormat format; 
- 	   	LogFile.Write(_L8("\n<Move8 test> \n"));
- 		TReal64 aLatitude  = aCordinate1.Latitude();
- 		buf.Num(aLatitude, format) ;
- 		LogFile.Write(_L8("Latitude = "));
- 		LogFile.Write(buf) ;
- 		TReal64 aLongitude  = aCordinate1.Longitude();
- 		buf.Num(aLongitude, format) ;
- 		LogFile.Write(_L8("Longitude = "));
- 		LogFile.Write(buf) ;
- 		CloseFile();
-      	if( aLatitude != 20 || aLongitude != 120)
-      		returnCode = KErrGeneral;
-      	else
-      		returnCode = KErrNone;  
-		}
-   	else
-   		{
-	   	OpenFile();
-	   	LogFile.Write(_L8("\n<Move8 test> \n"));
-	   	LogFile.Write(_L8("Failed..\n"));
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move8 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
         CloseFile();
-	    returnCode = KErrGeneral;
-	 	}
-	 	  
-   delete CoreObj;
-   __UHEAP_MARKEND;
-   return returnCode;	
-   }
+        return KErrGeneral;
+        }
+
+    aInputParam.servicechoice = 2;
+    aInputParam.source = aCordinate1;
+    aInputParam.bearing = aBearing;
+    aInputParam.distance = aDist;
+
+    aRet = CoreObj->MathOperation(aInputParam);
+
+    if( KErrNone == aRet )
+        {
+        OpenFile();
+        TBuf8<50> buf ;
+        TRealFormat format; 
+        LogFile.Write(_L8("\n<Move8 test> \n"));
+        TReal64 aLatitude  = aCordinate1.Latitude();
+        buf.Num(aLatitude, format) ;
+        LogFile.Write(_L8("Latitude = "));
+        LogFile.Write(buf) ;
+        TReal64 aLongitude  = aCordinate1.Longitude();
+        buf.Num(aLongitude, format) ;
+        LogFile.Write(_L8("Longitude = "));
+        LogFile.Write(buf) ;
+        CloseFile();
+        if( aLatitude != 20 || aLongitude != 120)
+            returnCode = KErrGeneral;
+        else
+            returnCode = KErrNone;  
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Move8 test> \n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;	
+    }
 
 // -----------------------------------------------------------------------------
 // CSAPILocTest::Modinfo1
 // -----------------------------------------------------------------------------
 //
 //TInt CSAPILocTest::Modinfo1( CStifItemParser& /*aItem*/ )
-  /*  {
+/*  {
     TInt aRet;
     TPositionModuleInfo currPos;
   	inpparam aInputParam;
@@ -6363,11 +6778,11 @@ TInt CSAPILocTest::Move8( CStifItemParser& /*aItem*/ )
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "Modinfo1" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
+
     __UHEAP_MARK;
-    
+
     CLocationService *CoreObj = CLocationService :: NewL();
-    
+
     if( NULL == CoreObj)
     	{
     	OpenFile();
@@ -6376,10 +6791,10 @@ TInt CSAPILocTest::Move8( CStifItemParser& /*aItem*/ )
 	    CloseFile();
    		return KErrGeneral;
    		}
-       	
+
 	aRet = CoreObj->GetModuleInfo(currPos);
 	TPositionModuleInfo :: TCapabilities  currCapability  = currPos.Capabilities() ;
-	
+
 	if ( iLocinfoCategory == EGenericInfo )
 	    {
 	    if(currCapability & TPositionModuleInfo :: ECapabilitySpeed) //Populate output param with speed info
@@ -6491,7 +6906,7 @@ TInt CSAPILocTest::Move8( CStifItemParser& /*aItem*/ )
 	            }
 	        }
 
-	 	  
+
     aRequestorStack.Close();
 	    delete identityInfo;
 	    delete CoreObj;
@@ -6505,296 +6920,317 @@ TInt CSAPILocTest::Move8( CStifItemParser& /*aItem*/ )
 // -----------------------------------------------------------------------------
 //
 class Modinfo1CallBack : public MLocationCallBack
-	{
+    {
     TInt iCount ;
     TInt iRetStatus ;
     CLocationService *iCoreObj; 
+    TInt iTransactionId;
+    TInt iRequestType;
     public :
-    TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-    Modinfo1CallBack(CLocationService *obj,TInt cnt=0,TInt retStatus=KErrGeneral) 
-    	{
-		iCoreObj = obj;
-		iCount = cnt;
-		iRetStatus = retStatus;    
-    	}
-	};
-  
-   
+        TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
+        Modinfo1CallBack(TInt transId,TInt req,CLocationService *obj,TInt cnt=0,TInt retStatus=KErrGeneral) 
+            {
+            iTransactionId = transId;
+            iRequestType = req;
+            iCoreObj = obj;
+            iCount = cnt;
+            iRetStatus = retStatus;    
+            }
+
+        inline TUint GetRequestType(void) 
+            {
+            return iRequestType ;
+            }
+
+
+        /**
+         * GetTransactionId function returns transcation id associated with current async object
+         *
+         */
+        inline TInt32 GetTransactionId(void)
+            {
+            return iTransactionId ;
+            }
+    };
+
+
 TInt Modinfo1CallBack :: HandleNotifyL(HPositionGenericInfo *currPos , TInt /*aError*/)
-	{
-	TInt aRetVal = KErrNone;
-	TPositionModuleInfo modInfo;
-	OpenFile();
-	LogFile.Write(_L8("\n<Modinfo1 Test>\n "));
-	CloseFile();
-	TPosition outPos ;
-  	currPos->GetPosition(outPos) ;
-	aRetVal = ValidatePosition(outPos);
-    
+    {
+    TInt aRetVal = KErrNone;
+    TPositionModuleInfo modInfo;
+    OpenFile();
+    LogFile.Write(_L8("\n<Modinfo1 Test>\n "));
+    CloseFile();
+    TPosition outPos ;
+    currPos->GetPosition(outPos) ;
+    aRetVal = ValidatePosition(outPos);
+
     if( KErrNone == aRetVal )
-	    {
-    	aRetVal = iCoreObj->GetModuleInfo(modInfo);
-    	TPositionModuleInfo :: TCapabilities  currCapability  = modInfo.Capabilities() ;
-	
-	//	if ( iLocinfoCategory == EGenericInfo )
-	 //   	{
-	    	//if( (currCapability & TPositionModuleInfo :: ECapabilitySpeed) && returnCode == KErrNone) //Populate output param with speed info
-        	if (currCapability & TPositionModuleInfo :: ECapabilitySpeed)	
-        		{
-        		TReal32 speedinfo = 0 ;
+        {
+        aRetVal = iCoreObj->GetModuleInfo(modInfo);
+        TPositionModuleInfo :: TCapabilities  currCapability  = modInfo.Capabilities() ;
 
-        		if(!currPos->GetValue(EPositionFieldHorizontalSpeed , speedinfo) ) //Extract speed 
-            		{
-            		TBuf8<50> buf ;
-					TRealFormat format ;
-					buf.Num(speedinfo , format) ;
-					OpenFile();
-					LogFile.Write(_L8("HorizontalSpeed = "));
-					LogFile.Write(buf) ;
-					LogFile.Write(_L8("\n")) ;
-					CloseFile();
-           			}
+        //	if ( iLocinfoCategory == EGenericInfo )
+        //   	{
+        //if( (currCapability & TPositionModuleInfo :: ECapabilitySpeed) && returnCode == KErrNone) //Populate output param with speed info
+        if (currCapability & TPositionModuleInfo :: ECapabilitySpeed)	
+            {
+            TReal32 speedinfo = 0 ;
 
-		        else if(!currPos->GetValue(EPositionFieldHorizontalSpeedError , speedinfo))
-		            {
-		            TBuf8<50> buf ;
-					TRealFormat format ;
-					buf.Num(speedinfo , format) ;
-					OpenFile();
-					LogFile.Write(_L8("HorizontalSpeedError = "));
-					LogFile.Write(buf) ;
-					LogFile.Write(_L8("\n")) ;
-					CloseFile();
-		            }
-		      /*   else
+            if(!currPos->GetValue(EPositionFieldHorizontalSpeed , speedinfo) ) //Extract speed 
+                {
+                TBuf8<50> buf ;
+                TRealFormat format ;
+                buf.Num(speedinfo , format) ;
+                OpenFile();
+                LogFile.Write(_L8("HorizontalSpeed = "));
+                LogFile.Write(buf) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();
+                }
+
+            else if(!currPos->GetValue(EPositionFieldHorizontalSpeedError , speedinfo))
+                {
+                TBuf8<50> buf ;
+                TRealFormat format ;
+                buf.Num(speedinfo , format) ;
+                OpenFile();
+                LogFile.Write(_L8("HorizontalSpeedError = "));
+                LogFile.Write(buf) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();
+                }
+            /*   else
 		         {
 		         	returnCode = KErrGeneral;
 		         }
-              */    
-        	}   //End of EcapabilitySpeed 
+             */    
+            }   //End of EcapabilitySpeed 
 
 
-	  //  if((currCapability & TPositionModuleInfo :: ECapabilitySatellite) && returnCode == KErrNone ) //Extract satellitinfo if any and append it
-	     if(currCapability & TPositionModuleInfo :: ECapabilitySatellite)   
-	        {																//as part of out parm list
-	        TInt8 satinfo  = 0;
+        //  if((currCapability & TPositionModuleInfo :: ECapabilitySatellite) && returnCode == KErrNone ) //Extract satellitinfo if any and append it
+        if(currCapability & TPositionModuleInfo :: ECapabilitySatellite)   
+            {																//as part of out parm list
+            TInt8 satinfo  = 0;
 
-	        if(!currPos->GetValue(EPositionFieldSatelliteNumInView , satinfo))
-	            {
-	            TBuf8<50> buf ;
-				TRealFormat format ;
-				buf.Num(satinfo , format) ;
-				OpenFile();
-				LogFile.Write(_L8("SatelliteNumInView = "));
-				LogFile.Write(buf) ;
-				LogFile.Write(_L8("\n")) ;
-				CloseFile();
-	            }
-	        /* else
+            if(!currPos->GetValue(EPositionFieldSatelliteNumInView , satinfo))
+                {
+                TBuf8<50> buf ;
+                TRealFormat format ;
+                buf.Num(satinfo , format) ;
+                OpenFile();
+                LogFile.Write(_L8("SatelliteNumInView = "));
+                LogFile.Write(buf) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();
+                }
+            /* else
 	         	{
 	         	returnCode = KErrGeneral;
 	         	}
-	        */
-	        }
+             */
+            }
 
-	    if( (currCapability & TPositionModuleInfo :: ECapabilityDirection) && returnCode == KErrNone) //Extract direction info if any and append it 
-	        {                                                               // as part of out parm list
-	        TReal32 direcinfo = 0;
+        if( (currCapability & TPositionModuleInfo :: ECapabilityDirection) && returnCode == KErrNone) //Extract direction info if any and append it 
+            {                                                               // as part of out parm list
+            TReal32 direcinfo = 0;
 
-	        if(!currPos->GetValue(EPositionFieldTrueCourse , direcinfo) )
-	            {
-	            TBuf8<50> buf ;
-				TRealFormat format ;
-				buf.Num(direcinfo , format) ;
-				OpenFile();
-				LogFile.Write(_L8("TrueCourse  = "));
-				LogFile.Write(buf) ;
-				LogFile.Write(_L8("\n")) ;
-				CloseFile();
-	            }
+            if(!currPos->GetValue(EPositionFieldTrueCourse , direcinfo) )
+                {
+                TBuf8<50> buf ;
+                TRealFormat format ;
+                buf.Num(direcinfo , format) ;
+                OpenFile();
+                LogFile.Write(_L8("TrueCourse  = "));
+                LogFile.Write(buf) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();
+                }
 
-	        else if(!currPos->GetValue(EPositionFieldTrueCourseError , direcinfo) )
-	            {
-				TBuf8<50> buf ;
-				TRealFormat format ;
-				buf.Num(direcinfo , format) ;
-				OpenFile();
-				LogFile.Write(_L8("TrueCourseError = "));
-				LogFile.Write(buf) ;
-				LogFile.Write(_L8("\n")) ;
-				CloseFile();	            
-				}
+            else if(!currPos->GetValue(EPositionFieldTrueCourseError , direcinfo) )
+                {
+                TBuf8<50> buf ;
+                TRealFormat format ;
+                buf.Num(direcinfo , format) ;
+                OpenFile();
+                LogFile.Write(_L8("TrueCourseError = "));
+                LogFile.Write(buf) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();	            
+                }
 
-	        else if(!currPos->GetValue(EPositionFieldMagneticCourseError , direcinfo) )
-	            {
-				TBuf8<50> buf ;
-				TRealFormat format ;
-				buf.Num(direcinfo , format) ;
-				OpenFile();
-				LogFile.Write(_L8("MagneticCourseError = "));
-				LogFile.Write(buf) ;
-				LogFile.Write(_L8("\n")) ;
-				CloseFile();	           
-				}
+            else if(!currPos->GetValue(EPositionFieldMagneticCourseError , direcinfo) )
+                {
+                TBuf8<50> buf ;
+                TRealFormat format ;
+                buf.Num(direcinfo , format) ;
+                OpenFile();
+                LogFile.Write(_L8("MagneticCourseError = "));
+                LogFile.Write(buf) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();	           
+                }
 
-	        else if(!currPos->GetValue(EPositionFieldMagneticCourse , direcinfo) )
-	            {
-				TBuf8<50> buf ;
-				TRealFormat format ;
-				buf.Num(direcinfo , format) ;
-				OpenFile();
-				LogFile.Write(_L8("MagneticCourse = "));
-				LogFile.Write(buf) ;
-				LogFile.Write(_L8("\n")) ;
-				CloseFile();	 	            
-				}
-			/*else
+            else if(!currPos->GetValue(EPositionFieldMagneticCourse , direcinfo) )
+                {
+                TBuf8<50> buf ;
+                TRealFormat format ;
+                buf.Num(direcinfo , format) ;
+                OpenFile();
+                LogFile.Write(_L8("MagneticCourse = "));
+                LogFile.Write(buf) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();	 	            
+                }
+            /*else
 				{
 				returnCode = KErrGeneral;
 				}
              */
-	        }
+            }
 
 
-	    //if((currCapability & TPositionModuleInfo :: ECapabilityCompass) && returnCode == KErrNone) //Extract compass info if any and append it 
-	      if(currCapability & TPositionModuleInfo :: ECapabilityCompass)
-	        {                                                               // as part of out parm list
-	        TReal32 compassinfo ;
+        //if((currCapability & TPositionModuleInfo :: ECapabilityCompass) && returnCode == KErrNone) //Extract compass info if any and append it 
+        if(currCapability & TPositionModuleInfo :: ECapabilityCompass)
+            {                                                               // as part of out parm list
+            TReal32 compassinfo ;
 
-	        if(!currPos->GetValue(EPositionFieldHeading , compassinfo) )
-	            {
-				TBuf8<50> buf ;
-				TRealFormat format ;
-				buf.Num(compassinfo , format) ;
-				OpenFile();
-				LogFile.Write(_L8("FieldHeading = "));
-				LogFile.Write(buf) ;
-				LogFile.Write(_L8("\n")) ;
-				CloseFile();	           
-				}
+            if(!currPos->GetValue(EPositionFieldHeading , compassinfo) )
+                {
+                TBuf8<50> buf ;
+                TRealFormat format ;
+                buf.Num(compassinfo , format) ;
+                OpenFile();
+                LogFile.Write(_L8("FieldHeading = "));
+                LogFile.Write(buf) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();	           
+                }
 
 
-	        else if(!currPos->GetValue(EPositionFieldHeadingError , compassinfo) )
-	            {
-				TBuf8<50> buf ;
-				TRealFormat format ;
-				buf.Num(compassinfo , format) ;
-				OpenFile();
-				LogFile.Write(_L8("FieldHeadingError = "));
-				LogFile.Write(buf) ;
-				LogFile.Write(_L8("\n")) ;
-				CloseFile();		           
-				}
+            else if(!currPos->GetValue(EPositionFieldHeadingError , compassinfo) )
+                {
+                TBuf8<50> buf ;
+                TRealFormat format ;
+                buf.Num(compassinfo , format) ;
+                OpenFile();
+                LogFile.Write(_L8("FieldHeadingError = "));
+                LogFile.Write(buf) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();		           
+                }
 
-	        else if(!currPos->GetValue(EPositionFieldMagneticHeading , compassinfo) )
-	            {
-				TBuf8<50> buf ;
-				TRealFormat format ;
-				buf.Num(compassinfo , format) ;
-				OpenFile();
-				LogFile.Write(_L8("MagneticHeading = "));
-				LogFile.Write(buf) ;
-				LogFile.Write(_L8("\n")) ;
-				CloseFile();		           
-				}
-	
-	        else if(!currPos->GetValue(EPositionFieldMagneticHeadingError , compassinfo) )
-	            {
-				TBuf8<50> buf ;
-				TRealFormat format ;
-				buf.Num(compassinfo , format) ;
-				OpenFile();
-				LogFile.Write(_L8("MagneticHeadingError = "));
-				LogFile.Write(buf) ;
-				LogFile.Write(_L8("\n")) ;
-				CloseFile();	            
-				}
+            else if(!currPos->GetValue(EPositionFieldMagneticHeading , compassinfo) )
+                {
+                TBuf8<50> buf ;
+                TRealFormat format ;
+                buf.Num(compassinfo , format) ;
+                OpenFile();
+                LogFile.Write(_L8("MagneticHeading = "));
+                LogFile.Write(buf) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();		           
+                }
 
-			/*else
+            else if(!currPos->GetValue(EPositionFieldMagneticHeadingError , compassinfo) )
+                {
+                TBuf8<50> buf ;
+                TRealFormat format ;
+                buf.Num(compassinfo , format) ;
+                OpenFile();
+                LogFile.Write(_L8("MagneticHeadingError = "));
+                LogFile.Write(buf) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();	            
+                }
+
+            /*else
 				{
 				returnCode = KErrGeneral; 
 				}
-            */  
-	        }
+             */  
+            }
 
-	    //if( (currCapability & TPositionModuleInfo :: ECapabilityNmea) && returnCode == KErrNone )//Extract Nmea info if any and append it 	
-	      if(currCapability & TPositionModuleInfo :: ECapabilityNmea)  
-	      		{                                                             //as part of out param list  
-	        	TUint8 numSentences ;
-				TBuf8 <20> nmeaSentences ;
-	        	if(!currPos->GetValue(EPositionFieldNMEASentences , numSentences) )
-	            {
-				TBuf8<50> buf ;
-				TRealFormat format ;
-				buf.Num(numSentences , format) ;
-				OpenFile();
-				LogFile.Write(_L8("NMEASentences = "));
-				LogFile.Write(buf) ;
-				LogFile.Write(_L8("\n")) ;
-				CloseFile();	            
-				}
+        //if( (currCapability & TPositionModuleInfo :: ECapabilityNmea) && returnCode == KErrNone )//Extract Nmea info if any and append it 	
+        if(currCapability & TPositionModuleInfo :: ECapabilityNmea)  
+            {                                                             //as part of out param list  
+            TUint8 numSentences ;
+            TBuf8 <20> nmeaSentences ;
+            if(!currPos->GetValue(EPositionFieldNMEASentences , numSentences) )
+                {
+                TBuf8<50> buf ;
+                TRealFormat format ;
+                buf.Num(numSentences , format) ;
+                OpenFile();
+                LogFile.Write(_L8("NMEASentences = "));
+                LogFile.Write(buf) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();	            
+                }
 
-	       else if(!currPos->GetValue(EPositionFieldNMEASentencesStart , nmeaSentences) )
-	            {
-				TRealFormat format ;
-				OpenFile();
-				LogFile.Write(_L8("NMEASentencesStart = "));
-				LogFile.Write(nmeaSentences) ;
-				LogFile.Write(_L8("\n")) ;
-				CloseFile();	            
-				}
-		/*	else
+            else if(!currPos->GetValue(EPositionFieldNMEASentencesStart , nmeaSentences) )
+                {
+                TRealFormat format ;
+                OpenFile();
+                LogFile.Write(_L8("NMEASentencesStart = "));
+                LogFile.Write(nmeaSentences) ;
+                LogFile.Write(_L8("\n")) ;
+                CloseFile();	            
+                }
+            /*	else
 				{
 				returnCode = KErrGeneral;
 				}
-	     */ 
-	        }
+             */ 
+            }
 
-	    }
-   else
-	   	{
-   		OpenFile();
-   		LogFile.Write(_L8("Failed..\n"));
-   		CloseFile();
-   		returnCode = KErrGeneral;
-	   	}
-    
+        }
+    else
+        {
+        OpenFile();
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        returnCode = KErrGeneral;
+        }
+
     CActiveScheduler *Current = CActiveScheduler :: Current() ;
-	Current->Stop() ;
-	return KErrNone ;
-	}
+    Current->Stop() ;
+    return KErrNone ;
+    }
 
 TInt ModinfoFunctionL()
-	{
+    {
+    __UHEAP_MARK ;
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    
+
     if( NULL == CoreObj )
-    	{
-    	OpenFile();
-	    LogFile.Write(_L8("\n<Modinfo1 Test>\n"));
-	    LogFile.Write(_L8("Failed..\n"));
-	    CloseFile();
-   		return KErrGeneral;
-   		}
-    
+        {
+        OpenFile();
+        LogFile.Write(_L8("\n<Modinfo1 Test>\n"));
+        LogFile.Write(_L8("Failed..\n"));
+        CloseFile();
+        return KErrGeneral;
+        }
+
     _LIT(Kidentity ,"Coreclass Testing" ) ;
     //not needed any more
-	/*RRequestorStack aRequestorStack;
+    /*RRequestorStack aRequestorStack;
 	const CRequestor* identityInfo = CRequestor::NewL(1 , 1 , Kidentity) ;
     aRequestorStack.Insert(identityInfo,0);
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
-		
-    Modinfo1CallBack MyUpdates(CoreObj)  ;
+
+    Modinfo1CallBack MyUpdates(25,GETLOCATION,CoreObj)  ;
     CoreObj->GetLocationL(&MyUpdates) ;
     CActiveScheduler :: Start() ;
-     /*aRequestorStack.Close();
+    /*aRequestorStack.Close();
 	    delete identityInfo;*/
-	    delete CoreObj;
+    delete CoreObj;
+    __UHEAP_MARKEND ;
     return 0;
-	}
+    }
 
 TInt CSAPILocTest::Modinfo1( CStifItemParser& /*aItem*/ )
-	{
+    {
     TRequestStatus status = KRequestPending;
     TInt aRet = KErrNone;
     returnCode = KErrNone;
@@ -6802,16 +7238,15 @@ TInt CSAPILocTest::Modinfo1( CStifItemParser& /*aItem*/ )
     _LIT( KSAPILocTest, "SAPILocTest" );
     _LIT( KExample, "Modinfo1" );
     TestModuleIf().Printf( 0, KSAPILocTest, KExample );
-    
-     __UHEAP_MARK;
-    
+
+    __UHEAP_MARK;
+
     TRAPD(err , aRet = ModinfoFunctionL()) ;
     if( err || aRet )
-    returnCode = KErrGeneral; 
-    
+        returnCode = KErrGeneral; 
+
     __UHEAP_MARKEND;
- 
+
     return returnCode;  
     }
-    
-    
+

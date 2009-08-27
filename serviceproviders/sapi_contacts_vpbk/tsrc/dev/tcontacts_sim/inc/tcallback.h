@@ -47,7 +47,9 @@ class CContactCallBack : public CBase, public MContactCallback
    virtual void HandleReturnValue( TOperationEvent aEventId, const TInt& aError, TInt aTransId );
 
    virtual void HandleReturnIter( const TInt& aError, CContactIter* aIter, TInt aTransId );
- 
+   virtual void HandleReturnId( const TInt& aError, HBufC8* acntId, TInt aTransId );
+           
+   virtual void HandleReturnArray(const TInt& aError, RPointerArray<HBufC8>& aArray, TInt aTransId );
 
 	     /**
         * Destructor.

@@ -154,6 +154,15 @@ NONSHARABLE_CLASS(Ctcal_getlist) : public CScriptBase
         virtual TInt GetCalEntByTimeFilter( CStifItemParser& aItem );
         virtual TInt GetCalEntByTypeFilter( CStifItemParser& aItem );
         
+        virtual TInt GetListTimeRangeFilterAsync(CStifItemParser &aItem );
+        virtual TInt GetListGuidFilterAsync(CStifItemParser &aItem );
+        virtual TInt GetListLuidFilterAsync(CStifItemParser &aItem );
+        virtual TInt GetListTextFilterAsync(CStifItemParser &aItem );
+        virtual TInt GetListTypeFilterAsync(CStifItemParser &aItem );
+        virtual TInt GetListInvalidGuidFilterAsync(CStifItemParser &aItem );
+        virtual TInt GetListInvalidLuidFilterAsync(CStifItemParser &aItem );
+        
+        
         //ADD NEW METHOD DEC HERE
 
     public:     // Data

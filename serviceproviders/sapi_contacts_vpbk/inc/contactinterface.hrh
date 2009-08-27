@@ -29,6 +29,7 @@ enum TcontactAsyncCommands
 _LIT8( KCmdImport, "Import" );
 _LIT8( KCmdExport, "Export" );
 _LIT8( KCmdGetList, "GetList");
+_LIT8( KCmdGetIds, "GetIds");
 _LIT8( KCmdAdd, "Add" );
 _LIT8( KCmdDelete, "Delete" );
 _LIT8( KCmdOrganiseGroups, "Organise" );
@@ -36,7 +37,7 @@ _LIT8( KCmdCancel, "Cancel" );
 // Constant for the appending Error code
 _LIT8( KErrorCode, "ErrorCode" );
 _LIT8( KErrorMessage, "ErrorMessage" );
-
+_LIT8(KIdsLabel,"IdList");
 // Constant for the appending TransactionID
 _LIT8( KTransactionID, "TransactionID" );
 
@@ -75,6 +76,7 @@ _LIT(KDissociate, "Disassociate");
 _LIT(KAscending, "Ascending"); 
 _LIT(KDescending, "Descending"); 
 
+_LIT(KXspidLabel,"IMPP");
 
 #ifndef C_FIELDKEYS_HRH
 
@@ -156,6 +158,7 @@ _LIT8(KAnniversary, "Anniversary");
 _LIT8(KSyncClass, "SyncClass"); 
 _LIT8(KLOCPrivacy, "LOCPrivacy"); 
 _LIT8(KGenLabel, "GenLabel");
+_LIT8(KXspid, "IMPP");
 
 #endif // C_FIELDKEYS_HRH
 #endif // C_CONTACTINTERFACE_HRH    

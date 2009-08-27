@@ -26,6 +26,11 @@
 #include <TVPbkContactStoreUriPtr.h>
 #include <MVPbkContactLink.h>
 
+#include <f32file.h>
+#include <e32des16.h>
+#include <e32base.h>
+#include <e32svr.h>
+
 // User Includes
 #include "contactservice.h"
 #include "contactinterface.h"
@@ -205,6 +210,7 @@ TInt CContactInterface :: GetFieldMaxLength(TInt aFieldKeyID, TDesC& aDbUri)
           case R_VPBK_FIELD_TYPE_EMAILGEN :
           case R_VPBK_FIELD_TYPE_EMAILWORK:
           case R_VPBK_FIELD_TYPE_EMAILHOME:
+		  case R_VPBK_FIELD_TYPE_IMPP:
               {
               fieldmaxlength =  KMaxLengthOneHundredAndFifty;
               break;
@@ -218,6 +224,7 @@ TInt CContactInterface :: GetFieldMaxLength(TInt aFieldKeyID, TDesC& aDbUri)
               }
           case R_VPBK_FIELD_TYPE_LOCPRIVACY:
           case R_VPBK_FIELD_TYPE_RINGTONE:
+		  case R_VPBK_FIELD_TYPE_CALLEROBJIMG:
               {
               fieldmaxlength = KMaxLengthTwoHundredAndFiftySix;
               break;
@@ -391,6 +398,8 @@ void CContactInterface::ProcessAddDataL(const CLiwMap* aMap,
  										CSingleContact* aContact,
  										CLiwGenericParamList& aOutParamList)
     {
+    TBool xspid = EFalse;
+    TBool xspidIsDes = EFalse;
     TBool atleastOneField = EFalse;
     iDburi = HBufC::NewL(VPbkContactStoreUris::DefaultCntDbUri().Length());    
     //set the DBUri to the default value.    
@@ -449,8 +458,8 @@ void CContactInterface::ProcessAddDataL(const CLiwMap* aMap,
             {            
             //if the key is not uri and is not a contact id
             //search for the field
-            if(CSearchFields::GetIdFromFieldKey(fieldKey) == -1)
-                {
+            if(CSearchFields::GetIdFromFieldKey(fieldKey) != -1)
+             /*   {
                 TBuf<25> buff;
                 buff.Copy(fieldKey);
                 TBuf<KMaxName> errmsg(KAddInvalidFieldKey);
@@ -458,7 +467,9 @@ void CContactInterface::ProcessAddDataL(const CLiwMap* aMap,
             	aOutParamList.AppendL(TLiwGenericParam(KErrorMessage,
             	                      TLiwVariant(errmsg)));  	
 				User::Leave(KErrArgument);     
-                }                                        
+                }                          
+            else*/
+                {
 			aMap->FindL(fieldKey,fieldVal);
        	 	if(EVariantTypeMap == fieldVal.TypeId())
                 {
@@ -503,7 +514,50 @@ void CContactInterface::ProcessAddDataL(const CLiwMap* aMap,
 						//Set contact item field value
 					if(pMap->FindL(KFieldValue, valueVar))	
 						{
-                        if((fieldKey.Compare(KDate) == 0 || (fieldKey.Compare(KAnniversary) == 0)))
+						if(fieldKey.Compare(KXspid) == 0)
+						    {
+						    xspid = ETrue;
+						    if(EVariantTypeList != valueVar.TypeId())
+						        {
+						        	if(EVariantTypeDesC ==  valueVar.TypeId())
+						        	{
+						        	//xspidIsDes = ETrue;
+						        	CLiwList* xspidList = NULL;
+						        	xspidList = CLiwDefaultList::NewL();
+						      /*  	TPtrC val = valueVar.AsDes();
+						        	
+						        	TBuf<1000> bufVal;
+						        	bufVal.Copy(val);
+						        	HBufC* xspidVal = bufVal.AllocLC();*/
+						        	
+						        	xspidList->AppendL(valueVar);
+						        	valueVar.Reset();
+						        	valueVar.Set(xspidList);
+						        	}
+						            else
+						                {						                
+        						        TPtr16  err(iErrorMess->Des());
+                                        TBuf<KMaxName> buf;
+                                        buf.Copy(valueVar.AsData());
+                                        err.Append(KAddCnt);
+                                        err.Append(buf);
+                                        err.Append(KAddInvalidTime);
+        
+                                        aOutParamList.AppendL( TLiwGenericParam ( KErrorMessage,TLiwVariant(*iErrorMess) ) );  
+                                        CleanupStack::Pop(&nextVar);
+                                        nextVar.Reset();
+                                        CleanupStack::Pop(&valueVar);
+                                        valueVar.Reset();
+                                        CleanupStack::Pop(&labelVar);
+                                        labelVar.Reset();
+                                        CleanupStack::Pop(&fieldVal);
+                                        fieldVal.Reset();
+                                        err.Delete(0,iErrorMess->Length());
+                                        User::Leave(KErrArgument); 
+						                }
+						        }
+						    }
+                        if((fieldKey.Compare(KDate) == 0 || (fieldKey.Compare(KAnniversary) == 0))) // || (fieldKey.Compare(KBirthDay) == 0))
 	                        {
 	                        if(EVariantTypeTTime != valueVar.TypeId())
 	                        {
@@ -528,8 +582,7 @@ void CContactInterface::ProcessAddDataL(const CLiwMap* aMap,
 	                        }
                         date = ETrue;
                         }
-
-						if((EVariantTypeDesC !=  valueVar.TypeId())	&& (date == EFalse))
+						if((EVariantTypeDesC !=  valueVar.TypeId())	&& (date == EFalse) && (xspid == EFalse))
 							{
 							TPtr16  err(iErrorMess->Des());
 							TBuf<KMaxName> buf;
@@ -560,6 +613,34 @@ void CContactInterface::ProcessAddDataL(const CLiwMap* aMap,
     						                       labelVar.AsDes(),
     					    	                   KNullDesC);
     					    field->SetDateTime(valueVar.AsTTime());	                   
+    	                    }
+                        else if(xspid && !xspidIsDes)
+                            {
+                            RPointerArray<HBufC> xspidArray;
+                            const CLiwList* xspidList = valueVar.AsList();
+                            TInt count = xspidList->Count();
+                            for(int i =0; i< count; i++)
+                                {
+                                    TLiwVariant xspidVal;
+                                    if(xspidList->AtL(i,xspidVal))
+                                        {
+                                        TPtrC ptrVal = xspidVal.AsDes();
+                                        HBufC *pHeap1 = ptrVal.AllocLC();
+                                        xspidArray.Append(pHeap1);
+                                        TInt len = pHeap1->Find(_L(":"));
+                                        if(len == -1)
+                                            {
+                                            aOutParamList.AppendL(TLiwGenericParam(KErrorMessage,
+                                                                  TLiwVariant(KAddXspidInvalidFormat)));
+                                            User::Leave(KErrArgument);
+                                            }
+                                        CleanupStack::Pop(pHeap1);
+                                        }
+                                }
+                            field->SetXspidDataL(fieldKey,
+                                                    labelVar.AsDes(),
+                                                    xspidArray);
+                            xspid = EFalse;
     	                    }
                         else 
                             {
@@ -622,6 +703,7 @@ void CContactInterface::ProcessAddDataL(const CLiwMap* aMap,
 				User::Leave(KErrArgument); 
 
 				}	
+            }
             }            
 		CleanupStack::Pop(&fieldVal);
 		fieldVal.Reset();    
@@ -637,8 +719,32 @@ void CContactInterface::ProcessAddDataL(const CLiwMap* aMap,
         contactfield = aContact->FieldAt(i);
         if(contactfield) 
             {
-            contactfield->GetFieldDataL(fieldKey, fieldLabel, fieldValue);            
-			 if(!(fieldKey.Compare(KDate) == 0 || fieldKey.Compare(KAnniversary) == 0))
+            contactfield->GetFieldDataL(fieldKey, fieldLabel, fieldValue);        
+            if(fieldKey.Compare(KXspid) == 0)
+                {
+                RPointerArray<HBufC> xspidArr;
+                contactfield->GetXspidDataL(xspidArr);
+                for(TInt j=0;j<xspidArr.Count(); j++)
+                    {
+                    HBufC* xspidVal = xspidArr[j];      
+                    //HBufC* xspidBufVal = xspidVal.AllocL();
+                    if(xspidVal->Length() > GetFieldMaxLength(CSearchFields::GetIdFromFieldKey(fieldKey), *iDburi))
+                        {
+                        TPtr16  err(iErrorMess->Des());
+                        TBuf<KMaxName> fld;
+                        fld.Copy(fieldKey);             
+                        err.Append(_L("Contacts : Add : Field Value too long for key : "));
+                        err.Append(fld);
+                        
+                        aOutParamList.AppendL(TLiwGenericParam(KErrorMessage,
+                                              TLiwVariant(*iErrorMess)));
+                        
+                        err.Delete(0,iErrorMess->Length());
+                        User::Leave(KErrArgument);    
+                        }
+                    }
+                }
+            else if(!(fieldKey.Compare(KDate) == 0 || fieldKey.Compare(KAnniversary) == 0))
 			 {
 	            if(fieldValue.Length() > GetFieldMaxLength(CSearchFields::GetIdFromFieldKey(fieldKey), *iDburi))
 	        		{
@@ -794,8 +900,19 @@ void CContactInterface::ProcessCmdL(const TDesC8& aCmdName,
                         aOutParamList,
                         aCallback,
                         aCmdOptions,
-                        transId);
+                        transId,
+                        EGetList);
         }
+    //Passing arguments for GetIds command
+   else if( aCmdName.CompareF( KCmdGetIds ) == 0 )
+           {
+           GetListCommandL(aInParamList,
+                           aOutParamList,
+                           aCallback,
+                           aCmdOptions,
+                           transId,
+                           EGetIds);
+           }
    else 
    		{
         //Leave with the error code
@@ -823,7 +940,7 @@ void CContactInterface::
                      CLiwGenericParamList& aOutParamList,
                      MLiwNotifyCallback* aCallback,
                      TUint aCmdOptions,
-                     TInt aTransId)
+                     TInt aTransId, TCmdType aVal)
     {    
     const TLiwGenericParam* paramContentType = NULL;
 	const TLiwGenericParam* paramGetListData = NULL;
@@ -940,6 +1057,12 @@ void CContactInterface::
 	switch(listType)
 	    {	    
 		case EDatabase:
+		    if(aVal == EGetIds)
+		        {
+		        aOutParamList.AppendL(TLiwGenericParam(KErrorMessage,
+		                                      TLiwVariant(KGetIdsInvalidContentType)));
+		        User::Leave(KErrArgument);
+		        }
 		    //In case it is GetList of dabases, the call is synchronous
 			iter = CContactIter::NewL();			
 			CleanupStack::PushL(iter);
@@ -998,21 +1121,24 @@ void CContactInterface::
         										  KNullDesC,
         										  NULL,
         										  EAsc,
-        										  dbUri);
+        										  dbUri,aVal);
 
                     CleanupStack :: Pop(contactCallback);
                     CleanupStack::PopAndDestroy(cntid);  
                     }
              else
                     {
-                    //it is assumed that the call is synchronous
+                    if(aVal == EGetList)
+                    {
+					//it is assumed that the call is synchronous
                     CContactIter* iter =
                     iContactService->GetListL(listType,
                                               *cntid,
                                               KNullDesC,
                                               NULL,
                                               EAsc,
-                                              dbUri);
+                                              dbUri,
+                                              aVal);
                     aOutParamList.AppendL(TLiwGenericParam( KErrorCode,
                                           TLiwVariant((TInt32)SErrNone)));
                     //Setting the output param
@@ -1022,6 +1148,13 @@ void CContactInterface::
                                           TLiwVariant(iterator)));                                                             
                     CleanupStack::Pop(iterator);
                     iterator->DecRef();
+                        }
+                    else
+                    {
+                    aOutParamList.AppendL(TLiwGenericParam( KErrorCode,
+                                                              TLiwVariant((TInt32)SErrBadArgumentType)));
+                    aOutParamList.AppendL( TLiwGenericParam ( KErrorMessage,TLiwVariant(KGetIdsBadArgGrpId) ) );
+                    }
                     CleanupStack::PopAndDestroy(cntid);
                     CleanupStack::Pop(&groupId);
                     groupId.Reset();
@@ -1047,20 +1180,24 @@ void CContactInterface::
                                               KNullDesC,
                                               NULL,
                                               EAsc,
-                                              dbUri);
+                                              dbUri,
+                                              aVal);
 
                 CleanupStack :: Pop(contactCallback);
                 }
             else
                 {
-                //it is assumed that the call is synchronous
+                if(aVal == EGetList)
+                {
+				//it is assumed that the call is synchronous
                 CContactIter* iter =
                     iContactService->GetListL(listType,
                                               ptrToCntId,
                                               KNullDesC,
     										  NULL,
     										  EAsc,
-                                              dbUri);
+                                              dbUri,
+                                              aVal);
                 //Setting the output param
                 CContactIterator* iterator=CContactIterator::NewL(iter);
                 CleanupStack::PushL(iterator);
@@ -1068,6 +1205,52 @@ void CContactInterface::
                                       TLiwVariant(iterator) ));                                                      
                 CleanupStack::Pop(iterator);
                 iterator->DecRef(); 
+                    }
+                else
+                    {
+                    //call the GetIds() service api 
+                    RPointerArray<HBufC8>& arrayid = 
+                    iContactService->GetIdsL(listType,
+                                              KNullDesC,
+                                              NULL,
+                                              EAsc,
+                                              dbUri,
+                                              aVal);
+
+   
+                        
+                        
+                        aOutParamList.AppendL(TLiwGenericParam( KErrorCode,
+                                              TLiwVariant((TInt32)SErrNone)));
+                        //Setting the output param
+                        if(arrayid.Count() > 0)
+                        {
+                        CLiwList* iList = NULL;
+                        iList = CLiwDefaultList::NewL();
+                        TLiwVariant outputVal;
+                        TInt count = arrayid.Count();
+                        TInt i;
+                        for(i=0; i<count; i++)
+                            {
+                            TDesC8* idVal = arrayid[i];
+							HBufC* cntIdUnicode = HBufC::NewL(idVal->Length());
+                            CleanupStack :: PushL(cntIdUnicode);
+                            cntIdUnicode->Des().Copy(*idVal);
+                            CContactInterfaceCallback::ContactIDToUTF(cntIdUnicode);      
+                            outputVal.Set(*cntIdUnicode);
+                            iList->AppendL(outputVal);
+                            CleanupStack :: Pop(cntIdUnicode);              
+                            }
+                        CLiwMap* pFieldLinkedMap = CLiwDefaultMap::NewL();
+                        CleanupClosePushL(*pFieldLinkedMap);
+                        pFieldLinkedMap->InsertL(KIdsLabel,TLiwVariant(iList));
+                        
+                        aOutParamList.AppendL(TLiwGenericParam(KReturnValue, 
+                                                 TLiwVariant(pFieldLinkedMap)));
+                        CleanupStack::PopAndDestroy(pFieldLinkedMap);
+                        arrayid.ResetAndDestroy();
+                        }
+                    }
                	CleanupStack::Pop(&groupId);
                	groupId.Reset();
                 CleanupStack::Pop(&uriofDb);
@@ -1106,28 +1289,31 @@ void CContactInterface::
                    	                            &aInParamList);
                    	 //Call GetList in case of retrieval of a
                    	 //single contact whose id is known
-                        iContactService->GetListL(contactCallback,
+					 iContactService->GetListL(contactCallback,
         										  aTransId,
         										  listType,
         										  *cntid,
         										  KNullDesC,
         										  NULL,
         										  EAsc,
-        										  dbUri);
-
+        										  dbUri,
+        										  aVal);
                     CleanupStack :: Pop(contactCallback);
                     CleanupStack::PopAndDestroy(cntid);  
                     }
              else
                     {
                     //it is assumed that the call is synchronous
-                    CContactIter* iter =
+                    if(aVal == EGetList)
+                        {
+				CContactIter* iter =
                     iContactService->GetListL(listType,
                                               *cntid,
                                               KNullDesC,
                                               NULL,
                                               EAsc,
-                                              dbUri);
+                                                  dbUri,
+                                                  aVal);
                     aOutParamList.AppendL(TLiwGenericParam( KErrorCode,
                                           TLiwVariant((TInt32)SErrNone)));
                     //Setting the output param
@@ -1137,6 +1323,14 @@ void CContactInterface::
                                           TLiwVariant(iterator)));                                                             
                     CleanupStack::Pop(iterator);
                     iterator->DecRef(); 
+                        }
+                    else
+                        {
+                        aOutParamList.AppendL(TLiwGenericParam( KErrorCode,
+                                TLiwVariant((TInt32)SErrBadArgumentType)));
+                        aOutParamList.AppendL( TLiwGenericParam ( KErrorMessage,
+                                TLiwVariant(KGetIdsBadArgCntId) ) );
+                        }
                     CleanupStack::PopAndDestroy(cntid);
                     CleanupStack::Pop(&contactId);
                     contactId.Reset();
@@ -1241,20 +1435,24 @@ void CContactInterface::
         									  srchVal,
         									  searchFields,
         									  srtOrder,
-        									  dbUri);
+        									  dbUri,
+        									  aVal);
 
                 CleanupStack :: Pop(contactCallback);
                 }
             else
                 {
                 //it is assumed that the call is synchronous
+                if(aVal == EGetList)
+                    {
                 CContactIter* iter =
                     iContactService->GetListL(listType,
 											  ptrToCntId,
 											  srchVal,
 											  searchFields,
 											  srtOrder,
-											  dbUri);
+											  dbUri,
+											  aVal);
 
                 aOutParamList.AppendL(TLiwGenericParam(KErrorCode,
                                       TLiwVariant((TInt32)SErrNone)));
@@ -1265,7 +1463,49 @@ void CContactInterface::
                 aOutParamList.AppendL(TLiwGenericParam(KReturnValue,
                                       TLiwVariant(iterator)));
                 CleanupStack::Pop(iterator);
-                iterator->DecRef();             
+                iterator->DecRef();           
+                    }
+                else
+                    {
+                    RPointerArray<HBufC8>& arrayid = 
+                    iContactService->GetIdsL(listType,
+                                              srchVal,
+                                              searchFields,
+                                              srtOrder,
+                                              dbUri,
+                                              aVal);
+                    aOutParamList.AppendL(TLiwGenericParam( KErrorCode,
+                                                                TLiwVariant((TInt32)SErrNone)));
+                                          //Setting the output param
+                      if(arrayid.Count() > 0)
+                      {
+                      CLiwList* iList = NULL;
+                      iList = CLiwDefaultList::NewL();
+                      TLiwVariant outputVal;
+                      TInt count = arrayid.Count();
+                      TInt i;
+                      for(i=0; i<count; i++)
+                          {
+                          TDesC8* idVal = arrayid[i];
+                         HBufC* cntIdUnicode = HBufC::NewL(idVal->Length());
+                         CleanupStack :: PushL(cntIdUnicode);
+                         cntIdUnicode->Des().Copy(*idVal);
+                         CContactInterfaceCallback::ContactIDToUTF(cntIdUnicode);      
+                         outputVal.Set(*cntIdUnicode);
+                         iList->AppendL(outputVal);
+                         CleanupStack :: Pop(cntIdUnicode);
+                          }
+                      CLiwMap* pFieldLinkedMap = CLiwDefaultMap::NewL();
+                      CleanupClosePushL(*pFieldLinkedMap);
+                      pFieldLinkedMap->InsertL(KIdsLabel,TLiwVariant(iList));
+                      
+                      aOutParamList.AppendL(TLiwGenericParam(KReturnValue, 
+                                               TLiwVariant(pFieldLinkedMap)));
+                      CleanupStack::PopAndDestroy(pFieldLinkedMap);
+                      arrayid.ResetAndDestroy();
+                      }
+                    
+                    }
                 CleanupStack::Pop(&order);
                 order.Reset();
                 CleanupStack::Pop(&searchFieldKeys);
@@ -1469,10 +1709,14 @@ void CContactInterface::AddCommandL(const CLiwGenericParamList& aInParamList,
             else
                 {
                 //it is assumed that the call is synchronous
-                TRAPD(err,iContactService->AddL(contact,
-                                                KNullDesC8, //group id
-                                                KNullDesC, //group label
-                                                *iDburi));
+             
+                HBufC8* cntIdVal = NULL;
+                TRAPD(err, cntIdVal = iContactService->AddL(contact,
+                        KNullDesC8, //group id
+                        KNullDesC, //group label
+                        *iDburi)); 
+                          
+               
                 if(err == KErrNotSupported)
                     {
                     TInt errkey  = iContactService->GetErrKey();
@@ -1484,8 +1728,25 @@ void CContactInterface::AddCommandL(const CLiwGenericParamList& aInParamList,
                     aOutParamList.AppendL(TLiwGenericParam(KErrorMessage,
                                           TLiwVariant(errmsg))); 
                     User::Leave(err);                          
+                    } 
+ 
+               if(err == KErrNone)
+                   {
+                HBufC* cntIdUnicode = HBufC::NewL(cntIdVal->Length());
+                            CleanupStack :: PushL(cntIdUnicode);
+                            cntIdUnicode->Des().Copy(*cntIdVal);
+                            delete cntIdVal;
+                            cntIdVal = NULL;
+                            CContactInterfaceCallback::ContactIDToUTF(cntIdUnicode);           
+                       aOutParamList.AppendL(TLiwGenericParam(KReturnValue,TLiwVariant(*cntIdUnicode)));
+                       CleanupStack :: Pop(cntIdUnicode);
                     }
-                }            
+                else
+                    {
+                    User::Leave(err);
+                    }
+                } 
+            
             CleanupStack::Pop(contact);
             } //end of if pMap
         else
@@ -1528,6 +1789,7 @@ void CContactInterface::AddCommandL(const CLiwGenericParamList& aInParamList,
             }
         if(EFalse != pMap->FindL(KGroupId,valueGrpid)) 
             {
+            TInt typeofgrpId = valueGrpid.TypeId();
             TPtrC grpIdUnicode = valueGrpid.AsDes();      
 			if(grpIdUnicode == NULL)
 				{
@@ -1549,6 +1811,8 @@ void CContactInterface::AddCommandL(const CLiwGenericParamList& aInParamList,
             {                
 			if(EVariantTypeDesC != valueGrplabel.TypeId())	
 				{
+				CleanupStack::Pop(&valueUri);
+                valueUri.Reset();				
 				CleanupStack::Pop(&valueGrplabel);
 				valueGrplabel.Reset();
 				CleanupStack::Pop(&valueGrpid);
@@ -1601,7 +1865,8 @@ void CContactInterface::AddCommandL(const CLiwGenericParamList& aInParamList,
         else
             {
             //it is assumed that the call is synchronous
-            TRAPD(err,iContactService->AddL(NULL,
+            HBufC8* grpId = NULL;
+            TRAPD(err,grpId = iContactService->AddL(NULL,
                                   *groupId,
                                   grpLabel,
                                   dbUri));
@@ -1616,7 +1881,27 @@ void CContactInterface::AddCommandL(const CLiwGenericParamList& aInParamList,
                 aOutParamList.AppendL(TLiwGenericParam(KErrorMessage,
                                       TLiwVariant(errmsg))); 
                 User::Leave(err);                          
-                } 
+                }
+            if(err == KErrNone)
+                {
+                if(grpId)
+                    {
+                HBufC* grpIdUnicode = HBufC::NewL(grpId->Length());
+                CleanupStack :: PushL(grpIdUnicode);
+                grpIdUnicode->Des().Copy(*grpId);
+                delete grpId;
+                grpId = NULL;
+                CContactInterfaceCallback::ContactIDToUTF(grpIdUnicode);           
+                              
+               aOutParamList.AppendL(TLiwGenericParam(KReturnValue,TLiwVariant(*grpIdUnicode)));
+               CleanupStack :: Pop(grpIdUnicode);
+                    }
+                }
+            else
+                {
+                User::Leave(err);
+                }
+
                                          
             }
 	        CleanupStack :: PopAndDestroy(groupId); 

@@ -42,7 +42,8 @@ Ctmediaprovidertesting::Ctmediaprovidertesting(
         iOutList(NULL),
         iServicehandler(NULL),
         iIface(NULL),
-        iFiletype(EOtherFile)        
+        iFiletype(EOtherFile),
+        iNumberApiCall(0)
         {
         }
 

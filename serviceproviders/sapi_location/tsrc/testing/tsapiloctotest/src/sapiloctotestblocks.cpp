@@ -157,7 +157,7 @@ TInt Csapiloctotest::GetPositionTO( CStifItemParser& /*aItem*/ )
     aRequestorStack.Insert(identityInfo,0);
     CoreObj->SetRequestorIdentityL(aRequestorStack) ;*/
 		
-    aRet = CoreObj->GetLocationL(&currpos);
+    TRAP(aRet,CoreObj->GetLocationL(&currpos));
     
     if( KErrTimedOut == aRet )
     	{

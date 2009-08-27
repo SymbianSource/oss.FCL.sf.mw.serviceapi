@@ -26,6 +26,8 @@
 #include <calchangecallback.h>
 
 #include "calendarheader.h"
+class CCalendarInterface;
+
 /**
 * Implemenation of abstract MCalCallbackBase interface for Buffer output
 * Used in Async Export operation
@@ -33,6 +35,50 @@
 * @see MCalCallbackBase
 *
 */
+
+class CCalCallbackCalEntryList: public CBase, public MCalCallbackBase 
+    {
+    public:
+
+        /**
+         * Two-phase Constructor
+         * @return   CMsgCallbackBase* 
+        */      
+        static CCalCallbackCalEntryList* NewL( CCalendarInterface& aCalendarInterface, MLiwNotifyCallback *aPtrNotifyCallback, const TDesC& aCalendarName, TInt32 aTransactionId, TBool aIsEntryArray );
+
+        /**
+         * Gives the result of asynchronous SAPI
+         * @param aErrCode errcode
+         * @param aResult Result
+         * @return   void
+        */      
+        void NotifyResultL(TInt aErrCode, TAny* aResult);
+        
+    //    TInt32 GetTransactionID();
+        ~CCalCallbackCalEntryList();
+    private:
+
+        /**
+         * Constructor
+        */      
+        CCalCallbackCalEntryList( CCalendarInterface& aCalendarInterface, MLiwNotifyCallback *aPtrNotifyCallback,  TInt32 aTransactionId, TBool aIsEntryArray );
+		void ConstructL( const TDesC& aCalendarName );
+        
+   private:
+   TBool               iIsEntryArray;
+   CCalendarInterface&     iInterface;
+   /**
+       * Calendar Name
+      */      
+      HBufC*                  iCalendarName;
+
+  /*      MLiwNotifyCallback* iCallback;
+        TInt32              iTransactionId;
+        
+        */
+
+    };
+
 class CCalCallbackBaseBuffer: public CBase, public MCalCallbackBase //USED IN CASE OF EXPORT ASYNC
 	{
 	public:

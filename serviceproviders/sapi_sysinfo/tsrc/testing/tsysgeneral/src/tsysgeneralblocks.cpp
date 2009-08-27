@@ -23,6 +23,7 @@
 #include <StifParser.h>
 #include <Stiftestinterface.h>
 #include "tsysgeneral.h"
+#include <COEMAIN.H> 
 // EXTERNAL DATA STRUCTURES
 //extern  ?external_data;
 
@@ -127,49 +128,51 @@ TInt Ctsysgeneral::RunMethodL(
 //
 TInt Ctsysgeneral::GetDisplayLanguage( CStifItemParser& aItem )
     {
+    CCoeEnv* coeSupported = NULL;
+    coeSupported = CCoeEnv::Static();
+    if (coeSupported)
+        {
+        __UHEAP_MARK;
+        _LIT(KEntity, "General") ;
+        _LIT(KKey, "DisplayLanguage") ;
 
-    __UHEAP_MARK;
-    
-    _LIT(KEntity,"General") ;
-    _LIT(KKey,"DisplayLanguage") ;
-    
-    TInt returnCode = KErrNone ;
-    TInt expLanguage = 0 ;
-    TInt expDataType = 0 ;
-    aItem.GetNextInt (expLanguage) ;
-    
-    CSysInfoService *CoreObj = CSysInfoService :: NewL() ;
-    
-    if( NULL == CoreObj)
-	    {
-	    iLog->Log(_L8("Failed.. @Core")) ;
-	   	return KErrGeneral ;
-	   	}
+        TInt returnCode = KErrNone;
+        TInt expLanguage = 0;
+        TInt expDataType = 0;
+        aItem.GetNextInt(expLanguage) ;
+        CSysInfoService *CoreObj = CSysInfoService::NewL() ;
+        if (NULL == CoreObj)
+            {
+            iLog->Log(_L8("Failed.. @Core")) ;
+            return KErrGeneral;
+            }
+        CSysData *sysData = NULL;
 
-    CSysData *sysData = NULL;
-  	
-    iLog->Log(_L8("DisplayLanguage : %d"),expLanguage) ;	
-    TRAPD(leaveCode, CoreObj->GetInfoL(KEntity,KKey,sysData)) ;
-    if(KErrNotFound != leaveCode)
-		{
-		iLog->Log( _L("Failed, Set Display language found ret err: %d"),leaveCode );
-		returnCode = KErrGeneral;
-		}
+        iLog->Log(_L8("DisplayLanguage : %d"), expLanguage) ;
+        TRAPD(leaveCode, CoreObj->GetInfoL(KEntity, KKey, sysData)) ;
+        if (KErrNotFound != leaveCode)
+            {
+            iLog->Log(_L("Failed, Set Display language found ret err: %d"),
+                    leaveCode);
+            returnCode = KErrGeneral;
+            }
+        else
+            {
+            returnCode = KErrNone;
+            iLog->Log(_L8("P.. @TRAPD")) ;
+            }
+
+        delete sysData;
+        delete CoreObj;
+        __UHEAP_MARKEND;
+        return returnCode;
+        }
     else
-    	{
-    	returnCode = KErrNone ;
-    	iLog->Log(_L8("P.. @TRAPD")) ;
-    	}
-	
-	delete sysData ;    
-    delete CoreObj ;
-    __UHEAP_MARKEND ;
-    return returnCode ;
-
+        {
+        iLog->Log(_L("CCoeEnv not supported . So passing the test case"));
+        return 0;
+        }
     }
-
-
-
 
 // -----------------------------------------------------------------------------
 // Ctsysgeneral::SetWrongDataType

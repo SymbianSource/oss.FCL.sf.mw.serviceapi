@@ -956,83 +956,45 @@ TInt Ctsysmanualtest::GetConnAcc( CStifItemParser& aItem )
 // Test method for setting DisplayLanguage 
 // -----------------------------------------------------------------------------
 //
-TInt Ctsysmanualtest::SetDisplayLanguage( CStifItemParser& aItem )
+TInt Ctsysmanualtest::SetDisplayLanguage(CStifItemParser& aItem)
     {
-
     __UHEAP_MARK;
-    
-    _LIT(KEntity,"General") ;
-    _LIT(KKey,"DisplayLanguage") ;
-    
-    TInt returnCode = KErrNone ;
-    TInt expLanguage = 0 ;
-    TInt expDataType = 0 ;
-    aItem.GetNextInt (expLanguage) ;
-    
-    CSysInfoService *CoreObj = CSysInfoService :: NewL() ;
-    
-    if( NULL == CoreObj)
-	    {
-	    iLog->Log(_L8("Failed.. @Core")) ;
-	   	return KErrGeneral ;
-	   	}
-    
-   	CStatus *sysData = CStatus::NewL(expLanguage) ;
-   	
-    iLog->Log(_L8("DisplayLanguage : %d"),expLanguage) ;	
-    
-    TRAPD(leaveCode, CoreObj->SetInfoL(KEntity,KKey,sysData)) ;
-    
-    if(KErrNone == leaveCode)
-	    {
-	       
-	    CSysData *outData ;
-  	
-		TRAPD(leaveCode, CoreObj->GetInfoL(KEntity,KKey,outData)) ;
-    	
-    	if(KErrNone == leaveCode)
-	    	{
-	       
-	    	TInt retType = outData->DataType() ;
-	    
-	    	if(expDataType == retType)
-		    	{
-		      
-		    	CStatus *status = (CStatus*)outData ;
-		    	TInt retStatus = status->Status() ;
-		    	   
-		    	if(expLanguage != retStatus)
-			    	{
-			        returnCode = KErrGeneral ; 
-			    	iLog->Log(_L8("Failed.. @retStatus")) ;
-			    	}
-			    else
-			    	{
-			    	iLog->Log(_L8("Passed..")) ;	
-			    	}
-		        
-		        delete outData ;
-		        
-	      		}
-	    	}
-	    else
-	    	{
-	    	returnCode = KErrGeneral ;
-    		iLog->Log(_L8("Failed.. @2 TRAPD")) ;
-	    	}
-	    }
+
+    _LIT(KEntity, "General") ;
+    _LIT(KKey, "DisplayLanguage") ;
+
+    TInt returnCode = KErrNone;
+    TInt expLanguage = 0;
+    TInt expDataType = 0;
+    aItem.GetNextInt(expLanguage) ;
+
+    CSysInfoService *CoreObj = CSysInfoService::NewL() ;
+
+    if (NULL == CoreObj)
+        {
+        iLog->Log(_L8("Failed.. @Core")) ;
+        return KErrGeneral;
+        }
+
+    CStatus *sysData = CStatus::NewL(expLanguage) ;
+
+    iLog->Log(_L8("DisplayLanguage : %d"), expLanguage) ;
+
+    TRAPD(leaveCode, CoreObj->SetInfoL(KEntity, KKey, sysData)) ;
+
+    if (KErrNotFound == leaveCode)
+        {
+        returnCode = KErrNone;
+        }
     else
-    	{
-    	returnCode = KErrGeneral ;
-    	iLog->Log(_L8("Failed.. @TRAPD")) ;
-    	}
-    
-    delete sysData ;
-    delete CoreObj ;
-    
-       
-    __UHEAP_MARKEND ;
-    return returnCode ;
+        {
+        returnCode = KErrGeneral;
+        iLog->Log(_L8("Failed.. @TRAPD")) ;
+        }
+    delete sysData;
+    delete CoreObj;
+    __UHEAP_MARKEND;
+    return returnCode;
 
     }
 

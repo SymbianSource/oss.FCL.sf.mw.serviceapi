@@ -98,9 +98,9 @@ void Ctdeleteadd::ConstructL()
                           CStifLogger::EFile,
                           EFalse );
                           
-   icontactservice=CContactService::NewL();
+   //icontactservice=CContactService::NewL();
                             
-   icallback=new(ELeave) CContactCallback;
+  // icallback=new(ELeave) CContactCallback;
 
     }
 
@@ -128,8 +128,8 @@ Ctdeleteadd::~Ctdeleteadd()
 
     // Delete resources allocated from test methods
     Delete();
-    delete icallback;
-    delete icontactservice;
+   // delete icallback;
+//    delete icontactservice;
     // Delete logger
    
     delete iLog; 

@@ -25,6 +25,7 @@
 
 #include "mgservice.hrh"
 
+class CAsynchRequestManager;
 class CPostFilter;
 class MCLFSortingStyle;
 class MMgOperationObserver;
@@ -178,7 +179,8 @@ class CMgService : public CBase
  	    void SetSortingFieldL(  const TDesC8& aSortField ,
  	    					    const TDesC8&  aOrder ,
         					    const RArray<TInt>& aMediaTypes,
-        					    MCLFItemListModel* alistModel );
+        					    MCLFItemListModel* alistModel,
+        					    MCLFSortingStyle* aSortingStyle );
 
         /**
         * It will set the metadata field and values on which the result
@@ -191,12 +193,14 @@ class CMgService : public CBase
         * @param aEndVal	End Value of the filter criteria
         * @param aMediaTypes specify the media type for which this
        	*		 filtering should be performed
+       	* @param aFilter It is instance of filter	 
         */
         void SetFilterMetaDataL( const TDesC8& aFilterField,
         					     const TDesC& aStartVal,
         					     const TDesC& aEndVal,
         					     const RArray<TInt>& aMediaTypes,
-        					     MCLFItemListModel* alistModel );
+        					     MCLFItemListModel* alistModel,
+        					     CPostFilter* aFilter);
 
         /**
         * Two-phased constructor
@@ -236,6 +240,9 @@ class CMgService : public CBase
         * @param aEndVal   	It specifies the end value for filter criteria
         * @param aSortField	It specifies the field for sorting the result
         * @param aOrder		It specifies the sorting order Ascending/Descending
+        * @param aListModel It stores the instance of Listmodel object
+        * @param aFilter    It stores the instance of filter param 
+        * @param aSortingStyle It stores the instance of MCLSortingStyle
         * @return 			System wide error code if the operation did not
         *         			succeed.
         */
@@ -245,7 +252,9 @@ class CMgService : public CBase
         					   const TDesC& aEndVal,
         					   const TDesC8& aSortField,
         					   const TDesC8& aOrder,
-        					   MCLFItemListModel* listModel );
+        					   MCLFItemListModel* aListModel,
+        					   CPostFilter* aFilter,
+        					   MCLFSortingStyle* aSortingStyle );
 
          /**
         * This function will check whether metadata is supported for
@@ -289,18 +298,18 @@ class CMgService : public CBase
      	* store the instance of CPostfilter which filters the result
      	* as per the set filter criteria
      	*/
-    	CPostFilter* iFilter;
+    	//CPostFilter* iFilter;
 
     	/**
      	* store the instance of sorting style which sorts the result
      	* as per the set sort criteria
      	*/
-       	MCLFSortingStyle* iSortingStyle;
+       	//MCLFSortingStyle* iSortingStyle;
 
        	/**
      	* store the instance of class which observes CLF event
      	*/
-       	CClfOperationObserver* iClfObserver;
+       	//CClfOperationObserver* iClfObserver;
        	
        	/**
      	* stores the Cuurent TransactionID
@@ -308,10 +317,14 @@ class CMgService : public CBase
     	TUint  iTransactionID;
 
         /**
-        * stors the instance of iTumbnailGeneration
+        * stores the instance of TumbnailGeneration
         */    	
     	CThumbnailGeneration* iTumbnailGeneration; 
     	
+    	/**
+    	 * stores the instance of AsyncRequestManager 
+    	 */
+    	CAsynchRequestManager* iAsyncRequestManager;
     	
     	
     	

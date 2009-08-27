@@ -73,7 +73,9 @@ CCalendarAddEntry::CCalendarAddEntry( CCalendarSessionInfo* aSessionInfo,
 void CCalendarAddEntry::AddL( TUIDSet*& aGuidAdded )
 	{
 	if ( iCalendarEntry->ModifiedAttributes() & CEntryAttributes::ELocalUid )
-		UpdateEntryL( aGuidAdded );
+         UpdateEntryL( aGuidAdded );
+	else if( iCalendarEntry->ModifiedAttributes() & CEntryAttributes::EGlobalUid )
+	     UpdateEntryL( aGuidAdded );
 	else
 		AddNewEntryL( aGuidAdded );
 	}
@@ -164,7 +166,10 @@ void CCalendarAddEntry::UpdateEntryL( TUIDSet*& aGuidAdded )
 	{
 	aGuidAdded = new(ELeave) TUIDSet;
 
-	CleanupStack::PushL( aGuidAdded );             
+	CleanupStack::PushL( aGuidAdded );     
+ 
+	TPtrC8 globaluid(KNullDesC8);
+	globaluid.Set( iCalendarEntry->GlobalUid());
 	
 	// Instance Modification as the instance start time has been specified
 	if( iCalendarEntry->ModifiedAttributes() & CEntryAttributes::EInsStartTime )
@@ -173,9 +178,21 @@ void CCalendarAddEntry::UpdateEntryL( TUIDSet*& aGuidAdded )
 			User::Leave( KErrArgument );
 		
 		TCalTime instanceStTime = iCalendarEntry->InstanceStartTime();
+        
+		CCalInstance* instance;
+		
 
-		// Fetch instance having start time specified
-		CCalInstance* instance = GetInstanceL( instanceStTime, iCalendarEntry->LocalUid() );
+		// Fetch instance having start time and LocalUid specified and GlobalUid specified
+		if(iCalendarEntry->ModifiedAttributes() & CEntryAttributes::ELocalUid)
+		    {
+		    instance = GetInstanceL( instanceStTime, iCalendarEntry->LocalUid() );
+		    }
+		else if(iCalendarEntry->ModifiedAttributes() & CEntryAttributes::EGlobalUid)
+            {
+            instance = GetGlobalInstanceL(instanceStTime, globaluid);
+            }
+		
+		///add code here 
 		
 		if ( !instance )
 			User::Leave( KErrArgument );
@@ -245,8 +262,22 @@ void CCalendarAddEntry::UpdateEntryL( TUIDSet*& aGuidAdded )
 	else
 		{
 		// Fetch entry to be modified
-		CCalEntry* entry = iSessionInfo->EntryView()->FetchL( iCalendarEntry->LocalUid() );
-		
+		CCalEntry* entry ;
+
+		if(iCalendarEntry->ModifiedAttributes() & CEntryAttributes::ELocalUid)
+            {
+            entry = iSessionInfo->EntryView()->FetchL( iCalendarEntry->LocalUid() );
+            }
+        else if(iCalendarEntry->ModifiedAttributes() & CEntryAttributes::EGlobalUid)
+            {
+            RPointerArray<CCalEntry> entryList;
+            CleanupStack::PushL( TCleanupItem(CleanupCCalEntryArray, &entryList) );
+            iSessionInfo->EntryView()->FetchL( globaluid, entryList);
+            entry = entryList[0];
+            entryList[0] = NULL;
+            CleanupStack::PopAndDestroy( &entryList );
+            }
+        		
 		//Invalid LocalUID
 		if( !entry )
 			User::Leave( KErrArgument );
@@ -644,7 +675,40 @@ CCalInstance* CCalendarAddEntry::GetInstanceL( const TCalTime& aInsStTime,
 	
 	return instance;
 	}
+// ---------------------------------------------------------------------------
+// CCalendarAddEntry::GetGlobalInstanceL
+// Retrieves the Instance for the given global Uid
+// ---------------------------------------------------------------------------
+//
+CCalInstance* CCalendarAddEntry::GetGlobalInstanceL( const TCalTime& aInsStTime, 
+                                                            const TDesC8& aUid )
+    {
+    CCalInstance* instance = NULL;
 
+    RPointerArray<CCalInstance> insArray( KArrayGran );
+
+    CleanupStack::PushL( TCleanupItem(CleanupCCalInstanceArray, &insArray) );
+    
+    // Find instance having the instance start time specified
+    iSessionInfo->InstanceView()->FindInstanceL(insArray, CalCommon::EIncludeAll, 
+                                            CalCommon::TCalTimeRange(aInsStTime, aInsStTime));
+    
+    TInt count = insArray.Count();
+    
+    for( TInt index = 0 ; index < count; index++ )
+        {
+        if ( insArray[index]->Entry().UidL() == aUid )
+            {
+            instance = insArray[index];
+            insArray[index] = NULL; 
+            break;
+            }
+        }
+    CleanupStack::PopAndDestroy( &insArray );   
+    
+    return instance;
+
+    }
 // ---------------------------------------------------------------------------
 // CCalendarAddEntry::SetStartEndTimeL
 // Set instance start and end time

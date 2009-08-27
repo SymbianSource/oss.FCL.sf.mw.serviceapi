@@ -161,6 +161,7 @@ NONSHARABLE_CLASS(CTLocTest) : public CScriptBase
         virtual TInt ConcurrentCallsTrace(CStifItemParser& aItem);
         virtual TInt EmptyCancelTrace(CStifItemParser& aItem);
         virtual TInt EmptyCancelLocAsynch(CStifItemParser& aItem);
+        virtual TInt TraceTimeOut(CStifItemParser& aItem);
     public:     // Data
         
         //?data_declaration;
@@ -193,6 +194,8 @@ NONSHARABLE_CLASS(CTLocTest) : public CScriptBase
     TInt StrayTest(TAny *aArg) ;
     TInt StrayTestGetLoc(TAny *aArg) ;
     TInt ConcurrentGetLocationCalls(TAny *aArg) ;
+    TInt TraceTimeOutFunc(TAny *aArg) ;
+    TInt ConcurrentTraceCalls(TAny */*Arg*/);
 
 #endif      // TLOCTEST_H
 

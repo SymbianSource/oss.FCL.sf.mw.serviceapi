@@ -12,7 +12,7 @@
 * Contributors:
 *
 * Description:   contains test case implementation for CancelOngoingService location-SAPI
-*  V	ersion     : %version: 4 % << Don't touch! Updated by Synergy at check-out.
+*  V	ersion     : %version: 5 % << Don't touch! Updated by Synergy at check-out.
 *
 */
 
@@ -23,6 +23,8 @@
 #include <e32const.h>
 class CGetLoc ; //Forward declaration
 
+#define GETLOCATION 0
+#define TRACE 1
 
 _LIT(LogFileName , "C:\\Notificationscan.txt") ;
 _LIT(KRequestor,"testapp");
@@ -51,14 +53,30 @@ class CancelLocUpdateCallBack : public MLocationCallBack
    TInt iRetStatus ;
    TInt iServiceId;
    CLocationService* iServicePtr;
+    TInt iTransactionId;
+    TInt iRequestType;
     public :
     	TInt HandleNotifyL(HPositionGenericInfo *aInfo , TInt aError) ;
     
-    	CancelLocUpdateCallBack(CLocationService *CoreObj) :iCount(0) , iRetStatus(KErrGeneral),iServicePtr(CoreObj)  //Default constructor 
-    	{
-    		;
-    	}
-    
+    CancelLocUpdateCallBack(TInt trans,TInt req,CLocationService *CoreObj) :iCount(0) , iRetStatus(KErrGeneral),iServicePtr(CoreObj)  //Default constructor 
+    	    {
+    	    iTransactionId = trans;
+    	    iRequestType = req;
+    	    }
+    inline TUint GetRequestType(void) 
+        {
+        return iRequestType ;
+        }
+
+
+    /**
+     * GetTransactionId function returns transcation id associated with current async object
+     *
+     */
+    inline TInt32 GetTransactionId(void)
+        {
+        return iTransactionId ;
+        }    
   };
 
 
@@ -136,20 +154,22 @@ TInt CancelLocFunctionAL()
 {
    
     	
-    
+    __UHEAP_MARK ;
     
     CActiveScheduler *Scheduler = new CActiveScheduler ;
     
     CActiveScheduler :: Install(Scheduler) ;
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    CancelLocUpdateCallBack MyUpdates(CoreObj)  ;
+    CancelLocUpdateCallBack MyUpdates(10,TRACE,CoreObj)  ;
  
    
     CoreObj->TraceL((&MyUpdates),EBasicInfo) ;
     CoreObj->CancelOnGoingService(ECancelTrace);
     
-    
-    
+    delete CoreObj;
+    delete Scheduler;
+
+    __UHEAP_MARKEND ;
     return 0 ; 
 }	
 TInt CancelLocUpdatesA(TAny */*Arg*/)
@@ -192,20 +212,21 @@ TInt CancelLocFunctionBL()
 {
    
     	
-    
+    __UHEAP_MARK ;
    
     CActiveScheduler *Scheduler = new CActiveScheduler ;
     
     CActiveScheduler :: Install(Scheduler) ;
     CLocationService *CoreObj = CLocationService ::NewL() ;
-     CancelLocUpdateCallBack MyUpdates(CoreObj)  ;
+    CancelLocUpdateCallBack MyUpdates(11,TRACE,CoreObj)  ;
  
    
     CoreObj->TraceL((&MyUpdates),EBasicInfo) ;
     
     CActiveScheduler :: Start() ;
-    
-    
+    delete CoreObj;
+    delete Scheduler;
+    __UHEAP_MARKEND ;
     
     
     return 0 ; 
@@ -248,19 +269,21 @@ TInt CancelLocAsynchFunctionL()
 {
    
     	
-    
+    __UHEAP_MARK ;
     
     CActiveScheduler *Scheduler = new CActiveScheduler ;
     
     CActiveScheduler :: Install(Scheduler) ;
     CLocationService *CoreObj = CLocationService ::NewL() ;
-    CancelLocUpdateCallBack MyUpdates(CoreObj)  ;
+    CancelLocUpdateCallBack MyUpdates(12,GETLOCATION,CoreObj)  ;
    
     CoreObj->GetLocationL((&MyUpdates),EBasicInfo) ;
     CoreObj->CancelOnGoingService(ECancelGetLocation);
     
-    
-    
+    delete CoreObj;
+    delete Scheduler;
+
+    __UHEAP_MARKEND ;
     return 0 ; 
 }	
 TInt CancelLocAsynch(TAny */*Arg*/)

@@ -110,8 +110,15 @@ TInt CContactsUT::RunMethodL(
     return RunInternalL( KFunctions, count, aItem );
 
     }
+void CContactsUT::HandleReturnId( const TInt& aError, HBufC8* acntId, TInt aTransId )
+    {
+    CActiveScheduler::Stop();
+    }
 
-
+void CContactsUT::HandleReturnArray(const TInt& aError, RPointerArray<HBufC8>& aArray, TInt aTransId )
+    {
+    CActiveScheduler::Stop();
+    }
 void CContactsUT::HandleReturnValue(TOperationEvent /*aEvent*/,  const TInt& aError, TInt /*aTransId*/ )
     {
     CActiveScheduler::Stop();

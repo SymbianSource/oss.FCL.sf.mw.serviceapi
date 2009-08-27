@@ -115,4 +115,9 @@ EXPORTS
 	?Type@CRepeatInfo@@QAE?AW4TType@TCalRRule@@XZ @ 114 NONAME ; enum TCalRRule::TType CRepeatInfo::Type(void)
 	?UntilDate@CRepeatInfo@@QAEAAVTCalTime@@XZ @ 115 NONAME ; class TCalTime & CRepeatInfo::UntilDate(void)
 	?WeekStart@CRepeatInfo@@QAE?AW4TDay@@XZ @ 116 NONAME ; enum TDay CRepeatInfo::WeekStart(void)
+	?GetListL@CCalendarService@@QAEXABVTDesC16@@PAVCCalendarFilter@@PAVMCalCallbackBase@@@Z @ 117 NONAME ; void CCalendarService::GetListL(class TDesC16 const &, class CCalendarFilter *, class MCalCallbackBase *)
+	?GetListL@CCalendarService@@QAEXABVTDesC16@@ABVTDesC8@@PAVMCalCallbackBase@@@Z @ 118 NONAME ; void CCalendarService::GetListL(class TDesC16 const &, class TDesC8 const &, class MCalCallbackBase *)
+	?GetListL@CCalendarService@@QAEXABVTDesC16@@KPAVMCalCallbackBase@@@Z @ 119 NONAME ; void CCalendarService::GetListL(class TDesC16 const &, unsigned long, class MCalCallbackBase *)
+	?GlobalUid@CEntryAttributes@@QAE?AVTPtrC8@@XZ @ 120 NONAME ; class TPtrC8 CEntryAttributes::GlobalUid(void)
+	?SetUidL@CEntryAttributes@@QAEXABVTDesC8@@@Z @ 121 NONAME ; void CEntryAttributes::SetUidL(class TDesC8 const &)
 

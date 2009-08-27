@@ -22,14 +22,19 @@
 #include "locationservice.h"
 
 
+CGetLoc::CGetLoc() :
+CActive(CActive::EPriorityStandard)
+                {
 
+                }
 
+CGetLoc::~CGetLoc()
 
-//Constructor
-
-CGetLoc :: CGetLoc():CActive( CActive::EPriorityStandard )
     {
-    
+    iPositioner.Close() ;
+    delete iGenericPosInfo;
+    iLocationService = NULL;
+
     }
         
 /**
@@ -38,15 +43,48 @@ CGetLoc :: CGetLoc():CActive( CActive::EPriorityStandard )
  * with subsessions for communicating with location server
  */
         
-void CGetLoc::ConstructL()
+void CGetLoc::ConstructL(RPositionServer& aPositionServer ,
+        TPositionFieldIdList aList ,
+        TInt aRequestType,        
+        TPositionModuleId aModuleId)
     {
     // Initialise the position request sequence
-  
+
     DoInitialiseL();
-    
+
+
+    if( aModuleId.iUid )
+        {
+        //Open a new subsession with position server
+        User :: LeaveIfError((this->iPositioner).Open(aPositionServer,aModuleId)); 
+        }
+
+    else
+        {
+        //Open a new subsession with position server using default module
+        User :: LeaveIfError((this->iPositioner).Open(aPositionServer)) ; 
+        }
+
+    CleanupClosePushL(iPositioner);
+    //Set the identity of this particular requestor
+    User::LeaveIfError( (this->iPositioner).SetRequestor( 
+            CRequestor::ERequestorService,
+            CRequestor::EFormatApplication,
+            KIdentity ) );
+
+    this->iPosInfoBase = &(this->iPositionInfo);
+    this->iRequestType = aRequestType;
+    this->iGenericPosInfo = HPositionGenericInfo :: NewL();
+    CleanupStack :: PushL(this->iGenericPosInfo);
+
+    if(aList)
+        {
+        User :: LeaveIfError((this->iGenericPosInfo)->SetRequestedFields(aList));
+        }
+
+    CleanupStack ::Pop(this->iGenericPosInfo );
+    CleanupStack::Pop(&iPositioner);
     }
-
-
 /**
  * Function name: NewL , 
  * Constructs a new core implementation object which will later 
@@ -58,65 +96,36 @@ void CGetLoc::ConstructL()
  
  
  
-EXPORT_C CGetLoc* CGetLoc::NewL( RPositionServer &aPositionServer , 
-								 TPositionFieldIdList aList ,
-								 TInt aRequestType,
-								 TInt /*aLocationInfoCategory*/  )
-	{
-	//Check for the presence of ActiveScheduler
+EXPORT_C CGetLoc* CGetLoc::NewL( RPositionServer& aPositionServer ,
+        TPositionFieldIdList aList ,
+        TInt aRequestType,
+        TInt /*aLocationInfoCategory*/,
+        TPositionModuleId aModuleId)
+    {
+    //Check for the presence of ActiveScheduler
     //Create the object
-    CActiveScheduler *current = CActiveScheduler::Current() ;
+
+    CActiveScheduler* current = CActiveScheduler::Current();
 
     if(!current)
         {
         User::Leave(KErrNotFound); //Leave if consumer is not event driven
         }
-    	
 
     CGetLoc* self = new( ELeave ) CGetLoc();
     CleanupStack::PushL(self);
 
-    TInt error = (self->iPositioner).Open(aPositionServer) ; //Open a new subsession with position server
-    
-    if(error)
-        {
-        User :: Leave( error) ;
-        }
-    
-    //Set the identity of this particular requestor
-    User::LeaveIfError( (self->iPositioner).SetRequestor( CRequestor::ERequestorService,
-													      CRequestor::EFormatApplication,
-													      KIdentity ) );
-    
+    self->ConstructL(aPositionServer ,
+            aList ,
+            aRequestType,               
+            aModuleId);
 
-
-    self->iPosInfoBase = &(self->iPositionInfo) ; 
-    self->iRequestType = aRequestType ;
-    self->iGenericPosInfo = HPositionGenericInfo :: NewL() ;
-
-    if(aList)
-        {
-        error = (self->iGenericPosInfo)->SetRequestedFields(aList) ;
-        }
-
-    User :: LeaveIfError(error) ;
-    CleanupStack :: PushL(self->iGenericPosInfo) ;
-
-    self->ConstructL();
-    CleanupStack ::Pop(self->iGenericPosInfo );
-    CleanupStack::Pop( self );
+    CleanupStack::Pop(self);
 
     //Return pointer to the created object
     return self;
-	}
-
-CGetLoc ::~CGetLoc()
-
-    {
-    iPositioner.Close() ;
-    delete iGenericPosInfo ;
-
     }
+
 
 TInt CGetLoc::DoInitialiseL()
     {
@@ -130,13 +139,16 @@ TInt CGetLoc::DoInitialiseL()
 
 
 /**
- * CGetLoc :: GetLocation  accepts update options from the consumers 
- * returns  the status of job submitted 
+ * CGetLoc :: GetLocationUpdates  accepts update options from the consumers and 
+ * submits an aynchronous request to the location server
+ * Returns  the status of job submitted 
  */
 
- TInt CGetLoc :: GetLocation( MLocationCallBack* aCallBackObj ,  
- 									const TPositionUpdateOptions* aUpdateOptions )
+TInt CGetLoc::GetLocationUpdates(CLocationService* aLocationService,MLocationCallBack* aCallBackObj,
+        const TPositionUpdateOptions* aUpdateOptions)
     {
+    //Pointer to CLocationService used in RunL
+    iLocationService = aLocationService;
 
     //Register the call back address 
     iCallBack  = aCallBackObj ;
@@ -193,60 +205,6 @@ TInt CGetLoc::DoInitialiseL()
 
 
 
-/**
- * Function Name :GetLocationUpdates
- * Notifies the user whenever his position changes
- * Returns status of the submitted job
- */
-
- TInt CGetLoc:: GetLocationUpdates( MLocationCallBack* aCallBackObj ,
- 										 const TPositionUpdateOptions* aUpdateOptions )
-    {
-
-    //Register the call back address
-    iCallBack = aCallBackObj ;
-
-    if(aUpdateOptions)
-    	{
-    	 TInt error = iPositioner.SetUpdateOptions(*aUpdateOptions) ;
-    	 
-    	 if(error)     //If update options failed then no return error to caller
-     		{
-    	 	return error ; 
-     		}
-    	}
-    else //set the default values
-        {
-        TPositionUpdateOptions updateopts ;
-        
-        // Set update interval to one second to receive one position data per second
-	    updateopts.SetUpdateInterval(TTimeIntervalMicroSeconds(KSUpdateInterval));
-
-	    // If position server could not get position
-	    // In two minutes it will terminate the position request
-	    updateopts.SetUpdateTimeOut(TTimeIntervalMicroSeconds(KSUpdateTimeOut));
-
-	    // Positions which have time stamp below KMaxAge can be reused
-	    updateopts.SetMaxUpdateAge(TTimeIntervalMicroSeconds(KSMaxAge));
-
-	    // Enables location framework to send partial position data
-	    updateopts.SetAcceptPartialUpdates(FALSE);
-
-        
-        iPositioner.SetUpdateOptions(updateopts) ;
-        }
-
-
-    if(!(this->IsAdded()))  //Add to the active list if not added 
-    {
-    	CActiveScheduler :: Add(this) 	;
-    }
-
-
-    iPositioner.NotifyPositionUpdate( *iGenericPosInfo, iStatus );
-    SetActive() ;
-    return KErrNone ;
-    }
 
 
 /**
@@ -284,10 +242,27 @@ void CGetLoc :: RunL()
 
 			break ;
 			}
+        case KErrTimedOut:
+            {
+            iCallBack->HandleNotifyL(NULL , iStatus.Int()) ;
+            //Re-issue the request even though there's an error
+            if (iRequestType == KTraceRequest)
+                {
+                if (this->IsAdded() && !this->IsActive())
+                    {          
+                    if (!this->IsStatusComplete())
+                        {
+                        iPositioner.NotifyPositionUpdate( *iGenericPosInfo,
+                                iStatus);
+                        SetActive();
+                        }
 
+                    }
+                }
+            break;
+            }           
 		case KErrArgument:
 		case KPositionQualityLoss:         //Need to check this returnig s60 error code from here 
-		case KErrTimedOut :
 		case KErrNotFound :       //Service provider not available, or gone down in between
 		{
 
@@ -303,7 +278,15 @@ void CGetLoc :: RunL()
 
 		}
 	} //End of Switch
+    if(iRequestType == KGetLocationRequest)
+        {
+        //Delete the Active Object associated with this request since it is completed
 
+        if(iLocationService)
+            {
+            iLocationService->CancelService(iCallBack->GetTransactionId());
+            }
+        }    
 	        	
 	}
 

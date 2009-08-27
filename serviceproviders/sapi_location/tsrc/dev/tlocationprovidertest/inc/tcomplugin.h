@@ -243,6 +243,34 @@ NONSHARABLE_CLASS(CTestProvider) : public CScriptBase
     	virtual TInt TestWrongInterfaceName(CStifItemParser& /*aItem*/) ;
     	virtual TInt TestAllApi(CStifItemParser& /*aItem*/) ;
     	virtual TInt CancelTwice(CStifItemParser& /*aItem*/) ;
+    	virtual TInt GetLastLocation(CStifItemParser& /*aItem*/) ;
+    	virtual TInt GetLocationMultiple(CStifItemParser& /*aItem*/) ;
+    	virtual TInt TraceMultiple(CStifItemParser& /*aItem*/) ;
+    	virtual TInt TraceTimeOut(CStifItemParser& /*aItem*/) ;
+    	virtual TInt TraceMultipleWrongCancel(CStifItemParser& /*aItem*/);
+    	virtual TInt EnableAccTrueGetLoc(CStifItemParser& /*aItem*/);
+    	virtual TInt EnableAccFalseGetLoc(CStifItemParser& /*aItem*/);
+    	virtual TInt EnableAccTrueTrace(CStifItemParser& /*aItem*/);
+    	virtual TInt EnableAccFalseTrace(CStifItemParser& /*aItem*/);
+    	
+    	virtual TInt EnableAccPosBasedGetloc(CStifItemParser& /*aItem*/);
+    	virtual TInt EnableAccPosBasedWrongTypeGetloc(CStifItemParser& /*aItem*/);
+    	virtual TInt EnableAccPosBasedTrace(CStifItemParser& /*aItem*/);
+    	virtual TInt EnableAccPosBasedWrongTypeTrace(CStifItemParser& /*aItem*/);
+
+    	virtual TInt GetLocationPosBasedWrongVal(CStifItemParser& /*aItem*/);
+    	virtual TInt CancelTransIdPosBased(CStifItemParser& /*aItem*/);
+    	virtual TInt CancelWithoutTransId(CStifItemParser& /*aItem*/);
+    	virtual TInt GetLocationAsyncPosBasedUpdate(CStifItemParser& /*aItem*/);
+    	virtual TInt GetLocationAsyncWrongUpdate(CStifItemParser& /*aItem*/);
+    	virtual TInt GetLocPosBasedWrongVal(CStifItemParser& /*aItem*/);
+    	virtual TInt GetLocPosBasedWrongVal1(CStifItemParser& /*aItem*/);
+    	virtual TInt TracePosBasedWrongVal( CStifItemParser& /*aItem*/ );
+    	virtual TInt TracePosBasedUpdateOpts(CStifItemParser& /*aItem*/);
+    	virtual TInt TracePosBasedUpdateWrongVal(CStifItemParser& /*aItem*/);
+    	virtual TInt FindDistancePositionBased(CStifItemParser& /*aItem*/);
+    	virtual TInt MoveCoordinatePosBased(CStifItemParser& /*aItem*/);
+    	virtual TInt FindBearingPosBased(CStifItemParser& /*aItem*/);
     public:     // Data
         // ?one_line_short_description_of_data
         //?data_declaration;
@@ -281,6 +309,17 @@ NONSHARABLE_CLASS(CTestProvider) : public CScriptBase
     TInt GetLocCancel(TAny */*Arg*/);
     TInt TraceLocCancel(TAny */*Arg*/);
     
+    TInt TraceTO(TAny */*Arg*/);
+    TInt TraceTOL(TAny */*Arg*/);
+    TInt EnableHighAcc(TAny *aFlag);
+    TInt EnableHighAccL(TInt aCallType,TBool enableAcc);
+    TInt EnableHighAcc_PosBased(TAny *aFlag);
+    TInt EnableHighAcc_PosBasedL(TInt aCallType,TBool enableAcc);
+    
+    TInt GetLocAsynchPosBased(TAny * /*Arg*/);
+    TInt GetLocAsynchPosBasedL();
+    TInt GetLocAsynchWrongVal(TAny * /*Arg*/);
+    TInt GetLocAsynchWrongValL();
 
 
 #endif      // TCOMPLUGIN_H

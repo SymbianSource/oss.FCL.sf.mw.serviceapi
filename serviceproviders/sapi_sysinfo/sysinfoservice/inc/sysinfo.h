@@ -53,6 +53,7 @@ NONSHARABLE_CLASS(CSysData) : public CBase
         EResolution,
         EStringList,
         EStringData,
+        ECameraInfo
         };
     public:
     /**
@@ -813,5 +814,113 @@ NONSHARABLE_CLASS(CStringList): public CSysData
     TInt            iCount;
     };
 
+
+/**
+ *  @ref CCameraResolutionList this class lists different  
+ *  resolutions supported 
+ * 
+ *  @lib sysinfoservice.lib
+ *  @since S60 3.2
+ */
+NONSHARABLE_CLASS(CCameraResolutionList) : public CSysData
+    {
+public:
+    /**
+     * Two-phased constructor.
+     *
+     * @return A new instance of this class.
+     */
+    static CCameraResolutionList* NewL( RPointerArray<CResolution>& aCamResArray );
+    /**
+     * Two-phased constructor.
+     *
+     * @return A new instance of this class.
+     */
+    static CCameraResolutionList* NewLC( RPointerArray<CResolution>& aCamResArray );
+
+    /**
+     * On return val contains supported resolution XPixel or YPixel   
+     * depending upon whether flag is 0 or 1.
+     */
+    IMPORT_C TBool At( TInt aIndex, TInt flag, TInt& val ) const;
+
+    /**
+     * @return resolution at index.
+     */
+    IMPORT_C const CResolution* operator[]( TInt aIndex ) const;
+    /**
+     * @return number of supported resolutions.
+     */
+    IMPORT_C TInt Count() const;
+
+    /**
+     * Destructor.
+     */
+    ~CCameraResolutionList();
+
+private:
+    /**
+     * C++ default constructor.
+     */
+    CCameraResolutionList();
+    /**
+     * Symbian 2nd phase constructor.
+     */
+    void ConstructL( RPointerArray<CResolution>& aCamResArray );
+
+private:
+    RPointerArray<CResolution> iresArray;
+    TInt iCount;
+    };
+
+/**
+ *  @ref CCameraInfo details about Resolutions Supported and 
+ *  MimeTypes supported by a device
+ *  @lib sysinfoservice.lib
+ *  @since S60 3.2
+ */
+NONSHARABLE_CLASS(CCameraInfo) : public CSysData
+    {
+public:
+    /**
+     * Two-phased constructor.
+     * @return A new instance of this class.
+     */
+    static CCameraInfo* NewL( CCameraResolutionList* aCamResList, CStringList* aMimeTypesList );
+    /**
+     * Two-phased constructor.
+     * @return A new instance of this class.
+     */
+    static CCameraInfo* NewLC( CCameraResolutionList* aCamResList, CStringList* aMimeTypes );
+
+    /**
+     * On return List of supported Resolutions
+     */
+    IMPORT_C CCameraResolutionList* ResolutionList() const;
+
+    /**
+     * On return List of supported MimeTypes
+     */
+    IMPORT_C CStringList* MimeTypesList() const;
+
+    /**
+     * Destructor.
+     */
+    ~CCameraInfo();
+
+private:
+    /**
+     * C++ default constructor.
+     */
+    CCameraInfo();
+    /**
+     * Symbian 2nd phase constructor.
+     */
+    void ConstructL( CCameraResolutionList* aCamResList, CStringList* aMimeTypes );
+
+private:
+    CCameraResolutionList* iResList;
+    CStringList* iMimeTypesList;
+    };
 
 #endif __SYSINFO_H__

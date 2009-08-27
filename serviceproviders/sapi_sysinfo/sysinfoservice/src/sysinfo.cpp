@@ -1199,5 +1199,192 @@ EXPORT_C TPtrC CConnectionInfo::ConnectionName() const
     {
     return	TPtrC(*iConnectionName);
     }
+
+
+// --------------------------------------------------------------------
+// CCameraResolutionList::CCameraResolutionList()
+// Constructor.
+// --------------------------------------------------------------------
+//
+CCameraResolutionList::CCameraResolutionList() :
+    CSysData( ECameraInfo )
+    {
+    }
+
+// --------------------------------------------------------------------
+// CConnectionList::~CConnectionList()
+// Destructor
+// --------------------------------------------------------------------
+//
+CCameraResolutionList::~CCameraResolutionList()
+    {
+    iresArray.ResetAndDestroy();
+    iresArray.Close();
+    }
+
+// --------------------------------------------------------------------
+// CCameraResolutionList::NewL()
+// Two-phased constructor. returns new instance of this class.
+// --------------------------------------------------------------------
+//
+CCameraResolutionList* CCameraResolutionList::NewL( RPointerArray<CResolution>& aCamResArray )
+    {
+    CCameraResolutionList* self = CCameraResolutionList::NewLC( aCamResArray );
+    CleanupStack::Pop( self );
+    return self;
+    }
+
+// --------------------------------------------------------------------
+// CCameraResolutionList::NewLC()
+// Two-phased constructor. returns new instance of this class.
+// --------------------------------------------------------------------
+//
+CCameraResolutionList* CCameraResolutionList::NewLC( RPointerArray<CResolution>& aCamResArray )
+    {
+    CCameraResolutionList* self = new (ELeave) CCameraResolutionList();
+    CleanupStack::PushL( self );
+    self->ConstructL( aCamResArray );
+    return self;
+    }
+
+// --------------------------------------------------------------------
+// CCameraResolutionList::ConstructL()
+// 2nd phase construtor
+// --------------------------------------------------------------------
+//
+void CCameraResolutionList::ConstructL( RPointerArray<CResolution>& aCamResArray )
+    {
+    iCount = aCamResArray.Count();
+    if ( iCount > 0 )
+        {
+        for ( TInt index = 0; index < iCount; index++ )
+            {
+            iresArray.AppendL( aCamResArray[index] );
+            }
+        }
+    }
+
+// --------------------------------------------------------------------
+// CCameraResolutionList::At()
+// On return val contains supported resolution XPixel or YPixel depending upon whether flag is 0 or 1.
+// --------------------------------------------------------------------
+//
+EXPORT_C TBool CCameraResolutionList::At( TInt aIndex, TInt aFlag, TInt& aVal ) const
+    {
+    if ( 0 <= aIndex && aIndex<iCount )
+        {
+        if ( aFlag == 0 )
+            {
+            aVal = iresArray[aIndex]->XPixels();
+            }
+        else if ( aFlag == 1 )
+            {
+            aVal = iresArray[aIndex]->YPixels();
+            }
+        else
+            {
+            return EFalse;
+            }
+        return ETrue;
+        }
+    return EFalse;
+    }
+
+// --------------------------------------------------------------------
+// CCameraResolutionList::[]
+// gets Resolution at specified index.
+// --------------------------------------------------------------------
+//
+EXPORT_C const CResolution* CCameraResolutionList::operator[]( TInt aIndex ) const
+    {
+    return iresArray[aIndex];
+    }
+
+// --------------------------------------------------------------------
+// CCameraResolutionList::Count()
+// returns number of resolutions supported.
+// --------------------------------------------------------------------
+//
+EXPORT_C TInt CCameraResolutionList::Count() const
+    {
+    return iCount;
+    }
+
+// --------------------------------------------------------------------
+// CCameraInfo::CCameraInfo()
+// Constructor.
+// --------------------------------------------------------------------
+//
+CCameraInfo::CCameraInfo() :
+    CSysData( ECameraInfo )
+    {
+    }
+
+// --------------------------------------------------------------------
+// CCameraInfo::~CCameraInfo()
+// Destructor
+// --------------------------------------------------------------------
+//
+CCameraInfo::~CCameraInfo()
+    {
+    delete iResList;
+    delete iMimeTypesList;
+    }
+
+// --------------------------------------------------------------------
+// CCameraInfo::NewL()
+// Two-phased constructor. returns new instance of this class.
+// --------------------------------------------------------------------
+//
+CCameraInfo* CCameraInfo::NewL( CCameraResolutionList* aCamResList, CStringList* aMimeTypesList )
+    {
+    CCameraInfo* self = CCameraInfo::NewLC( aCamResList, aMimeTypesList );
+    CleanupStack::Pop( self );
+    return self;
+    }
+
+// --------------------------------------------------------------------
+// CCameraInfo::NewLC()
+// Two-phased constructor. returns new instance of this class.
+// --------------------------------------------------------------------
+//
+CCameraInfo* CCameraInfo::NewLC( CCameraResolutionList* aCamResList, CStringList* aMimeTypesList )
+    {
+    CCameraInfo* self = new (ELeave) CCameraInfo();
+    CleanupStack::PushL( self );
+    self->ConstructL( aCamResList, aMimeTypesList );
+    return self;
+    }
+
+// --------------------------------------------------------------------
+// CCameraInfo::ConstructL()
+// 2nd phase construtor
+// --------------------------------------------------------------------
+//
+void CCameraInfo::ConstructL( CCameraResolutionList* aCamResList, CStringList* aMimeTypesList )
+    {
+    iResList = aCamResList;
+    iMimeTypesList = aMimeTypesList;
+    }
+
+// --------------------------------------------------------------------
+// CCameraInfo::ResolutionList()
+// Gives a list containing supported resolutions
+// --------------------------------------------------------------------
+//
+EXPORT_C CCameraResolutionList* CCameraInfo::ResolutionList() const
+    {
+    return iResList;
+    }
+
+// --------------------------------------------------------------------
+// CCameraInfo::MimeTypesList()
+// Gives a list containing supported mime types
+// --------------------------------------------------------------------
+//
+EXPORT_C CStringList* CCameraInfo::MimeTypesList() const
+    {
+    return iMimeTypesList;
+    }
 	
 // End of file.		

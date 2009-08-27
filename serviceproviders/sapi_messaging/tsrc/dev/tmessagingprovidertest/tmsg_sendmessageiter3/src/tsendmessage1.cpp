@@ -40,7 +40,8 @@ _LIT8(KTo,				"To");
 _LIT8(KBodyText,		"BodyText");
 _LIT8(KAttachmentname,	"Attachment");
 _LIT8(KMimeType,		"MimeType");
-_LIT8(KMessageParam,	"Messageparam");
+_LIT8(KMessageParam,	"MessageParam");
+_LIT8(KType,            "MessageType");
 _LIT8(KErrCode,"ErrorCode");
 
 // Positive test case with Type, Number and BodyText
@@ -927,6 +928,101 @@ int sendmessage_test10(int, char**)
     return err;
 	
 	}
+
+int sendmessage_test11(int, char**)
+    {
+    __UHEAP_MARK;
+
+    CLiwServiceHandler* iServiceHandler = CLiwServiceHandler::NewL();  
+    CLiwGenericParamList* inParamList = &(iServiceHandler->InParamListL());
+    CLiwGenericParamList* outParamList = &(iServiceHandler->OutParamListL());
+
+    CLiwCriteriaItem* crit = CLiwCriteriaItem::NewL(1, KIDataSource,KService);
+    
+    crit->SetServiceClass(TUid::Uid(KLiwClassBase));
+
+    RCriteriaArray a;
+    a.AppendL(crit);    
+
+    iServiceHandler->AttachL(a);
+    
+    iServiceHandler->ExecuteServiceCmdL(*crit, *inParamList, *outParamList); 
+    
+    TInt pos = 0;
+    MLiwInterface* interface = NULL;
+    _LIT8(KDataSource, "IMessaging");
+    outParamList->FindFirst(pos,KDataSource );
+    if(pos != KErrNotFound)
+        {
+        interface = (*outParamList)[pos].Value().AsInterface(); 
+        }
+
+    inParamList->Reset();
+    outParamList->Reset();
+    delete crit;
+    crit = NULL;
+    a.Reset();
+    
+    TInt32 tmplateId = GetTemplateId( interface, inParamList, outParamList, EFalse );
+    
+    inParamList->AppendL(TLiwGenericParam( KType, TLiwVariant( _L("SMS") )));
+    inParamList->AppendL(TLiwGenericParam( KTo, TLiwVariant( _L("9008032761") )));
+    inParamList->AppendL(TLiwGenericParam( KBodyText, TLiwVariant( _L("SMS with MMS template ID ") )));
+    
+    
+    if(tmplateId > 0)
+        {
+        CLiwDefaultMap* map = CLiwDefaultMap::NewL();
+        CleanupStack::PushL(map);
+        
+        TLiwVariant liwmessageid(tmplateId);
+        map->InsertL(_L8("TemplateId"),liwmessageid);
+        liwmessageid.Reset();
+
+        CLiwDefaultList* reclist = CLiwDefaultList::NewL(); 
+        CleanupStack::PushL(reclist);   
+        reclist->AppendL(TLiwVariant(_L("9008032762")));
+        
+        TLiwVariant recps(reclist);
+        map->InsertL(_L8("To"),recps);
+        recps.Reset();
+        reclist->DecRef();
+        CleanupStack::Pop(reclist); 
+         
+        inParamList->AppendL(TLiwGenericParam( KMessageParam, TLiwVariant( map )));// Null mimetype
+        map->DecRef();
+        CleanupStack::Pop(map);
+        }
+
+    TRAPD(err,interface->ExecuteCmdL( KCmd, *inParamList ,*outParamList,0,NULL ));
+    
+    if(err == KErrNone)
+        {
+        TInt index = 0;
+        const TLiwGenericParam* err1 = outParamList->FindFirst(index,KErrCode);
+        err = err1->Value().AsTInt32();
+        }
+        
+
+    inParamList->Reset();
+    outParamList->Reset();
+
+    interface->Close();
+    iServiceHandler->Reset();
+    delete iServiceHandler;
+
+    __UHEAP_MARKEND;
+    if(tmplateId)
+        {
+        if( err==1004 )
+         return KErrNone;
+        else
+         return KErrGeneral;
+        }
+    else
+        return err;
+    
+    }
 
 TInt32 GetTemplateId(MLiwInterface *aObj ,CLiwGenericParamList* aInputlist, CLiwGenericParamList* aOutputlist, TBool aSMS )
 	{

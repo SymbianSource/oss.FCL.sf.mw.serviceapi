@@ -121,7 +121,7 @@ class CMgInterface : public CBase, public MLiwInterface
         * @param void
         * @return void
         */
-  		void SendRequestL(const CLiwGenericParamList& aInParamList, TUint aTransactionID ,TBool aPostionBasedSearching );
+  		void SendRequestL(const CLiwGenericParamList& aInParamList, TUint aTransactionID ,TBool aPostionBasedSearching,MLiwNotifyCallback* aCallBack );
   		  												
 		/**
 	     * Appends error message
@@ -157,7 +157,7 @@ class CMgInterface : public CBase, public MLiwInterface
   		/**
      	* Stores the instance of Service observer Class
      	*/
-  		CMgServiceObserver *iServiceObserver;
+  	//	CMgServiceObserver *iServiceObserver;
   	    
   	    /**
         * Error Message object

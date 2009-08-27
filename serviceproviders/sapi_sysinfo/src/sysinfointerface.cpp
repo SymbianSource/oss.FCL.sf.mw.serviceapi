@@ -845,6 +845,37 @@ void CSysInfoInterface::ConvertSysData2AiwParamL(const CSysData* aInSysData,
             CleanupStack::PopAndDestroy(stringlist);
             }
             break;	
+        case CSysData::ECameraInfo:
+            {
+            CLiwList* camResList = CLiwDefaultList::NewL();
+            CleanupClosePushL( *camResList );
+            CLiwList* camMimeTypesList = CLiwDefaultList::NewL();
+            CleanupClosePushL( *camMimeTypesList );
+            const CCameraInfo* camInfo = ((CCameraInfo*) aInSysData);
+            count = camInfo->ResolutionList()->Count();
+
+            for ( int index=0; index<count; index++ )
+                {
+                TInt val = 0;
+                CLiwMap* resMap = CLiwDefaultMap::NewL();
+                CleanupStack::PushL( resMap );
+                camInfo->ResolutionList()->At( index, 0, val );
+                resMap->InsertL( KXPixels, (TInt32)val );
+                camInfo->ResolutionList()->At( index, 1, val );
+                resMap->InsertL( KYPixels, (TInt32)val );
+                camResList->AppendL( resMap );
+                CleanupStack::Pop( resMap );
+                resMap->Close();
+                TPtrC string;
+                camInfo->MimeTypesList()->At( index, string );
+                camMimeTypesList->AppendL( string );
+                }
+            aOutMapParam->InsertL( KCamResList, camResList );
+            aOutMapParam->InsertL( KCamMimeTypesList, camMimeTypesList );
+            CleanupStack::PopAndDestroy( camMimeTypesList );
+            CleanupStack::PopAndDestroy( camResList );
+            }
+            break; 
 
         default:
             User::Leave(KErrArgument);

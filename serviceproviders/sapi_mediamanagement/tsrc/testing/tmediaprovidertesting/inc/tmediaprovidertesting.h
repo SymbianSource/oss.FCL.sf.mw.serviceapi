@@ -61,7 +61,8 @@ NONSHARABLE_CLASS(Ctmediaprovidertesting) : public CScriptBase, public MLiwNotif
 			{
 			EOtherFile,
 			EMusicFile,
-			EStreamingURLFile
+			EStreamingURLFile,
+			EImageFile
 			};
 	public:  // Constructors and destructor
 	
@@ -157,6 +158,17 @@ NONSHARABLE_CLASS(Ctmediaprovidertesting) : public CScriptBase, public MLiwNotif
 		* @return Symbian OS error code.
 		*/
 		TInt GetFilesListL(CStifItemParser& aItem);
+		
+        /**
+        * Example test method.
+        * @since ?Series60_version
+        * @param aItem Script line containing parameters.
+        * @return Symbian OS error code.
+        */
+        TInt GetListBackToBackCallL(CStifItemParser& aItem);
+		
+		
+		
 		/**
 		* loades the media management service.
 		* @return MLiwInterface pointer.
@@ -200,7 +212,10 @@ NONSHARABLE_CLASS(Ctmediaprovidertesting) : public CScriptBase, public MLiwNotif
 		//interface handle
 		MLiwInterface* iIface;
 		//file type 
-		TFileType iFiletype;		
+		TFileType iFiletype;	
+		
+		// Number of back to back async request given
+		TInt iNumberApiCall ;
 	};
 #endif      // TMEDIAPROVIDERTESTING_H
 // End of File

@@ -22,8 +22,11 @@
 //GetList
 _LIT(KGetListContentTypeMissing, "Contacts : GetList : Type is Missing");
 _LIT(KGetListInvalidContentType, "Contacts: GetList : Invalid value for Type, Must be Contact/Group/Database");
+_LIT(KGetIdsInvalidContentType, "Contacts: GetIds : Invalid value for Type, Must be Contact/Group");
 _LIT(KGetListInvalidSortType, "Contacts : GetList : Invalid Sort Type, Map is required");
 _LIT(KGetListSortOrderValue,"Contacts : GetList : Sort Order Value is not a String");
+_LIT(KGetIdsBadArgCntId, "Contacts: GetIds : Invalid Contact Id input");
+_LIT(KGetIdsBadArgGrpId, "Contacts: GetIds : Invalid Group Id input");
 
 //new GetList 
 _LIT(KGetListInvalidFilterType,"Contacts : GetList : Invalid Type of Filter, Map is required");
@@ -58,6 +61,7 @@ _LIT(KAddKeyNotSpecified, "Contacts : Add : Atleast one field is required");
 _LIT(KAddGroupLabelEmpty,"Contacts : Add : Group Label is Empty");
 _LIT(KAddInvalidFieldKey,"Contacts : Add : Invalid Field Key : ");
 _LIT(KAddFieldKeyNotSupported,"Contacts : Add :Field Key Not Supported on this Database: ");
+_LIT(KAddXspidInvalidFormat,"Contacts : Add :Invalid format of value for IMPP field");
 //cannot be determined
 ///////////////_LIT(KAddWrongFieldKey,"Contacts : Add : Invalid Field Key");
 

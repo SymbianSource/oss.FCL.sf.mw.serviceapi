@@ -63,6 +63,7 @@ USERINCLUDE     ../../../../sysinfoservice/inc
 LIBRARY         euser.lib
 LIBRARY         stiftestinterface.lib
 LIBRARY         sysinfoservice.lib
+LIBRARY         cone.lib
 
 LANG            SC
 

@@ -243,10 +243,14 @@ TInt GetLocFunctionL()
     
     
     locinterface->Close();
-    delete ServiceHandler ; 	
+     	
     delete InputList ;
     delete  OutParmList ;
     delete Scheduler ;
+    delete crit;
+    a.Reset();
+    a.Close();
+    delete ServiceHandler ;
     __UHEAP_MARKEND;
     return 0 ; 
 }

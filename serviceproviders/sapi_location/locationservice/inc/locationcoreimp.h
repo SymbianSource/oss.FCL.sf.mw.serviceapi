@@ -53,13 +53,15 @@ class CGetLoc : public CActive
 	     * @param aRequestorInfoStack requestor indenty
 	     * @param aList List of position fields that should be retrived
 	     * @param aLocationInfoCategory information type required(Basic, Generic)
-	     *
+	     * @param aModuleId the unique id of the module which should be used to 
+	     *         open the subsession with location server
 	     */
 	    								
 		IMPORT_C static CGetLoc* NewL( RPositionServer &aPositionServer , 
 									   TPositionFieldIdList aList ,
 									   TInt aRequestType,
-									   TInt aLocationInfoCategory  ) ;		
+            TInt aLocationInfoCategory,
+            TPositionModuleId aModuleId) ;		
 
 	    /**
 	     * Destructor.
@@ -68,28 +70,18 @@ class CGetLoc : public CActive
 
 
 
-	    /**
-	     * Gets users current location Asynchronously calls the users callback 
-	     * function when updates are recived from location server
-	     *
-	     * @param aCallBackObj callback object for updates notification
-	     * @param aUpdatesOptions update options for asynchronous calls
-	     *
-	     */ 
-	    TInt GetLocation( MLocationCallBack* aCallBackObj ,
-	    					  const TPositionUpdateOptions* aUpdateOptions =NULL );
+    /**
+     * Gets users current location Asynchronously calls the users callback 
+     * function when updates are recived from location server
+     * @param aLocationService pointer to the CLocationService class used in RunL
+     * @param aCallBackObj callback object for updates notification
+     * @param aUpdatesOptions update options for asynchronous calls
+     *
+     * @see TPositionUpdateOptions in LbsCommon.h for details
+     */ 
+    TInt GetLocationUpdates( CLocationService* aLocationService, MLocationCallBack* aCallBackObj ,
+            const TPositionUpdateOptions* aUpdateOptions = NULL );
 
-	    /**
-	     * Traces users location change
-	     * Any location change is informed to user via callback function
-	     *
-	     * @param aCallBackObj callback handle for async trace call 
-	     * @param aUpdateOptions updateoptions for trace call
-	     *
-	     * @see TPositionUpdateOptions in LbsCommon.h for details
-	     */
-	    TInt GetLocationUpdates( MLocationCallBack* aCallBackObj ,
-	    						 const TPositionUpdateOptions* aUpdateOptions = NULL );
 		
 		void SetStatusComplete()
 	    {
@@ -102,9 +94,14 @@ class CGetLoc : public CActive
 	    	else
 	    		return true;
 	    }	    						 
-	    						 
-    						 
-    	
+    /*
+     * Returns the MLocationCallBack object pointer stored by this class
+     */
+
+    MLocationCallBack* GetCallBackobj() const
+    {
+    return iCallBack;  
+    }					 
     				 
     protected:  
 
@@ -117,11 +114,19 @@ class CGetLoc : public CActive
 
 	    private:  
 
-	   /**
-		* By default Symbian 2nd phase constructor is private.
-		*/
-	     
-	    void ConstructL();
+    /**
+     * By default Symbian 2nd phase constructor is private.
+     * @param aPositionServer subsession to location server
+     * @param aList List of position fields that should be retrived
+     * @param aRequestType The type of request serviced by this Active object(GetLocation,Trace)          
+     * @param aModuleId aModuleId the unique id of the module which should be used to 
+	   *         open the subsession with location server
+     */
+
+    void ConstructL(RPositionServer &aPositionServer ,
+            TPositionFieldIdList aList ,
+            TInt aRequestType,	            
+            TPositionModuleId aModuleId);
 	    /**
 	     * Default constructor
 	     */
@@ -165,6 +170,10 @@ class CGetLoc : public CActive
 	    
 	    TInt iRequestStatus;      
 
+    /**
+     * Pointer to CLocationService used in RunL()
+     */
+    CLocationService* iLocationService;
 
     };
 

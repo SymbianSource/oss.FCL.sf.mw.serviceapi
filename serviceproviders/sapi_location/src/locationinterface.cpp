@@ -28,11 +28,6 @@
 #include "locationerrormessage.hrh"
 using namespace LIW;
 
-/**
- * KMAXACTIVEOBJ identifies maximum number of entries in callback registration table
- * presently it stores only two entries .
- */
-const TInt KMAXACTIVEOBJ = 2;
 
 
 //Error code for bad time
@@ -50,7 +45,6 @@ CLocationInterface :: ~CLocationInterface()
  	 delete iLocationService ;
  	  	 
  	 
- 	 iLocationService = NULL ;
  	 
  	 for(TInt iter = 0 ; iter < iHandleCB.Count() ; ++iter)
  	 	{
@@ -66,22 +60,42 @@ CLocationInterface :: ~CLocationInterface()
  * Default constructor
  */
  
- CLocationInterface :: CLocationInterface()
+CLocationInterface::CLocationInterface()
     {
- 	iGenericPosInfo = HPositionGenericInfo :: NewL() ; 
- 	
- 	if(!iGenericPosInfo)
- 	    {
- 		User ::Leave(KErrNoMemory) ;
- 	    }
- 	
- 	
- 	for ( TInt count = 0;count < KMAXACTIVEOBJ ; count++)
-    	{
-		iHandleCB.Insert(NULL,count);
-	    }
-	
- 	
+    //No Implementation Required Here
+    }
+void CLocationInterface::ConstructL()
+    {
+    iGenericPosInfo = HPositionGenericInfo::NewL() ;
+
+    if ( !iGenericPosInfo )
+        {
+        User::Leave( KErrNoMemory ) ;
+        }
+
+    iLocationService = CLocationService::NewL() ;
+    User::LeaveIfError( iLocationService->GetModuleInfo( iModuleInfo ) );
+    User::LeaveIfError( this->SetSupportedFields() );
+    }
+
+
+/**
+ * This function is a static method to create iLocatinInterface object
+ * return pointer to constructed object else paincs with symbian painc 
+ * code
+ */
+
+CLocationInterface* CLocationInterface::NewL()
+    {
+    CLocationInterface* self = new(ELeave)CLocationInterface();
+
+    CleanupStack::PushL( self ) ;
+
+    self->ConstructL();
+
+    CleanupStack::Pop( self ) ;
+    return self;
+
     }
  TInt  CLocationInterface::ConvertToSapiError(TInt aSymbianErr)
 	 {
@@ -134,7 +148,11 @@ CLocationInterface :: ~CLocationInterface()
 				sapiErr = SErrMissingArgument;
 				break;
 			}
-    	}
+		default:
+			{
+				sapiErr = SErrGeneralError;
+			}
+    }
     return sapiErr;
 
 	 
@@ -156,8 +174,10 @@ void CLocationInterface::CmdExecuteL(
 
     aOutParamList.Reset() ;
     
-    
-    
+    /*
+     * To indicate position based parsing for all the parameters
+     */
+    TBool posBasedFlag = EFalse;
     if( aCmdOptions & KLiwOptCancel ) // for cancel asynchronous request
         {
           
@@ -184,8 +204,24 @@ void CLocationInterface::CmdExecuteL(
             }
             
           TInt32 transid = (transidparam->Value()).AsTInt32() ;
-          MLiwNotifyCallback* callBack = RequestCancel(transid) ;
-          
+        //Get Callback object curresponding to this transaction Id 
+        MLiwNotifyCallback* callBack = NULL;
+        TInt ncalls = iHandleCB.Count() ;
+
+        for (TInt iter = 0; iter < ncalls; ++iter)
+            {
+
+            if (iHandleCB[iter])
+                {
+                if (iHandleCB[iter]->GetTransactionId() == transid)
+                    {
+                    //Get the callback object associated with this Transaction Id
+                    callBack = iHandleCB[iter]->GetCallBackobj();
+
+                    }
+                }
+
+            }
           if (!callBack)
 	          {
 	          aOutParamList.AppendL(TLiwGenericParam(KErrorMessage,
@@ -193,19 +229,30 @@ void CLocationInterface::CmdExecuteL(
               User::Leave(KErrNotFound);	
 	          }
           
-          
+        //Cancel the exisiting request
+        User::LeaveIfError(iLocationService->CancelService(transid));
           
           //Send notification about the cancelled state to consumer
           callBack->HandleNotifyL(transid  , KLiwEventCanceled , 
                                     aOutParamList,   aInParamList) ;
             
+        }
           
+    //LastKnownLocation Request is made by consumer
+    else if (aCmdName == KCmdLastLocation)
+        {
+        //Extract Update options from input List
+        User::LeaveIfError(iLocationService->GetLastKnownLoc(iPosition)) ;            
+        TUint category1 = EBasicInfo;
+
+        iGenericPosInfo->SetPosition(iPosition);
+        GetLocationInfo(aOutParamList, category1) ;
 
         }
 
     
     //GetLocation request is made by consumer
-    else if(aCmdName == KCmdGetLocation)                         
+    else if( !( aCmdName.CompareF( KCmdGetLocation ) ) )                         
         {
         TInt ret  =KErrNone ;
         //Extract category of Location Information user is interested in
@@ -239,6 +286,8 @@ void CLocationInterface::CmdExecuteL(
                         User::Leave( KErrArgument );
 				        //Leave with error code	
 				        }
+                    //indicates that position based parsing has been done 
+                    posBasedFlag = ETrue;
 	                posInfoCategory.Set( variant.AsDes() );
 	                
 	                //Set infoFlag to indicate user has supplied category of location information
@@ -267,11 +316,6 @@ void CLocationInterface::CmdExecuteL(
         //if callback is given for this command then it will be a async request
         if( aCallback && ( KLiwOptASyncronous & aCmdOptions ) ) 
             {
-            LocationInterfaceCB  *callback = LocationInterfaceCB :: NewL (aCallback ,  &aInParamList , 
-            														      &iModuleInfo , transid) ;
-            CleanupStack :: PushL(callback) ;														      
-            
-            callback->SetRequestType(KGetLocationCB) ;
 
            //Extract Update options from input List
         	
@@ -284,7 +328,7 @@ void CLocationInterface::CmdExecuteL(
         	if ( !smapparam )
 	        {
 	        TInt count = aInParamList.Count();
-	        if (count == 2)	
+                if ( count >= 2 && posBasedFlag )	
 		        {
 		        smapparam = &aInParamList[Index1];
 		        if (smapparam)
@@ -294,8 +338,6 @@ void CLocationInterface::CmdExecuteL(
 				        {
 				        aOutParamList.AppendL( TLiwGenericParam( KErrorMessage,
                                                TLiwVariant( KGetLocationWrongupdateMap ) ) );
-                        CleanupStack :: Pop( callback ) ;
-                        delete callback;
                         User::Leave( KErrArgument );
 				        }
                 	TInt error = SetUpdateOption(updateOptionVal,updateOptionMap);
@@ -303,8 +345,6 @@ void CLocationInterface::CmdExecuteL(
 	                	{
 	                	aOutParamList.AppendL( TLiwGenericParam( KErrorMessage,
                                                TLiwVariant( KGetLocationNegativeTime ) ) );
-                        CleanupStack :: Pop( callback ) ;
-                        delete callback;
                         User::Leave( KErrArgument );
 	                	
 	                	}
@@ -323,8 +363,6 @@ void CLocationInterface::CmdExecuteL(
 			        {
 			        aOutParamList.AppendL( TLiwGenericParam( KErrorMessage,
                                            TLiwVariant( KGetLocationWrongupdateMap ) ) );
-                    CleanupStack :: Pop( callback ) ;
-                    delete callback;
                     User::Leave( KErrArgument );
 			        }
     	        
@@ -333,8 +371,6 @@ void CLocationInterface::CmdExecuteL(
                 	{
                 	aOutParamList.AppendL( TLiwGenericParam( KErrorMessage,
                                            TLiwVariant( KGetLocationNegativeTime ) ) );
-                    CleanupStack :: Pop( callback ) ;
-                    delete callback;
                     
                     User::Leave( KErrArgument );
                 	
@@ -345,8 +381,6 @@ void CLocationInterface::CmdExecuteL(
 	                aOutParamList.AppendL( TLiwGenericParam( KErrorMessage,
                                            TLiwVariant( KGetLocationBadUpdateOptions ) ) );
                     
-                    CleanupStack :: Pop( callback ) ;
-                    delete callback;
                     
                     User::Leave( KErrArgument );
 	                	
@@ -366,28 +400,49 @@ void CLocationInterface::CmdExecuteL(
 	            //this indicates a wrong supplied location info category by the user
 	            aOutParamList.AppendL(TLiwGenericParam(KErrorMessage,
                                       TLiwVariant(KGetLocationCategoryInfo)));
-                CleanupStack :: Pop( callback ) ;
-                delete callback;
                 User::Leave(KErrArgument);	
 	            }
             
-            //Extraction of update options and information complete so now send the request 
-            //To core dll    
-
-            ret = iLocationService->GetLocationL(callback ,category,iFieldList,updateoptions) ;	
-         
-            //aOutParamList.AppendL(TLiwGenericParam(KErrorCode , TLiwVariant((TInt32)ret))) ;
-            
-            if(KErrNone != ret)
+            //Extract EnableHighAccuracy param 
+            index = 0;
+            const TLiwGenericParam* highaccparam = 
+            aInParamList.FindFirst(index , KEnableHighAccuracy) ;
+            TBool enableHighAcc = false;
+            if ( KErrNotFound == index )
                 {
-                    CleanupStack :: Pop(callback) ;
-                    delete callback ;
-                    User::Leave(ret);
-                    
+                highaccparam = 0;
+                TInt count = aInParamList.Count();
+                if ( count >= 3 && posBasedFlag ) 
+                    {
+                    //Possiblity of Position based parsing
+                    highaccparam = &aInParamList[Index2];
+                    }
                 }
-                
+
+            if( highaccparam )
+                {
+                if((highaccparam->Value().TypeId()) == EVariantTypeTBool)
+                    enableHighAcc = highaccparam->Value().AsTBool();
+
+                else
+                    {
+                    aOutParamList.AppendL(TLiwGenericParam(KErrorMessage,
+                            TLiwVariant(KGetLocationBadEnableHighAcc) ) );
+
+                    User::Leave(KErrArgument);
+                    }
+                }
+            LocationInterfaceCB* callback =
+            LocationInterfaceCB::NewL(aCallback,
+                    &aInParamList, &iModuleInfo, transid) ;
+
+            CleanupStack :: PushL(callback) ;                   
+            callback->SetRequestType(KGetLocationCB) ;
+            
+            iLocationService->GetLocationL(callback ,category,
+                    iFieldList,updateoptions,enableHighAcc) ;	                    
             //Store the allocatioed address 
-            iHandleCB[KGetLocationCB] = callback ; 
+            iHandleCB.Append(callback);
             //Append Transcationid to out list
             aOutParamList.AppendL(TLiwGenericParam(KTransactionId, TLiwVariant(transid)));
             CleanupStack :: Pop(callback) ;
@@ -410,7 +465,7 @@ void CLocationInterface::CmdExecuteL(
             if ( !smapparam )
 	        {
 	        TInt count = aInParamList.Count();
-	        if (count == 2)	
+                if (count >= 2 && posBasedFlag)	
 		        {
 		        smapparam = &aInParamList[Index1];
 		        if (smapparam)
@@ -495,15 +550,39 @@ void CLocationInterface::CmdExecuteL(
                                       TLiwVariant(KGetLocationCategoryInfo)));
                 User::Leave(KErrArgument);	
 	            } 
+            //Extract Enable High accuracy param 
+            index = 0;
+            const TLiwGenericParam* highaccparam = 
+            aInParamList.FindFirst(index ,
+                    KEnableHighAccuracy) ;
+            TBool enableHighAcc = false;
 
-            ret = iLocationService->GetLocationL(iGenericPosInfo,updateOptions) ; 
-            //aOutParamList.AppendL(TLiwGenericParam (KErrorCode , TLiwVariant((TInt32)ret))) ;
-            
-            if(KErrNone != ret)
+            if ( KErrNotFound == index )
                 {
-                User::Leave(ret);
-                 
+                highaccparam = 0;
+                TInt count = aInParamList.Count();
+                if (count >= 3 && posBasedFlag) 
+                    {
+                    //Position based parsing to be done
+                    highaccparam = &aInParamList[Index2];
+                    }
                 }
+
+            if( highaccparam )
+                {
+                if((highaccparam->Value().TypeId()) == EVariantTypeTBool)
+                    enableHighAcc = highaccparam->Value().AsTBool();
+
+                else
+                    {
+                    aOutParamList.AppendL(TLiwGenericParam(KErrorMessage,
+                            TLiwVariant(KGetLocationBadEnableHighAcc) ) );                                       
+                    User::Leave(KErrArgument);
+                    }
+                }
+
+            iLocationService->GetLocationL(iGenericPosInfo,
+                    updateOptions,enableHighAcc) ;
             GetLocationInfo(aOutParamList,category) ; 
             
             								                        
@@ -514,7 +593,7 @@ void CLocationInterface::CmdExecuteL(
        	    
         } //End of KCmdGetLocation
 
-    else if(  ( aCmdName == KCmdTraceLocation ) && ( aCallback ) && ( KLiwOptASyncronous & aCmdOptions ) )	//Trace request is made by consumer
+    else if(  ( !(aCmdName.CompareF( KCmdTraceLocation )) ) && ( aCallback ) && ( KLiwOptASyncronous & aCmdOptions ) )	//Trace request is made by consumer
         {
 
         TInt ret = KErrNone ;
@@ -546,6 +625,7 @@ void CLocationInterface::CmdExecuteL(
 	                posInfoCategory.Set( variant.AsDes() );
 			        
 			        	
+                    posBasedFlag = ETrue;
 			        }
 		        	
 		        }
@@ -568,12 +648,6 @@ void CLocationInterface::CmdExecuteL(
             }
         
 
-        LocationInterfaceCB  *callback = LocationInterfaceCB :: NewL (aCallback,
-        															  &aOutParamList,
-        															  &iModuleInfo,
-        															  transid ) ;
-        CleanupStack :: PushL(callback) ;
-        callback->SetRequestType(KTraceCB) ;
         
 
         
@@ -588,7 +662,7 @@ void CLocationInterface::CmdExecuteL(
             if ( !smapparam )
 	        {
 	        TInt count = aInParamList.Count();
-	        if (count == 2)	
+            if (count >= 2 && posBasedFlag)	
 		        {
 		        smapparam = &aInParamList[Index1];
 		        if (smapparam)
@@ -598,8 +672,6 @@ void CLocationInterface::CmdExecuteL(
 			        {
 			        aOutParamList.AppendL( TLiwGenericParam( KErrorMessage,
                                            TLiwVariant( KTraceWrongupdateMap ) ) );
-                    CleanupStack :: Pop( callback ) ;
-                    delete callback;
                     
                     User::Leave( KErrArgument );
 			        }
@@ -609,8 +681,6 @@ void CLocationInterface::CmdExecuteL(
                 	{
                 	aOutParamList.AppendL( TLiwGenericParam( KErrorMessage,
                                            TLiwVariant( KTraceNegativeTime ) ) );
-                    CleanupStack :: Pop( callback ) ;
-                    delete callback;
                     User::Leave( KErrArgument );
                 	
                 	}
@@ -619,8 +689,6 @@ void CLocationInterface::CmdExecuteL(
 	                aOutParamList.AppendL( TLiwGenericParam( KErrorMessage,
                                            TLiwVariant( KTraceBadUpdateOptions ) ) );
                     
-                    CleanupStack :: Pop( callback ) ;
-                    delete callback;
                     
                     
                     User::Leave( KErrArgument );
@@ -643,8 +711,6 @@ void CLocationInterface::CmdExecuteL(
 			        {
 			        aOutParamList.AppendL( TLiwGenericParam( KErrorMessage,
 	                                       TLiwVariant( KGetLocationWrongupdateMap ) ) );
-	                CleanupStack :: Pop( callback ) ;
-	                delete callback;
 	                
 	                User::Leave( KErrArgument );
 			        }
@@ -654,8 +720,6 @@ void CLocationInterface::CmdExecuteL(
 	            	{
 	            	aOutParamList.AppendL( TLiwGenericParam( KErrorMessage,
 	                                       TLiwVariant( KTraceNegativeTime ) ) );
-	                CleanupStack :: Pop( callback ) ;
-	                delete callback;
 	                User::Leave( KErrArgument );
 	            	
 	            	}
@@ -684,31 +748,56 @@ void CLocationInterface::CmdExecuteL(
 	            aOutParamList.AppendL(TLiwGenericParam(KErrorMessage,
                                       TLiwVariant(KTraceCategoryInfo)));
 				
-				CleanupStack::Pop(callback);
-				delete callback;
 	            User::Leave(KErrArgument);	
 	            }
-	        	
-		ret = iLocationService->TraceL(callback , catergory , iFieldList , updateOption ) ;
-        //TLiwGenericParam errorParm(KErrorCode , TLiwVariant((TInt32)ret)) ;
-        //aOutParamList.AppendL(errorParm) ; 
-
-        if(KErrNone != ret)
+        //Extract Enable High accuracy param 
+        index = 0;
+        const TLiwGenericParam* highaccparam = aInParamList.FindFirst(index ,
+                KEnableHighAccuracy) ;
+        TBool enableHighAcc = false;
+        if ( KErrNotFound == index )
             {
-                CleanupStack :: Pop(callback) ;
-                delete callback ;
-                User::Leave(ret);
+            highaccparam = 0;
+            TInt count = aInParamList.Count();
+            if (count >= 3 && posBasedFlag) 
+                {
+                //Possibility of Position based parsing
+                highaccparam = &aInParamList[Index2];
+                }
             }
 
-        
-        iHandleCB[KTraceCB] = callback ;
-        aOutParamList.AppendL(TLiwGenericParam (KTransactionId , TLiwVariant(transid))) ; //Append Transcationid to out list
+        if( highaccparam )
+            {
+            if((highaccparam->Value().TypeId()) == EVariantTypeTBool)
+                enableHighAcc = highaccparam->Value().AsTBool(); 
+
+            else
+                {
+                aOutParamList.AppendL(TLiwGenericParam(KErrorMessage,
+                        TLiwVariant(KGetLocationBadEnableHighAcc) ) );
+
+                User::Leave(KErrArgument);
+                }
+            }       
+
+        LocationInterfaceCB* callback =
+        LocationInterfaceCB::NewL(aCallback,
+                &aOutParamList, &iModuleInfo, transid) ;
+        CleanupStack :: PushL(callback) ;
+        callback->SetRequestType(KTraceCB) ;
+
+
+        iLocationService->TraceL( callback, catergory,iFieldList, 
+                updateOption,enableHighAcc );
+        iHandleCB.Append(callback);
+        aOutParamList.AppendL(TLiwGenericParam(KTransactionId,
+                TLiwVariant(transid))) ; //Append Transcationid to out list
 
         CleanupStack :: Pop(callback) ;
         
         } //End of KCmdTraceLocation
 
-    else if(aCmdName == KCmdCancelRequest)	  //Cancel request is made by consumer 
+    else if(!( aCmdName.CompareF( KCmdCancelRequest ) ) )	  //Cancel request is made by consumer 
         {
 
          TInt index = 0 ;
@@ -753,15 +842,25 @@ void CLocationInterface::CmdExecuteL(
             	
             ret = iLocationService->CancelOnGoingService(ECancelTrace) ;
             
-            if(KErrNone == ret) ;
+            if (KErrNone == ret)
                 {
-                delete iHandleCB[KTraceCB] ;
-                iHandleCB[KTraceCB] = NULL ;    //Mark the slot as free 	
+                TInt ncal = iHandleCB.Count() ;
+
+                for (TInt iter = 0; iter < ncal; ++iter)
+                    {
+                    if (iHandleCB[iter])
+                        {                           
+                        if(iHandleCB[iter]->GetRequestType() == KTraceCB)
+                            {
+                            delete iHandleCB[iter];
+                            iHandleCB[iter] = NULL;
+                            break;
+                            }
+                        }
+                    }
+
                 }
-            
-
             }
-
         else if(requesttype == KRequestGetLoc )
             {
             		
@@ -769,8 +868,22 @@ void CLocationInterface::CmdExecuteL(
             
             if(!ret) 
                 {
-                delete iHandleCB[KGetLocationCB] ;
-                iHandleCB[KGetLocationCB] = NULL ;    //Mark the slot as free 
+                TInt ncal1 = iHandleCB.Count() ;
+
+                for (TInt iter = 0; iter < ncal1; ++iter)
+                    {
+
+                    if (iHandleCB[iter])
+                        {
+
+                        if(iHandleCB[iter]->GetRequestType() == KGetLocationCB)
+                            {
+                            delete iHandleCB[iter];
+                            iHandleCB[iter] = NULL;
+                            break;
+                            }
+                        }
+                    }
                 }
             
             }
@@ -788,7 +901,7 @@ void CLocationInterface::CmdExecuteL(
 
         } //End of KCmdCancelRequest 
 
-    else if(aCmdName == KRequestCalculate)
+    else if(( !aCmdName.CompareF(KRequestCalculate) ) )
         {
         TInt index = 0 ;
         //Flag set to 0 indicate no position based parsing need to be done
@@ -1249,10 +1362,23 @@ void CLocationInterface :: GetLocationInfo( CLiwGenericParamList& aOutParamList,
             
     TReal32 altitude = pos.Altitude() ;
             
-
+    if (!(Math::IsNaN(altitude)))
+        {
     Result->InsertL(KAltitudeKey , TLiwVariant((TReal)altitude)) ; 
+        }
 
-    
+    TReal32 Val1;
+    Val1 = pos.HorizontalAccuracy();
+    if (!(Math::IsNaN(Val1)))
+        {
+        Result->InsertL(KHorAccuracy, TLiwVariant((TReal)Val1)) ;
+        }
+
+    Val1 = pos.VerticalAccuracy();
+    if (!(Math::IsNaN(Val1)))
+        {
+        Result->InsertL(KVerAccuracy, TLiwVariant((TReal)Val1)) ;
+        }
     TLiwVariant MapVariant(Result) ;
      
    
@@ -1393,71 +1519,7 @@ void CLocationInterface :: GetLocationInfo( CLiwGenericParamList& aOutParamList,
     }
 
 
-/**
- * Function CLocationInterface :: RequestCancel is used to cancel the pending async request if 
- * returns the cancell status success if transaction id is valid else KErrGeneral error.
- */
  
-MLiwNotifyCallback* CLocationInterface :: RequestCancel(TInt32 aTranactionId/*,MLiwNotifyCallback** aCallBack*/)
-    {
-        TInt ncalls = iHandleCB.Count() ;
-        
-        for(TInt iter = 0 ; iter < ncalls ;  ++iter )
-            {
-                
-                if( iHandleCB[iter] )
-	                {
-	                if(iHandleCB[iter]->GetTransactionId() == aTranactionId)
-                    	{
-                        TInt requestType = iHandleCB[iter]->GetRequestType() ;
-                        TInt cancelType = ECancelGetLocation ;
-                        
-                        
-                        if(requestType == KTraceCB)
-                            {
-                                cancelType = ECancelTrace ;
-                            }
-                        iLocationService->CancelOnGoingService(cancelType ) ;
-                        
-                        MLiwNotifyCallback* callobj = iHandleCB[iter]->GetCallBackobj();
-                        
-                        return( callobj ) ;
-                    	}	
-	                }
-                
-            }
-        
-        //No TransactionId Match found, return Error 
-        return NULL ;    
-    }
- 
- /**
-  * This function is a static method to create iLocatinInterface object
-  * return pointer to constructed object else paincs with symbian painc 
-  * code
-  */
-  
- CLocationInterface * CLocationInterface :: NewL()
-    {
-    CLocationInterface *self =  new(ELeave)CLocationInterface() ;
-
-
-
-     
-    CleanupStack :: PushL(self) ;
-    self->iLocationService =  CLocationService :: NewL() ;
-    TInt error = (self->iLocationService)->GetModuleInfo(self->iModuleInfo) ;
-    	
-
-    User :: LeaveIfError(error) ;
-
-    error = (self->SetSupportedFields()) ;
-
-    User :: LeaveIfError(error) ;
-    CleanupStack :: Pop(self) ;
-    return self ;
-    	
-    }
 
 /**
  * Function : ExecuteCmdL , called directly by consumer, parses the input parameters and 
@@ -1484,36 +1546,6 @@ void CLocationInterface :: ExecuteCmdL( const TDesC8& aCmdName,
 
 
  
- /**
-   * Function: ConvertPosToGenricList puts the latitude, longitude and altitude information 
-   *  into generic parmater list
-   *  This is an internal utility function
-  */
-  
- void CLocationInterface :: ConvertPosToGenricListL( TPosition& aPos , CLiwGenericParamList& aOutList )
-    {
-    CLiwDefaultMap *Result = CLiwDefaultMap::NewL() ; 
-    TReal64 Val = aPos.Longitude() ;
-
-    Result->InsertL(KLongitudeKey , TLiwVariant((TReal)Val)) ; //Inserting latitude
-
-    Val = aPos.Latitude() ;
-    Result->InsertL(KLatitudeKey , TLiwVariant((TReal)Val)) ; //Inserting latitude
-            
-    TReal32 altitude = aPos.Altitude() ;
-            
-
-    Result->InsertL(KAltitudeKey , TLiwVariant((TReal)altitude)) ; //Inserting altitude
-
-    //Now Push this map into outparm list 
-     TLiwVariant MapVariant(Result) ;
-     
-     TLiwGenericParam outParm(KLocationMap , TLiwVariant(MapVariant)) ;
-    // outParm.SetSemanticId(EGenericParamLocation) ;
-     aOutList.AppendL(outParm) ;
-     Result->DecRef();
-     
-    }
 
 /**
  * Internal function which is used to extract the coordinates from CLiwMap passed by consumer

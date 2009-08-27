@@ -24,6 +24,7 @@ UID             0x1000008D 0x101FB3E3
 CAPABILITY      ALL -TCB
 DEFFILE         tmediaprovidertesting.def
 
+EPOCALLOWDLLDATA
 	    	  
 USERINCLUDE     ../inc
 USERINCLUDE     ../../../../mediamanagementservice/inc
@@ -33,12 +34,13 @@ SOURCEPATH      ../src
 SOURCE          tmediaprovidertesting.cpp
 SOURCE          tmediaprovidertestingBlocks.cpp
 SOURCE          tmediaprovidertestingImpl.cpp
+SOURCE			tmediaobserver.cpp		
 
 LIBRARY         euser.lib
 LIBRARY         stiftestinterface.lib
 LIBRARY         stiftestengine.lib
 LIBRARY         liwServiceHandler.lib
-
+LIBRARY			efsrv.lib 
 LANG            SC
 
 // End of File

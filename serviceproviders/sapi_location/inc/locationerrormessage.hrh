@@ -37,6 +37,8 @@ _LIT(KMissingParamCord, "location : Calculate : Missing argument - locationcoord
 _LIT(KMissingDistanceParam, "location : Calculate : Missing argument - MoveByThisDistance");
 _LIT(KMissingBearingParam, "location : Calculate : Missing argument - MoveByThisBearing");
 
+_LIT(KGetLocationBadEnableHighAcc, "location : GetLocation : EnableHighAccuracy Type mismatch");
+_LIT(KTraceBadEnableHighAcc, "location : Trace : EnableHighAccuracy Type mismatch");
 _LIT(KGetLocationWrongupdateMap, "location : GetLocation : BadArgument - Updateoptions");
 _LIT(KCalWrongSource, "location : Calculate : Wrong Argument - SourceParam");
 _LIT(KCalWrongDest, "location : Calculate : Wrong Argument - Paramdestination");

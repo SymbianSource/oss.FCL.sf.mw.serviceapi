@@ -295,12 +295,12 @@ void CLandmarkInterface::SwitchCmdL( const TDesC8& aCmdName,
         User::Leave (SErrInvalidServiceArgument );
         }
 
-    if ( aCmdName == KCancel && (KLiwOptCancel & aCmdOptions) )
+    if ( !aCmdName.CompareF(KCancel) && (KLiwOptCancel & aCmdOptions) )
         {
         Cancel (aInParamList, aOutParamList, aCmdOptions, aCallback );
         }
     else
-        if ( aCmdName == KGetList )
+        if ( !aCmdName.CompareF(KGetList) )
             {
             GetListL (aInParamList, aOutParamList, aCmdOptions, aCallback );
             }
@@ -313,36 +313,36 @@ void CLandmarkInterface::SwitchCmdL( const TDesC8& aCmdName,
                 User::Leave (SErrInvalidServiceArgument );
                 }
             else
-                if ( aCmdName == KAdd )
+                if ( !aCmdName.CompareF(KAdd) )
                     {
                     AddL (aInParamList, aOutParamList, aCmdOptions, aCallback );
                     }
                 else
-                    if ( aCmdName == KRemove )
+                    if ( !aCmdName.CompareF(KRemove) )
                         {
                         RemoveL (aInParamList, aOutParamList, aCmdOptions,
                                 aCallback );
                         }
                     else
-                        if ( aCmdName == KOrganise )
+                        if ( !aCmdName.CompareF(KOrganise) )
                             {
                             OrganiseL (aInParamList, aOutParamList,
                                     aCmdOptions, aCallback );
                             }
                         else
-                            if ( aCmdName == KImport )
+                            if ( !aCmdName.CompareF(KImport) )
                                 {
                                 ImportL (aInParamList, aOutParamList,
                                         aCmdOptions, aCallback );
                                 }
                             else
-                                if ( aCmdName == KExport )
+                                if ( !aCmdName.CompareF(KExport) )
                                     {
                                     ExportL (aInParamList, aOutParamList,
                                             aCmdOptions, aCallback );
                                     }
                                 else
-                                    if ( aCmdName == KNew )
+                                    if ( !aCmdName.CompareF(KNew) )
                                         {
                                         NewTemplateL (aInParamList,
                                                 aOutParamList, aCmdOptions,

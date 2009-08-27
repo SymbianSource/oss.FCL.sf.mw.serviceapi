@@ -101,7 +101,9 @@ TInt Csapi_getheader::RunMethodL(
          ENTRY( "getheader_test2", Csapi_getheader::getheader_test2L ),
          ENTRY( "getheader_test3", Csapi_getheader::getheader_test3L ),
          ENTRY( "getheadermms_test1", Csapi_getheader::getheadermms_test1L ),
-         ENTRY( "getheadermms_test2", Csapi_getheader::getheadermms_test2L ),         
+         ENTRY( "getheadermms_test2", Csapi_getheader::getheadermms_test2L ),
+         ENTRY( "getheadersmsasync_test4", Csapi_getheader::getheadersmsasync_test4L ),
+         ENTRY( "getheadermmsasync_test3", Csapi_getheader::getheadermmsasync_test3L )
         };
 
     const TInt count = sizeof( KFunctions ) / 
@@ -197,7 +199,44 @@ TInt Csapi_getheader::getheadermms_test2L( CStifItemParser&  )
 		else	
 			return KErrGeneral;
 
-    }  /*  
+    }  
+// -----------------------------------------------------------------------------
+// Csapi_getheader:getheadersmsasync_test4L
+// Example test method function.
+// (other items were commented in a header).
+// -----------------------------------------------------------------------------
+//
+TInt Csapi_getheader::getheadersmsasync_test4L( CStifItemParser&  )
+    {
+        int ret=0;
+    ret = getheadersmsasync_test4(0, NULL);
+    
+    if(ret==0)
+            return KErrNone;
+        else    
+            return KErrGeneral;
+
+    }
+// -----------------------------------------------------------------------------
+// Csapi_getheader:getheadermmsasync_test3L
+// Example test method function.
+// (other items were commented in a header).
+// -----------------------------------------------------------------------------
+//
+TInt Csapi_getheader::getheadermmsasync_test3L( CStifItemParser&  )
+    {
+        int ret=0;
+    ret = getheadermmsasync_test3(0, NULL);
+    
+    if(ret==0)
+            return KErrNone;
+        else    
+            return KErrGeneral;
+
+    }
+
+
+/*  
 // -----------------------------------------------------------------------------
 // Csapi_getheader:getheader6_testL
 // Example test method function.

@@ -32,7 +32,17 @@
  TBuf<25> KCompare ;
  TBuf8<100> contactid ;
  enum flag {GROUP = 1,CONTACT }status;
-  
+ void CContactCallback::HandleReturnArray( const TInt& aError, RPointerArray<HBufC8>& aArray, TInt aTransId )
+     {
+     CActiveScheduler::Stop();
+     iError= aError ;
+     }
+ void CContactCallback::HandleReturnId( const TInt& aError, HBufC8* acntId, TInt aTransId )
+     {
+     CActiveScheduler::Stop();
+     }
+
+
 
 void CContactCallback::HandleReturnValue( TOperationEvent aEventId, const TInt& aError, TInt aTransId )
 {

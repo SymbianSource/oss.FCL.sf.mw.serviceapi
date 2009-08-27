@@ -1,0 +1,23 @@
+/*
+============================================================================
+ Name		: bld.inf
+ Author	  : reethu j
+ Copyright   : Your copyright notice
+ Description : This file provides the information required for building the
+				whole of a tcontactsgetidsprovidertest.
+============================================================================
+*/
+
+PRJ_PLATFORMS
+WINSCW ARMV5
+
+PRJ_TESTEXPORTS
+../conf/tcontactsgetidsprovidertest.cfg /epoc32/WINSCW/C/TestFramework/tcontactsgetidsprovidertest.cfg
+PRJ_EXPORTS
+//All files under this section are been moved to PRJ_TESTEXPORTS
+
+
+
+PRJ_TESTMMPFILES
+tcontactsgetidsprovidertest.mmp
+PRJ_MMPFILES

@@ -116,7 +116,8 @@ public:
  						   const TDesC& aSearchVal = KNullDesC,
     					   CSearchFields* aSearchFields = NULL,
     					   TOrder aSortOrder = EAsc,
-    					   const TDesC& aStoreUri = VPbkContactStoreUris::DefaultCntDbUri());
+    					   const TDesC& aStoreUri = VPbkContactStoreUris::DefaultCntDbUri(),
+    					   TCmdType val = EGetList);
     
     /*
 	Get the list of databases currently open
@@ -191,8 +192,22 @@ public:
                                     const TDesC& aSearchVal=KNullDesC,
                                     CSearchFields* aSearchFields=NULL,
                                     TOrder aSortOrder=EAsc,
-                                    const TDesC& aStoreUri=VPbkContactStoreUris::
-                                    DefaultCntDbUri());
+                                    const TDesC& aStoreUri=VPbkContactStoreUris::DefaultCntDbUri(),
+                                    TCmdType val=EGetList);
+    
+    /**
+     * Synchronous implementation of GetIds api.
+     * Get the list of ids of contacts/groups in the database satisfying the criteria in the SearchVal
+     *
+     * @return Integer indicating requestion submission.
+     */
+    IMPORT_C
+    RPointerArray<HBufC8>& GetIdsL(Ttype atype,                                       
+                                            const TDesC& aSearchVal=KNullDesC,
+                                            CSearchFields* aSearchFields=NULL,
+                                            TOrder aSortOrder = EAsc,
+                                            const TDesC& aStoreUri=VPbkContactStoreUris::DefaultCntDbUri(),
+                                            TCmdType aval=EGetIds);
 
 	/**
 	 * Synchronous implementation of AddL api.
@@ -200,7 +215,7 @@ public:
      *            2) Editing a contact/group from the contacts database.
      * @return Integer indicating requestion submission.
      */
-     IMPORT_C void AddL(CSingleContact* aContact,
+     IMPORT_C HBufC8* AddL(CSingleContact* aContact,
 						const TDesC8& aGroupId = KNullDesC8,
 						const TDesC& aGroupLabel = KNullDesC,
 						const TDesC& aStoreUri = VPbkContactStoreUris::

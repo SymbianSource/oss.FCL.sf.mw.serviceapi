@@ -14,4 +14,10 @@ EXPORTS
 	_ZTI18ConcurrentTraceLoc @ 13 NONAME ; #<TI>#
 	_ZTV16ConcurrentGetLoc @ 14 NONAME ; #<VT>#
 	_ZTV18ConcurrentTraceLoc @ 15 NONAME ; #<VT>#
+	_ZTI10TOTraceLoc @ 16 NONAME ; #<TI>#
+	_ZTI11ASyncLocCBF @ 17 NONAME ; #<TI>#
+	_ZTI18EnableHighAccClass @ 18 NONAME ; #<TI>#
+	_ZTV10TOTraceLoc @ 19 NONAME ; #<VT>#
+	_ZTV11ASyncLocCBF @ 20 NONAME ; #<VT>#
+	_ZTV18EnableHighAccClass @ 21 NONAME ; #<VT>#
 

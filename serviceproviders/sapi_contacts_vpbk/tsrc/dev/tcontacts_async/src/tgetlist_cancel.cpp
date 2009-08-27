@@ -49,7 +49,9 @@ private:
 	void HandleReturnValue(TOperationEvent aEvent, const TInt& aError , TInt aTransId);
 	
 	void HandleReturnIter( const TInt& aError, CContactIter* aIter, TInt aTransId );
-	
+	void HandleReturnId( const TInt& aError, HBufC8* acntId, TInt aTransId );
+	void HandleReturnArray(const TInt& aError, RPointerArray<HBufC8>& aArray, TInt aTransId );
+
 	
 private:	
 	CActiveSchedulerWait* 	iWaitSchedular;
@@ -109,6 +111,13 @@ void CGetListTestAsync::Start()
 	iWaitSchedular->Start();	
 	}
 
+
+void CGetListTestAsync::HandleReturnId( const TInt& aError, HBufC8* acntId, TInt aTransId )
+    {
+    CActiveScheduler::Stop();
+    }
+
+
 void CGetListTestAsync::HandleReturnValue(TOperationEvent aEvent, const TInt& aError , TInt aTransId)
 	{
 	//******************* set iResult ****************************
@@ -129,7 +138,11 @@ void CGetListTestAsync::HandleReturnIter( const TInt& aError, CContactIter* aIte
 			
 	}
 
-	
+
+void CGetListTestAsync::HandleReturnArray(const TInt& aError, RPointerArray<HBufC8>& aArray, TInt aTransId )
+    {
+    CActiveScheduler::Stop();
+    }
 TInt CGetListTestAsync::Result()
 	{
 	return iResult;

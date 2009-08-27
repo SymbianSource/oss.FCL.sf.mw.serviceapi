@@ -189,6 +189,7 @@ _LIT8(KAnniversary, "Anniversary");
 _LIT8(KSyncClass, "SyncClass"); 
 _LIT8(KLOCPrivacy, "LOCPrivacy"); 
 _LIT8(KGenLabel, "GenLabel");
+_LIT8(KXSPID, "IMPP");
 
 
 //----------------------------------------------------------------------------
@@ -254,7 +255,11 @@ TInt CTestProvider::RunMethodL(
        	ENTRY("CancelOrganiseAdd" , CTestProvider :: CancelOrganiseAdd),
        	ENTRY("CancelDeleteContact" , CTestProvider :: CancelDeleteContact),      	
        	ENTRY("CancelExport" , CTestProvider :: CancelExportL),   
-       	ENTRY("CancelImport" , CTestProvider :: CancelImportL)
+       	ENTRY("CancelImport" , CTestProvider :: CancelImportL),
+       	ENTRY("AddContactASyncTest" , CTestProvider :: AddContactASyncTestL),
+       	ENTRY("AddGroupASyncTest" , CTestProvider :: AddGroupASyncTestL),
+       	ENTRY("GetListNewFieldsTest" , CTestProvider :: GetListNewFieldsTestL)
+       	
        	   
         };
 
@@ -641,7 +646,135 @@ TInt CTestProvider :: HandleNotifyL(TInt aCmdId,
             {
             iResult = code;    
             }     
-        }      
+        }
+     else if(iCase == EAddContactASyncTest || iCase == EAddGroupASyncTest)
+         {
+         if(aEventId == KLiwEventCompleted && code == KErrNone)
+             {
+                 TInt pos = 0;   
+                 const TLiwGenericParam* param;
+                 
+                 param = aEventParamList.FindFirst( pos, KReturnValue );    
+                 
+                 TLiwVariant cntId = param->Value();
+                 
+                 TPtrC idVal = cntId.AsDes();
+                 if(idVal.Compare(KNullDesC) != 0)
+                     {
+                     iResult = KErrNone;
+                     }
+                 else
+                     {
+                     iResult = KErrGeneral;
+                     }            
+             }
+         else
+             {
+             iResult = code;
+             }
+         }
+     else if(iCase == EGetListNewFieldsTest)
+         {
+         iResult = KErrNone;
+         if(aEventId == KLiwEventCompleted && code == KErrNone)
+          {
+          TInt pos = 0;
+          TBuf<255> firstName;
+          TBuf<255> secName;
+          TBuf<255> callerObjImg;
+          TBuf<255> Note;
+          TLiwVariant cntId;
+          TLiwVariant mapfield;
+          TLiwVariant firstname;
+          TLiwVariant secname;
+          TLiwVariant callerobjimg;
+          TLiwVariant xspidarr;
+          TLiwVariant note;
+          TLiwVariant entry;
+          const CLiwMap* map = NULL;
+          const CLiwMap* mapField = NULL;
+          const CLiwList* xspid = NULL;
+          
+          param = aEventParamList.FindFirst(pos, KReturnValue);
+          TLiwVariant iterator = param->Value();
+          CLiwIterable* iter = iterator.AsIterable();
+              if(iter->NextL(entry))
+                  {
+                  map = entry.AsMap();
+                  TInt count1 = map->Count();       
+                  map->FindL(KContactId, cntId);                   
+                  TPtrC8 ptr = cntId.AsData();                 
+                  if(map->FindL(KFirstName,mapfield))
+                  mapField = mapfield.AsMap();
+                  
+                  TInt count = mapField->Count();
+                  firstname.Reset();
+                  mapField->FindL(KFieldValue,firstname);
+                  firstName = firstname.AsDes();
+                  if(firstName.CompareF(_L("Barbie")) != 0)       
+                      {
+                      iResult = KErrGeneral;
+                      return;
+                      }    
+                  
+                  if(map->FindL(KSecondName,mapfield))
+                  mapField = mapfield.AsMap();                
+                  count = mapField->Count();
+                  mapField->FindL(KFieldValue,secname);
+                  secName = secname.AsDes();
+                  if(secName.CompareF(_L("Doll")) != 0)       
+                      {
+                      iResult = KErrGeneral;
+                      return;
+                      }    
+                  
+                  if(map->FindL(KCallerObjImg,mapfield))
+                    mapField = mapfield.AsMap();                
+                    count = mapField->Count();
+                    mapField->FindL(KFieldValue,callerobjimg);
+                    callerObjImg = callerobjimg.AsDes();
+                    if(callerObjImg.CompareF(_L("C:\\data\\images\\pic.jpg")) != 0)       
+                        {
+                        iResult = KErrGeneral;
+                        return;
+                        }
+                    if(map->FindL(KNote,mapfield))
+                    mapField = mapfield.AsMap();                
+                    count = mapField->Count();
+                    mapField->FindL(KFieldValue,note);
+                    Note = note.AsDes();
+                    if(Note.CompareF(_L("Lead role in Barbie, the island princess")) != 0)       
+                        {
+                        iResult = KErrGeneral;
+                        return;
+                        }
+            
+                    if(map->FindL(KXSPID,mapfield))
+                        mapField = mapfield.AsMap();                
+                    //count = mapField->Count();
+                    mapField->FindL(KFieldValue,xspidarr);
+                    xspid = xspidarr.AsList();
+                    for(TInt index =0;index<xspid->Count(); index++)
+                        {
+                        TLiwVariant xspidVal;
+                        if(xspid->AtL(index,xspidVal))
+                        {
+                        TPtrC ptrVal = xspidVal.AsDes();
+                        if(ptrVal.CompareF(_L("Yahoo:Barbie@yahoo.co.in")) != 0 && ptrVal.CompareF(_L("Google:Barbie@gmail.com")) != 0)
+                        {
+                            iResult = KErrGeneral;
+                            return;
+                        }
+                        }
+                    }
+              
+          }
+          }
+         else
+          {
+          iResult = code;
+          }
+         }
      }
 
 void CTestProvider::LoadService()
@@ -2401,10 +2534,275 @@ TInt CTestProvider :: CancelDeleteContact(CStifItemParser& /*aItem*/)
     }
     
     
+
+
+TInt CTestProvider :: AddContactASyncTestL(CStifItemParser& /*aItem */)
+    {
+    
+    iResult = KErrGeneral;
+    iCase = EAddContactASyncTest;    
+    LoadService();        
+                                    
+    CLiwDefaultMap* pMap = CLiwDefaultMap::NewL();    
     
     
+    TInt pos = 0;             
+    
+    pMap->InsertL(KContactId, TLiwVariant( _L("")));
+    CLiwDefaultMap* fieldMap = CLiwDefaultMap::NewL();    
+    fieldMap->InsertL(KFieldLabel,TLiwVariant(_L("firstname")));
+        
+    fieldMap->InsertL(KFieldValue,TLiwVariant(_L("Barbie")));
+    
+    pMap->InsertL(KFirstName, TLiwVariant(fieldMap));
+
+    CLiwDefaultMap* fieldPrefixMap = CLiwDefaultMap::NewL();    
+    fieldPrefixMap->InsertL(KFieldLabel,TLiwVariant(_L("Prefix")));
+            
+    fieldPrefixMap->InsertL(KFieldValue,TLiwVariant(_L("Princess")));
+    
+    pMap->InsertL(KPrefix, TLiwVariant(fieldPrefixMap));
+    
+    CLiwDefaultMap* fieldNoteMap = CLiwDefaultMap::NewL();    
+    
+    fieldNoteMap->InsertL(KFieldLabel,TLiwVariant(_L("Note")));
+                
+    fieldNoteMap->InsertL(KFieldValue,TLiwVariant(_L("Lead role in Barbie, the island princess")));
+    
+    pMap->InsertL(KNote, TLiwVariant(fieldNoteMap));
+        
+    CLiwDefaultMap* anniMap = CLiwDefaultMap::NewL();    
+    anniMap->InsertL(KFieldLabel,TLiwVariant(_L("Anniversary")));
+    anniMap->InsertL(KFieldValue,TLiwVariant(TTime(TDateTime(2007,EOctober,25,0,0,0,0))));
+    pMap->InsertL(KAnniversary, TLiwVariant(anniMap));
     
     
+    CLiwDefaultMap* dateMap = CLiwDefaultMap::NewL();    
+    dateMap->InsertL(KFieldLabel,TLiwVariant(_L("Date")));
+    dateMap->InsertL(KFieldValue,TLiwVariant(TTime(TDateTime(2007,EOctober,25,0,0,0,0))));
+       pMap->InsertL(KDate, TLiwVariant(dateMap));
+       
+                                
+    CLiwDefaultMap* fieldSecNameMap = CLiwDefaultMap::NewL();    
+    fieldSecNameMap->InsertL(KFieldLabel,TLiwVariant(_L("SecondName")));
+        
+    fieldSecNameMap->InsertL(KFieldValue,TLiwVariant(_L("Doll")));
+    
+    pMap->InsertL(KSecondName, TLiwVariant(fieldSecNameMap));
+        
+    CLiwDefaultMap* fieldPhotoMap = CLiwDefaultMap::NewL();    
+    fieldPhotoMap->InsertL(KFieldLabel,TLiwVariant(_L("CallerObjImg")));
+            
+    fieldPhotoMap->InsertL(KFieldValue,TLiwVariant(_L("C:\\data\\images\\pic.jpg")));
+    
+    pMap->InsertL(KCallerObjImg, TLiwVariant(fieldPhotoMap));
+        
+    CLiwDefaultMap* fieldXspidMap = CLiwDefaultMap::NewL();    
+    CLiwList* list = CLiwDefaultList::NewL();
+    list->AppendL(TLiwVariant(_L("Yahoo:barbie@yahoo.co.in")));
+    list->AppendL(TLiwVariant(_L("Google:barbie@gmail.com")));
+    fieldXspidMap->InsertL(KFieldLabel,TLiwVariant(_L("IMPP")));
+        
+    fieldXspidMap->InsertL(KFieldValue,TLiwVariant(list));
+    
+    pMap->InsertL(KXSPID, TLiwVariant(fieldXspidMap));
+        
+    const TLiwGenericParam paramContentType(KType, TLiwVariant( _L("Contact"))); 
+    const TLiwGenericParam paramAddData(KData, TLiwVariant(pMap)); ;
+        
+    inList ->AppendL( paramContentType );
+    inList ->AppendL( paramAddData );    
+     
+    iIface->ExecuteCmdL(KCmdAdd, *inList, *outList, KLiwOptASyncronous, this);
+        
+    const TLiwGenericParam* param = outList->FindFirst( pos, KExitCode );
+    TLiwVariant err = param->Value();
+    TInt code = err.AsTInt32();
+           
+    if(code == SErrNone)
+        {
+        CActiveScheduler::Start();   
+        }           
+    pMap->DecRef();
+    fieldMap->DecRef();
+    fieldMap->DecRef();
+    
+    inList->Reset();
+    outList->Reset(); 
+                   
+    return iResult;
+    }
+
+
+TInt CTestProvider :: AddGroupASyncTestL(CStifItemParser& /*aItem*/)
+    {           
+    LoadService();                          
+    CLiwDefaultMap* pMap = CLiwDefaultMap::NewL(); 
+    iCase = EAddGroupASyncTest;
+    TInt pos = 0;                 
+    
+    pMap->InsertL(KDBUri, TLiwVariant( _L("cntdb://c:contacts.cdb")));
+    pMap->InsertL(KGroupId, TLiwVariant(_L8("")));
+    pMap->InsertL(KGroupLabel, TLiwVariant(_L("TestAddGroup")));
+    
+    const TLiwGenericParam paramContentType(KType, TLiwVariant( _L("Group"))); 
+    const TLiwGenericParam paramAddData(KData, TLiwVariant(pMap)); ;
+       
+    inList ->AppendL( paramContentType );
+    inList ->AppendL( paramAddData );   
+    iIface->ExecuteCmdL(KCmdAdd, *inList, *outList, KLiwOptASyncronous, this);
+        
+    const TLiwGenericParam* param = outList->FindFirst( pos, KExitCode );
+    TLiwVariant err = param->Value();
+    TInt code = err.AsTInt32();
+    
+    inList->Reset();
+    outList->Reset();
+    
+    if(code == SErrNone)
+        {
+        CActiveScheduler::Start();  
+        }
+    pMap->DecRef();    
+    return iResult; 
+    }
+TInt CTestProvider :: AddOneContactNewFieldsL()
+    {
+    //LoadService();        
+                                    
+    CLiwDefaultMap* pMap = CLiwDefaultMap::NewL();    
+     
+    TInt pos = 0;             
+    pMap->InsertL(KContactId, TLiwVariant( _L("")));
+       CLiwDefaultMap* fieldMap = CLiwDefaultMap::NewL();    
+       fieldMap->InsertL(KFieldLabel,TLiwVariant(_L("firstname")));
+           
+       fieldMap->InsertL(KFieldValue,TLiwVariant(_L("Barbie")));
+       
+       pMap->InsertL(KFirstName, TLiwVariant(fieldMap));
+
+       CLiwDefaultMap* fieldPrefixMap = CLiwDefaultMap::NewL();    
+       fieldPrefixMap->InsertL(KFieldLabel,TLiwVariant(_L("Prefix")));
+               
+       fieldPrefixMap->InsertL(KFieldValue,TLiwVariant(_L("Princess")));
+       
+       pMap->InsertL(KPrefix, TLiwVariant(fieldPrefixMap));
+       
+       CLiwDefaultMap* fieldNoteMap = CLiwDefaultMap::NewL();    
+       
+       fieldNoteMap->InsertL(KFieldLabel,TLiwVariant(_L("Note")));
+                   
+       fieldNoteMap->InsertL(KFieldValue,TLiwVariant(_L("Lead role in Barbie, the island princess")));
+       
+       pMap->InsertL(KNote, TLiwVariant(fieldNoteMap));
+
+CLiwDefaultMap* anniMap = CLiwDefaultMap::NewL();    
+    anniMap->InsertL(KFieldLabel,TLiwVariant(_L("Anniversary")));
+    anniMap->InsertL(KFieldValue,TLiwVariant(TTime(TDateTime(2007,EOctober,25,0,0,0,0))));
+    pMap->InsertL(KAnniversary, TLiwVariant(anniMap));
     
     
+    CLiwDefaultMap* dateMap = CLiwDefaultMap::NewL();    
+    dateMap->InsertL(KFieldLabel,TLiwVariant(_L("Date")));
+    dateMap->InsertL(KFieldValue,TLiwVariant(TTime(TDateTime(2007,EOctober,25,0,0,0,0))));
+       pMap->InsertL(KDate, TLiwVariant(dateMap));
+       
+
+     
+                                   
+       CLiwDefaultMap* fieldSecNameMap = CLiwDefaultMap::NewL();    
+       fieldSecNameMap->InsertL(KFieldLabel,TLiwVariant(_L("SecondName")));
+           
+       fieldSecNameMap->InsertL(KFieldValue,TLiwVariant(_L("Doll")));
+       
+       pMap->InsertL(KSecondName, TLiwVariant(fieldSecNameMap));
+           
+       CLiwDefaultMap* fieldPhotoMap = CLiwDefaultMap::NewL();    
+       fieldPhotoMap->InsertL(KFieldLabel,TLiwVariant(_L("CallerObjImg")));
+               
+       fieldPhotoMap->InsertL(KFieldValue,TLiwVariant(_L("C:\\data\\images\\pic.jpg")));
+       
+       pMap->InsertL(KCallerObjImg, TLiwVariant(fieldPhotoMap));
+           
+       CLiwDefaultMap* fieldXspidMap = CLiwDefaultMap::NewL();    
+       CLiwList* list = CLiwDefaultList::NewL();
+       list->AppendL(TLiwVariant(_L("Yahoo:barbie@yahoo.co.in")));
+       list->AppendL(TLiwVariant(_L("Google:barbie@gmail.com")));
+       fieldXspidMap->InsertL(KFieldLabel,TLiwVariant(_L("IMPP")));
+           
+       fieldXspidMap->InsertL(KFieldValue,TLiwVariant(list));
+       
+       pMap->InsertL(KXSPID, TLiwVariant(fieldXspidMap));
+       
+    const TLiwGenericParam paramContentType(KType, TLiwVariant( _L("Contact"))); 
+    const TLiwGenericParam paramAddData(KData, TLiwVariant(pMap)); ;
+        
+    inList ->AppendL( paramContentType );
+    inList ->AppendL( paramAddData );    
+     
+    iIface->ExecuteCmdL(KCmdAdd, *inList, *outList, 0, NULL);
+        
+    const TLiwGenericParam* param = outList->FindFirst( pos, KExitCode );
+    TLiwVariant err = param->Value();
+    TInt code = err.AsTInt32();
+           
+           
+    pMap->DecRef();
+    fieldMap->DecRef();
+    fieldMap->DecRef();
     
+    inList->Reset();
+    outList->Reset(); 
+    if(code == SErrNone)
+            {
+            return KErrNone;  
+            }            
+    return KErrGeneral;
+    }
+
+    
+TInt CTestProvider :: GetListNewFieldsTestL(CStifItemParser& /*aItem */)
+    {    
+    LoadService(); 
+    TInt addRes = AddOneContactNewFieldsL();
+    if(addRes != KErrNone)
+        {
+        return KErrGeneral;
+        }
+    
+    _LIT8(KFilter, "Filter");
+    _LIT8(KSearchVal, "SearchVal");
+    iResult = KErrGeneral;   
+    
+    TInt pos = 0;
+    iCase = EGetListNewFieldsTest;
+        
+    //const TLiwGenericParam paramGetListSortOrder;
+    
+    const TLiwGenericParam paramContentType(KType, TLiwVariant( _L("Contact")));    
+    inList ->AppendL( paramContentType );
+    
+    CLiwDefaultMap* map =  CLiwDefaultMap :: NewL();    
+    CleanupStack::PushL(map);
+    map->InsertL(KSearchVal,_L("Barbie"));
+    
+    const TLiwGenericParam paramData(KFilter, TLiwVariant(map));    
+    inList ->AppendL( paramData );
+    
+    iIface->ExecuteCmdL(KCmdGetList, *inList, *outList, KLiwOptASyncronous, this);
+        
+    const TLiwGenericParam* param = outList->FindFirst( pos, KExitCode );
+    TLiwVariant err = param->Value();
+    TInt code = err.AsTInt32();
+        
+    if(code == SErrNone)
+        {
+        CActiveScheduler::Start(); 
+        }
+    
+    CleanupStack::Pop(map);
+    map->DecRef(); 
+    inList->Reset();
+    outList->Reset();   
+    return iResult;                   
+    }

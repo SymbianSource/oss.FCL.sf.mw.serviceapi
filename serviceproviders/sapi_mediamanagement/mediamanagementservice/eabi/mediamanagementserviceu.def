@@ -18,5 +18,8 @@ EXPORTS
 	_ZTV16CVideoResolution @ 17 NONAME ; #<VT>#
 	_ZTV18CThumbnailObserver @ 18 NONAME ; #<VT>#
 	_ZTV20CThumbnailGeneration @ 19 NONAME ; #<VT>#
-
-
+	_ZTI21CAsynchRequestManager @ 20 NONAME ; #<TI>#
+	_ZTV21CAsynchRequestManager @ 21 NONAME ; #<VT>#
+	_ZN16CImageResolution14GetresolutionLER5TSize @ 22 NONAME
+	_ZN22MediaResolutionFactory25CreateMediaResolutionobjLER7TDesC16S1_ @ 23 NONAME
+        _ZThn4_N16CImageResolution14GetresolutionLER5TSize @ 24 NONAME ; #<thunk>#

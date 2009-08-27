@@ -99,6 +99,7 @@ _LIT8(KAnniversary, "Anniversary");
 _LIT8(KSyncClass, "SyncClass"); 
 _LIT8(KLOCPrivacy, "LOCPrivacy"); 
 _LIT8(KGenLabel, "GenLabel"); 
+_LIT8(KXspid, "IMPP");
 
 #endif // C_FIELDKEYS_HRH
 #endif //C_CONTACTINTERFACE_HRH

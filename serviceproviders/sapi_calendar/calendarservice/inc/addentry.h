@@ -84,6 +84,14 @@ class CCalendarAddEntry : public CBase
 	     * @param aEntry The calendar entry to be modified
 		*/ 
 		void UpdateEntryAttributesL( CCalEntry* aEntry );
+		/**
+         * Retrieves the instance for the given uid
+         * @param aInsStTime Instance start time
+         * @param aUid Uid
+         * @return CCalInstance* 
+        */ 
+        CCalInstance* GetGlobalInstanceL( const TCalTime& aInsStTime, 
+                                                        const TDesC8& aUid );
         
         /**
 		 * Retrieves the instance for the given local uid
