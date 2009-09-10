@@ -47,6 +47,11 @@ START RESOURCE  2000CFB4.rss
 TARGET          calendarprovider.rsc
 END
 
+START RESOURCE calendarprovidername.rss
+		TARGETPATH      APP_RESOURCE_DIR
+		HEADER
+		LANGUAGE_IDS
+END
 
 LIBRARY        	euser.lib
 LIBRARY        	efsrv.lib

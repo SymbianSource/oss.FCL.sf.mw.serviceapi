@@ -20,3 +20,6 @@
 PRJ_MMPFILES
 
 contactprovider.mmp
+
+PRJ_EXPORTS
+../loc/contactprovider.loc        MW_LAYER_LOC_EXPORT_PATH(contactprovider.loc)

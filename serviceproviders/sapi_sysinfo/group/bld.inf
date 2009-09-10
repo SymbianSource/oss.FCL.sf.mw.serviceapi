@@ -21,5 +21,8 @@
 PRJ_PLATFORMS
 WINSCW ARMV5
 
+PRJ_EXPORTS
+../loc/sysinfoprovider.loc        MW_LAYER_LOC_EXPORT_PATH(sysinfoprovider.loc)
+
 PRJ_MMPFILES
 sysinfoprovider.mmp

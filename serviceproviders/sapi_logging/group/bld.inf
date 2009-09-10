@@ -20,7 +20,7 @@ PRJ_PLATFORMS
 WINSCW ARMV5
 
 PRJ_EXPORTS
-
+../loc/loggingprovider.loc        MW_LAYER_LOC_EXPORT_PATH(loggingprovider.loc)
 
 
 PRJ_MMPFILES

@@ -20,11 +20,30 @@
 #include <senduiconsts.h>
 #include <mmsconst.h>
 #include <CMsvAttachment.h>
-
+#include <aknenv.h>
+#include <MTCLREG.H>
+#include <UTF.H>
+#include <mturutils.h>      
+#include <aknenv.h>
 #include <APGCLI.H>
+#include <smsclnt.h>
+#include <TXTRICH.H>
+#include <smuthdr.h>
+#include <smscmds.h>
+#include <mtmuibas.h>
+#include <mtuireg.h>
+
+
+#include <s32mem.h>
+
 
 #include "messageheader.h"
 #include "sendmessage.h"
+
+
+
+
+
 
 _LIT(KBodyTextFilePath,"C:\\");
 // ---------------------------------------------------------------------------
@@ -34,6 +53,7 @@ _LIT(KBodyTextFilePath,"C:\\");
 CSendMessage* CSendMessage::NewL( CMsvSession& aServerSession )
 	{
 	CSendMessage* self = new (ELeave) CSendMessage( aServerSession );
+	
 	return self;
 	}
 
@@ -51,7 +71,6 @@ CSendMessage::~CSendMessage()
 	
 	iMessage.Close();
 	iSendAs.Close();
-	
 	delete iMessageParam;
 	delete iNotifyCallback;
 	delete iTemplateDetail;
@@ -95,13 +114,23 @@ void CSendMessage::SendMessageL()
 	if ( iNotifyCallback ) // making call as asynchronous
 		{
 		CActiveScheduler::Add( this );
-		iMessageState = EInitialize;
+		if ( iMessageParam->MessageType() == KSenduiMtmSmsUid )
+		    {
+		    iMessageState = ESend;
+		    }
+		else
+		    {
+		    iMessageState = EInitialize;
+		    }
 		ActivateRequest( KErrNone );
 		}
 	else				// making call as synchronous
 		{
-		InitializeL();
-		ValidateL();
+		if ( iMessageParam->MessageType() == KSenduiMtmMmsUid )
+		    {
+            InitializeL();
+            ValidateL();
+		    }
 		SendL();
 		}
 	}
@@ -122,6 +151,7 @@ void CSendMessage::DoCancel()
 void CSendMessage::RunL()
 	{
 	TInt err = iStatus.Int();
+	
 	if ( err == KErrNone )
 		{
 		switch ( iMessageState )
@@ -155,7 +185,7 @@ void CSendMessage::RunL()
 				NotifyRequestResult( err );
 				}
 				break;
-					
+						
 			default:
 				NotifyRequestResult( KErrGeneral );	
 				break;	
@@ -176,16 +206,16 @@ void CSendMessage::InitializeL()
 	TInt err;
 	
 	err = iSendAs.Connect();
-
-	if ( err == KErrNone )
-		{
-		iMessage.CreateL( iSendAs, iMessageParam->MessageType() );
-		}
-	else
-		{
-		User::Leave(err);	
-		}
 	
+	if ( err == KErrNone )
+        {
+        iMessage.CreateL( iSendAs, iMessageParam->MessageType() );
+        }
+    else
+        {
+        User::Leave(err);   
+        }
+
 	if ( iTemplateDetail )
 		{
 		if ( iTemplateDetail->BodyText().Length() )
@@ -206,7 +236,15 @@ void CSendMessage::InitializeL()
 				
 				TRequestStatus stat;
 				RFile fileHandle = element->FileHandle();
-				iMessage.AddAttachment( fileHandle, tmpMime, stat );
+				
+				if(tmpMime.CompareF(KMmsTextPlain))
+				   {
+				   iMessage.AddAttachment( fileHandle, tmpMime, 0, stat );
+				   }
+				else
+				   {
+				   iMessage.AddAttachment( fileHandle, tmpMime, stat );				
+				   }
 				User::WaitForRequest( stat );
 
 				}
@@ -235,14 +273,22 @@ void CSendMessage::ValidateL()
 //
 void CSendMessage::SendL()
 	{
-	if( iMessageParam->LaunchEditor() )
-		{
-		iMessage.LaunchEditorAndCloseL();
-		}
-	else
-		{
-		iMessage.SendMessageAndCloseL();	
-		}
+	if ( iMessageParam->MessageType() == KSenduiMtmSmsUid )
+	    {
+ 	    SendSMSMessageL();
+	    }
+	else if ( iMessageParam->MessageType() == KSenduiMtmMmsUid )
+	    {
+        if( iMessageParam->LaunchEditor() )
+            {
+            iMessage.LaunchEditorAndCloseL();
+            }
+        else
+            {
+            iMessage.SendMessageAndCloseL();
+            }
+	    }
+	
 	if( iBodyTextFileFlag )	//If the bodytext attach file is created for mms, delete it
 		{
 		RFs rFs;
@@ -251,7 +297,7 @@ void CSendMessage::SendL()
     		rFs.Delete( iBodyTextFileName ); //if found delete it b4 creating it
    			rFs.Close();	
     		}
-		}	
+		}
 	}
 
 // ---------------------------------------------------------------------------
@@ -326,6 +372,7 @@ void CSendMessage::AddRecipientL()
 //
 void CSendMessage::AddBodyTextL()
 	{
+	
 	TPtrC filePath( KBodyTextFilePath );
 	
 	TPtrC bodyText = iMessageParam->BodyText();
@@ -342,17 +389,18 @@ void CSendMessage::AddBodyTextL()
 			
 			iBodyTextFileFlag = ETrue;
 			
-			HBufC8* buffer=HBufC8::NewL( bodyText.Length() );
+			HBufC8* buffer=HBufC8::NewL( bodyText.Length()* 4  );
+			TPtr8 tmpBuffer = buffer->Des();
+			CnvUtfConverter::ConvertFromUnicodeToUtf8(tmpBuffer, bodyText);
 			CleanupStack::PushL( buffer );
-			buffer->Des().Copy( bodyText );
+			buffer->Des().Copy( tmpBuffer );
 			tmpfile.Write( *buffer ); 
 			tmpfile.Flush();
 			tmpfile.Close();			
 			rFs.Close();
 			CleanupStack::PopAndDestroy( buffer );
-			
 			TRequestStatus stat;
-			iMessage.AddAttachment( iBodyTextFileName, KMmsTextPlain, stat );
+			iMessage.AddAttachment( iBodyTextFileName, KMmsTextPlain, 0, stat );
 			User::WaitForRequest( stat );
 			}
 		else
@@ -395,7 +443,6 @@ void CSendMessage::AddAttachmentL()
 			if( error == KErrNone )
 				{
 				TBuf8<256> tmpbuf;
-				
 				tmpfile.Read(tmpbuf, 255 );
 				
 				tmpfile.Close();
@@ -404,25 +451,38 @@ void CSendMessage::AddAttachmentL()
 				
 				error = rapaSesion.RecognizeData(((*attachmentArray)[count])->AttachmentName(), tmpbuf, aDataType);
 				
+				               
+				                
 				if( error == KErrNone )
 					{
 					TBuf8< KMaxDataTypeLength > tmp;
 					tmp.Copy( aDataType.iDataType.Des() );
 					
-					iMessage.AddAttachment( ((*attachmentArray)[count])->AttachmentName(),
+					if(!(tmp.CompareF(KMmsTextPlain)))
+                        {
+                        iMessage.AddAttachment( ((*attachmentArray)[count])->AttachmentName(),
+                                                                        tmp, 0,
+                                                                        attachstatus ); 
+                        }
+					else
+					    {
+					    iMessage.AddAttachment( ((*attachmentArray)[count])->AttachmentName(),
 												tmp,
-												attachstatus );																										
+												attachstatus );								
+					    }
 					}
 				else
 					{					
 					if ( ((*attachmentArray)[count])->MimeType().Length() )
 						{
+						
 						iMessage.AddAttachment( ((*attachmentArray)[count])->AttachmentName(),
 												((*attachmentArray)[count])->MimeType(),
 												attachstatus );
 						}
 					else
 						{
+						
 						iMessage.AddAttachment( ((*attachmentArray)[count])->AttachmentName(), 
 												attachstatus );
 						}
@@ -437,9 +497,236 @@ void CSendMessage::AddAttachmentL()
 				User::Leave( error );				
 				}	
 			}
+
 		CleanupStack::PopAndDestroy( &rFs );	
 		CleanupStack::PopAndDestroy( &rapaSesion );
 		}
 	}
 
-	
+// ---------------------------------------------------------------------------
+// Two-phased constructor.
+// ---------------------------------------------------------------------------
+//
+CAsyncWaiter* CAsyncWaiter::NewL(TInt aPriority)
+    {
+    CAsyncWaiter* self = new(ELeave) CAsyncWaiter(aPriority);
+    return self;
+    }
+
+// ---------------------------------------------------------------------------
+// Two-phased constructor.
+// ---------------------------------------------------------------------------
+//
+CAsyncWaiter* CAsyncWaiter::NewLC(TInt aPriority)
+    {
+    CAsyncWaiter* self = new(ELeave) CAsyncWaiter(aPriority);
+    CleanupStack::PushL(self);
+    return self;
+    }
+
+// ---------------------------------------------------------------------------
+// Two-phased constructor.
+// ---------------------------------------------------------------------------
+//
+CAsyncWaiter::CAsyncWaiter(TInt aPriority) : CActive(aPriority)
+    {
+    CActiveScheduler::Add(this);
+    }   
+
+// ---------------------------------------------------------------------------
+// Destructor.
+// ---------------------------------------------------------------------------
+//
+CAsyncWaiter::~CAsyncWaiter()
+    {
+    Cancel();
+    }
+
+// ---------------------------------------------------------------------------
+// Starts the active scheduler.
+// ---------------------------------------------------------------------------
+//
+void CAsyncWaiter::StartAndWait()
+    {
+    iStatus = KRequestPending;
+    SetActive();
+    iWait.Start();
+    }
+
+// ---------------------------------------------------------------------------
+// Returns the error
+// ---------------------------------------------------------------------------
+//
+TInt CAsyncWaiter::Result() const
+    {
+    return iError;
+    }
+
+// ---------------------------------------------------------------------------
+// Inherited from CActive class 
+// ---------------------------------------------------------------------------
+//
+void CAsyncWaiter::RunL()
+    {
+    iError = iStatus.Int();
+    iWait.AsyncStop();
+    }
+
+// ---------------------------------------------------------------------------
+// Inherited from CActive class 
+// ---------------------------------------------------------------------------
+//
+void CAsyncWaiter::DoCancel()
+    {
+    iError = KErrCancel;
+    if( iStatus == KRequestPending )
+        {
+        TRequestStatus* s=&iStatus;
+        User::RequestComplete( s, KErrCancel );
+        }
+
+    iWait.AsyncStop();
+    }
+
+// ---------------------------------------------------------------------------
+// Sends the sms.
+// ---------------------------------------------------------------------------
+//
+void CSendMessage::SendSMSMessageL()
+    {
+    if ( iTemplateDetail )
+        {
+        if ( iTemplateDetail->BodyText().Length() )
+            {
+            iMessageParam->AppendBodyTextL( iTemplateDetail->BodyText() );
+            }
+        delete iTemplateDetail;
+        iTemplateDetail = NULL;
+        }
+
+    CClientMtmRegistry* registry = CClientMtmRegistry::NewL(iServerSession);
+    CleanupStack::PushL(registry);
+    
+    // get the client mtm and return if it isn't supported in the system        
+    CSmsClientMtm* clientMtm = NULL;
+    TRAPD(err, clientMtm = static_cast<CSmsClientMtm*>(registry->NewMtmL(KUidMsgTypeSMS)));
+    if (err || !clientMtm)
+        {
+        User::Leave(KErrNotFound);
+        }  
+    CleanupStack::PushL(clientMtm);   
+    
+    // create a new object to access an existing entry
+    CMsvEntry* msvEntry = CMsvEntry::NewL(iServerSession, KMsvGlobalInBoxIndexEntryId, TMsvSelectionOrdering());
+    CleanupStack::PushL(msvEntry);
+    
+    // get default service
+    TMsvId defaultServiceId = 0;
+    TRAP(err, defaultServiceId = clientMtm->DefaultServiceL());
+    if (err)
+        {
+        User::Leave(KErrNotFound);
+        } 
+    
+    if( iMessageParam->LaunchEditor() )
+        {
+        msvEntry->SetEntryL(KMsvDraftEntryId);
+        }
+    else
+        {
+        msvEntry->SetEntryL(KMsvGlobalOutBoxIndexEntryId);
+        }
+        
+    // mtm takes ownership of entry context 
+    CleanupStack::Pop(msvEntry);
+    clientMtm->SetCurrentEntryL(msvEntry);    
+    
+    // create a new message
+    clientMtm->CreateMessageL(defaultServiceId);
+    
+  
+    // set body
+    clientMtm->Body().Reset();
+    clientMtm->Body().InsertL(0, iMessageParam->BodyText());        
+    TPtrC subject( iMessageParam->Subject());
+    if ( subject.Length() )
+        clientMtm->SetSubjectL( iMessageParam->Subject() );
+    // get the entry of the message
+    TMsvEntry messageEntry = clientMtm->Entry().Entry();
+    
+    const CRecipientList* recipientArray = iMessageParam->RecipientArray();
+    if ( recipientArray )
+        {
+        TInt count = recipientArray->Count();
+        if(count)
+           {
+           messageEntry.iDetails.Set((*recipientArray)[0]);
+           }
+        for( TInt pos = 0; pos < count; pos++ )
+            {
+            clientMtm->AddAddresseeL(( *recipientArray)[pos]);
+            }
+         }
+   
+    // set the description field same as the first part of the message body
+    messageEntry.iDescription.Set( iMessageParam->BodyText().Left(KSmsDescriptionLength) );
+    
+  
+    CSmsHeader& smsHdr = clientMtm->SmsHeader();
+    CSmsSettings* smsSetting = CSmsSettings::NewLC();
+    smsSetting->CopyL(clientMtm->ServiceSettings());
+    smsSetting->SetCharacterSet(TSmsDataCodingScheme::ESmsAlphabetUCS2);
+    smsHdr.SetSmsSettingsL(*smsSetting);
+    CleanupStack::PopAndDestroy(smsSetting);
+
+    // save the changes done above
+    clientMtm->Entry().ChangeL(messageEntry);
+    
+    // save the message     
+    clientMtm->SaveMessageL();
+    
+    
+    // final fine tuning
+    messageEntry.SetAttachment(EFalse);
+    messageEntry.iDate.DateTime().SetSecond( messageEntry.iDate.DateTime().Second()+1);
+    messageEntry.SetVisible(ETrue);
+    messageEntry.SetInPreparation(EFalse);
+    messageEntry.SetComplete(ETrue);
+    messageEntry.iServiceId = defaultServiceId;
+    messageEntry.iRelatedId = 0;
+    if( iMessageParam->LaunchEditor() )
+        {
+        messageEntry.SetSendingState( KMsvSendStateNotApplicable );
+        }
+    else
+        {
+        messageEntry.SetSendingState( KMsvSendStateWaiting );
+        }
+   
+    clientMtm->Entry().ChangeL(messageEntry);
+    clientMtm->SaveMessageL();
+   
+    if( iMessageParam->LaunchEditor() )
+        {
+        MturUtils::LaunchEditorAndWaitL(messageEntry.Id());
+        }
+    else
+        {
+        CMsvEntrySelection* sel = new(ELeave) CMsvEntrySelection;
+        CleanupStack::PushL(sel);
+        sel->AppendL(messageEntry.Id());
+            
+        TBuf8<1> dummy;
+        CAsyncWaiter* waiter = CAsyncWaiter::NewL();
+        CleanupStack::PushL(waiter);
+        CMsvOperation* sndCall = clientMtm->InvokeAsyncFunctionL(ESmsMtmCommandScheduleCopy,*sel,dummy,waiter->iStatus);
+        CleanupStack::PushL(sndCall);
+        waiter->StartAndWait();
+        CleanupStack::PopAndDestroy(2); //sndCall, waiter
+        sel->Reset();
+        CleanupStack::PopAndDestroy(sel);
+       }
+     CleanupStack::PopAndDestroy(2);//registry, clientMtm
+     }
+
+        

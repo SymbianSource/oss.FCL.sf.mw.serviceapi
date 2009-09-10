@@ -18,6 +18,7 @@
 
 #include "../mediamanagementservice/group/bld.inf"
 PRJ_EXPORTS
+../loc/mediamanagementprovider.loc        MW_LAYER_LOC_EXPORT_PATH(mediamanagementprovider.loc)
 
 PRJ_MMPFILES
 mediamanagementprovider.mmp

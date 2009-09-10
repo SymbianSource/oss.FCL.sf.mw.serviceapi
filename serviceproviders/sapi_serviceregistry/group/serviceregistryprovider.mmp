@@ -45,6 +45,11 @@ START RESOURCE  102833a9.rss
 TARGET          serviceregistryprovider.rsc
 END
 
+START RESOURCE serviceregistryprovidername.rss
+		TARGETPATH      APP_RESOURCE_DIR
+		HEADER
+		LANGUAGE_IDS
+END
 // Service library
 
 //LIBRARY         serviceregistryservice.lib

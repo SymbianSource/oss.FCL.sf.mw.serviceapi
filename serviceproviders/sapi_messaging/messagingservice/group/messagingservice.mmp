@@ -15,7 +15,6 @@
 *
 */
 
-
 #include "../../../group/sapiincludes.mmpi"
 
 TARGET         	messagingservice.dll
@@ -43,10 +42,11 @@ SOURCE				changestatus.cpp
 SOURCE				messageheader.cpp
 SOURCE				messagenotify.cpp
 SOURCE				messagingservice.cpp
-SOURCE				sendmessage.cpp
+SOURCE				sendmessage.cpp 
 
 
 LIBRARY        	euser.lib
+LIBRARY        avkon.lib 
 LIBRARY        	efsrv.lib
 LIBRARY        	bafl.lib
 LIBRARY        	eikcore.lib
@@ -56,6 +56,11 @@ LIBRARY        	msgs.lib
 LIBRARY        	etext.lib
 LIBRARY        	apgrfx.lib
 LIBRARY        	apmime.lib
+LIBRARY         smcm.lib
+LIBRARY         charconv.lib
+LIBRARY         mtur.lib
+
+ 
 
 paged
 

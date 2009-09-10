@@ -44,6 +44,11 @@ START RESOURCE  	2000CFB6.rss
 TARGET          	sensorprovider.rsc
 END
 
+START RESOURCE ../data/sensorprovidername.rss
+		TARGETPATH      APP_RESOURCE_DIR
+		HEADER
+		LANGUAGE_IDS
+END
 LIBRARY       		sensrvclient.lib
 LIBRARY       		sensrvutil.lib
 LIBRARY       		euser.lib

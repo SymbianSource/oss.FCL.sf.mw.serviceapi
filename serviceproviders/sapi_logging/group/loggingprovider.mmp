@@ -49,7 +49,11 @@ SOURCE          loggingcallback.cpp
 START RESOURCE  ../data/2000CFBC.rss
 TARGET          loggingprovider.rsc
 END
-
+START RESOURCE ../data/loggingprovidername.rss
+		TARGETPATH      APP_RESOURCE_DIR
+		HEADER
+		LANGUAGE_IDS
+END
 LIBRARY         euser.lib
 LIBRARY         bafl.lib        // CDesCArray
 LIBRARY         LiwServiceHandler.lib

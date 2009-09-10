@@ -21,5 +21,8 @@
 PRJ_PLATFORMS
 WINSCW ARMV5
 
+PRJ_EXPORTS
+../loc/landmarkprovider.loc        MW_LAYER_LOC_EXPORT_PATH(landmarkprovider.loc)
+
 PRJ_MMPFILES
 landmarkprovider.mmp

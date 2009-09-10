@@ -47,6 +47,10 @@ SOURCEPATH      ../data
 //Resource specificatiopns
 START RESOURCE  0x102833A7.rss
 TARGET          contactprovider.rsc
+START RESOURCE contactprovidername.rss
+		TARGETPATH      APP_RESOURCE_DIR
+		HEADER
+		LANGUAGE_IDS
 END
 
 //Libraries to be linked

@@ -78,10 +78,10 @@ class CSendMessage : public CActive
 	     * Sets message input parameters 
 	     * Ownership is transferred to this class
 	     * @param aMessageParam Message Input Parameters
-		 * @param aTemplateDetail 
+		   * @param aTemplateDetail 
 	     * @param aNotifyCallback Bydefault it is NULL to make function
 	     *        call synchronous , if provided then function call is asynchronous                  
-		 * @param aAsyncRequestObserver Asynchronous request observer
+		   * @param aAsyncRequestObserver Asynchronous request observer
 	    */
 		void SetInputParamsL( CSendMessageParams* aMessageParam, 
 								CMessageDetailInfo* aTemplateDetail = NULL,
@@ -92,6 +92,11 @@ class CSendMessage : public CActive
 	     * Sends the message
 	    */
 		void SendMessageL();
+		
+		 /**
+          * Sends a sms message
+         */
+		void SendSMSMessageL();
 		
     private: 
     	
@@ -212,9 +217,66 @@ class CSendMessage : public CActive
        	 * FileName of the Body Text file used in case of MMS
        	*/
        	TFileName iBodyTextFileName;
+
 	};
 
-
+/**
+ * Utility class for waiting for asychronous requests
+*/
+class CAsyncWaiter : public CActive
+    {
+public:
+    /**
+     * Two-phased constructor.
+     * @param aPriority  set aPriority to  EPriorityStandard
+     * @return CAsyncWaiter object
+    */
+    static CAsyncWaiter* NewL( TInt aPriority = EPriorityStandard );
+    static CAsyncWaiter* NewLC( TInt aPriority = EPriorityStandard );
+    /**
+     * Destructor.
+    */
+    ~CAsyncWaiter();
+    
+    /**
+     * Starts the active scheduler.
+    */
+    void StartAndWait();
+    /**
+     * Starts the active scheduler.
+    */
+    TInt Result() const;
+    
+private:
+    
+    /** 
+     * Constructor.
+     * @param aPriority 
+    */
+    CAsyncWaiter( TInt aPriority );
+    
+    /**
+     * Inherited from CActive class 
+    */
+    void RunL();
+    
+    /**
+     * Inherited from CActive class 
+    */
+    void DoCancel();
+    
+private:
+    
+    /**
+     * wait scheduler
+     */
+    CActiveSchedulerWait iWait;
+    
+    /**
+     * error
+    */
+    TInt iError;
+    };
 
 
 #endif __SENDMESSAGE_H

@@ -115,3 +115,16 @@
 ""-"z:\sys\bin\serviceregistryprovider.dll"
 ;service registry SAPI resource files
 ""-"z:\resource\plugins\serviceregistryprovider.rsc"
+
+""-"z:\resource\apps\appmanagerprovidername.r*"
+""-"z:\resource\apps\calendarprovidername.r*"
+""-"z:\resource\apps\contactprovidername.r*"
+""-"z:\resource\apps\loggingprovidername.r*"
+""-"z:\resource\apps\locationprovidername.r*"
+""-"z:\resource\apps\landmarkprovidername.r*"
+""-"z:\resource\apps\mediamanagementprovidername.r*"
+""-"z:\resource\apps\messagingprovidername.r*"
+""-"z:\resource\apps\serviceregistryprovidername.r*"
+""-"z:\resource\apps\sensorprovidername.r*"
+""-"z:\resource\apps\sysinfoprovidername.r*"
+

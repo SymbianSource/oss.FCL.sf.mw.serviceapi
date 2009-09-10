@@ -20,6 +20,17 @@
 #define SERVICEAPI_RESOURCE_IBY
 
 data=DATAZ_\RESOURCE_FILES_DIR\APPS\rtsecmanager.RSC	RESOURCE_FILES_DIR\apps\rtsecmanager.RSC
+data=DATAZ_\RESOURCE_FILES_DIR\APPS\contactprovidername.RSC	RESOURCE_FILES_DIR\apps\contactprovidername.RSC
+data=DATAZ_\RESOURCE_FILES_DIR\APPS\calendarprovidername.RSC	RESOURCE_FILES_DIR\apps\calendarprovidername.RSC
+data=DATAZ_\RESOURCE_FILES_DIR\APPS\locationprovidername.RSC	RESOURCE_FILES_DIR\apps\locationprovidername.RSC
+data=DATAZ_\RESOURCE_FILES_DIR\APPS\loggingprovidername.RSC	RESOURCE_FILES_DIR\apps\loggingprovidername.RSC
+data=DATAZ_\RESOURCE_FILES_DIR\APPS\mediamanagementprovidername.RSC	RESOURCE_FILES_DIR\apps\mediamanagementprovidername.RSC
+data=DATAZ_\RESOURCE_FILES_DIR\APPS\messagingprovidername.RSC	RESOURCE_FILES_DIR\apps\messagingprovidername.RSC
+data=DATAZ_\RESOURCE_FILES_DIR\APPS\sysinfoprovidername.RSC	RESOURCE_FILES_DIR\apps\sysinfoprovidername.RSC
+data=DATAZ_\RESOURCE_FILES_DIR\APPS\sensorprovidername.RSC	RESOURCE_FILES_DIR\apps\sensorprovidername.RSC
+data=DATAZ_\RESOURCE_FILES_DIR\APPS\landmarkprovidername.RSC	RESOURCE_FILES_DIR\apps\landmarkprovidername.RSC
+data=DATAZ_\RESOURCE_FILES_DIR\APPS\appmanagerprovidername.RSC	RESOURCE_FILES_DIR\apps\appmanagerprovidername.RSC
+data=DATAZ_\RESOURCE_FILES_DIR\APPS\serviceregistryprovidername.RSC	RESOURCE_FILES_DIR\apps\serviceregistryprovidername.RSC
 
 #endif // SERVICEAPI_RESOURCE_IBY
 

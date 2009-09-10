@@ -22,6 +22,9 @@
 PRJ_PLATFORMS
 DEFAULT
 
+PRJ_EXPORTS
+../loc/messagingprovider.loc        MW_LAYER_LOC_EXPORT_PATH(messagingprovider.loc)
+
 PRJ_MMPFILES
 messagingprovider.mmp
 

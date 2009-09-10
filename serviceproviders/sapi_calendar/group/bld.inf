@@ -22,6 +22,9 @@
 PRJ_PLATFORMS
 DEFAULT
 
+PRJ_EXPORTS
+../loc/calendarprovider.loc        MW_LAYER_LOC_EXPORT_PATH(calendarprovider.loc)
+
 PRJ_MMPFILES
 calendarprovider.mmp
 

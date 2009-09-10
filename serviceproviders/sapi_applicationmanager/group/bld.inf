@@ -19,6 +19,7 @@
 #include "../appmanagerservice/group/bld.inf"
 
 PRJ_EXPORTS
+../loc/appmanagerprovider.loc        MW_LAYER_LOC_EXPORT_PATH(appmanagerprovider.loc)
 
 PRJ_MMPFILES
 appmanagerprovider.mmp

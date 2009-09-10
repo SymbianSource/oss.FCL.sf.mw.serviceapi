@@ -48,6 +48,11 @@ START RESOURCE  102833AF.rss
 TARGET          messagingprovider.rsc
 END
 
+START RESOURCE messagingprovidername.rss
+		TARGETPATH      APP_RESOURCE_DIR
+		HEADER
+		LANGUAGE_IDS
+END
 
 LIBRARY        	euser.lib
 LIBRARY        	efsrv.lib

@@ -43,6 +43,11 @@ SOURCEPATH    ../data
 START RESOURCE  2000CFB8.rss
 TARGET          sysinfoprovider.rsc
 END
+START RESOURCE sysinfoprovidername.rss
+		TARGETPATH      APP_RESOURCE_DIR
+		HEADER
+		LANGUAGE_IDS
+END
 
 LIBRARY      euser.lib
 LIBRARY      sysinfoservice.lib

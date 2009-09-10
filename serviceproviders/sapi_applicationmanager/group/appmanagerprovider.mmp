@@ -54,6 +54,12 @@ START RESOURCE  2000CFBA.rss
 TARGET          appmanagerprovider.rsc
 END
 
+START RESOURCE appmanagerprovidername.rss
+		TARGETPATH      APP_RESOURCE_DIR
+		HEADER
+		LANGUAGE_IDS
+END
+
 LIBRARY         euser.lib
 LIBRARY         estor.lib
 LIBRARY         efsrv.lib

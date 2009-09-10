@@ -45,6 +45,11 @@ SOURCEPATH    ../data
 START RESOURCE  102833A9.rss
 TARGET          landmarkprovider.rsc
 END
+START RESOURCE landmarkprovidername.rss
+		TARGETPATH      APP_RESOURCE_DIR
+		HEADER
+		LANGUAGE_IDS
+END
 LIBRARY      landmarkservice.lib
 LIBRARY      euser.lib
 LIBRARY      eposlandmarks.lib // for landmarks and categories

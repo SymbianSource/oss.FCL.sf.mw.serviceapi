@@ -46,6 +46,12 @@ START RESOURCE  ../data/102833ab.rss
 TARGET          locationprovider.rsc
 END
 
+SOURCEPATH      ../data
+START RESOURCE locationprovidername.rss
+		TARGETPATH      APP_RESOURCE_DIR
+		HEADER
+		LANGUAGE_IDS
+END
 LIBRARY         euser.lib
 LIBRARY         bafl.lib        // CDesCArray
 LIBRARY         lbs.lib         // Location acquisition API

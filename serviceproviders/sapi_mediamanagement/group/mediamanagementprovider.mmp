@@ -55,6 +55,11 @@ START RESOURCE  102833AD.rss
 TARGET          mediamanagementprovider.rsc
 END
 
+START RESOURCE mediamanagementprovidername.rss
+		TARGETPATH      APP_RESOURCE_DIR
+		HEADER
+		LANGUAGE_IDS
+END
 LIBRARY         euser.lib
 LIBRARY         estor.lib
 LIBRARY         efsrv.lib
