@@ -187,7 +187,14 @@ CSingleContactField* CSingleContact::NextFieldL(MVPbkStoreContact* aSingleContac
 		MVPbkStoreContactField& field = aSingleContact->Fields().FieldAt(aIndex);
 		
 		//Get the fieldKey of the field 
-	    TPtrC8 fieldKey = CSearchFields::GetFieldKeyFromId(field.BestMatchingFieldType()->FieldTypeResId());
+		const MVPbkFieldType* fieldType = field.BestMatchingFieldType();
+	      if(fieldType == NULL)
+	          {
+	          CleanupStack::PopAndDestroy(contactField);   
+	          return NULL;
+	          }
+	  		TInt idval = fieldType->FieldTypeResId();
+	    TPtrC8 fieldKey = CSearchFields::GetFieldKeyFromId(idval);
 		if(fieldKey.Compare(KNullDesC8) == 0)
 			{
 			CleanupStack::PopAndDestroy(contactField);		

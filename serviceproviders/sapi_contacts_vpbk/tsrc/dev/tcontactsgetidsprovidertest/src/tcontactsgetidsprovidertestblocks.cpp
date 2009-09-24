@@ -107,7 +107,8 @@ TInt Ctcontactsgetidsprovidertest::RunMethodL(CStifItemParser& aItem)
     {
     static TStifFunctionInfo const KFunctions[] =
         {          
-        ENTRY("GetIdsL", Ctcontactsgetidsprovidertest::GetIdsL)            
+        ENTRY("GetIdsL", Ctcontactsgetidsprovidertest::GetIdsL),      
+        ENTRY("AddContactAndGrp", Ctcontactsgetidsprovidertest::AddL)
         };
     const TInt count = sizeof( KFunctions ) / 
                         sizeof( TStifFunctionInfo );
@@ -168,7 +169,148 @@ TInt Ctcontactsgetidsprovidertest::RunMethodL(CStifItemParser& aItem)
           }
       } */
   }
+ TInt Ctcontactsgetidsprovidertest::AddL( CStifItemParser& aItem )
+     {  
+     TInt error = KErrGeneral;
+     TBuf<25> errcodedes(KNullDesC);
+     LoadServiceL(); 
+     aItem.GetNextInt(iExpErrorCode);
+     CLiwDefaultMap* pMap = CLiwDefaultMap::NewL();    
+        
+    CLiwDefaultMap* fieldMap = CLiwDefaultMap::NewL();     
+    TInt pos = 0;             
+    fieldMap->InsertL(KFieldLabel,TLiwVariant(_L("firstname")));
+        
+    fieldMap->InsertL(KFieldValue,TLiwVariant(_L("Arnold")));
+    //pMap->InsertL(KDBUri, TLiwVariant( _L("cntdb://c:contacts.cdb")));
+    
+    
+    pMap->InsertL(KContactId, TLiwVariant( _L("")));
+    pMap->InsertL(KFirstName, TLiwVariant(fieldMap));
+    
+    const TLiwGenericParam paramContentType(KType, TLiwVariant( _L("Contact"))); 
+    const TLiwGenericParam paramAddData(KData, TLiwVariant(pMap)); ;
+        
+    iInList ->AppendL( paramContentType );
+    iInList ->AppendL( paramAddData );   
+     iIface->ExecuteCmdL(command9,
+                         *iInList,
+                         *iOutList); 
+                         //KLiwOptASyncronous,
+//                         this);    
+     const TLiwGenericParam* p = iOutList->FindFirst(pos,
+                                                     KErrorCode); // Finding Error Code
+     if(p)
+         {
+         TInt retcode = p->Value().AsTInt32();
+         errcodedes.Num(retcode);
+         iLog->Log(_L("return  code:"));
+         iLog->Log(errcodedes);    
+         if(iExpErrorCode == retcode)
+                 {
+                 iLog->Log(errcodedes);
+                 iResult = KErrNone;
+                 }
+             else
+                 {
+                 User::Leave(KErrGeneral);
+                 }             
+             }
+            
+     iInList->Reset();
+     iOutList->Reset();
+     iLog->Log(_L(""));
+     
+     
+     pMap = CLiwDefaultMap::NewL();
+     pos = 0;
 
+     pMap->InsertL(KDBUri, TLiwVariant( _L("cntdb://c:contacts.cdb")));
+     pMap->InsertL(KGroupId, TLiwVariant(_L8("")));
+     pMap->InsertL(KGroupLabel, TLiwVariant(_L("Group1")));
+
+     const TLiwGenericParam paramContentType1(KType, TLiwVariant( _L("Group")));
+     const TLiwGenericParam paramAddData1(KData, TLiwVariant(pMap)); ;
+
+     iInList ->AppendL( paramContentType1 );
+     iInList ->AppendL( paramAddData1 );
+     iIface->ExecuteCmdL(command9,
+                              *iInList,
+                              *iOutList);
+                           //   KLiwOptASyncronous,
+                             // this);  
+
+     p = iOutList->FindFirst( pos, KErrorCode );
+     TLiwVariant err = p->Value();
+     TInt code = err.AsTInt32();
+
+     if(p)
+      {
+      TInt retcode = p->Value().AsTInt32();
+      errcodedes.Num(retcode);
+      iLog->Log(_L("return  code:"));
+      iLog->Log(errcodedes);    
+      if(iExpErrorCode == retcode)
+              {
+              iLog->Log(errcodedes);
+              iResult = KErrNone;
+              }
+          else
+              {
+              User::Leave(KErrGeneral);
+              }             
+      }
+             
+      iInList->Reset();
+      iOutList->Reset();
+      iLog->Log(_L(""));
+
+       pMap = CLiwDefaultMap::NewL();
+       pos = 0;
+
+       pMap->InsertL(KDBUri, TLiwVariant( _L("cntdb://c:contacts.cdb")));
+       pMap->InsertL(KGroupId, TLiwVariant(_L8("")));
+       pMap->InsertL(KGroupLabel, TLiwVariant(_L("Group2")));
+
+       const TLiwGenericParam paramContentType2(KType, TLiwVariant( _L("Group")));
+       const TLiwGenericParam paramAddData2(KData, TLiwVariant(pMap)); ;
+
+       iInList ->AppendL( paramContentType2 );
+       iInList ->AppendL( paramAddData2 );
+       iIface->ExecuteCmdL(command9,
+                                *iInList,
+                                *iOutList);
+                            //    KLiwOptASyncronous,
+                              //  this);  
+
+       p = iOutList->FindFirst( pos, KErrorCode );
+       if(p)
+        {
+        TInt retcode = p->Value().AsTInt32();
+        errcodedes.Num(retcode);
+        iLog->Log(_L("return  code:"));
+        iLog->Log(errcodedes);    
+        if(iExpErrorCode == retcode)
+                {
+                iLog->Log(errcodedes);
+                iResult = KErrNone;
+                }
+            else
+                {
+                User::Leave(KErrGeneral);
+                }             
+        }
+               
+        iInList->Reset();
+        iOutList->Reset();
+        iLog->Log(_L(""));
+   
+         
+         
+     return iResult;
+     }
+
+ 
 /* --------------------------------------------------------------------------
  Ctmediaprovidertesting :: GetImageFilesL
  Calls the Getlist of Media management SAPI.

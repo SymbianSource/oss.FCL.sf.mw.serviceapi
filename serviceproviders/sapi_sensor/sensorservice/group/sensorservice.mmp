@@ -27,7 +27,7 @@ VENDORID    VID_DEFAULT
 
 DEFFILE					sensorservice.def
 
-VERSION		1.0
+VERSION		1.1
 
 SOURCEPATH              ../src
 SOURCE				    sensorservice.cpp
@@ -38,3 +38,5 @@ LIBRARY         		sensrvclient.lib
 LIBRARY         		sensrvutil.lib
 LIBRARY         		euser.lib
 LIBRARY        			efsrv.lib
+
+paged

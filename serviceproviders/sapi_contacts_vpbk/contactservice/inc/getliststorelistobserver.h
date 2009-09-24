@@ -29,7 +29,7 @@
 class CContactService;
 class CContactIter;
 class CContactViewObserver;
-
+const TInt KMaxUriLen = 0x1000;
 
 /**
  * This class has methods for handling the return from Async open of a contacts database.
@@ -120,7 +120,7 @@ private:
   
  private: 
  	//Store Uri  
-    TBufC<KMaxPath> iUri;
+    TBufC<KMaxUriLen> iUri;
     
     //ContactId
     HBufC8* iContactId; 

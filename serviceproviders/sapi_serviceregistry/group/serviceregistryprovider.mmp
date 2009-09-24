@@ -30,6 +30,8 @@ DEFFILE         serviceregistryprovider.def
 CAPABILITY      CAP_ECOM_PLUGIN
 VENDORID        VID_DEFAULT
 
+VERSION		10.1
+
 SOURCEPATH      ../src
 
 SOURCE          serviceregistryservicehandler.cpp
@@ -64,3 +66,5 @@ LIBRARY         liwservicehandler.lib
 LIBRARY         platformenv.lib
 LIBRARY         ecom.lib
 LIBRARY         hal.lib
+
+paged

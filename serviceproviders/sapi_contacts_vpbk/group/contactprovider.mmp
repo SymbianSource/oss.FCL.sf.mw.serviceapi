@@ -24,7 +24,7 @@ CAPABILITY      CAP_ECOM_PLUGIN
 
 UID             0x10009D8D 0x102833A7
 		
-VERSION		1.0
+VERSION		1.1
 							
 //Source files directory
 SOURCEPATH      ../src
@@ -47,6 +47,8 @@ SOURCEPATH      ../data
 //Resource specificatiopns
 START RESOURCE  0x102833A7.rss
 TARGET          contactprovider.rsc
+END
+
 START RESOURCE contactprovidername.rss
 		TARGETPATH      APP_RESOURCE_DIR
 		HEADER

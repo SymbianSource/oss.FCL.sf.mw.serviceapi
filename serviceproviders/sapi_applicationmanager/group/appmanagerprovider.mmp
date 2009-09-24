@@ -27,7 +27,7 @@ UID             0x10009D8D 0x2000CFBA
 EPOCSTACKSIZE   0x5000
 
 DEFFILE         appmanagerinterface.def
-VERSION		1.0
+VERSION		1.1
 
 
 CAPABILITY      CAP_ECOM_PLUGIN

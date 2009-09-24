@@ -40,7 +40,7 @@ RESOURCE REGISTRY_INFO theInfo
                     version_no = 1;
                       display_name = "Logging Service Provider";
                       default_data = "Service.Logging";
-                      opaque_data = "IDataSource""::" "<meta><cap>RUD</cap><cap>WUD</cap><ver>1.0</ver><res>loggingprovidername.rsc</res></meta>";
+                      opaque_data = "IDataSource""::" "<meta><cap>RUD</cap><cap>WUD</cap><ver>1.1</ver><res>loggingprovidername.rsc</res></meta>";
                     
                     
                     }

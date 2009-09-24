@@ -14,7 +14,6 @@
 * Description:  
 *
 */
-
 #ifndef __CALENDARENTRY_H
 #define __CALENDARENTRY_H
 

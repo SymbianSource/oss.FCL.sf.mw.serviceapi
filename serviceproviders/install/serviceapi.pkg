@@ -18,7 +18,7 @@
 &EN
 
 ;Header
-#{"Platform Service Extensions"},(0x200100BE),1,0,1, TYPE=SA,RU
+#{"Platform Service Extensions"},(0x200100BE),1,1,0, TYPE=SA,RU
 
 ; S60 5.0 dependency
 [0x1028315F], 0, 0, 0, {"Series60ProductID"}

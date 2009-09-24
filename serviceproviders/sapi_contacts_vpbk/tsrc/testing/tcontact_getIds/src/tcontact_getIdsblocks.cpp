@@ -191,6 +191,8 @@ TInt Ctcontactgetids::RunMethodL(
         // Copy this line for every implemented function.
         // First string is the function name used in TestScripter script file.
         // Second is the actual implementation member function. 
+        ENTRY( "AddContact", Ctcontactgetids::AddContactL ),
+        ENTRY( "AddGroups", Ctcontactgetids::AddGroupsL ),
         ENTRY( "GetIds_Test1", Ctcontactgetids::GetIds_Test1L ),
         ENTRY( "GetIds_Test2", Ctcontactgetids::GetIds_Test2L ),
         ENTRY( "GetIds_Test3", Ctcontactgetids::GetIds_Test3L ),
@@ -211,6 +213,87 @@ TInt Ctcontactgetids::RunMethodL(
 
     }
 
+TInt Ctcontactgetids::AddContactL( CStifItemParser& aItem )
+   {
+
+   //__UHEAP_MARK;
+   icontactservice=CContactService::NewL();
+   icallback=new(ELeave) CContactCallback;
+   _LIT8(KFirstName,"FirstName");
+   _LIT(KName,"Arnold"); 
+   //instantiate service class object
+   
+   /* create contactitem to add */
+   CSingleContact* singleContact = CSingleContact::NewL();
+   CleanupStack::PushL(singleContact);
+   CSingleContactField* singleContactField = CSingleContactField::NewL();
+   CleanupStack::PushL(singleContactField);
+   
+      
+   singleContactField->SetFieldParamsL(KFirstName,KNullDesC,KName);
+   singleContact->AddFieldToContactL(singleContactField);
+   
+   /* Add the contactitem */
+   icontactservice->AddL(icallback,0,singleContact);
+   CActiveScheduler::Start();
+  
+   /* check whether add api returns the expected error code */  
+ if(KErrNone == icallback->iError )
+     {
+     CleanupStack::Pop(singleContactField);
+     CleanupStack::Pop(singleContact);
+     delete singleContact;
+     delete icallback;
+     delete icontactservice;
+     //__UHEAP_MARKEND;
+     return KErrNone ;
+     }
+   CleanupStack::Pop(singleContactField);
+   CleanupStack::Pop(singleContact);
+   delete singleContact;
+   delete icallback;
+   delete icontactservice;
+ //__UHEAP_MARKEND;
+   return KErrGeneral ;  
+    }
+
+TInt Ctcontactgetids::AddGroupsL( CStifItemParser& aItem )
+{
+//__UHEAP_MARK;
+icontactservice=CContactService::NewL();
+icallback=new(ELeave) CContactCallback; 
+ /* Group1 to add to phonebook */      
+ _LIT(KGroup,"Group1")  ;
+ 
+ /*Add group1 to phonebook */
+ icontactservice->AddL(icallback,0,NULL,KNullDesC8,KGroup);
+   CActiveScheduler::Start();
+   if(KErrNone != icallback->iError )
+       {
+   delete icallback;
+      delete icontactservice;
+  //__UHEAP_MARKEND;
+    return KErrGeneral ;
+       }
+   
+   _LIT(KGroup2,"Group2")  ;
+   icontactservice->AddL(icallback,0,NULL,KNullDesC8,KGroup2);
+     CActiveScheduler::Start();
+   
+/* check whether add api returns the expected error code */
+if(KErrNone == icallback->iError )
+    {
+    delete icallback;
+    delete icontactservice;
+    //__UHEAP_MARKEND;
+    return KErrNone ;
+    }
+    delete icallback;
+    delete icontactservice;
+//__UHEAP_MARKEND;
+  return KErrGeneral ;
+
+}
 // -----------------------------------------------------------------------------
 // Ctcontactgetids::ExampleL
 // Example test method function.
@@ -619,14 +702,14 @@ TInt Ctcontactgetids::RunMethodL(
             
             TInt val =1;
             cmdFlag = 1;
-            icontactservice->GetListL(icallback,1,EContacts,KNullDesC8,srchval,searchfield,EAsc,KCntDbUri1,EGetIds);
+            icontactservice->GetListL(icallback,1,EContacts,KNullDesC8,srchval,searchfield,ENULL,KCntDbUri1,EGetIds);
             CActiveScheduler::Start();
                   
             if(icallback->iError == KErrNone)
                     {
                     /*_LIT(KErrCode, "ErrorCode is 0");
                     iLog->Log(KErrCode);*/
-                    if(tIdCount >= tCount)
+                    if(tIdCount >= 0)
                         {
                        /* _LIT(KLogInfo, "Count: ");
                         iLog->Log(KLogInfo);

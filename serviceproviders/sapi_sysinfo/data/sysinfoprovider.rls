@@ -29,5 +29,5 @@ rls_string STRING_sysinfoprovider_opaque_data_string "ISysInfo"
 
 rls_string STRING_sysinfoprovider_capability_meta_data_seperator_string	"::"
 
-rls_string STRING_sysinfoprovider_capability_meta_data_string "<meta> <cap>RUD</cap> <cap>LOC</cap> <ver>1.0</ver><res>sysinfoprovidername.rsc</res> </meta>"
+rls_string STRING_sysinfoprovider_capability_meta_data_string "<meta> <cap>RUD</cap> <cap>LOC</cap> <ver>1.1</ver><res>sysinfoprovidername.rsc</res> </meta>"
 // End of File

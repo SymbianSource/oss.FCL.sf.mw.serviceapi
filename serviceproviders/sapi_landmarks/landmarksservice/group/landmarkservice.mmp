@@ -24,7 +24,7 @@ CAPABILITY    ALL -TCB
 VENDORID      VID_DEFAULT
 nostrictdef
 
-VERSION		1.0
+VERSION		1.1
 
 SOURCEPATH    ../src
 SOURCE        landmarkservice.cpp

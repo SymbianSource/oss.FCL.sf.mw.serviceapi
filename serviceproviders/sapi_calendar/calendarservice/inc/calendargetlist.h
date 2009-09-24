@@ -11,10 +11,9 @@
 *
 * Contributors:
 *
-* Description:  Interface to GetListing the contents to a Calender
+* Description:  
 *
 */
-
 
 #ifndef CALENDARGETLIST_H_
 #define CALENDARGETLIST_H_

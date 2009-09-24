@@ -15,7 +15,6 @@
 *
 */
 
-
 #ifndef __CALENDARSERVICE_H
 #define __CALENDARSERVICE_H
 

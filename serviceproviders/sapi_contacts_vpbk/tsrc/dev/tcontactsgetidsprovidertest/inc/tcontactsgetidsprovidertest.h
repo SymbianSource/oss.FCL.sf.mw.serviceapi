@@ -114,6 +114,8 @@ class Ctcontactsgetidsprovidertest : public CScriptBase, public MLiwNotifyCallba
             * Method used to log version of test class
             */
             void SendTestClassVersion();
+            
+            TInt AddL(CStifItemParser& aItem);
     public: // Functions from base classes
             
             /**

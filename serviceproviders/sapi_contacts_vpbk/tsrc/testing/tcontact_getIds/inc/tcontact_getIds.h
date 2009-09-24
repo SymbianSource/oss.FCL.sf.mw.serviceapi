@@ -197,7 +197,8 @@ NONSHARABLE_CLASS(Ctcontactgetids) : public CScriptBase
         virtual TInt GetIds_Test7L( CStifItemParser& aItem ); 
         virtual TInt GetIds_Test8L( CStifItemParser& aItem );   
         virtual TInt GetIds_Test9L( CStifItemParser& aItem );
-//        virtual TInt GetIds_Test10L( CStifItemParser& aItem );  
+        virtual TInt AddContactL( CStifItemParser& aItem );
+        virtual TInt AddGroupsL( CStifItemParser& aItem );
              
         //ADD NEW METHOD DEC HERE
 

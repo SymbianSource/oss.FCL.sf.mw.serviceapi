@@ -28,7 +28,7 @@ VENDORID        VID_DEFAULT
 
 CAPABILITY      ALL -TCB
 
-VERSION		1.0
+VERSION		1.1
 
 DEFFILE         location.def
 SOURCEPATH      ../src

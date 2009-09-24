@@ -27,7 +27,7 @@ UID             	0x10009D8D 0x2000CFB6
 
 DEFFILE				sensorprovider.def
 
-VERSION		1.0
+VERSION		1.1
 
 USERINCLUDE     	../inc
 USERINCLUDE     	../../inc
@@ -56,3 +56,5 @@ LIBRARY       		sensorservice.lib
 LIBRARY       		liwservicehandler.lib
 LIBRARY				charconv.lib
 LIBRARY      		ecom.lib
+
+paged

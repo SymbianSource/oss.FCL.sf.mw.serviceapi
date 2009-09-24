@@ -11,10 +11,9 @@
 *
 * Contributors:
 *
-* Description:  Defination of class CCalendarInterface
+* Description:  
 *
 */
-
 
 #ifndef __CALENDARINTERFACE_H
 #define __CALENDARINTERFACE_H

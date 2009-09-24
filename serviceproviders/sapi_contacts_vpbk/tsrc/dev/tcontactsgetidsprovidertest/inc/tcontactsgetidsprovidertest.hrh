@@ -18,11 +18,20 @@
 #define TCONTACTSGETIDSPROVIDERTEST_HRH
 
 _LIT8(command8,"GetIds");
+_LIT8(command9,"Add");
+
 _LIT8(KService, "Service.Contact");
 _LIT8(KIDataSource,"IDataSource");
 
 _LIT(KContactType, "Contact");
 _LIT(KGroupType, "Group");
+
+_LIT8(KFieldLabel,"Label");
+_LIT8(KFieldValue,"Value");
+
+_LIT8(KData, "Data");
+_LIT8(KGroupId,"id");
+_LIT8(KGroupLabel, "GroupLabel");
 
 _LIT(KExpectedStart,"ExpectedStart");
 _LIT(KExpectedEnd,"ExpectedEnd");
@@ -38,16 +47,8 @@ _LIT8(KSortOrder,"Order");
 
 
 
-_LIT8(KDsName,"Type");// used by interface class
-_LIT8(KKey,"Key");
-_LIT8(KFileType,"FileType");
-_LIT8(KStartRange,"StartRange");
-_LIT8(KEndRange,"EndRange");
-_LIT8(KOrder,"Order");
-
-
-
-
+_LIT8(KContactId,"id");
+_LIT8(KFirstName, "FirstName");
 
 
 _LIT(KServiceOpen,"Service handle created");
@@ -65,31 +66,7 @@ _LIT8(KResponse,"ReturnValue");
 
 _LIT8(KTransactionID,"TransactionID");
 
-//Keys for all the result maps.
-_LIT8( KMgFileName, "FileName" );
-_LIT8( KMgFileExtension, "FileExtension" );
-_LIT8( KMgDrive, "Drive" );
-_LIT8( KMgFileSize, "FileSize" );
-_LIT8( KMgFileDate, "FileDate" );
-_LIT8( KMgMediaType, "MediaType" );
-_LIT8( KMgMimeType, "MimeType" ); 
-_LIT8( KMgFileNameAndPath, "FileNameAndPath");
-
-//additional keys for music map.
-_LIT8( KMgSongName, "SongName" );
-_LIT8( KMgArtist, "Artist" );
-_LIT8( KMgAlbum, "Album" );
-_LIT8( KMgTrackNumber, "TrackNumber" );
-_LIT8( KMgGenre, "Genre" );
-_LIT8( KMgComposer, "Composer" );
-
-//additional keys for streamingURL map.
-_LIT8( KMgLinkFirstURL, "LinkFirstURL" );
 
 
-_LIT( EMgPhoneMemory,"C:" );
-_LIT( EMgMmc,"E:" );
-_LIT( KMediaType, "Media");
 
-
-#endif //end of TMEDIAPROVIDERTESTING_HRH
+#endif //end of TCONTACTSGETIDSPROVIDERTEST_HRH
