@@ -20,16 +20,23 @@
 #include <e32def.h>
 #include <f32file.h>
 #include <cntdef.h>
+#ifndef SYMBIAN_ENABLE_SPLIT_HEADERS
 #include <logwrap.h>
-#include <logwrap.hrh>
+#else
+#include <logwrap.h>
+#include <logengevents.h>
+#include <logwraplimits.h>
+#include <logfilterandeventconstants.hrh>
+#include <logengdurations.h>
+#endif
 #include <liwserviceifbase.h>
-#include <LiwCommon.h>
-#include <ecom/ImplementationProxy.h>
+#include <liwcommon.h>
+#include <ecom/implementationproxy.h>
 #include  <utf.h>
 #include "loggingasyncservice.h"
 
 
-#include "LOGCLIENTCHANGEOBSERVER.H"
+#include "logclientchangeobserver.h"
 #include "logiter.h"
 #include "loggingservice.h"
 #include "loggingasyncservice.h"

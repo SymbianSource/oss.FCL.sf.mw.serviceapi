@@ -239,7 +239,7 @@ void CLocationInterface::CmdExecuteL(
         }
           
     //LastKnownLocation Request is made by consumer
-    else if (aCmdName == KCmdLastLocation)
+    else if( !(aCmdName.CompareF( KCmdLastLocation )) )
         {
         //Extract Update options from input List
         User::LeaveIfError(iLocationService->GetLastKnownLoc(iPosition)) ;            

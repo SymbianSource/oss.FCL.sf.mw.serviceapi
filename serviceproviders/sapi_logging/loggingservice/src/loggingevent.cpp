@@ -17,7 +17,12 @@
 
 
 #include <e32base.h>
+#ifndef SYMBIAN_ENABLE_SPLIT_HEADERS
 #include <logwrap.h>
+#else
+#include <logwrap.h>
+#include <logwraplimits.h>
+#endif
 #include <logcli.h>
 
 #include "loggingevent.h"

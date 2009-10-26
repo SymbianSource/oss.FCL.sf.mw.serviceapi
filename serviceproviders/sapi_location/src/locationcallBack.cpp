@@ -236,7 +236,7 @@ void LocationInterfaceCB :: HandleL(HPositionGenericInfo* aGenericInfo , TInt /*
 
 	    if(currCapability & TPositionModuleInfo :: ECapabilityDirection) //Extract direction info if any and append it 
 	        {                                                               // as part of out parm list
-	        TReal direcinfo = 0;
+	        TReal32 direcinfo = 0;
 
 	        if(!aGenericInfo->GetValue(EPositionFieldTrueCourse , direcinfo) )
 	            {
@@ -269,7 +269,7 @@ void LocationInterfaceCB :: HandleL(HPositionGenericInfo* aGenericInfo , TInt /*
 
 	    if(currCapability & TPositionModuleInfo :: ECapabilityCompass) //Extract compass info if any and append it 
 	        {                                                               // as part of out parm list
-	        TReal compassinfo ;
+	        TReal32 compassinfo ;
 
 	        if(!aGenericInfo->GetValue(EPositionFieldHeading , compassinfo) )
 	            {

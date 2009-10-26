@@ -16,6 +16,9 @@
 */
 
 
+#ifdef SYMBIAN_ENABLE_SPLIT_HEADERS
+#include <logwraplimits.h>
+#endif
 #include <e32base.h>
 #include <logcli.h>
 #include "loggingfilter.h"

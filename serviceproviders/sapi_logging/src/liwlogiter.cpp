@@ -17,10 +17,16 @@
 */
 
 
-#include <LiwVariant.h>
+#include <liwvariant.h>
 #include <logwrap.h>
+#ifndef SYMBIAN_ENABLE_SPLIT_HEADERS
 #include <logwrap.hrh>
-#include <LOGCLIENTCHANGEOBSERVER.H>
+#else
+#include <logwrap.hrh>
+#include <logengevents.h>
+#include <logfilterandeventconstants.hrh>
+#endif
+#include <logclientchangeobserver.h>
 
 #include "logiter.h"
 #include "logginginterface.h"
