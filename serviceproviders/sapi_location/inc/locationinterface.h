@@ -26,7 +26,6 @@
 
 
 // CONSTANTS
-const TInt KMaxSupportedFields = 25 ;
 
 
 
@@ -271,7 +270,6 @@ class CLocationInterface : public CBase ,public  MLiwInterface
      * Positioning module used for location estimation
      */	            
     	            
-    TInt SetSupportedFields() ;  
 
     /**
      * Internal utility function which gets all location information which module supports
@@ -296,27 +294,13 @@ class CLocationInterface : public CBase ,public  MLiwInterface
     
 
     /**
-     * Member variable which holds all the Generic position  information
-     */
-
-    HPositionGenericInfo *iGenericPosInfo ;
-
-    /**
-     * Class member which contains module information which is used for location esitmation
-     */
-    TPositionModuleInfo   iModuleInfo ;
-    /**
      * Class member which is used to obtain updates of Last Known Position
      */
     TPosition iPosition;
-
     /**
-     * Class member which contains all the field ids of all the supported Hposition info fields
-     */ 
-
-    TPositionFieldId iFieldList[KMaxSupportedFields] ;
-
-
+     * Generic position class
+     */
+    HPositionGenericInfo *iGenericPosition;
 
     };
 

@@ -65,7 +65,7 @@ void CGetLoc::ConstructL(RPositionServer& aPositionServer ,
         User :: LeaveIfError((this->iPositioner).Open(aPositionServer)) ; 
         }
 
-    CleanupClosePushL(iPositioner);
+    //CleanupClosePushL(iPositioner);
     //Set the identity of this particular requestor
     User::LeaveIfError( (this->iPositioner).SetRequestor( 
             CRequestor::ERequestorService,
@@ -75,14 +75,14 @@ void CGetLoc::ConstructL(RPositionServer& aPositionServer ,
     this->iPosInfoBase = &(this->iPositionInfo);
     this->iRequestType = aRequestType;
     this->iGenericPosInfo = HPositionGenericInfo :: NewL();
-    CleanupStack :: PushL(this->iGenericPosInfo);
+    //CleanupStack :: PushL(this->iGenericPosInfo);
 
     if(aList)
         {
         User :: LeaveIfError((this->iGenericPosInfo)->SetRequestedFields(aList));
         }
 
-    CleanupStack ::Pop(this->iGenericPosInfo );
+    //CleanupStack ::Pop(this->iGenericPosInfo );
     CleanupStack::Pop(&iPositioner);
     }
 /**
@@ -197,7 +197,10 @@ TInt CGetLoc::GetLocationUpdates(CLocationService* aLocationService,MLocationCal
     }
 
     iPositioner.NotifyPositionUpdate( *iGenericPosInfo, iStatus );
-    SetActive() ;
+    if (!IsActive())
+        {
+        SetActive();
+        }
     return KErrNone ;
     }
 
@@ -234,7 +237,10 @@ void CGetLoc :: RunL()
 					if(!this->IsStatusComplete())
 					{
 						iPositioner.NotifyPositionUpdate( *iGenericPosInfo, iStatus );
-						SetActive();
+						if (!IsActive())
+                            {
+                            SetActive();
+                            }
 					}
 					 	
 				}
@@ -254,7 +260,10 @@ void CGetLoc :: RunL()
                         {
                         iPositioner.NotifyPositionUpdate( *iGenericPosInfo,
                                 iStatus);
-                        SetActive();
+                        if (!IsActive())
+                            {
+                            SetActive();
+                            }
                         }
 
                     }

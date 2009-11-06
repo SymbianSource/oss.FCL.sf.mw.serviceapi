@@ -68,7 +68,7 @@ class LocationInterfaceCB : public CBase , public MLocationCallBack
      
      LocationInterfaceCB( MLiwNotifyCallback* aCallBack , 
      					  const CLiwGenericParamList* aInParmList ,	
-     				      TPositionModuleInfo* aModuleInfo,
+     				      //TPositionModuleInfo* aModuleInfo,
      				      TInt32 aTransactionId = 0 ) ;
      				      
     
@@ -88,7 +88,7 @@ class LocationInterfaceCB : public CBase , public MLocationCallBack
 
     static LocationInterfaceCB * NewL( MLiwNotifyCallback* aCallBack , 
     									 const CLiwGenericParamList* aInParmList, 
-    									 TPositionModuleInfo* aModuleInfo ,
+    									 //TPositionModuleInfo* aModuleInfo ,
     									 TInt32 aTransactionId = 0)  ;
 
     /**

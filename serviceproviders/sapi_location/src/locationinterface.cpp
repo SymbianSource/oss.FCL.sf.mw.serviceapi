@@ -51,7 +51,7 @@ CLocationInterface :: ~CLocationInterface()
  	 	 delete iHandleCB[iter] ;
  	 	}
  	 iHandleCB.Close();
-	 delete iGenericPosInfo ;
+	 delete iGenericPosition ;
  
  	
     }
@@ -66,16 +66,16 @@ CLocationInterface::CLocationInterface()
     }
 void CLocationInterface::ConstructL()
     {
-    iGenericPosInfo = HPositionGenericInfo::NewL() ;
+    iGenericPosition = HPositionGenericInfo::NewL() ;
 
-    if ( !iGenericPosInfo )
+    if ( !iGenericPosition )
         {
         User::Leave( KErrNoMemory ) ;
         }
 
     iLocationService = CLocationService::NewL() ;
-    User::LeaveIfError( iLocationService->GetModuleInfo( iModuleInfo ) );
-    User::LeaveIfError( this->SetSupportedFields() );
+    //User::LeaveIfError( iLocationService->GetModuleInfo( iModuleInfo ) );
+    //User::LeaveIfError( this->SetSupportedFields() );
     }
 
 
@@ -147,6 +147,11 @@ CLocationInterface* CLocationInterface::NewL()
 			{
 				sapiErr = SErrMissingArgument;
 				break;
+			}
+		case SErrServiceNotReady:
+		    {
+                sapiErr = SErrServiceNotReady;
+		        break;
 			}
 		default:
 			{
@@ -245,7 +250,7 @@ void CLocationInterface::CmdExecuteL(
         User::LeaveIfError(iLocationService->GetLastKnownLoc(iPosition)) ;            
         TUint category1 = EBasicInfo;
 
-        iGenericPosInfo->SetPosition(iPosition);
+        iGenericPosition->SetPosition(iPosition);
         GetLocationInfo(aOutParamList, category1) ;
 
         }
@@ -434,13 +439,13 @@ void CLocationInterface::CmdExecuteL(
                 }
             LocationInterfaceCB* callback =
             LocationInterfaceCB::NewL(aCallback,
-                    &aInParamList, &iModuleInfo, transid) ;
+                    &aInParamList, /*&iModuleInfo,*/ transid) ;
 
             CleanupStack :: PushL(callback) ;                   
             callback->SetRequestType(KGetLocationCB) ;
             
             iLocationService->GetLocationL(callback ,category,
-                    iFieldList,updateoptions,enableHighAcc) ;	                    
+                    NULL,updateoptions,enableHighAcc) ;	                    
             //Store the allocatioed address 
             iHandleCB.Append(callback);
             //Append Transcationid to out list
@@ -581,7 +586,7 @@ void CLocationInterface::CmdExecuteL(
                     }
                 }
 
-            iLocationService->GetLocationL(iGenericPosInfo,
+            iLocationService->GetLocationL(iGenericPosition,
                     updateOptions,enableHighAcc) ;
             GetLocationInfo(aOutParamList,category) ; 
             
@@ -782,12 +787,12 @@ void CLocationInterface::CmdExecuteL(
 
         LocationInterfaceCB* callback =
         LocationInterfaceCB::NewL(aCallback,
-                &aOutParamList, &iModuleInfo, transid) ;
+                &aOutParamList,/* &iModuleInfo,*/ transid) ;
         CleanupStack :: PushL(callback) ;
         callback->SetRequestType(KTraceCB) ;
 
 
-        iLocationService->TraceL( callback, catergory,iFieldList, 
+        iLocationService->TraceL( callback, catergory,NULL, 
                 updateOption,enableHighAcc );
         iHandleCB.Append(callback);
         aOutParamList.AppendL(TLiwGenericParam(KTransactionId,
@@ -1272,71 +1277,6 @@ void CLocationInterface::CmdExecuteL(
  * positioning module used
  */ 
 
-TInt CLocationInterface :: SetSupportedFields()
-    {
-	//Extract all the information Accuracy, timestamp, satellite and course info and append 
-	// to out parmlist
-
-	
-	
-	TUint fieldIter = 0 ;
-
-	TPositionModuleInfo :: TCapabilities  currCapability  = iModuleInfo.Capabilities() ;
-
-	if(currCapability & TPositionModuleInfo :: ECapabilitySpeed) //set horizontal,vertical speeds along with errros 
-        {   
-        iFieldList[fieldIter++] = EPositionFieldHorizontalSpeed ;
-        iFieldList[fieldIter++] = EPositionFieldHorizontalSpeedError ;
-        iFieldList[fieldIter++] = EPositionFieldVerticalSpeed ;
-        iFieldList[fieldIter++] = EPositionFieldVerticalSpeedError ;
-        }
-
-	if(currCapability & TPositionModuleInfo :: ECapabilitySatellite) //Set satellite info fields if positioning module supports
-	    {                                                               //
-		
-		iFieldList[fieldIter++] = EPositionFieldSatelliteNumInView ;
-		iFieldList[fieldIter++] = EPositionFieldSatelliteNumUsed ;
-        iFieldList[fieldIter++] = EPositionFieldSatelliteTime ;
-        iFieldList[fieldIter++] = EPositionFieldSatelliteHorizontalDoP ;
-        iFieldList[fieldIter++] = EPositionFieldSatelliteVerticalDoP ;
-        
-	    }
-
-	if(currCapability & TPositionModuleInfo :: ECapabilityDirection) //Set Direction info fields if positioning module supports
-    	{
-		
-		iFieldList[fieldIter++] = EPositionFieldTrueCourse ;
-		iFieldList[fieldIter++] = EPositionFieldTrueCourseError ;
-		iFieldList[fieldIter++] = EPositionFieldMagneticCourse ;
-		iFieldList[fieldIter++] = EPositionFieldMagneticCourseError ;
-		
-    	}
-    
-
-	if(currCapability & TPositionModuleInfo :: ECapabilityCompass) //Set NMEA fields if positioning module supports 
-    	{
-			
-		iFieldList[fieldIter++] = EPositionFieldHeading ;
-		iFieldList[fieldIter++] = EPositionFieldHeadingError ;
-		iFieldList[fieldIter++] = EPositionFieldMagneticHeading ;
-		iFieldList[fieldIter++] = EPositionFieldMagneticHeadingError ;
-		
-    	}
-	
-	/*if(currCapability & TPositionModuleInfo :: ECapabilityNmea)
-    	{
-		
-		iFieldList[fieldIter++] = EPositionFieldNMEASentences ;
-		iFieldList[fieldIter++] = EPositionFieldNMEASentencesStart ;
-		
-    	}*/
-	iFieldList[fieldIter] = EPositionFieldNone  ;   //Field Termination 
-   iGenericPosInfo->ClearRequestedFields() ;
-   iGenericPosInfo->SetRequestedFields(iFieldList) ;
-  
-  
-  return KErrNone ;
-    }
 
 /**
  * CLocationInterface :: GetLocationInfo an internal utility funtionin, gets all the location information 
@@ -1347,7 +1287,7 @@ TInt CLocationInterface :: SetSupportedFields()
 void CLocationInterface :: GetLocationInfo( CLiwGenericParamList& aOutParamList,TInt aPosInfoCategory)
     {
     TPosition pos ;
-    iGenericPosInfo->GetPosition(pos) ; //Now populate outparam list with latitude, longitude and altitude data
+    iGenericPosition->GetPosition(pos) ; //Now populate outparam list with latitude, longitude and altitude data
 
     CLiwDefaultMap *Result = CLiwDefaultMap::NewL() ; 
     
@@ -1382,22 +1322,21 @@ void CLocationInterface :: GetLocationInfo( CLiwGenericParamList& aOutParamList,
     TLiwVariant MapVariant(Result) ;
      
    
-     TPositionModuleInfo :: TCapabilities  currCapability  = iModuleInfo.Capabilities() ;
+     //TPositionModuleInfo :: TCapabilities  currCapability  = iModuleInfo.Capabilities() ;
 
 	 if ( aPosInfoCategory == EGenericPositionInfo )
 	     {
-	     if(currCapability & TPositionModuleInfo :: ECapabilitySpeed) //Populate output param with speed info
-		    {
+	     
 		    TReal32 speedinfo = 0 ;
 
-		    if(!iGenericPosInfo->GetValue(EPositionFieldHorizontalSpeed , speedinfo))  //Extract speed 
+        if(!iGenericPosition->GetValue(EPositionFieldHorizontalSpeed , speedinfo))  //Extract speed 
 		    	{
 		    	 Result->InsertL(KPositionFieldHorizontalSpeed ,TLiwVariant((TReal) speedinfo)) ;
 		    	}
 
 
 
-		    if(!iGenericPosInfo->GetValue(EPositionFieldHorizontalSpeedError , speedinfo) )
+        if(!iGenericPosition->GetValue(EPositionFieldHorizontalSpeedError , speedinfo) )
 		        {
 		        Result->InsertL(KPositionFieldHorizontalSpeedError ,TLiwVariant((TReal) speedinfo)) ;
 		        }
@@ -1414,104 +1353,80 @@ void CLocationInterface :: GetLocationInfo( CLiwGenericParamList& aOutParamList,
 		        }*/
 
 
-		    }   //End of EcapabilitySpeed 
 
 
-		 if(currCapability & TPositionModuleInfo :: ECapabilitySatellite) //Extract satellitinfo if any and append it
-		    {																//as part of out parm list
-		    TInt8 satinfo  = 0;
+        TInt8 satinfo  = 0;
 
-		    if(!iGenericPosInfo->GetValue(EPositionFieldSatelliteNumInView , satinfo))
-		        {
-		        Result->InsertL(KPositionFieldSatelliteNumInView ,TLiwVariant((TReal) satinfo)) ;
-		        }
-			if(!iGenericPosInfo->GetValue(EPositionFieldSatelliteNumUsed , satinfo))
-		        {
-		        Result->InsertL(KPositionFieldSatelliteNumUsed ,TLiwVariant((TReal) satinfo)) ;
-		        }
-		    } //End of ECapabilitySatellite
+        if(!iGenericPosition->GetValue(EPositionFieldSatelliteNumInView , satinfo))
+            {
+            Result->InsertL(KPositionFieldSatelliteNumInView ,TLiwVariant((TReal) satinfo)) ;
+            }
+        if(!iGenericPosition->GetValue(EPositionFieldSatelliteNumUsed , satinfo))
+            {
+            Result->InsertL(KPositionFieldSatelliteNumUsed ,TLiwVariant((TReal) satinfo)) ;
+            }
+		   
 
-		 if(currCapability & TPositionModuleInfo :: ECapabilityDirection) //Extract direction info if any and append it 
-		 {                                                               // as part of out parm list
+		 
 		 TReal32 direcinfo = 0;
 
 
-		 if(!iGenericPosInfo->GetValue(EPositionFieldTrueCourse , direcinfo) )
+		 if(!iGenericPosition->GetValue(EPositionFieldTrueCourse , direcinfo) )
 		   {
 		   Result->InsertL(KPositionFieldTrueCourse ,TLiwVariant((TReal) direcinfo)) ;
 		   }
 
 
-		 if(!iGenericPosInfo->GetValue(EPositionFieldTrueCourseError , direcinfo) )
+		 if(!iGenericPosition->GetValue(EPositionFieldTrueCourseError , direcinfo) )
 		   {
 		   Result->InsertL(KPositionFieldTrueCourseError ,TLiwVariant((TReal) direcinfo)) ;
 		   }
 
 
-		 if(!iGenericPosInfo->GetValue(EPositionFieldMagneticCourseError , direcinfo) )
+		 if(!iGenericPosition->GetValue(EPositionFieldMagneticCourseError , direcinfo) )
 		    {
 		    Result->InsertL(KPositionFieldMagneticCourseError ,TLiwVariant((TReal) direcinfo)) ;
 		    }
 
 
-		 if(!iGenericPosInfo->GetValue(EPositionFieldMagneticCourse , direcinfo) )
+		 if(!iGenericPosition->GetValue(EPositionFieldMagneticCourse , direcinfo) )
 		    {
 		    Result->InsertL(KPositionFieldMagneticCourse ,TLiwVariant((TReal) direcinfo)) ;
 		    }
-		 } // End of ECapabilityDirection
+		
 
 
-		if(currCapability & TPositionModuleInfo :: ECapabilityCompass) //Extract compass info if any and append it 
-	    	{                                                               // as part of out parm list
-	    	TReal32 compassinfo ;
+		
+        TReal32 compassinfo ;
 
-	    	
-	    	if(!iGenericPosInfo->GetValue(EPositionFieldHeading , compassinfo) )
-	        	{
-	        	Result->InsertL(KPositionFieldHeading ,TLiwVariant((TReal) compassinfo)) ;	
-	        	}
-
-
-	    	if(!iGenericPosInfo->GetValue(EPositionFieldHeadingError , compassinfo) )
-	        	{
-	        	Result->InsertL(KPositionFieldHeadingError ,TLiwVariant((TReal) compassinfo)) ;
-	        	}
+        
+        if(!iGenericPosition->GetValue(EPositionFieldHeading , compassinfo) )
+            {
+            Result->InsertL(KPositionFieldHeading ,TLiwVariant((TReal) compassinfo)) ;	
+            }
 
 
-	    	if(!iGenericPosInfo->GetValue(EPositionFieldMagneticHeading , compassinfo) )
-	        	{
-	        	Result->InsertL(KPositionFieldMagneticHeading ,TLiwVariant((TReal) compassinfo)) ;
-	        	}
+        if(!iGenericPosition->GetValue(EPositionFieldHeadingError , compassinfo) )
+            {
+            Result->InsertL(KPositionFieldHeadingError ,TLiwVariant((TReal) compassinfo)) ;
+            }
+
+
+        if(!iGenericPosition->GetValue(EPositionFieldMagneticHeading , compassinfo) )
+            {
+            Result->InsertL(KPositionFieldMagneticHeading ,TLiwVariant((TReal) compassinfo)) ;
+            }
 
 
 
-	    	if(!iGenericPosInfo->GetValue(EPositionFieldMagneticHeadingError , compassinfo) )
-	            {
-	            Result->InsertL(KPositionFieldMagneticHeadingError ,TLiwVariant((TReal) compassinfo)) ;
+        if(!iGenericPosition->GetValue(EPositionFieldMagneticHeadingError , compassinfo) )
+            {
+            Result->InsertL(KPositionFieldMagneticHeadingError ,TLiwVariant((TReal) compassinfo)) ;
 
-	            } 
-
-
-	    	} //End of  ECapabilityCompass
-
-		/*if( currCapability & TPositionModuleInfo :: ECapabilityNmea ) //Extract Nmea info if any and append it 	
-		    {                                                             //as part of out param list  
-		    TUint8 numSentences ;
-
-		    if(!iGenericPosInfo->GetValue(EPositionFieldNMEASentences , numSentences) )
-		        {
-		        Result->InsertL(KPositionFieldNMEASentences ,TLiwVariant((TReal) numSentences)) ;
+            } 
 		        }
 
 
-		    TBuf8 <20> nmeaSentences ;
-		    if(!iGenericPosInfo->GetValue(EPositionFieldNMEASentencesStart , nmeaSentences) )
-		        {
-		        Result->InsertL(KPositionFieldNMEASentencesStart ,TLiwVariant( numSentences)) ;
-		        }
-		    }*/ //End of ECapabilityNmea
-
-	     }
     aOutParamList.AppendL(TLiwGenericParam ( KLocationMap, TLiwVariant(Result))) ;
     Result->DecRef();
     CleanupStack :: Pop(Result) ;

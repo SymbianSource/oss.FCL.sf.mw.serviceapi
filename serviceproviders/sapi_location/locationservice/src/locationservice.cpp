@@ -31,6 +31,7 @@
  
  
 EXPORT_C CLocationService :: CLocationService()
+						  :iGenericPosInfo(NULL)
     {
 	//No Implementation Required Here
     }
@@ -60,6 +61,7 @@ EXPORT_C CLocationService :: ~CLocationService()
         }
     iPosServer.Close();
     iRegTable.Close();
+    delete iGenericPosInfo;
 
     }
  
@@ -89,12 +91,18 @@ EXPORT_C  CLocationService *CLocationService :: NewL()
 void CLocationService::ConstructL()
     {
     User :: LeaveIfError(iPosServer.Connect());
-    CleanupClosePushL(iPosServer);
+    //CleanupClosePushL(iPosServer);
+    iGenericPosInfo = HPositionGenericInfo::NewL() ;
+
+    if ( !iGenericPosInfo )
+        {
+        User::Leave( KErrNoMemory ) ;
+        }
     
     //Get the module id of the default module available
-    User :: LeaveIfError(iPosServer.GetDefaultModuleId(iModuleId));
+    //User :: LeaveIfError(iPosServer.GetDefaultModuleId(iModuleId));
 
-    CleanupStack::Pop(&iPosServer);
+    //CleanupStack::Pop(&iPosServer);
     }
 
 /**
@@ -111,7 +119,7 @@ void CLocationService::GetHighAccuracyModuleL(TPositionModuleId* aModId)
     //Flags used for indicating if a particular module is found
     TInt termInternalFlag = 0;   
     TInt termFlag = 0 ,assisFlag = 0 ,networkFlag = 0,unknownFlag = 0;
-    TInt err;
+    //TInt err;
     
     User::LeaveIfError(iPosServer.GetNumModules(numOfModules));
         
@@ -171,26 +179,43 @@ void CLocationService::GetHighAccuracyModuleL(TPositionModuleId* aModId)
  */
 
 EXPORT_C void  CLocationService :: GetLocationL( TPositionInfoBase* aInfoBase ,
-        const TPositionUpdateOptions* aUpdateOpts,TBool aEnableHighAcc )
+                                                 const TPositionUpdateOptions* aUpdateOpts,
+                                                 TBool aEnableHighAcc )
     {
+    //Check if atleast one of the module is enabled
+    TInt modError = iPosServer.GetDefaultModuleId(iModuleId);
+    if (modError)
+        {
+        User::Leave(errServiceNotReady);
+        }
     // Open subsession to the position server
     TPositionModuleId ModuleId;
-    TInt error;
+    //TInt error;
     if(aEnableHighAcc)
         {
         GetHighAccuracyModuleL(&ModuleId);
        
         User::LeaveIfError(iPositioner.Open(iPosServer,ModuleId));
         
+        iModuleId = ModuleId;
         }
     else
         {
         User::LeaveIfError(iPositioner.Open(iPosServer));
+        User::LeaveIfError(iPosServer.GetDefaultModuleId(iModuleId));
         }
 
     
-    CleanupClosePushL(iPositioner);
-
+    //CleanupClosePushL(iPositioner);
+    TInt errorInprocessing = KErrNone;
+    errorInprocessing = SetRequestingField();
+    if(errorInprocessing)
+        {
+        iPositioner.Close();
+        User::Leave(errorInprocessing);
+        }
+   // (static_cast<HPositionGenericInfo*>(aInfoBase))->ClearRequestedFields() ;
+    (static_cast<HPositionGenericInfo*>(aInfoBase))->SetRequestedFields(iFieldList) ;
     //setting identity for this requestor
     User::LeaveIfError( iPositioner.SetRequestor( CRequestor::ERequestorService,
             CRequestor::EFormatApplication,
@@ -200,7 +225,14 @@ EXPORT_C void  CLocationService :: GetLocationL( TPositionInfoBase* aInfoBase ,
 
     if(aUpdateOpts)
         {
-        User::LeaveIfError(iPositioner.SetUpdateOptions(*aUpdateOpts));
+        TInt errorInprocessing = iPositioner.SetUpdateOptions(*aUpdateOpts);
+        
+        if(errorInprocessing)
+           {
+           iPositioner.Close();
+           User::Leave(errorInprocessing);
+           }
+        
         }
 
     else
@@ -227,7 +259,8 @@ EXPORT_C void  CLocationService :: GetLocationL( TPositionInfoBase* aInfoBase ,
 
     iPositioner.NotifyPositionUpdate( *aInfoBase, status );
     User :: WaitForRequest(status) ;
-    CleanupStack::PopAndDestroy(&iPositioner);
+    //CleanupStack::PopAndDestroy(&iPositioner);
+    iPositioner.Close();
     
     User::LeaveIfError(status.Int());
     }
@@ -237,7 +270,8 @@ EXPORT_C void  CLocationService :: GetLocationL( TPositionInfoBase* aInfoBase ,
  * positioning moulde, currently this methods only supports info of default module indentifier
  */
 
- EXPORT_C TInt CLocationService :: GetModuleInfo( TPositionModuleInfoBase& aModuleInfo )   const
+EXPORT_C TInt CLocationService :: GetModuleInfo( 
+        TPositionModuleInfoBase& aModuleInfo ) const
     {
     return  iPosServer.GetModuleInfoById(iModuleId , aModuleInfo) ;
 
@@ -252,27 +286,35 @@ EXPORT_C void  CLocationService :: GetLocationL( TPositionInfoBase* aInfoBase ,
  */
 EXPORT_C void CLocationService :: GetLocationL( MLocationCallBack* aCallBackObj ,
         TInt aLocationInfoCategory,
-        TPositionFieldIdList aFieldList ,
+        TPositionFieldIdList/* aFieldList*/ ,
         const TPositionUpdateOptions* aUpateOptions,
         TBool aEnableHighAcc 
 )
     {  
+    TInt modError = iPosServer.GetDefaultModuleId(iModuleId);
+    if (modError)
+        {
+        User::Leave(errServiceNotReady);
+        }
     TPositionModuleId ModuleId;
     if(aEnableHighAcc)
         {
         GetHighAccuracyModuleL(&ModuleId);
+        iModuleId = ModuleId;
         
         }
     else
         {
         //Indicates that when opening the subsession ,moudleId need not be specified
         ModuleId.iUid = 0;       
+        User::LeaveIfError(iPosServer.GetDefaultModuleId(iModuleId));
         }
 
     TInt err = KErrGeneral;
+    User::LeaveIfError(SetSupportedFields());
 
     CGetLoc* activeGetLoc = CGetLoc :: NewL(iPosServer ,
-            aFieldList ,
+            iFieldList ,
             KGetLocationRequest,
             aLocationInfoCategory,
             ModuleId) ;
@@ -300,10 +342,15 @@ EXPORT_C void CLocationService :: GetLocationL( MLocationCallBack* aCallBackObj 
 
 EXPORT_C void CLocationService :: TraceL( MLocationCallBack* aCallBackObj ,
         TInt aLocationInfoCategory,
-        TPositionFieldIdList aFiledList ,
+        TPositionFieldIdList/* aFiledList*/ ,
         const TPositionUpdateOptions* aUpateOptions,
         TBool aEnableHighAcc )
     {
+    TInt modError = iPosServer.GetDefaultModuleId(iModuleId);
+    if (modError)
+        {
+        User::Leave(errServiceNotReady);
+        }
     TPositionModuleId ModuleId;
     if(aEnableHighAcc)
         {
@@ -312,15 +359,17 @@ EXPORT_C void CLocationService :: TraceL( MLocationCallBack* aCallBackObj ,
             {
             User::Leave(KErrGeneral);
             }
+        iModuleId = ModuleId;
         }
     else
         {
         //Indicates that when opening the subsession ,moudleId need not be specified
         ModuleId.iUid = 0;          
+        User::LeaveIfError(iPosServer.GetDefaultModuleId(iModuleId));
         }
     
     CGetLoc* activeTrace = CGetLoc :: NewL(iPosServer ,
-            aFiledList ,
+            iFieldList ,
             KTraceRequest,
             aLocationInfoCategory,
             ModuleId) ;
@@ -501,3 +550,127 @@ EXPORT_C TInt CLocationService::CancelService( TInt aTransId)
 
     return KErrNotFound;
     }
+TInt CLocationService :: SetSupportedFields()
+    {
+    
+    TUint fieldIter = 0 ;
+    //get positioning module information
+    TInt infoerr = GetModuleInfo(iModuleInfo);
+    if (infoerr)
+        {
+        return infoerr;
+        }
+
+    TPositionModuleInfo :: TCapabilities  currCapability  = iModuleInfo.Capabilities() ;
+
+    if(currCapability & TPositionModuleInfo :: ECapabilitySpeed) //set horizontal,vertical speeds along with errros 
+        {   
+        iFieldList[fieldIter++] = EPositionFieldHorizontalSpeed ;
+        
+        iFieldList[fieldIter++] = EPositionFieldHorizontalSpeedError ;
+        iFieldList[fieldIter++] = EPositionFieldVerticalSpeed ;
+        iFieldList[fieldIter++] = EPositionFieldVerticalSpeedError ;
+        }
+
+    if(currCapability & TPositionModuleInfo :: ECapabilitySatellite) //Set satellite info fields if positioning module supports
+        {                                                               //
+        
+        iFieldList[fieldIter++] = EPositionFieldSatelliteNumInView ;
+        iFieldList[fieldIter++] = EPositionFieldSatelliteNumUsed ;
+        iFieldList[fieldIter++] = EPositionFieldSatelliteTime ;
+        iFieldList[fieldIter++] = EPositionFieldSatelliteHorizontalDoP ;
+        iFieldList[fieldIter++] = EPositionFieldSatelliteVerticalDoP ;
+        
+        }
+
+    if(currCapability & TPositionModuleInfo :: ECapabilityDirection) //Set Direction info fields if positioning module supports
+        {
+        
+        iFieldList[fieldIter++] = EPositionFieldTrueCourse ;
+        iFieldList[fieldIter++] = EPositionFieldTrueCourseError ;
+        iFieldList[fieldIter++] = EPositionFieldMagneticCourse ;
+        iFieldList[fieldIter++] = EPositionFieldMagneticCourseError ;
+        
+        }
+    
+
+    if(currCapability & TPositionModuleInfo :: ECapabilityCompass) //Set NMEA fields if positioning module supports 
+        {
+            
+        iFieldList[fieldIter++] = EPositionFieldHeading ;
+        iFieldList[fieldIter++] = EPositionFieldHeadingError ;
+        iFieldList[fieldIter++] = EPositionFieldMagneticHeading ;
+        iFieldList[fieldIter++] = EPositionFieldMagneticHeadingError ;
+        
+        }
+    
+    
+   iFieldList[fieldIter] = EPositionFieldNone  ;   //Field Termination 
+   iGenericPosInfo->ClearRequestedFields() ;
+   iGenericPosInfo->SetRequestedFields(iFieldList) ;
+  
+  
+   return KErrNone ;
+   }
+TInt CLocationService :: SetRequestingField()
+    {
+    
+    TUint fieldIter = 0 ;
+    //get positioning module information
+    TInt infoerr = GetModuleInfo(iModuleInfo);
+    if (infoerr)
+        {
+        return infoerr;
+        }
+
+    TPositionModuleInfo :: TCapabilities  currCapability  = iModuleInfo.Capabilities() ;
+
+    if(currCapability & TPositionModuleInfo :: ECapabilitySpeed) //set horizontal,vertical speeds along with errros 
+        {   
+        iFieldList[fieldIter++] = EPositionFieldHorizontalSpeed ;
+        
+        iFieldList[fieldIter++] = EPositionFieldHorizontalSpeedError ;
+        iFieldList[fieldIter++] = EPositionFieldVerticalSpeed ;
+        iFieldList[fieldIter++] = EPositionFieldVerticalSpeedError ;
+        }
+
+    if(currCapability & TPositionModuleInfo :: ECapabilitySatellite) //Set satellite info fields if positioning module supports
+        {                                                               //
+        
+        iFieldList[fieldIter++] = EPositionFieldSatelliteNumInView ;
+        iFieldList[fieldIter++] = EPositionFieldSatelliteNumUsed ;
+        iFieldList[fieldIter++] = EPositionFieldSatelliteTime ;
+        iFieldList[fieldIter++] = EPositionFieldSatelliteHorizontalDoP ;
+        iFieldList[fieldIter++] = EPositionFieldSatelliteVerticalDoP ;
+        
+        }
+
+    if(currCapability & TPositionModuleInfo :: ECapabilityDirection) //Set Direction info fields if positioning module supports
+        {
+        
+        iFieldList[fieldIter++] = EPositionFieldTrueCourse ;
+        iFieldList[fieldIter++] = EPositionFieldTrueCourseError ;
+        iFieldList[fieldIter++] = EPositionFieldMagneticCourse ;
+        iFieldList[fieldIter++] = EPositionFieldMagneticCourseError ;
+        
+        }
+    
+
+    if(currCapability & TPositionModuleInfo :: ECapabilityCompass) //Set NMEA fields if positioning module supports 
+        {
+            
+        iFieldList[fieldIter++] = EPositionFieldHeading ;
+        iFieldList[fieldIter++] = EPositionFieldHeadingError ;
+        iFieldList[fieldIter++] = EPositionFieldMagneticHeading ;
+        iFieldList[fieldIter++] = EPositionFieldMagneticHeadingError ;
+        
+        }
+    
+    
+   iFieldList[fieldIter] = EPositionFieldNone  ;   //Field Termination 
+   
+  
+  
+   return KErrNone ;
+   }
+

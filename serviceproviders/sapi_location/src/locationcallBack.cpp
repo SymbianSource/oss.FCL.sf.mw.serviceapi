@@ -43,11 +43,11 @@ iTransactionId(0)
  
 LocationInterfaceCB :: LocationInterfaceCB( MLiwNotifyCallback* aCallBack ,
 										const CLiwGenericParamList* aInParmList ,	
-     				      				TPositionModuleInfo* aPositionModuleInfo ,
+     				      				//TPositionModuleInfo* aPositionModuleInfo ,
      				      				TInt32 aTransactionId ) : iCallBack(aCallBack), 
      				      										 iTransactionId(aTransactionId)
     {
-    iModuleInfo = aPositionModuleInfo	;
+    //iModuleInfo = aPositionModuleInfo	;
     
     //Extract the location info category from inputparamlist
     TInt index = 0;
@@ -85,11 +85,11 @@ LocationInterfaceCB :: ~LocationInterfaceCB()
  
 LocationInterfaceCB *LocationInterfaceCB :: NewL(MLiwNotifyCallback* aCallBack  ,
 												const CLiwGenericParamList* aInParmList ,  
-												TPositionModuleInfo* aPositionModuleInfo,
+												//TPositionModuleInfo* aPositionModuleInfo,
 												TInt32 aTransactionid  ) 
     {
     LocationInterfaceCB *self = new(ELeave) LocationInterfaceCB(aCallBack , aInParmList ,
-    															aPositionModuleInfo, aTransactionid) ;
+    															/*aPositionModuleInfo,*/ aTransactionid) ;
     CleanupStack::PushL(self);
 
     //Store the outparam and in param list
@@ -194,12 +194,11 @@ void LocationInterfaceCB :: HandleL(HPositionGenericInfo* aGenericInfo , TInt /*
         result->InsertL(KVerAccuracy, TLiwVariant((TReal)Val1)) ;
         }
     
-    TPositionModuleInfo :: TCapabilities  currCapability  = iModuleInfo->Capabilities() ;
+    //TPositionModuleInfo :: TCapabilities  currCapability  = iModuleInfo->Capabilities() ;
     
     if ( iLocinfoCategory == EGenericInfo )
 	    {
-	    if(currCapability & TPositionModuleInfo :: ECapabilitySpeed) //Populate output param with speed info
-        {
+	   
         TReal32 speedinfo = 0 ;
 
         if(!aGenericInfo->GetValue(EPositionFieldHorizontalSpeed , speedinfo) ) //Extract speed 
@@ -215,11 +214,8 @@ void LocationInterfaceCB :: HandleL(HPositionGenericInfo* aGenericInfo , TInt /*
 
 
 
-        }   //End of EcapabilitySpeed 
 
 
-	    if(currCapability & TPositionModuleInfo :: ECapabilitySatellite) //Extract satellitinfo if any and append it
-	        {																//as part of out parm list
 	        TInt8 satinfo  = 0;
 
 	        if(!aGenericInfo->GetValue(EPositionFieldSatelliteNumInView , satinfo))
@@ -232,10 +228,8 @@ void LocationInterfaceCB :: HandleL(HPositionGenericInfo* aGenericInfo , TInt /*
 		        }
 
 
-	        }
+	                                                                   
 
-	    if(currCapability & TPositionModuleInfo :: ECapabilityDirection) //Extract direction info if any and append it 
-	        {                                                               // as part of out parm list
 	        TReal32 direcinfo = 0;
 
 	        if(!aGenericInfo->GetValue(EPositionFieldTrueCourse , direcinfo) )
@@ -264,17 +258,13 @@ void LocationInterfaceCB :: HandleL(HPositionGenericInfo* aGenericInfo , TInt /*
 	            	
 	            }
 
-	        }
-
-
-	    if(currCapability & TPositionModuleInfo :: ECapabilityCompass) //Extract compass info if any and append it 
-	        {                                                               // as part of out parm list
+	       
 	        TReal32 compassinfo ;
 
 	        if(!aGenericInfo->GetValue(EPositionFieldHeading , compassinfo) )
 	            {
 	            result->InsertL(KPositionFieldHeading,TLiwVariant((TReal)compassinfo));
-	            ;
+           
 	            }
 
 
@@ -300,7 +290,6 @@ void LocationInterfaceCB :: HandleL(HPositionGenericInfo* aGenericInfo , TInt /*
 
 
 
-	        }
 
 	    /*if( currCapability & TPositionModuleInfo :: ECapabilityNmea ) //Extract Nmea info if any and append it 	
 	        {                                                             //as part of out param list  

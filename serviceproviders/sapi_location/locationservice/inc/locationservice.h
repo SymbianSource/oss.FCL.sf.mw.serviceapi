@@ -40,6 +40,7 @@ _LIT8(KHorAccuracy,"HorizontalAccuracy");
 _LIT8(KVerAccuracy,"VerticalAccuracy");
 
 _LIT(KUnknown,"Unknown");
+const TInt KMaxSupportedFields = 25 ;
 
 /**
  * Default Update options
@@ -57,6 +58,7 @@ const TInt KSUpdateTimeOut = 15*KSSecond;
 const TInt KSMaxAge = 0;
 const TInt KGetLocationReq = 0 ;
 const TInt KTraceReq   = 1 ;
+const TInt errServiceNotReady = 1006;
 
 /**
  * Enums required for mathoperations
@@ -279,6 +281,8 @@ class CLocationService : public CBase
 	      */
 	     
 	     void GetHighAccuracyModuleL(TPositionModuleId* aModId);
+         TInt SetSupportedFields() ; 
+         TInt SetRequestingField();
 
 
 
@@ -319,6 +323,20 @@ class CLocationService : public CBase
 	     * Module indtifier used by location server for getting location information
 	     */
 	    TPositionModuleId iModuleId ; 
+	    /**
+         * Member variable which holds all the Generic position  information
+         */
+
+        HPositionGenericInfo *iGenericPosInfo ;
+        /**
+         * Class member which contains all the field ids of all the supported Hposition info fields
+         */ 
+
+        TPositionFieldId iFieldList[KMaxSupportedFields] ;
+        /**
+        * Class member which contains module information which is used for location esitmation
+        */
+       TPositionModuleInfo   iModuleInfo ;
 
     };
 
