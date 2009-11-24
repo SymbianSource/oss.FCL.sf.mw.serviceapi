@@ -16,9 +16,9 @@
 */
 
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include <LiwServiceHandler.h>
-#include <LiwCommon.h>
+#include <StifTestInterface.h>
+#include <liwservicehandler.h>
+#include <liwcommon.h>
 
 
 #include "tconstants.h"

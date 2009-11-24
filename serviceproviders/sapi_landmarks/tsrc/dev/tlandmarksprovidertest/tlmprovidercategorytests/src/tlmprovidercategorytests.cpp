@@ -19,12 +19,12 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
-#include <epos_landmarks.h>
+#include <StifTestInterface.h>
+#include <EPos_Landmarks.h>
 #include <EPos_HPosLmDatabaseInfo.h> 
 #include <EPos_CPosLmDatabaseManager.h> 
-#include <LiwCommon.h>
-#include <LiwServiceHandler.h>
+#include <liwcommon.h>
+#include <liwservicehandler.h>
 #include "tlmprovidercategorytests.h"
 #include "landmarkliwparams.hrh"
 

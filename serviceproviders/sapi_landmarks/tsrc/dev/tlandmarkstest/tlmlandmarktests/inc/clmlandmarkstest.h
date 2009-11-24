@@ -27,10 +27,10 @@
 #include <StifTestModule.h>
 #include <EPos_HPosLmDatabaseInfo.h> 
 #include <EPos_CPosLmDatabaseManager.h> 
-#include <epos_landmarks.h>
+#include <EPos_Landmarks.h>
 #include <EPos_CPosLandmarkCategory.h> 
 #include <EPos_CPosLmSearchCriteria.h>
-#include <epos_cposlandmarkdatabase.h> 
+#include <EPos_CPosLandmarkDatabase.h> 
 #include "mlandmarkobserver.h"
 #include "landmarkservice.h"
 

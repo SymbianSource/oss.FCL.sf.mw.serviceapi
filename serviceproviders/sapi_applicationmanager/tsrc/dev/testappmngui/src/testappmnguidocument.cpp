@@ -16,8 +16,8 @@
 */
 
 
-#include "testappmnguiAppUi.h"
-#include "testappmnguiDocument.h"
+#include "testappmnguiappui.h"
+#include "testappmnguidocument.h"
 
 // Standard Symbian OS construction sequence
 CtestappmnguiDocument* CtestappmnguiDocument::NewL(CEikApplication& aApp)

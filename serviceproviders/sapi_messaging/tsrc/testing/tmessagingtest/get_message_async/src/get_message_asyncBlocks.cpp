@@ -19,8 +19,8 @@
 #include <e32svr.h>
 #include <e32base.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include <CMsvAttachment.h>
+#include <StifTestInterface.h>
+#include <cmsvattachment.h>
 #include "get_message_async.h"
 #include "messagingservice.h"
 #include "messageheader.h"

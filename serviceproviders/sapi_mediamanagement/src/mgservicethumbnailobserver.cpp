@@ -15,7 +15,7 @@
 *  *
 */
 
-#include<Liwcommon.h>
+#include<liwcommon.h>
 #include "serviceerrno.h"
 #include "mgservicethumbnailobserver.h"
 #include"mginterface.h"

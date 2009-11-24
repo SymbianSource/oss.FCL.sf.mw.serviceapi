@@ -32,7 +32,7 @@ CAPABILITY      ALL -TCB
 
 
 //TARGETPATH      ?target_path
-DEFFILE         SAPILocTest.def
+DEFFILE         sapiloctest.def
 
 SOURCEPATH      ../src
 SOURCE          sapiloctest.cpp

@@ -41,12 +41,12 @@ UID               0x100039CE 0x03AB7FB5
 LANG              SC
 
 SOURCEPATH        ../src
-DOCUMENT		  Series_60_APP_ReadMe.txt
+DOCUMENT		  series_60_app_readme.txt
 SOURCE            testappmngui.cpp
-SOURCE            testappmnguiApplication.cpp
-SOURCE            testappmnguiAppView.cpp
-SOURCE            testappmnguiAppUi.cpp
-SOURCE            testappmnguiDocument.cpp
+SOURCE            testappmnguiapplication.cpp
+SOURCE            testappmnguiappview.cpp
+SOURCE            testappmnguiappui.cpp
+SOURCE            testappmnguidocument.cpp
 SOURCE            testappobserver.cpp
 
 SOURCEPATH        ../group
@@ -73,7 +73,7 @@ LIBRARY           efsrv.lib
 LIBRARY         liwServiceHandler.lib
 
 #ifdef __UI_FRAMEWORKS_V2__
-START RESOURCE	testappmngui.RSS
+START RESOURCE	testappmngui.rss
 
 HEADER
 targetpath	/resource/apps
@@ -93,7 +93,7 @@ TARGETPATH	/private/10003a3f/import/apps
 #endif
 END
 
-start resource testappmngui_loc.RSS
+start resource testappmngui_loc.rss
 targetpath /resource/apps
 lang sc
 end

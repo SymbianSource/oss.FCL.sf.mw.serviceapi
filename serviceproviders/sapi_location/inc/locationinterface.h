@@ -19,7 +19,7 @@
 #define C_LOCINTERFACE_H
 
 
-#include <LiwCommon.h>
+#include <liwcommon.h>
 #include "locationcb.h"
 #include "locationservice.h"
 #include "serviceerrno.h"

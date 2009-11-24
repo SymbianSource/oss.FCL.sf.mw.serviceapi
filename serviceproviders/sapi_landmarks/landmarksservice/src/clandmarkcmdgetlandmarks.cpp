@@ -16,8 +16,8 @@
 */
 
 
-#include <epos_cposlmoperation.h>
-#include <epos_cposlandmarksearch.h>
+#include <EPos_CPosLmOperation.h>
+#include <EPos_CPosLandmarkSearch.h>
 #include "clandmarkcmdgetlandmarks.h"
 #include "mlandmarkobserver.h"
 #include "clandmarkmanagehandlers.h"

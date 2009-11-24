@@ -22,7 +22,7 @@
 #include <calentryview.h>
 #include <calinstanceview.h>
 #include <calprogresscallback.h>
-#include <caleninterimutils2.h>
+#include <CalenInterimUtils2.h>
 
 
 #include "calendarheader.h"

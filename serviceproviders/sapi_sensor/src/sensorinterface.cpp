@@ -16,9 +16,9 @@
 */
 
 //system include
-#include <LiwVariant.h>
-#include <LiwGenericParam.h>
-#include <LiwCommon.h>
+#include <liwvariant.h>
+#include <liwgenericparam.h>
+#include <liwcommon.h>
 #include <sensrvchannelinfo.h>
 #include <sensrvtypes.h>
 

@@ -17,9 +17,9 @@
 */
 
 #include <liwserviceifbase.h>
-#include <LiwCommon.h>
+#include <liwcommon.h>
 #include <logwrap.h>
-#include <LOGCLIENTCHANGEOBSERVER.H>
+#include <logclientchangeobserver.h>
 
 #include "logiter.h"
 #include "logginginterface.h"

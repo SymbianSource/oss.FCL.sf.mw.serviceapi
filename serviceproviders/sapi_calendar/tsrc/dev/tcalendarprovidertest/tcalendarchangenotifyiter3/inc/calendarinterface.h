@@ -20,9 +20,9 @@
 #ifndef __CALENDARINTERFACE_H
 #define __CALENDARINTERFACE_H
 
-#include <LiwCommon.h>
-#include <LiwServiceIfBase.h>
-#include <LiwBufferExtension.h>
+#include <liwcommon.h>
+#include <liwserviceifbase.h>
+#include <liwbufferextension.h>
 
 #include <calrrule.h>
 #include <calalarm.h>

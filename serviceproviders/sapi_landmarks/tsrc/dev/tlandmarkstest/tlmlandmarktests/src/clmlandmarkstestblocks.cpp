@@ -21,19 +21,19 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include <epos_cposlandmarkparser.h> 
-#include <epos_cposlandmarkencoder.h>
+#include <StifTestInterface.h>
+#include <EPos_CPosLandmarkParser.h> 
+#include <EPos_CPosLandmarkEncoder.h>
 #include <lbsposition.h> 
 #include <EPos_CPosLmTextCriteria.h>
 #include <f32file.h>
-#include <epos_cposlandmarkdatabase.h>
-#include <epos_cposlmitemiterator.h> 
-#include <epos_cposlandmark.h> 
+#include <EPos_CPosLandmarkDatabase.h>
+#include <EPos_CPosLmItemIterator.h> 
+#include <EPos_CPosLandmark.h> 
 #include "clandmarkfilter.h"
-#include "CLandmarkAsyncTests.h"
+#include "clandmarkasynctests.h"
 #include "landmarkservice.h"
-#include "Clmlandmarkstest.h"
+#include "clmlandmarkstest.h"
 
 _LIT(KLmName1, "lm1");
 _LIT(KLmName2, "lm2");

@@ -40,7 +40,7 @@ USERINCLUDE     ../../../../../inc
 
 SYSTEMINCLUDE   /epoc32/include 
 SYSTEMINCLUDE   /epoc32/include/internal
-SYSTEMINCLUDE   /epoc32/include/ECom
+SYSTEMINCLUDE   /epoc32/include/ecom
 SYSTEMINCLUDE   /epoc32/include/applications
 SYSTEMINCLUDE   /epoc32/include/internal
 

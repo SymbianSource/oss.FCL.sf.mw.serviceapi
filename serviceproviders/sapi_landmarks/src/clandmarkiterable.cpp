@@ -17,9 +17,9 @@
 
 
 #include <e32math.h>
-#include <epos_cposlandmark.h>
-#include <epos_cposlandmarkdatabase.h>
-#include <epos_cposlmitemiterator.h>
+#include <EPos_CPosLandmark.h>
+#include <EPos_CPosLandmarkDatabase.h>
+#include <EPos_CPosLmItemIterator.h>
 #include <lbsposition.h>
 #include "clandmarkiterable.h"
 #include "landmarkliwparams.hrh"

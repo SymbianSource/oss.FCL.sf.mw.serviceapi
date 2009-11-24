@@ -21,12 +21,12 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include "SAPILocTest.h"
+#include <StifTestInterface.h>
+#include "sapiloctest.h"
 #include <f32file.h>
-#include <LbsPosition.h>
-#include <LbsPositionInfo.h> 
-#include <LbsCommon.h>
+#include <lbsposition.h>
+#include <lbspositioninfo.h> 
+#include <lbscommon.h>
 
 
 _LIT(LogFileName , "C:\\tsapiloctest.txt") ;

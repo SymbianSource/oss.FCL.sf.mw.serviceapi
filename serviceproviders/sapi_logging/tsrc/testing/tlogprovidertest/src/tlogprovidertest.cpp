@@ -19,7 +19,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "tlogprovidertest.h"
 //#include <SettingServerClient.h>
 

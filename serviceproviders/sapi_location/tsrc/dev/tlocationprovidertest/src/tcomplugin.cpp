@@ -19,8 +19,8 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
-#include "Tcomplugin.h"
+#include <StifTestInterface.h>
+#include "tcomplugin.h"
 
 // EXTERNAL DATA STRUCTURES
 //extern  ?external_data;

@@ -21,16 +21,16 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "getheader.h"
 
 #include <e32base.h>
 ////#include <senduiconsts.h>
 #include "messaginginterface.h"
-#include <BADESCA.H>
+#include <badesca.h>
 #include <f32file.h>
-#include<LiwServiceHandler.h>
-#include<MSVSTD.H>
+#include<liwservicehandler.h>
+#include<msvstd.h>
 #include "messageheader.h"
 
 

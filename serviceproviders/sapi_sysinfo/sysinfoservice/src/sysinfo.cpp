@@ -20,10 +20,10 @@
 #include <AccessoryServer.h>
 #include <PtiEngine.h>
 #include <centralrepository.h>
-#include <SysUtilDomainCRKeys.h>
+#include <sysutildomaincrkeys.h>
 
 #include "sysinfo.h"
-#include "SysInfoUtils.h"
+#include "sysinfoutils.h"
 
 // --------------------------------------------------------------------
 // CSysData::CSysData()

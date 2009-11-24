@@ -21,10 +21,10 @@
 
 
 #include <s32file.h> // Used for RFileReadStream and RFileWriteStream
-#include <mvpbkcontactobserver.h>    //base class for vCardExEng
-#include <mvpbkcontactstoreobserver.h>    //base class for vCardExEng
-#include <mvpbksinglecontactoperationobserver.h>
-#include <cvpbkcontactlinkarray.h>
+#include <MVPbkContactObserver.h>    //base class for vCardExEng
+#include <MVPbkContactStoreObserver.h>    //base class for vCardExEng
+#include <MVPbkSingleContactOperationObserver.h>
+#include <CVPbkContactLinkArray.h>
 #include "contactservice.h"
 
 class CVPbkContactManager;

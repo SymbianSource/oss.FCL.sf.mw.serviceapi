@@ -23,7 +23,7 @@
 
 //  INCLUDES
 
-#include <LiwServiceHandler.h>
+#include <liwservicehandler.h>
 #include <liwgenericparam.h>
 
 

@@ -17,13 +17,13 @@
 
 #include <etel.h>
 #include <etelmm.h>
-#include <MmTsy_names.h>
+#include <mmtsy_names.h>
 
 #include "sysinfoservice.h"
 #include "sysnetworkrequest.h"
 #include "entitykeys.h"
 #include "sysrequest.h"
-#include "SysInfoUtils.h"
+#include "sysinfoutils.h"
 
 // --------------------------------------------------------------------
 // CNetwork::CNetwork()

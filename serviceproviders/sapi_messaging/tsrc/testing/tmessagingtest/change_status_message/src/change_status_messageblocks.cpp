@@ -23,10 +23,10 @@
 #include <e32cons.h>
 #include <e32base.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "change_status_message.h"
 //#include <senduiconsts.h>
-#include <CMsvAttachment.h>
+#include <cmsvattachment.h>
 #include "messagingservice.h"
 #include "messageheader.h"
 

@@ -46,7 +46,7 @@ DEFFILE         register_message.def
 
 SOURCEPATH      ../src
 SOURCE          register_message.cpp
-SOURCE          register_messageBlocks.cpp
+SOURCE          register_messageblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

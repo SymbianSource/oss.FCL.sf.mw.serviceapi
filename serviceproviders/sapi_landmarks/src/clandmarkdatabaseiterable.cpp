@@ -16,7 +16,7 @@
 */
 
 #include <liwgenericparam.h>
-#include <epos_cposlmdatabasemanager.h>
+#include <EPos_CPosLmDatabaseManager.h>
 #include "clandmarkdatabaseiterable.h"
 #include "landmarkliwparams.hrh"
 

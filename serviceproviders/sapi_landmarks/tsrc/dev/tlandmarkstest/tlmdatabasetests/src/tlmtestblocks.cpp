@@ -21,8 +21,8 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include "TLmDatabasesTest.h"
+#include <StifTestInterface.h>
+#include "tlmdatabasestest.h"
 #include "landmarkservice.h"
 
 // CONSTANTS  

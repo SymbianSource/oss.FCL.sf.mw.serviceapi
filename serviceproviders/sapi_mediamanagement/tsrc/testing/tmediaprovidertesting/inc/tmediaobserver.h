@@ -18,9 +18,9 @@
 #ifndef _TMEDIAPROVIDERTESTING_H__
 #define _TMEDIAPROVIDERTESTING_H__
 
-#include <LiwCommon.h>
-#include <LiwBufferExtension.h>
-#include <LiwServiceHandler.h>
+#include <liwcommon.h>
+#include <liwbufferextension.h>
+#include <liwservicehandler.h>
 #include <e32base.h>
 extern TInt count;
 class CMediaObserver : public CBase , public MLiwNotifyCallback

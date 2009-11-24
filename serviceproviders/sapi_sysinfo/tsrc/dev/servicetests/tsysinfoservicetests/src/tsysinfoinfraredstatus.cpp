@@ -20,7 +20,7 @@
 #include "sysinfoservice.h"
 #include"entitykeys.h"
 
-#include <IR_SOCK.H>
+#include <ir_sock.h>
 #include <e32property.h>
 
 using namespace SysInfo;

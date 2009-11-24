@@ -56,7 +56,7 @@ DEFFILE         tcal_delete.def
 
 SOURCEPATH      ../src
 SOURCE          tcal_delete.cpp
-SOURCE          tcal_deleteBlocks.cpp
+SOURCE          tcal_deleteblocks.cpp
 SOURCE          cal_delete.cpp
 
 //RESOURCE        resource_file

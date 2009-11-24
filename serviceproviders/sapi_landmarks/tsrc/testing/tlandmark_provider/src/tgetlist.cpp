@@ -18,17 +18,17 @@
 
 
 #include <e32std.h>
-#include <Stiftestinterface.h>
-#include <LiwServiceHandler.h>
+#include <StifTestInterface.h>
+#include <liwservicehandler.h>
 #include <StifLogger.h>
 #include "getlist.h"
-#include<LiwCommon.h>
-#include<LiwVariant.h>
+#include<liwcommon.h>
+#include<liwvariant.h>
 #include "landmarkliwparams.hrh"
-#include <epos_cposlandmarkdatabase.h>
-#include <epos_cposlandmark.h>
-#include <epos_cposlandmarkencoder.h>
-#include <epos_cposlmcategorymanager.h>
+#include <EPos_CPosLandmarkDatabase.h>
+#include <EPos_CPosLandmark.h>
+#include <EPos_CPosLandmarkEncoder.h>
+#include <EPos_CPosLmCategoryManager.h>
 #include "tlandmark_provider.h"
 #include <EPos_HPosLmDatabaseInfo.h>
 #include <EPos_CPosLmDatabaseManager.h>

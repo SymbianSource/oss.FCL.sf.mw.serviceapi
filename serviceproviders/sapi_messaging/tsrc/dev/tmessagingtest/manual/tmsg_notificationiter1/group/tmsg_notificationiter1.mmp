@@ -32,7 +32,7 @@ DEFFILE         tmsg_notificationiter1.def
 
 SOURCEPATH      ../src
 SOURCE          messagenotificationtest.cpp
-SOURCE          messagenotificationtestBlocks.cpp
+SOURCE          messagenotificationtestblocks.cpp
 SOURCE          reqnotification.cpp
 //SOURCE			tfunctionthread.cpp
 

@@ -21,10 +21,10 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <msvids.h> 
 //#include <SendUiConsts.h>
-#include <LiwCommon.h>
+#include <liwcommon.h>
 //#include <calendarinterface.h>
 
 #include "delete.h"

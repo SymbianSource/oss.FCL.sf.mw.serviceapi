@@ -21,8 +21,8 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include <EscapeUtils.h> 
+#include <StifTestInterface.h>
+#include <escapeutils.h> 
 
 #include "tsysdisplay.h"
 #include "tsysdisplaynot.h"

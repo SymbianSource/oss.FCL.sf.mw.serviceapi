@@ -35,7 +35,7 @@ DEFFILE         sapiloctotest.def
 
 SOURCEPATH      ../src
 SOURCE          sapiloctotest.cpp
-SOURCE          sapiloctotestBlocks.cpp
+SOURCE          sapiloctotestblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

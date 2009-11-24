@@ -23,11 +23,11 @@
 #include "getliststorelistobserver.h"
 #include <CVPbkContactStoreUriArray.h>
 #include <CVPbkContactManager.h>
-#include <mvpbkcontactstorelist.h>
+#include <MVPbkContactStoreList.h>
 #include <MVPbkContactOperationBase.h>
 #include <TVPbkContactStoreUriPtr.h>
 #include <MVPbkContactLink.h>
-#include <mvpbkcontactstoreproperties.h>
+#include <MVPbkContactStoreProperties.h>
 
 
 //Initialize the class variable with the result of ReadContactL

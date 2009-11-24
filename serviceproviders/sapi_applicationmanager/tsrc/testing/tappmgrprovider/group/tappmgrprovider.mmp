@@ -35,7 +35,7 @@ DEFFILE         tappmgrprovider.def
 
 SOURCEPATH      ../src
 SOURCE          tappmgrprovider.cpp
-SOURCE          tappmgrproviderBlocks.cpp
+SOURCE          tappmgrproviderblocks.cpp
 SOURCE          testappobserver.cpp
 
 USERINCLUDE     ../inc

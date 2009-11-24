@@ -23,9 +23,9 @@
 #include "contactiter.h"
 #include <MVPbkContactViewBase.h>
 #include <MVPbkContactViewFiltering.h>
-#include <cvpbkcontactviewdefinition.h>
+#include <CVPbkContactViewDefinition.h>
 #include <MVPbkContactLink.h>
-#include <mvpbkcontactstoreproperties.h>
+#include <MVPbkContactStoreProperties.h>
 #include <MVPbkContactOperationBase.h>
 #include "contactviewobserver.h"
 #include "getliststorelistobserver.h"

@@ -20,7 +20,7 @@
 
 // INCLUDE FILES
 #include "tproviderlmarktest.h"
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <gmxmlparser.h>
 #include <gmxmlnode.h>
 

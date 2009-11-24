@@ -23,8 +23,8 @@
 //#include <msvstd.h>
 //#include <msvapi.h>
 //#include <msvids.h>
-#include <LiwCommon.h>
-#include <Stiftestinterface.h>
+#include <liwcommon.h>
+#include <StifTestInterface.h>
 
 #include "tcalendaraddtest.h"
 

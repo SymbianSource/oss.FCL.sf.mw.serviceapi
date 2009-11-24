@@ -17,7 +17,7 @@
 
 
 
-#include <ecom/ImplementationProxy.h>
+#include <ecom/implementationproxy.h>
 
 #include "messaginginterface.h"
 #include "messagingservicehandler.h"

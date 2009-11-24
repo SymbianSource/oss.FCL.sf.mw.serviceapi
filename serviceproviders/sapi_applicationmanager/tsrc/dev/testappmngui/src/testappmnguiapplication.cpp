@@ -16,8 +16,8 @@
 */
 
 
-#include "testappmnguiDocument.h"
-#include "testappmnguiApplication.h"
+#include "testappmnguidocument.h"
+#include "testappmnguiapplication.h"
 
 // UID for the application, this should correspond to the uid defined in the mmp file
 static const TUid KUidtestappmnguiApp = {0x03AB7FB5};

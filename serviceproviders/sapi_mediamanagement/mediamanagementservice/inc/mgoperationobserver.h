@@ -22,6 +22,7 @@
 
 
 class MCLFItemListModel;
+class CClfOperationObserver;
 
 // CLASS DECLARATION
 /**
@@ -49,6 +50,7 @@ class MMgOperationObserver
         */
         virtual void MgNotifyL(TUint  aTransactionID, 
                                MCLFItemListModel*  aListModel,
+                               CClfOperationObserver* aOperationObserver,
         					   TMgOperationEvent& aOperationEvent,
                                const TInt& aError ) = 0;
 

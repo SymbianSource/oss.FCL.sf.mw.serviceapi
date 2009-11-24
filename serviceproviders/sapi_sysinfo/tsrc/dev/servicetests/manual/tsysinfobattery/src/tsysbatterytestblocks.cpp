@@ -20,16 +20,16 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <f32file.h>
 #include <hal.h>
 
-#include "TSysBattery.h"
+#include "tsysbattery.h"
 #include "sysinfoservice.h"
 #include "entitykeys.h"
-#include "TBatteryStrengthAsyn.h"
-#include "TBatLvlNoti.h"
-#include "TChargerNoti.h"
+#include "tbatterystrengthasyn.h"
+#include "tbatlvlnoti.h"
+#include "tchargernoti.h"
 #include "tbatstrnoti.h"
 
 using namespace SysInfo;

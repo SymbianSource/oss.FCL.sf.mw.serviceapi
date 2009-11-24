@@ -15,10 +15,10 @@
 *
 */
 
-#include <Eikon.rh>
-#include <LiwCommon.hrh>
+#include <eikon.rh>
+#include <liwcommon.hrh>
 
-#include "ecom/RegistryInfoV2.rh"
+#include "ecom/registryinfov2.rh"
 
 RESOURCE REGISTRY_INFO theInfo
     {

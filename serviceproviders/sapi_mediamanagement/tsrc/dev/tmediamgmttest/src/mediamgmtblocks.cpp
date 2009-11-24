@@ -21,9 +21,9 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include  <utf.h>
-#include "MediaMgmt.h"
+#include "mediamgmt.h"
 #include "mgitemslist.h"
 using namespace LIW;
 
@@ -209,6 +209,7 @@ TInt CMediaMgmt::GetFilesInfoL( CStifItemParser& aItem )
 
  void Callback::MgNotifyL(TUint /*aTransactionID*/,
                                MCLFItemListModel*  aListModel,
+                               CClfOperationObserver* aOperationObserver,
         					   TMgOperationEvent& aOperationEvent,
                                const TInt& aError )
 
@@ -247,6 +248,8 @@ TInt CMediaMgmt::GetFilesInfoL( CStifItemParser& aItem )
    	    {
 		delete aListModel;
 		aListModel = NULL;
+		delete aOperationObserver;
+		aOperationObserver = NULL;
 	 	}
 
 

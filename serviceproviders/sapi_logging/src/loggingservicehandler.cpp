@@ -17,10 +17,10 @@
 */
 
 #include <liwserviceifbase.h>
-#include <LiwCommon.h>
+#include <liwcommon.h>
 #include <logwrap.h>
-#include <ecom/ImplementationProxy.h>
-#include "LOGCLIENTCHANGEOBSERVER.H"
+#include <ecom/implementationproxy.h>
+#include "logclientchangeobserver.h"
 #include "logiter.h"
 #include "loggingservicehandler.h"
 #include "logginginterface.h"

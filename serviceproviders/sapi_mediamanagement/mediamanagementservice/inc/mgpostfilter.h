@@ -21,7 +21,7 @@
 #ifndef __CMGPOSTFILTER_H
 #define __CMGPOSTFILTER_H
 
-#include <mclfpostfilter.h>
+#include <MCLFPostFilter.h>
 #include <e32base.h>
 
 

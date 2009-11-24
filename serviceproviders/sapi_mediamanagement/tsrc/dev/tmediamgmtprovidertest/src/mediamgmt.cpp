@@ -19,7 +19,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "mediamgmt.h"
 
 // EXTERNAL DATA STRUCTURES

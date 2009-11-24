@@ -25,7 +25,7 @@
 #include <StifLogger.h>
 #include <TestScripterInternal.h>
 #include <StifTestModule.h>
-#include <LiwServiceHandler.h>
+#include <liwservicehandler.h>
 #include <liwgenericparam.h>
 
 class CLiwGenericParamList;

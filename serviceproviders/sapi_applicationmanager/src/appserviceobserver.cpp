@@ -16,7 +16,7 @@
 */
 
 
-#include <Liwcommon.h>
+#include <liwcommon.h>
 #include "appserviceobserver.h"
 #include "serviceerrno.h"
 //Output Keys/arguments

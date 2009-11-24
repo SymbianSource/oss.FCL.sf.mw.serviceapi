@@ -21,7 +21,7 @@
 #ifndef __CMGSERVICE_H
 #define __CMGSERVICE_H
 #include <e32base.h>
-#include <clfcontentlisting.hrh>
+#include <CLFContentListing.hrh>
 
 #include "mgservice.hrh"
 

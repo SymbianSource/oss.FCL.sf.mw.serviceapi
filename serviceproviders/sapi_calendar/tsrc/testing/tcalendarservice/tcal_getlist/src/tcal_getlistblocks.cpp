@@ -23,7 +23,7 @@
 #include <e32std.h>
 #include <f32file.h> //for RFile and Rfs
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "tcal_getlist.h"
 #include "calendarheader.h"
 #include "calendarservice.h"

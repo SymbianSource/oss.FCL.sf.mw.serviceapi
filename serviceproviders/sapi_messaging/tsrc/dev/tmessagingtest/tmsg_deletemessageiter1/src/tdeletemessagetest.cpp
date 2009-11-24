@@ -19,11 +19,11 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 //#include <SAPI_TEST\testprg.h>
 //#include <sendmessage.h>
 //#include<messagenotify.h>
-#include "TDeleteMessageTest.h"
+#include "tdeletemessagetest.h"
 //#include <SAPI_TEST\testprg.h>
 
 

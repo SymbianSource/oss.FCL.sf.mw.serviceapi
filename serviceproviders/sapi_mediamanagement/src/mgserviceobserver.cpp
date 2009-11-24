@@ -16,12 +16,14 @@
 */
 
 #include <liwcommon.h>
-#include <mclfitemlistmodel.h>
+#include <MCLFItemListModel.h>
 
 #include "mgserviceobserver.h"
 #include "mgitemslist.h"
 #include "mginterface.h"
 #include "serviceerrno.h"
+#include "mgclfoperationobserver.h"
+
 //using namespace LIW;
 //Output Keys/arguments
 _LIT8(KResponse,"ReturnValue");
@@ -52,6 +54,7 @@ CMgServiceObserver* CMgServiceObserver::NewL()
 // -----------------------------------------------------------------------------
 void CMgServiceObserver :: MgNotifyL( TUint  aTransactionID,
                                       MCLFItemListModel* aListModel,
+                                      CClfOperationObserver* aOperationObserver,
                                       TMgOperationEvent& aOperationEvent,
                                       const TInt& aError  )
 
@@ -98,17 +101,21 @@ void CMgServiceObserver :: MgNotifyL( TUint  aTransactionID,
 	 	// it will become the owner of iListModel,Ownership of
 	 	// Iterator is transfered to consumer
 
-	 	CMgItemsList *iterator = CMgItemsList::NewL( aListModel, iCmdId );
+	 	CMgItemsList *iterator = CMgItemsList::NewL( aListModel, aOperationObserver, iCmdId );
  	    CleanupStack::PushL( iterator );
 	 	response.Set( iterator );
 		iOutput->AppendL( TLiwGenericParam ( KResponse, response ) );
  		CleanupStack::Pop( iterator );
-        iterator->DecRef();
+        // iterator->DecRef();   //This code is commented because the when the iterator is passed to user by using 
+                                 //AsIterable() call refCount is not getting increased. As the iterator control is 
+ 		                         //with the user we dont need to decrement the ref count here.
         }
    	else
    	    {
 		delete aListModel;
+		delete aOperationObserver;
 		aListModel = NULL;
+		aOperationObserver = NULL;
 	 	}
 
     if( NULL != iCallBack )

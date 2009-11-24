@@ -21,13 +21,13 @@
 
 //System includes
 #include <s32file.h> // Used for RFileReadStream and RFileWriteStream
-#include <mvpbkcontactstoreListobserver.h>    //base class for vCardEng
-#include <mvpbkcontactobserver.h>    //base class for vCardEng
-#include <mvpbksinglecontactoperationObserver.h>//base class
-#include <mvpbkcontactcopyobserver.h>    //base class for vCardEng
+#include <MVPbkContactStoreListObserver.h>    //base class for vCardEng
+#include <MVPbkContactObserver.h>    //base class for vCardEng
+#include <MVPbkSingleContactOperationObserver.h>//base class
+#include <MVPbkContactCopyObserver.h>    //base class for vCardEng
 #include <CVPbkFieldTypeRefsList.h>		//Used to specify search fields
 #include <CVPbkContactLinkArray.h>
-#include <vpbkcontactstoreuris.h>
+#include <VPbkContactStoreUris.h>
 
 //User Includes
 #include "contactcallback.h"

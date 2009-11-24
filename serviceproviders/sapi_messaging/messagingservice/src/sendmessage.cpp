@@ -17,17 +17,17 @@
 
 
 #include <e32base.h>
-#include <senduiconsts.h>
+#include <SendUiConsts.h>
 #include <mmsconst.h>
-#include <CMsvAttachment.h>
+#include <cmsvattachment.h>
 #include <aknenv.h>
-#include <MTCLREG.H>
-#include <UTF.H>
+#include <mtclreg.h>
+#include <utf.h>
 #include <mturutils.h>      
 #include <aknenv.h>
-#include <APGCLI.H>
+#include <apgcli.h>
 #include <smsclnt.h>
-#include <TXTRICH.H>
+#include <txtrich.h>
 #include <smuthdr.h>
 #include <smscmds.h>
 #include <mtmuibas.h>

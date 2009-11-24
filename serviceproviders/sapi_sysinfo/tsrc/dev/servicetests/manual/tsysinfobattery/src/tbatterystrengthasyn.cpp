@@ -17,7 +17,7 @@
 
 
 
-#include "TSysBattery.h"
+#include "tsysbattery.h"
 #include "sysinfoservice.h"
 #include "entitykeys.h"
 #include "tbatterystrengthasyn.h"

@@ -22,8 +22,8 @@
 #ifndef _APPINFO_H__
 #define _APPINFO_H__
 #include <e32base.h>
-#include <APAID.H> // For TApaAppInfo
-#include <BADESCA.H> // CDesC16Array
+#include <apaid.h> // For TApaAppInfo
+#include <badesca.h> // CDesC16Array
 #include "appmanagercommon.h"
 
 _LIT8(KCaption,"Caption");

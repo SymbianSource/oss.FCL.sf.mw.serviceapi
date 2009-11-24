@@ -18,13 +18,13 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <liwcommon.h>
 #include <liwservicehandler.h>
-#include <epos_landmarks.h>
+#include <EPos_Landmarks.h>
 #include <EPos_HPosLmDatabaseInfo.h> 
 #include <EPos_CPosLmDatabaseManager.h> 
-#include "TLandmarkProvider.h"
+#include "tlandmarkprovider.h"
 #include "landmarkliwparams.hrh"
 
 // EXTERNAL DATA STRUCTURES

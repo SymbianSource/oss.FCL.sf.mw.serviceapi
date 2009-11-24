@@ -16,9 +16,9 @@
 */
 
 #include <e32base.h>
-#include <LiwCommon.h>
+#include <liwcommon.h>
 #include <lbs.h>
-#include <LbsRequestor.h>
+#include <lbsrequestor.h>
 
 #include <lbscommon.h>
 #include <lbssatellite.h>

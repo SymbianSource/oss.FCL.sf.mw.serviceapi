@@ -16,7 +16,7 @@
 */
 
 
-#include <mclfitem.h>
+#include <MCLFItem.h>
 #include <pathinfo.h>
 #include <liwvariant.h>
 #include "mgmresolution.h"
@@ -100,13 +100,18 @@ void CMgMediaItem::FillCommonAttributesL(CLiwDefaultMap* aOutputMap, const MCLFI
     if ( mediaType == ECLFMediaTypeImage )
         {
         TSize imageRes( 0,0 );
-        MResolution* mediaResObj = MediaResolutionFactory::CreateMediaResolutionobjL( mediaImage,fullName );
-        CleanupStack::PushL( mediaResObj );
-        mediaResObj->GetresolutionL( imageRes );        
-        aOutputMap->InsertL( KXPixels,(TInt32)imageRes.iWidth );
-        aOutputMap->InsertL( KYPixels,(TInt32)imageRes.iHeight );
-        CleanupStack::Pop( mediaResObj );
-        delete mediaResObj;
+        MResolution* mediaResObj=NULL;
+        TInt err =KErrNone;
+        TRAP(err,mediaResObj = MediaResolutionFactory::CreateMediaResolutionobjL( mediaImage,fullName ));
+        
+        if(err == KErrNone){
+            CleanupStack::PushL( mediaResObj );
+            mediaResObj->GetresolutionL( imageRes );        
+            aOutputMap->InsertL( KXPixels,(TInt32)imageRes.iWidth );
+            aOutputMap->InsertL( KYPixels,(TInt32)imageRes.iHeight );
+            CleanupStack::Pop( mediaResObj );
+            delete mediaResObj;
+            }
         }         
     }
 

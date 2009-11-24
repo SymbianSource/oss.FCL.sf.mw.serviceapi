@@ -39,7 +39,7 @@ PRJ_EXPORTS
 */
 
 PRJ_TESTMMPFILES
-tContact_export.mmp
+tcontact_export.mmp
 // NOTE: If using ARS requirements .mmp file operation should be done under this.
 // 'abld test build'
 

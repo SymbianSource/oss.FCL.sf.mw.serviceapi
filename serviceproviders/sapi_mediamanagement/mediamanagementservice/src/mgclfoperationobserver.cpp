@@ -16,8 +16,8 @@
 */
 
 
-#include <mclfitemlistmodel.h>
-#include <mclfsortingstyle.h>
+#include <MCLFItemListModel.h>
+#include <MCLFSortingStyle.h>
 
 #include "mgclfoperationobserver.h"
 #include "mgservice.h"
@@ -58,23 +58,23 @@ void CClfOperationObserver::HandleOperationEventL(
     		iMGService->Clear();
     	}
 
-    	if( NULL !=  iServiceObserver ) //Asynchronous
+    	if( NULL !=  iServiceObserver && (mgEvent == ECLFRefreshComplete)) //Asynchronous
     	{
          
-         iServiceObserver->MgNotifyL( iTransactionID,iListModel, mgEvent, aError );
+		iServiceObserver->MgNotifyL( iTransactionID,iListModel,this,mgEvent, aError );
         
          // calling request complete on asyncrequestmanager
          iAsyncRequestManager->RequestComplete( iTransactionID );
          
-         //Ownership of the List model is transfered to the Iterator class
+		//Ownership of the List model and the observer are transferred to the Iterator class
          iListModel = NULL;
          //In future at the time of supporting back to back call
 		//call delete this	
          iServiceObserver = NULL;
   	     iMGService = NULL;
   	     
-  	     delete this;
-  	     
+		//delete this;
+	     
     	}
     	
 	}
@@ -118,7 +118,7 @@ void CClfOperationObserver::CancelL()
 			iListModel = NULL;
 			}
 	
-   	iServiceObserver->MgNotifyL(iTransactionID, NULL , mgEvent, KErrNone );
+   	iServiceObserver->MgNotifyL(iTransactionID, NULL, NULL, mgEvent, KErrNone );
    	iMGService = NULL;
     iTransactionID = 0;	
     //In future at the time of supporting back to back call
@@ -136,16 +136,7 @@ void CClfOperationObserver::CancelL()
 CClfOperationObserver::~CClfOperationObserver()
                        
     {
-       
-        // If this observer is waiting for response
-        // then cancel the request
-        if( iListModel )
-    	    {
-			/*iListModel->CancelRefresh();
-			delete iListModel;
-			iListModel = NULL;*/
-			CancelL();
-			}
+        iListModel = NULL;
         if(iAsyncRequestManager)
             {
             iAsyncRequestManager = NULL;

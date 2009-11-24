@@ -22,12 +22,12 @@
 #include <e32svr.h>
 #include <StifParser.h>
 //#include <SAPI_TEST\testprg.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 
 
 #include <badesca.h>
 //#include "teststartconsolealarmserver3.h"
-#include<LiwServiceHandler.h>
+#include<liwservicehandler.h>
 
 
 #include "tcalendarimporttest.h"
@@ -166,7 +166,7 @@ TInt CTCalendarImportTest::RunMethodL(
     }
 
    
-#include<LiwCommon.h>    
+#include<liwcommon.h>    
 
 class CTestAsync;
 	

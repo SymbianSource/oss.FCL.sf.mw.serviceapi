@@ -17,7 +17,7 @@
 
 
 
-#include <mclfitem.h>
+#include <MCLFItem.h>
 #include "mgpostfilter.h"
 
 const TInt32 KLargestSigned32 = 0x7fffffff;

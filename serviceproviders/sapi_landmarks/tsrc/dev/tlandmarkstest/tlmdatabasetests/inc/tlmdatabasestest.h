@@ -27,7 +27,7 @@
 #include <StifTestModule.h>
 #include <EPos_HPosLmDatabaseInfo.h> 
 #include <EPos_CPosLmDatabaseManager.h> 
-#include <epos_landmarks.h>
+#include <EPos_Landmarks.h>
 
 // MACROS
 // Logging path

@@ -50,11 +50,11 @@ CAPABILITY      ALL -TCB
 #endif
 
 //TARGETPATH      ?target_path
-DEFFILE         tContact_add.def
+DEFFILE         tcontact_add.def
 
 SOURCEPATH      ../src
-SOURCE          tContact_add.cpp
-SOURCE          tContact_addBlocks.cpp
+SOURCE          tcontact_add.cpp
+SOURCE          tcontact_addblocks.cpp
 
 
 

@@ -54,7 +54,7 @@ DEFFILE         tcal_changenotify.def
 
 SOURCEPATH      ../src
 SOURCE          tcal_changenotify.cpp
-SOURCE          tcal_changenotifyBlocks.cpp
+SOURCE          tcal_changenotifyblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

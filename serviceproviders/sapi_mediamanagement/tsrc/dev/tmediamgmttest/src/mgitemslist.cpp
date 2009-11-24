@@ -17,8 +17,8 @@
 
 
 
-#include <mclfitem.h>
-#include <mclfitemlistmodel.h>
+#include <MCLFItem.h>
+#include <MCLFItemListModel.h>
 
 #include "mgitemslist.h"
 #include "mgmediaitemfactory.h"

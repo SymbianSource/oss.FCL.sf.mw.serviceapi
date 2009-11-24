@@ -26,7 +26,7 @@
 
 #include "calendarconstants.h"
 #include "calendarheader.h"
-#include "EntryAttributes.h"
+#include "entryattributes.h"
 #include "calendarservice.h"
 
 

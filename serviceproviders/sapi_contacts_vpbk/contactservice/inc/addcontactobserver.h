@@ -21,8 +21,8 @@
 
 
 #include <s32file.h> 
-#include <mvpbkcontactstoreobserver.h>    
-#include <mvpbkcontactobserver.h>    
+#include <MVPbkContactStoreObserver.h>    
+#include <MVPbkContactObserver.h>    
 #include <MVPbkSingleContactOperationObserver.h>
 #include <MVPbkStoreContact.h>
 

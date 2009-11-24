@@ -16,9 +16,9 @@
 */
 
 
-#include<LiwCommon.h>
-#include<LiwVariant.h>
-#include<LiwServiceHandler.h>
+#include<liwcommon.h>
+#include<liwvariant.h>
+#include<liwservicehandler.h>
 #include "tcalendaraddtest.h"
 #include "calendarheader.h"
 #include "calendarconstants.h"

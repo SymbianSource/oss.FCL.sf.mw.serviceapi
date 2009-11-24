@@ -20,7 +20,7 @@
 #define C_STORELISTOBSERVER_H
 
 
-#include <mvpbkcontactstoreListobserver.h>    //base class for vCardEng
+#include <MVPbkContactStoreListObserver.h>    //base class for vCardEng
 #include <CVPbkVCardEng.h>
 #include <MVPbkContactStore.h>
 

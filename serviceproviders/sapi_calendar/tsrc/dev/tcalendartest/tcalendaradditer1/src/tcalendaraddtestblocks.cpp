@@ -21,7 +21,7 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 
 #include "calendarheader.h"
 #include "calendarservice.h"

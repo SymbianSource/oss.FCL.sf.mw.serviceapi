@@ -17,7 +17,7 @@
 
 
 #include <eikon.rh>
-#include <ecom\registryinfov2.rh>
+#include <ecom/registryinfov2.rh>
 #include <liwcommon.hrh>
 
 // Declares the interface implementation provided: a custom resolver

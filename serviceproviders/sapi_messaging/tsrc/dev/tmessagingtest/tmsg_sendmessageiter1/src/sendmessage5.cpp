@@ -22,7 +22,7 @@
 #include<e32base.h>
 
 #include "messagingservice.h"
-#include <CMsvAttachment.h>
+#include <cmsvattachment.h>
 #include "sendmessage.h"
 
 #ifdef MAIN

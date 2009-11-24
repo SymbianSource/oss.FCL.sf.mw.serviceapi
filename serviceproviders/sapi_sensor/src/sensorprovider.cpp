@@ -16,7 +16,7 @@
 */
 
 
-#include <ecom/ImplementationProxy.h>
+#include <ecom/implementationproxy.h>
 #include "sensorservicehandler.h"
 #include "sensorinterface.h"
 #include "serviceerrno.h"

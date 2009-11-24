@@ -15,8 +15,8 @@
 *
 */
 
-#include <LiwServiceHandler.h>
-#include <LiwCommon.h>
+#include <liwservicehandler.h>
+#include <liwcommon.h>
 #include <e32std.h>
 #include "tprovidertest.h"
 #include "tconstants.h"

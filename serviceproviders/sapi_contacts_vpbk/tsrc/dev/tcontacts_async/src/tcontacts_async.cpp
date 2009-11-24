@@ -19,15 +19,15 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
-#include <COEMAIN.H>
+#include <StifTestInterface.h>
+#include <coemain.h>
 
 #include <CVPbkContactStoreUriArray.h>
 #include <CVPbkContactManager.h>
 #include <MVPbkContactStoreList.h>
 #include <MVPbkContactStore.h>
 #include <TVPbkContactStoreUriPtr.h>
-#include <CVpbkVcardeng.h>
+#include <CVPbkVCardEng.h>
 
 #include "contactservice.h"
 #include "tcontacts_async.h"

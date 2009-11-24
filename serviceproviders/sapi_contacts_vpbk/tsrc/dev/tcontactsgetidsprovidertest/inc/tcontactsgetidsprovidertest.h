@@ -28,9 +28,9 @@
 #include <f32file.h>
 #include <TestclassAssert.h>
 
-#include <LiwCommon.h>
-#include <LiwBufferExtension.h>
-#include <LiwServiceHandler.h>
+#include <liwcommon.h>
+#include <liwbufferextension.h>
+#include <liwservicehandler.h>
 
 #include <e32base.h>	// CBase
 #include <e32std.h>	 // TBuf

@@ -20,20 +20,20 @@
 
 #include "importstorelistobserver.h"
 
-#include <cvpbkvcardeng.h>//for the vcard engin
-#include <cvpbkcontactmanager.h>// for iContactManager
-#include <mvpbkcontactstore.h>// for iContactStore
-#include <tvpbkcontactstoreuriPtr.h>//used in SetupL
-#include <mvpbkcontactstorelist.h>//used in SetupL to get contact stores
-#include <mvpbkstorecontactfield.h>//used in AddFieldToContactL
-#include <mvpbkstorecontact.h>// used in many function to get the store contact
-#include <mvpbkcontactfieldtextdata.h>//for the field text data
-#include <tvpbkfieldtypemapping.h>//used in CreateFieldTypeL()
-#include <mvpbkfieldtype.h>//return type of CreateFieldTypeL()
-#include <mvpbkcontactoperationbase.h>//for observer
-#include <mvpbkcontactfielddatetimedata.h>//Used in AddDateFieldToContactL
-#include <mvpbkcontactlink.h>//for param in ContactsSaved()
-#include <cvpbkcontactstoreuriarray.h>//used in SetupL
+#include <CVPbkVCardEng.h>//for the vcard engin
+#include <CVPbkContactManager.h>// for iContactManager
+#include <MVPbkContactStore.h>// for iContactStore
+#include <TVPbkContactStoreUriPtr.h>//used in SetupL
+#include <MVPbkContactStoreList.h>//used in SetupL to get contact stores
+#include <MVPbkStoreContactField.h>//used in AddFieldToContactL
+#include <MVPbkStoreContact.h>// used in many function to get the store contact
+#include <MVPbkContactFieldTextData.h>//for the field text data
+#include <TVPbkFieldTypeMapping.h>//used in CreateFieldTypeL()
+#include <MVPbkFieldType.h>//return type of CreateFieldTypeL()
+#include <MVPbkContactOperationBase.h>//for observer
+#include <MVPbkContactFieldDateTimeData.h>//Used in AddDateFieldToContactL
+#include <MVPbkContactLink.h>//for param in ContactsSaved()
+#include <CVPbkContactStoreUriArray.h>//used in SetupL
 
 
 

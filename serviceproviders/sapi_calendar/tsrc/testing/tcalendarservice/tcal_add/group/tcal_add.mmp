@@ -54,7 +54,7 @@ DEFFILE         tcal_add.def
 
 SOURCEPATH      ../src
 SOURCE          tcal_add.cpp
-SOURCE          tcal_addBlocks.cpp
+SOURCE          tcal_addblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

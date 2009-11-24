@@ -55,7 +55,7 @@ DEFFILE         tcal_import.def
 
 SOURCEPATH      ../src
 SOURCE          tcal_import.cpp
-SOURCE          tcal_importBlocks.cpp
+SOURCE          tcal_importblocks.cpp
 SOURCE          importestcases.cpp
 
 //RESOURCE        resource_file

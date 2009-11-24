@@ -18,22 +18,22 @@
 
 #include <centralrepository.h>
 #include <btserversdkcrkeys.h>
-#include <SettingsInternalCRKeys.h>
-#include <HWRMVibraSDKCRKeys.h>
-#include <HWRMLightDomainCRKeys.h>
+#include <settingsinternalcrkeys.h>
+#include <hwrmvibrasdkcrkeys.h>
+#include <hwrmlightdomaincrkeys.h>
 #include <AknFepInternalCRKeys.h>
-#include <SysUtilDomainCRKeys.h>
+#include <sysutildomaincrkeys.h>
 
 #include <UikonInternalPSKeys.h>
 #include <NetworkHandlingDomainPSKeys.h>
-#include <HWRMDomainPSKeys.h>
+#include <hwrmdomainpskeys.h>
 #include <hwrmpowerstatesdkpskeys.h>
-#include <IR_SOCK.H>
+#include <ir_sock.h>
 
 #include "activerequests.h"
 #include "sysinfoservice.h"
 #include "entitykeys.h"
-#include "SysInfoUtils.h"
+#include "sysinfoutils.h"
 
 using namespace SysInfo;
 _LIT(KDriveSeperator,":\\");

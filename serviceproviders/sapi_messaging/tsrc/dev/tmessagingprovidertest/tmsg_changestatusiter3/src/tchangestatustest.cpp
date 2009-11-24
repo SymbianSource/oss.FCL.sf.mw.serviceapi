@@ -19,7 +19,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "tchangestatustest.h"
 //#include <SAPI_TEST\testprg.h>
 

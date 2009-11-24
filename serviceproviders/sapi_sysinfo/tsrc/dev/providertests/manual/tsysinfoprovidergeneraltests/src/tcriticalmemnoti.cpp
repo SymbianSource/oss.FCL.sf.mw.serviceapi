@@ -17,10 +17,10 @@
 
 
 #include <e32std.h>
-#include <LiwServiceHandler.h>
+#include <liwservicehandler.h>
 
 #include "tsysinfoprovidergeneraltests.h"
-#include "Tcriticalmemnoti.h"
+#include "tcriticalmemnoti.h"
 #include "watchtimer.h"
 
 #include "entitykeys.h"

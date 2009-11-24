@@ -21,13 +21,13 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <EPos_CPosLmTextCriteria.h>
 #include <lbsposition.h> 
-#include <epos_cposlmitemiterator.h> 
-#include <epos_cposlmcategorymanager.h> 
-#include <epos_cposlandmarkdatabase.h> 
-#include "Clmcategoriestest.h"
+#include <EPos_CPosLmItemIterator.h> 
+#include <EPos_CPosLmCategoryManager.h> 
+#include <EPos_CPosLandmarkDatabase.h> 
+#include "clmcategoriestest.h"
 #include "landmarkservice.h"
 #include "clandmarkfilter.h"
 

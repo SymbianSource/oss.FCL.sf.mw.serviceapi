@@ -20,7 +20,7 @@
 #ifndef __CAPPMANAGERSERVICEHANDLER_H
 #define __CAPPMANAGERSERVICEHANDLER_H
 
-#include <Liwserviceifbase.h>
+#include <liwserviceifbase.h>
 
 
 class CAppManagerServiceHandler : public CLiwServiceIfBase

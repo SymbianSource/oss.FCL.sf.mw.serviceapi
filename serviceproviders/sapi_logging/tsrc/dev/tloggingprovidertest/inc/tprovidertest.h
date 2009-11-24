@@ -26,8 +26,8 @@
 #include <TestScripterInternal.h>
 #include <StifTestModule.h>
 
-#include <LiwServiceHandler.h>
-#include <LiwCommon.h>
+#include <liwservicehandler.h>
+#include <liwcommon.h>
 
 
 

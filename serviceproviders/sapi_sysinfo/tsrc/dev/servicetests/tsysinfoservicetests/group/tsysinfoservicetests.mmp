@@ -55,7 +55,7 @@ DEFFILE         tsysinfoservicetests.def
 
 SOURCEPATH      ../src
 SOURCE          tsysinfoservicetests.cpp
-SOURCE          tsysinfoservicetestsBlocks.cpp
+SOURCE          tsysinfoservicetestsblocks.cpp
 SOURCE          tsysinfobatteryasync.cpp
 SOURCE          watchtimer.cpp
 

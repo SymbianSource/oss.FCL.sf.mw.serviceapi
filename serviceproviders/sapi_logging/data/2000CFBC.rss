@@ -16,9 +16,9 @@
 */
 
 
-#include <Eikon.rh>
-#include "ecom/RegistryInfoV2.rh" 
-#include <LiwCommon.hrh>
+#include <eikon.rh>
+#include "ecom/registryinfov2.rh" 
+#include <liwcommon.hrh>
 
 RESOURCE REGISTRY_INFO theInfo
     {

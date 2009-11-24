@@ -19,7 +19,7 @@
 #include <e32math.h>
 #include <liwcommon.h>
 #include <liwgenericparam.h> 
-#include <NumberConversion.h>
+#include <numberconversion.h>
 #include <PtiEngine.h>
 
 #include "errormsgs.h"

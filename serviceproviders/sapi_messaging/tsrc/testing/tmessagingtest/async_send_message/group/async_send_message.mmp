@@ -45,7 +45,7 @@ DEFFILE         async_send_message.def
 
 SOURCEPATH      ../src
 SOURCE          async_send_message.cpp
-SOURCE          async_send_messageBlocks.cpp
+SOURCE          async_send_messageblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

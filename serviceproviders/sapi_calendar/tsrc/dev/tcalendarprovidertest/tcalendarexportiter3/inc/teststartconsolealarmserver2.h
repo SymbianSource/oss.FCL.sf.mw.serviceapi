@@ -21,13 +21,13 @@
 
 #include <calalarm.h>
 #include <caluser.h>
-#include<LiwCommon.h>
-#include<LiwVariant.h>
-#include<LiwServiceHandler.h>
+#include<liwcommon.h>
+#include<liwvariant.h>
+#include<liwservicehandler.h>
 
 #include "calendarconstants.h"
 #include "calendarheader.h"
-#include "EntryAttributes.h"
+#include "entryattributes.h"
 #include "calendarservice.h"
 
 extern void GetGlobalUid( const TDesC& aGlobalUid, TDes8& aOutGlobalUid );

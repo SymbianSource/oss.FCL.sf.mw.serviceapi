@@ -56,7 +56,7 @@ DEFFILE         tcal_providertest.def
 
 SOURCEPATH      ../src
 SOURCE          tcal_providertest.cpp
-SOURCE          tcal_providertestBlocks.cpp
+SOURCE          tcal_providertestblocks.cpp
 SOURCE          notify.cpp
 
 //RESOURCE        resource_file

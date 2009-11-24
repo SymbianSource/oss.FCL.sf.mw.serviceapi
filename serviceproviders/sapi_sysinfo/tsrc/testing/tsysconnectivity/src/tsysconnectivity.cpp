@@ -19,7 +19,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "tsysconnectivity.h"
 
 // EXTERNAL DATA STRUCTURES

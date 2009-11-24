@@ -21,11 +21,11 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <msvids.h> 
 ////#include <senduiconsts.h>
-#include <LiwCommon.h>
-#include<LiwServiceHandler.h>
+#include <liwcommon.h>
+#include<liwservicehandler.h>
 
 #include "messagingservicehandler.h"
 

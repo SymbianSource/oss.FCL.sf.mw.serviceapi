@@ -21,8 +21,8 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include "tContact_delete.h"
+#include <StifTestInterface.h>
+#include "tcontact_delete.h"
 
 // EXTERNAL DATA STRUCTURES
 //extern  ?external_data;

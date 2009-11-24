@@ -17,7 +17,7 @@
 
 
 #include <e32std.h>
-#include <LiwServiceHandler.h>
+#include <liwservicehandler.h>
 #include <StifLogger.h>
 
 #include "tsysinfoprovidertests.h"

@@ -16,10 +16,10 @@
 */
 
 
-#include <epos_cposlandmarkdatabase.h>
-#include <epos_cposlmcategorymanager.h>
-#include <epos_cposlandmarksearch.h>
-#include <epos_TposLmDatabaseSettings.h>
+#include <EPos_CPosLandmarkDatabase.h>
+#include <EPos_CPosLmCategoryManager.h>
+#include <EPos_CPosLandmarkSearch.h>
+#include <EPos_TPosLmDatabaseSettings.h>
 #include "clandmarkmanagehandlers.h"
 
 //class CLandmarkManageHandlers

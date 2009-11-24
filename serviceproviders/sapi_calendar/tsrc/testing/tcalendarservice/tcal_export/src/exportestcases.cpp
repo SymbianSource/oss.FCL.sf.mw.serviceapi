@@ -32,7 +32,7 @@
 #include "calendarservice.h"
 
     
-#include<ASCliClientUtils.h>
+#include<ascliclientutils.h>
 
 _LIT(KCalName                 ,"c:Calendar");
 

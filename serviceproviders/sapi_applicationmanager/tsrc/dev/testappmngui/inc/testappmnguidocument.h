@@ -20,7 +20,7 @@
 #define __TESTAPPMNGUI_DOCUMENT_H__
 
 
-#include <akndoc.h>
+#include <AknDoc.h>
 
 // Forward references
 class CtestappmnguiAppUi;

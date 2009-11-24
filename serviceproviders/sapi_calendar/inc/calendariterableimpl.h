@@ -19,9 +19,9 @@
 #ifndef __CALENDARITERABLEIMPL_H
 #define __CALENDARITERABLEIMPL_H
 
-#include <LiwCommon.h>
-#include <LiwServiceIfBase.h>
-#include <LiwBufferExtension.h>
+#include <liwcommon.h>
+#include <liwserviceifbase.h>
+#include <liwbufferextension.h>
 
 #include <calentry.h>
 #include <calinstance.h>

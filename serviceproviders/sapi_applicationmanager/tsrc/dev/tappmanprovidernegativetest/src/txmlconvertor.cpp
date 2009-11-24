@@ -20,12 +20,12 @@
 // INCLUDE FILES
 #include <e32svr.h>
 
-#include <LiwServiceHandler.h>
-#include <Liwbufferextension.h>
+#include <liwservicehandler.h>
+#include <liwbufferextension.h>
 #include <gmxmldocument.h>
 #include <gmxmlelement.h>
 #include <gmxmlcharacterdata.h>
-#include <charconv.H>
+#include <charconv.h>
 #include <gmxmltext.h>
 
 #include "txmlconvertor.h"

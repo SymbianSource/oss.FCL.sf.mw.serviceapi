@@ -21,7 +21,7 @@
 
 
 
-#include <Liwcommon.h>
+#include <liwcommon.h>
 #include  "e32base.h" 
 
 

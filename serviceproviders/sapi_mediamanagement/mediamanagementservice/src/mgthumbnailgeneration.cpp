@@ -20,9 +20,9 @@
 #include<e32cmn.h>
 
 #include<f32file.h>
-#include<APGCLI.H>
-#include<APMREC.H> // For TDataRecognitionResult
-#include<APMSTD.H> 
+#include<apgcli.h>
+#include<apmrec.h> // For TDataRecognitionResult
+#include<apmstd.h> 
 #include<thumbnailmanager.h>
 #include"mgthumbnailgeneration.h"
 

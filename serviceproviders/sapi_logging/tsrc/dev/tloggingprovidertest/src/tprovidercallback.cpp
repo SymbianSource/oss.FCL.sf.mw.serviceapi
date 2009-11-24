@@ -18,11 +18,11 @@
 #include <e32svr.h>
 #include <e32std.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <logcli.h>
 #include <logwrap.h>
-#include <LiwServiceHandler.h>
-#include <LiwCommon.h>
+#include <liwservicehandler.h>
+#include <liwcommon.h>
 
 #include "tprovidertest.h"
 

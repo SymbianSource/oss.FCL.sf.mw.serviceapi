@@ -18,7 +18,7 @@
 
 
 #include <e32base.h>
-#include <mclfitem.h>
+#include <MCLFItem.h>
  
 #include "mgmediaitemfactory.h"
 #include "mglinkfile.h"

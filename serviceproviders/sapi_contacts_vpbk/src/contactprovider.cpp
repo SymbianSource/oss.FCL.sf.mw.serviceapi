@@ -16,7 +16,7 @@
 */
 
 
-#include <ecom/ImplementationProxy.h>
+#include <ecom/implementationproxy.h>
 #include "contactprovider.h"
 #include "contactinterface.h"
 #include "../../inc/serviceerrno.h"

@@ -29,7 +29,7 @@
 #include "calimptestcases.h"
 #include "teststartconsolealarmserver.h"    
     
-#include<ASCliClientUtils.h>
+#include<ascliclientutils.h>
 
 
 _LIT(KCalName              ,"c:Calendar");

@@ -12,12 +12,12 @@
 * Contributors:
 *
 * Description:   contains test case implementation for CancelOngoingService location-SAPI
-*  V	ersion     : %version: 5 % << Don't touch! Updated by Synergy at check-out.
+*  V	ersion     : %version: 6 % << Don't touch! Updated by Synergy at check-out.
 *
 */
 
 
-#include "TLocTest.h"
+#include "tloctest.h"
 #include "locationservice.h"
 #include <f32file.h>
 #include <e32const.h>
@@ -30,12 +30,12 @@ _LIT(LogFileName , "C:\\Notificationscan.txt") ;
 _LIT(KRequestor,"testapp");
 
 // INCLUDE FILES
-#include "TLocTest.h"
+#include "tloctest.h"
 
 #include <e32svr.h>
 #include <StifParser.h>
 
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 
 //#include <S60LocCoreImpl.h>
 #include <AiwCommon.h>

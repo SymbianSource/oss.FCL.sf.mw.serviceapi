@@ -17,7 +17,7 @@
 */
 
 #include <liwserviceifbase.h>
-#include <LiwCommon.h>
+#include <liwcommon.h>
 #include "locationinterface.h"
 #include "locationservice.h"
 #include "locationcb.h"

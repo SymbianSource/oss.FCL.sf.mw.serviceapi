@@ -25,7 +25,7 @@
 #include <StifLogger.h>
 #include <TestScripterInternal.h>
 #include <StifTestModule.h>
-#include <FeatMgr.h>
+#include <featmgr.h>
 #include "sysinfoservice.h"
 #include "sysinfo.h"
 

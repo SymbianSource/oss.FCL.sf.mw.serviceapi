@@ -33,7 +33,7 @@
 #include "calendarheader.h"
 #include "calendarservice.h"
 #include "entryattributes.h"
-#include<ASCliClientUtils.h>
+#include<ascliclientutils.h>
 
 #include "teststartconsolealarmserver.h"
 

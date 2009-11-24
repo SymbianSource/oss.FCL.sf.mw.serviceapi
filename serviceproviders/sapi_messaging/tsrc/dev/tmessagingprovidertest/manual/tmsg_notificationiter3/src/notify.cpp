@@ -17,9 +17,9 @@
 
 
 #include "messaginginterface.h"
-#include<LiwCommon.h>
-#include<LiwVariant.h>
-#include<LiwServiceHandler.h>
+#include<liwcommon.h>
+#include<liwvariant.h>
+#include<liwservicehandler.h>
 
 #include"notify.h"
 

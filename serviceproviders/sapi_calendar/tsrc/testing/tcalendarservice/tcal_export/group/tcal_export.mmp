@@ -55,7 +55,7 @@ DEFFILE         tcal_export.def
 
 SOURCEPATH      ../src
 SOURCE          tcal_export.cpp
-SOURCE          tcal_exportBlocks.cpp
+SOURCE          tcal_exportblocks.cpp
 SOURCE          exportestcases.cpp
 
 //RESOURCE        resource_file

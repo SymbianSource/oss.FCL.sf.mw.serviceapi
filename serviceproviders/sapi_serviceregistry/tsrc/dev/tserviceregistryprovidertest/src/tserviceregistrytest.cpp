@@ -18,7 +18,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "tserviceregistrytest.h"
 #include <SettingServerClient.h>
 

@@ -19,8 +19,8 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
-#include "TLmDatabasesTest.h"
+#include <StifTestInterface.h>
+#include "tlmdatabasestest.h"
 
 
 // ============================ MEMBER FUNCTIONS ===============================

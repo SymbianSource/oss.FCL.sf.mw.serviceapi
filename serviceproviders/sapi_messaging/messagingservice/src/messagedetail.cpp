@@ -21,14 +21,14 @@
 #include <badesca.h>
 #include <msvapi.h>
 
-#include <CMsvAttachment.h>
-#include <MMsvAttachmentManager.h>
+#include <cmsvattachment.h>
+#include <mmsvattachmentmanager.h>
 #include <txtrich.h>
-#include <MsvUids.h>
-#include <MTCLREG.H>
+#include <msvuids.h>
+#include <mtclreg.h>
 #include <smsclnt.h>
 #include <smuthdr.h>
-#include <senduiconsts.h>
+#include <SendUiConsts.h>
 #include <cmsvrecipientlist.h>
 #include <mmsclient.h>
 

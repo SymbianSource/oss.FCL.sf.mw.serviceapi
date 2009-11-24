@@ -20,14 +20,14 @@
 #include <f32file.h>
 #include <StifParser.h>
 #include <e32std.h>
-#include <Stiftestinterface.h>
-#include <LiwGenericParam.h>
-#include <LiwServiceHandler.h>
-#include <epos_cposlandmarkdatabase.h> 
+#include <StifTestInterface.h>
+#include <liwgenericparam.h>
+#include <liwservicehandler.h>
+#include <EPos_CPosLandmarkDatabase.h> 
 #include <EPos_CPosLmDatabaseManager.h> 
-#include <epos_cposlandmark.h> 
-#include <epos_cposlandmarkencoder.h> 
-#include <epos_cposlmcategorymanager.h> 
+#include <EPos_CPosLandmark.h> 
+#include <EPos_CPosLandmarkEncoder.h> 
+#include <EPos_CPosLmCategoryManager.h> 
 #include "tlmprovidercategorytests.h"
 #include "landmarkliwparams.hrh"
 

@@ -22,11 +22,11 @@
 #include <e32svr.h>
 #include <StifParser.h>
 //#include <SAPI_TEST\testprg.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 
 
-#include <BADESCA.H>
-#include<LiwServiceHandler.h>
+#include <badesca.h>
+#include<liwservicehandler.h>
 
 
 

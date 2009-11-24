@@ -21,14 +21,14 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <msvids.h> 
 ////#include <senduiconsts.h>
-#include <LiwCommon.h>
+#include <liwcommon.h>
 #include "messaginginterface.h"
-#include<LiwServiceHandler.h>
+#include<liwservicehandler.h>
 
-#include "TDeleteMessageTest.h"
+#include "tdeletemessagetest.h"
 
 // -----------------------------------------------------------------------------
 // CTDeleteMessageTest::Delete

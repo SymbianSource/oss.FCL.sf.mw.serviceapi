@@ -15,15 +15,15 @@
 *
 */
 
-#include <epos_cposlandmarkparser.h> 
-#include <epos_cposlandmarkencoder.h> 
+#include <EPos_CPosLandmarkParser.h> 
+#include <EPos_CPosLandmarkEncoder.h> 
 #include <lbsposition.h> 
 #include <EPos_CPosLmTextCriteria.h>
-#include <epos_cposlandmarkdatabase.h>
-#include <epos_cposlmitemiterator.h> 
+#include <EPos_CPosLandmarkDatabase.h>
+#include <EPos_CPosLmItemIterator.h> 
 #include "clandmarkfilter.h"
 #include "landmarkservice.h"
-#include "CLandmarkAsyncTests.h"
+#include "clandmarkasynctests.h"
 
 _LIT(KLmName1, "lm1");
 _LIT(KLmName2, "lm2");

@@ -22,11 +22,11 @@
 #include <e32base.h>
 ////#include <senduiconsts.h>
 #include "messaginginterface.h"
-#include <BADESCA.H>
+#include <badesca.h>
 #include "sendmessage.h"
 #include <f32file.h>
 #include "messageheader.h"
-#include<LiwServiceHandler.h>
+#include<liwservicehandler.h>
 #ifdef MAIN
 #define sendmessage_test1 main
 #endif

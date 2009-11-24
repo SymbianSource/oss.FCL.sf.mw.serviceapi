@@ -50,11 +50,11 @@ CAPABILITY      ALL -TCB
 #endif
 
 //TARGETPATH      ?target_path
-DEFFILE         tContact_import.def
+DEFFILE         tcontact_import.def
 
 SOURCEPATH      ../src
-SOURCE          tContact_import.cpp
-SOURCE          tContact_importBlocks.cpp
+SOURCE          tcontact_import.cpp
+SOURCE          tcontact_importblocks.cpp
 
 EPOCALLOWDLLDATA
 

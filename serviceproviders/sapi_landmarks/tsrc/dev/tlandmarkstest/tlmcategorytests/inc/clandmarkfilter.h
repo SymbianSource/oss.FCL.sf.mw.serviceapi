@@ -22,7 +22,7 @@
 
 // INCLUDES
 #include <e32base.h>
-#include <epos_cposlmcategorymanager.h>
+#include <EPos_CPosLmCategoryManager.h>
 
 //FORWARD DECLARARTION
 class CPosLmSearchCriteria;

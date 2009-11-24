@@ -15,8 +15,8 @@
 *
 */
 
-#include <Liwcommon.h>
-#include<LiwServiceHandler.h>
+#include <liwcommon.h>
+#include<liwservicehandler.h>
 
 #include "tsysinfoprovidergeneraltests.h"
 #include "sysinfointerface.h"

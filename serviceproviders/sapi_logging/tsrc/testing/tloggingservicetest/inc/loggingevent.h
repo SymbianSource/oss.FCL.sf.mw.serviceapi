@@ -20,7 +20,7 @@
 #define SAPIEVENT_H
 
 #include <logwrap.h>
-#include <CNTDEF.H>
+#include <cntdef.h>
 
 /**
 * CLogsEvent:this is a wrapper class for the symbian CLogEvent class.

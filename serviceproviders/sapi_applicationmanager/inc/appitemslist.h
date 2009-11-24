@@ -19,7 +19,7 @@
 #ifndef __CAPPITEMSLIST_H
 #define __CAPPITEMSLIST_H
 
-#include <Liwgenericparam.h> 
+#include <liwgenericparam.h> 
 
 class MIterator;
 

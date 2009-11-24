@@ -43,7 +43,7 @@ DEFFILE         get_header_message.def
 
 SOURCEPATH      ../src
 SOURCE          get_header_message.cpp
-SOURCE          get_header_messageBlocks.cpp
+SOURCE          get_header_messageblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

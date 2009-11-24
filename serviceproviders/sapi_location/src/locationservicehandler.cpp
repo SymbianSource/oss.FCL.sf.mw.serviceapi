@@ -18,8 +18,8 @@
 
 
 #include <liwserviceifbase.h>
-#include <LiwCommon.h>
-#include <ecom/ImplementationProxy.h>
+#include <liwcommon.h>
+#include <ecom/implementationproxy.h>
 #include "locationservicehandler.h"
 #include "locationcb.h"
 #include "locationinterface.h"

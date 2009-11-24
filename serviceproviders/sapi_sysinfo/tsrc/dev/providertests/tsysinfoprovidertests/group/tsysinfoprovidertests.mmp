@@ -49,7 +49,7 @@ DEFFILE         tsysinfoprovidertests.def
 
 SOURCEPATH      ../src
 SOURCE          tsysinfoprovidertests.cpp
-SOURCE          tsysinfoprovidertestsBlocks.cpp
+SOURCE          tsysinfoprovidertestsblocks.cpp
 SOURCE          tuseractivitynotifier.cpp
 SOURCE	        watchtimer.cpp
 SOURCE          tautolocknotifier.cpp

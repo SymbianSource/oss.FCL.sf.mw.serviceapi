@@ -19,8 +19,8 @@
 // [INCLUDE FILES] - do not remove
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include <LiwServiceHandler.h>
+#include <StifTestInterface.h>
+#include <liwservicehandler.h>
 
 #include "tmediaprovidertesting.h"
 #include "tmediaprovidertesting.hrh"

@@ -17,7 +17,7 @@
 
 
 
-#include <mCLFitem.h>
+#include <MCLFItem.h>
 
 #include <liwgenericparam.h> 
 #include "mgmusicfile.h"

@@ -23,7 +23,7 @@
 
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <AiwCommon.h>
 #include <lbs.h>
 

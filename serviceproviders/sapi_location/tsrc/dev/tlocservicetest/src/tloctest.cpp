@@ -20,8 +20,8 @@
 
 // INCLUDE FILES
 
-#include "TLocTest.h"
-#include <Stiftestinterface.h>
+#include "tloctest.h"
+#include <StifTestInterface.h>
 
 
 

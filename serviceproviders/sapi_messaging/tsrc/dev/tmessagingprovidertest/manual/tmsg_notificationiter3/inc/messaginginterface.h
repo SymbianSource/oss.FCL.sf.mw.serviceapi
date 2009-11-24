@@ -20,9 +20,9 @@
 #ifndef __MESSAGINGINTERFACE_H
 #define __MESSAGINGINTERFACE_H
 
-#include <LiwCommon.h>
-#include <LiwServiceIfBase.h>
-#include <LiwBufferExtension.h>
+#include <liwcommon.h>
+#include <liwserviceifbase.h>
+#include <liwbufferextension.h>
 
 #include "messageheader.h" 
 

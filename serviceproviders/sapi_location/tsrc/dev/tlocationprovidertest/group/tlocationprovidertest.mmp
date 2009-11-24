@@ -32,11 +32,11 @@ CAPABILITY      ALL -TCB
 #endif
 
 //TARGETPATH      ?target_path
-DEFFILE         Tcomplugin.def
+DEFFILE         tcomplugin.def
 
 SOURCEPATH      ../src
-SOURCE          Tcomplugin.cpp
-SOURCE          TcompluginBlocks.cpp
+SOURCE          tcomplugin.cpp
+SOURCE          tcompluginblocks.cpp
 SOURCE			ttrace.cpp
 SOURCE 			tgetlocationasync.cpp
 SOURCE			tservicefailedtest.cpp

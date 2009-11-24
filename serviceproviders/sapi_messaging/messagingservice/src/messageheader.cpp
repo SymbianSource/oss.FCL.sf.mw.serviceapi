@@ -16,8 +16,8 @@
 */
 
 
-#include <CMsvAttachment.h>
-#include <senduiconsts.h>
+#include <cmsvattachment.h>
+#include <SendUiConsts.h>
 
 #include "messageheader.h"
 

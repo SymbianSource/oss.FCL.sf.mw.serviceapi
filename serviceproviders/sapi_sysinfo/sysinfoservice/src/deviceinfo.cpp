@@ -16,10 +16,10 @@
 */
 
 #include <hal.h>
-#include <SysUtil.h>
+#include <sysutil.h>
 
 #include "sysinfoservice.h"
-#include "SysInfoUtils.h"
+#include "sysinfoutils.h"
 #include "entitykeys.h"
 #include "deviceinfo.h"
 

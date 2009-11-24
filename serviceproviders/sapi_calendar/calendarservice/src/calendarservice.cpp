@@ -28,7 +28,7 @@
 #include "calendarconstants.h"
 #include "entryattributes.h"
 #include "calendarservice.h"
-#include "Calendarnotify.h"
+#include "calendarnotify.h"
 #include "calendardeleteentry.h"
 #include "calendarimport.h"
 #include "calendarexport.h"

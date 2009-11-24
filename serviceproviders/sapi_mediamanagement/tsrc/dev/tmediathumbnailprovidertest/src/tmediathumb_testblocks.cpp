@@ -20,9 +20,9 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include <LiwServiceHandler.h>
-#include <Liwbufferextension.h>
+#include <StifTestInterface.h>
+#include <liwservicehandler.h>
+#include <liwbufferextension.h>
 #include <f32file.h>
 #include <e32des16.h>
 #include <e32base.h>

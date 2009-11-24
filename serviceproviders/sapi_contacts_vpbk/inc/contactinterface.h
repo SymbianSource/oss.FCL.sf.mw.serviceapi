@@ -19,7 +19,7 @@
 #define C_CCONTACTINTERFACE_H
 
 //System includes
-#include <LiwVariant.h>
+#include <liwvariant.h>
 
 // User Includes
 #include "contactinterface.hrh"

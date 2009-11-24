@@ -23,7 +23,7 @@
 
 #include "messagingservice.h"
 #include "sendmessage.h"
-#include<CMsvAttachment.h>
+#include<cmsvattachment.h>
 
 #ifdef MAIN
 #define sendmessage_test7 main

@@ -23,6 +23,6 @@ PRJ_TESTEXPORTS
 ../conf/tlandmarkprovider.cfg	/epoc32/WINSCW/C/TestFramework/tlandmarkprovider.cfg
 PRJ_TESTMMPFILES
 
-TLandmarkProvider.mmp
+tlandmarkprovider.mmp
 
 //  End of File

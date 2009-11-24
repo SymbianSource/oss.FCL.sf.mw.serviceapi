@@ -49,11 +49,11 @@ CAPABILITY      ALL -TCB
 #endif
 
 //TARGETPATH      ?target_path
-DEFFILE         tContact_export.def
+DEFFILE         tcontact_export.def
 
 SOURCEPATH      ../src
-SOURCE          tContact_export.cpp
-SOURCE          tContact_exportBlocks.cpp
+SOURCE          tcontact_export.cpp
+SOURCE          tcontact_exportblocks.cpp
 
 EPOCALLOWDLLDATA
 

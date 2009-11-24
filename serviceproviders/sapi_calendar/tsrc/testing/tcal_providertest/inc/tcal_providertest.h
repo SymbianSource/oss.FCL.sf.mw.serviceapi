@@ -26,12 +26,12 @@
 #include <TestScripterInternal.h>
 #include <StifTestModule.h>
 
-#include <LiwCommon.h>
-#include <LiwVariant.h>
-#include <LiwServiceHandler.h>
+#include <liwcommon.h>
+#include <liwvariant.h>
+#include <liwservicehandler.h>
 #include "calendarheader.h"
 #include "calendarconstants.h"
-#include <BADESCA.H>
+#include <badesca.h>
 // CONSTANTS
 //const ?type ?constant_var = ?constant;
 

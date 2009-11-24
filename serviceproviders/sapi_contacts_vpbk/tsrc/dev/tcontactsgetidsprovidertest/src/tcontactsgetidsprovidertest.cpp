@@ -20,7 +20,7 @@
 
 #include "tcontactsgetidsprovidertest.h"	// Ctcontactsgetidsprovidertest
 #include "tcontactsgetidsprovidertest.hrh"
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <SettingServerClient.h>
 //  Member Functions
 

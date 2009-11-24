@@ -20,7 +20,7 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "appmanagertest.h"
 #include "appmanagerservice.h"
 #include "appmanagercommon.h"

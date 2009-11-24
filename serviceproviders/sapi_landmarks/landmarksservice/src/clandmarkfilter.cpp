@@ -16,10 +16,10 @@
 */
 
 
-#include <epos_cposlandmarksearch.h>
-#include <epos_cposlmcatnamecriteria.h>
-#include <epos_cposlmtextcriteria.h>
-#include <epos_cposlandmark.h>
+#include <EPos_CPosLandmarkSearch.h>
+#include <EPos_CPosLmCatNameCriteria.h>
+#include <EPos_CPosLmTextCriteria.h>
+#include <EPos_CPosLandmark.h>
 #include "clandmarkfilter.h"
 
 _LIT(KGetAll,"*");

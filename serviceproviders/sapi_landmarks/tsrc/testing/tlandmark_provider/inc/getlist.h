@@ -23,7 +23,7 @@
 #include <liwcommon.h>
 #include <e32base.h>
 #include <f32file.h>
-#include <BADESCA.H>
+#include <badesca.h>
 
 class CLiwServiceHandler;
 class CLiwGenericParamList;

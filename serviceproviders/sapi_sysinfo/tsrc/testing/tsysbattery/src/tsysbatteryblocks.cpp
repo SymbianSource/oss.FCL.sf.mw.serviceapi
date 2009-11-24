@@ -21,7 +21,7 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "tsysbattery.h"
 #include "tsysbatterystrengthasync.h"
 #include "tsysbatterynot.h"

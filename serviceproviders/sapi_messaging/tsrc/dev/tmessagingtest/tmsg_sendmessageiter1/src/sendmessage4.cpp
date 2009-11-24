@@ -21,7 +21,7 @@
 
 #include<e32base.h>
 #include <msvapi.h>
-#include <CMsvAttachment.h>
+#include <cmsvattachment.h>
 
 #include "messagingservice.h"
 

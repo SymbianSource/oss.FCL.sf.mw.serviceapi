@@ -18,7 +18,7 @@
 
 #include "tsysinfogeneraltests.h"
 #include "sysinfoservice.h"
-#include "Tautolocknotifier.h"
+#include "tautolocknotifier.h"
 #include "entitykeys.h"
 #include "watchtimer.h"
 #include <e32std.h>

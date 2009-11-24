@@ -17,7 +17,7 @@
 
 
 
-#include <ecom/ImplementationProxy.h>
+#include <ecom/implementationproxy.h>
 
 #include "calendarinterface.h"
 #include "calendarservicehandler.h"

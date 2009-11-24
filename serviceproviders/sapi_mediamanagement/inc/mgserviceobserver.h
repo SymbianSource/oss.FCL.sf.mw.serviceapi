@@ -24,6 +24,7 @@
 
 class CLiwGenericParamList;
 class MCLFItemListModel;
+class CClfOperationObserver;
 
 
 
@@ -70,6 +71,7 @@ NONSHARABLE_CLASS( CMgServiceObserver ): public CBase, public MMgOperationObserv
         */
         virtual void MgNotifyL(TUint  aTransactionID, 
                                MCLFItemListModel* aListModel,
+                               CClfOperationObserver* aOperationObserver,
         					   TMgOperationEvent& aOperationEvent , 
                                const TInt& aError );
 

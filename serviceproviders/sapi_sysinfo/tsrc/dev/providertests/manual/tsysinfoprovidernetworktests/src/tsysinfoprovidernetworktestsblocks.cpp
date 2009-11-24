@@ -21,10 +21,10 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <f32file.h>
-#include <Liwcommon.h>
-#include<LiwServiceHandler.h>
+#include <liwcommon.h>
+#include<liwservicehandler.h>
 #include "../../../inc/serviceerrno.h"
 
 #include "tsysinfoprovidernetworktests.h"

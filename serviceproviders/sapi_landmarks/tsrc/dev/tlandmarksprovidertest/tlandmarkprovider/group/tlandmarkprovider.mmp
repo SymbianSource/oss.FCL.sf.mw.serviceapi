@@ -32,11 +32,11 @@ CAPABILITY      ALL -TCB
 #endif
 
 //TARGETPATH      ?target_path
-DEFFILE         TLandmarkProvider.def
+DEFFILE         tlandmarkprovider.def
 
 SOURCEPATH      ../src
-SOURCE          TLandmarkProvider.cpp
-SOURCE          TLandmarkProviderBlocks.cpp
+SOURCE          tlandmarkprovider.cpp
+SOURCE          tlandmarkproviderblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

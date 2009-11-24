@@ -17,7 +17,7 @@
 */
 
 
-#include <ecom\implementationproxy.h>
+#include <ecom/implementationproxy.h>
 #include "serviceregistryservicehandler.h"
 // Including a copy of common constants for this compilation unit
 #include "serviceregistryservice.hrh"

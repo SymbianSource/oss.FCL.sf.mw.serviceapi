@@ -33,7 +33,7 @@ DEFFILE         tappmgrtest.def
 
 SOURCEPATH      ../src
 SOURCE          tappmgrtest.cpp
-SOURCE          tappmgr_testBlocks.cpp
+SOURCE          tappmgr_testblocks.cpp
 SOURCE          testappobserver.cpp
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

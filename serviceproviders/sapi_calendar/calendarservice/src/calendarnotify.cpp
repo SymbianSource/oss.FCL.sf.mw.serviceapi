@@ -21,8 +21,8 @@
 #include <calsession.h>
 
 
-#include "Calendarheader.h"
-#include "Calendarnotify.h"
+#include "calendarheader.h"
+#include "calendarnotify.h"
 #include "asyncreqobserver.h"
 
 

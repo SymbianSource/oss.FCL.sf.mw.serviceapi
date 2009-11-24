@@ -22,13 +22,13 @@
 #include <e32svr.h>
 #include <StifParser.h>
 //#include <SAPI_TEST\testprg.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <msvids.h> 
 #include <msvapi.h> 
 #include "messageheader.h"
 #include "messagingservice.h"
 ////#include <senduiconsts.h>
-#include "TDeleteMessageTest.h"
+#include "tdeletemessagetest.h"
 
 
 

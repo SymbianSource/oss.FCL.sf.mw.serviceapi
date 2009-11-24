@@ -26,7 +26,7 @@
 class CAppManagerService;
 class CAppManagerServiceObserver;
 
-#include <Liwvariant.h>
+#include <liwvariant.h>
 // CLASS DECLARATION
 
 

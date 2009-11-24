@@ -17,8 +17,8 @@
 
 #include <e32base.h>
 ////#include <senduiconsts.h>
-#include <BADESCA.H>
-#include<LiwCommon.h>
+#include <badesca.h>
+#include<liwcommon.h>
 #include <f32file.h>
 
 class CLiwServiceHandler;

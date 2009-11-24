@@ -20,7 +20,7 @@
 
 #include <e32base.h>
 #include "mlandmarkobserver.h"
-#include "Clmlandmarkstest.h"
+#include "clmlandmarkstest.h"
 
 class CLandmarkService;
 class CPosLmItemIterator;

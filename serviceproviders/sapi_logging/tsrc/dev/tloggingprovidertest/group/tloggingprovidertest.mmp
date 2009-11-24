@@ -55,14 +55,14 @@ DEFFILE         tprovidertest.def
 
 SOURCEPATH      ../src
 SOURCE          tprovidertest.cpp
-SOURCE          tprovidertestBlocks.cpp
+SOURCE          tprovidertestblocks.cpp
 SOURCE          taddtest1.cpp
 SOURCE          tlogresults.cpp
 SOURCE          teventdetails.cpp
-SOURCE          taddgenericL.cpp
+SOURCE          taddgenericl.cpp
 SOURCE          tprovidercallback.cpp
 SOURCE 			tdeletetest.cpp
-SOURCE          tgetlistgenericL.cpp
+SOURCE          tgetlistgenericl.cpp
 SOURCE          tfilterdetails.cpp
 SOURCE			tgetlistgenericpos.cpp
 

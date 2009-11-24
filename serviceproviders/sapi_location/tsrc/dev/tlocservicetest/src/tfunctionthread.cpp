@@ -16,7 +16,7 @@
 */
 
 class CGetLoc ; //Forward declaration
-#include "TLocTest.h"
+#include "tloctest.h"
 #include "locationservice.h"
 #include <f32file.h>
 #include <e32const.h>

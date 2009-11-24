@@ -18,8 +18,8 @@
 
 #include<e32std.h>
 
-#include<ThumbnailData.h>
-#include<FBS.H>
+#include<thumbnaildata.h>
+#include<fbs.h>
 #include"mgthumbobserver.h"
 #include"mgthumbnailobserver.h"
 

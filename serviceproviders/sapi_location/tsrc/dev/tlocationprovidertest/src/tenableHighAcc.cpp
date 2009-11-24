@@ -22,10 +22,10 @@
 
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include <LbsRequestor.h>
-#include <LiwServiceHandler.h>
-#include <LiwCommon.h>
+#include <StifTestInterface.h>
+#include <lbsrequestor.h>
+#include <liwservicehandler.h>
+#include <liwcommon.h>
 
 
 #include "tcomplugin.h"

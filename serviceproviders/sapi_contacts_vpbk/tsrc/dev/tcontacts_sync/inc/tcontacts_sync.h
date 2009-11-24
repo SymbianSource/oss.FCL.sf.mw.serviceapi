@@ -32,8 +32,8 @@
 #include <MVPbkContactFindObserver.h>
 #include <MVPbkSingleContactOperationObserver.h>
 #include <MVPbkBatchOperationObserver.h>
-#include <S32MEM.H>
-#include <S32FILE.H>
+#include <s32mem.h>
+#include <s32file.h>
 
 #include "contactcallback.h"
 

@@ -20,8 +20,8 @@
 #include <aknnotewrappers.h> 
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include <LiwServiceHandler.h>
+#include <StifTestInterface.h>
+#include <liwservicehandler.h>
 #include "appmanagerservice.h"
 #include "appmanagercommon.h"
 #include <f32file.h>
@@ -31,8 +31,8 @@
 #include "appmanagerservice.h"
 
 #include "testappmngui.pan"
-#include "testappmnguiAppUi.h"
-#include "testappmnguiAppView.h"
+#include "testappmnguiappui.h"
+#include "testappmnguiappview.h"
 #include "testappmngui.hrh"
 #include  "testappobserver.h"
 

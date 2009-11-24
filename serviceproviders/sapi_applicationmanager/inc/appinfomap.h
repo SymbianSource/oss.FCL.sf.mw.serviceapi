@@ -19,7 +19,7 @@
 #ifndef __CAPPINFOMAP_H
 #define __CAPPINFOMAP_H
 
-#include <Liwgenericparam.h> 
+#include <liwgenericparam.h> 
 
 class MInfoMap;
 

@@ -25,7 +25,7 @@
 #define MGIMAGERESOLUTION_H_
 
 #include<e32base.h>
-#include<ImageConversion.h>
+#include<imageconversion.h>
 #include<icl/imagedata.h>
 #include<f32file.h>
 

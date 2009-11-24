@@ -21,8 +21,8 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include "tContact_organise.h"
+#include <StifTestInterface.h>
+#include "tcontact_organise.h"
 
 
  TInt handleiter_cnt;

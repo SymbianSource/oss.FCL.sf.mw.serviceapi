@@ -24,7 +24,7 @@
 #include <f32file.h> //for RFile and Rfs
 #include <StifParser.h>
 //#include <SAPI_TEST\testprg.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "calendarheader.h"
 #include "calendarservice.h"
 #include <calentry.h>//for CCalEntry

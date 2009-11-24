@@ -18,10 +18,10 @@
 
 #include <etel.h>
 #include <etelmm.h>
-#include <MmTsy_names.h>
+#include <mmtsy_names.h>
 #include <centralrepository.h>
 
-#include "SysInfoUtils.h"
+#include "sysinfoutils.h"
 
 // ---------------------------------------------------------------------------
 // RPhoneInstance::Connect

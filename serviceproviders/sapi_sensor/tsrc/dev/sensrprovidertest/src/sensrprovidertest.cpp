@@ -19,9 +19,9 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
-#include <Liwcommon.h>
-#include <Liwservicehandler.h>
+#include <StifTestInterface.h>
+#include <liwcommon.h>
+#include <liwservicehandler.h>
  
 #include "sensrprovidertest.h"
 

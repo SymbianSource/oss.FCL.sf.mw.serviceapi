@@ -22,7 +22,7 @@
 #include <e32svr.h>
 #include <e32std.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <logcli.h>
 #include <logwrap.h>
 

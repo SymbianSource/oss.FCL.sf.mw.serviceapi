@@ -18,7 +18,7 @@
 #ifndef C_CSENSORINTERFACE_H
 #define C_CSENSORINTERFACE_H
 
-#include <LiwVariant.h>
+#include <liwvariant.h>
 #include <utf.h>
 
 // User Includes

@@ -18,13 +18,13 @@
 
 
 
-#include "../tContact_add/group/bld.inf"
-#include "../tContact_delete/group/bld.inf"
-#include "../tContact_edit/group/bld.inf"
-#include "../tContact_import/group/bld.inf"
-#include "../tContact_export/group/bld.inf"
-#include "../tContact_getlist/group/bld.inf"
-#include "../tContact_organise/group/bld.inf"
+#include "../tcontact_add/group/bld.inf"
+#include "../tcontact_delete/group/bld.inf"
+#include "../tcontact_edit/group/bld.inf"
+#include "../tcontact_import/group/bld.inf"
+#include "../tcontact_export/group/bld.inf"
+#include "../tcontact_getlist/group/bld.inf"
+#include "../tcontact_organise/group/bld.inf"
 #include "../tcontact_getIds/group/bld.inf"
 
 //  End of File

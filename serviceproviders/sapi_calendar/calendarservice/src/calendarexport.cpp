@@ -29,7 +29,7 @@
 #include "calendarheader.h"
 #include "calendarconstants.h"
 #include "asyncreqobserver.h"
-#include "CalendarExport.h"
+#include "calendarexport.h"
 
 
 void CleanupCCalEntryArray(TAny* aPointer);

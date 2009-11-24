@@ -21,14 +21,14 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "tcal_providertest.h"
-#include <LiwCommon.h>
-#include <LiwVariant.h>
-#include <LiwServiceHandler.h>
+#include <liwcommon.h>
+#include <liwvariant.h>
+#include <liwservicehandler.h>
 #include "calendarheader.h"
 #include "calendarconstants.h"
-#include <BADESCA.H>
+#include <badesca.h>
 #include "notify.h"
 //#include <SendUiConsts.h>
 #include "messaginginterface.h"

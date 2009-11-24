@@ -19,9 +19,9 @@
 #ifndef __CALENDARCALLBACK_H
 #define __CALENDARCALLBACK_H
 
-#include <LiwCommon.h>
-#include <LiwServiceIfBase.h>
-#include <LiwBufferExtension.h>
+#include <liwcommon.h>
+#include <liwserviceifbase.h>
+#include <liwbufferextension.h>
 
 #include <calchangecallback.h>
 

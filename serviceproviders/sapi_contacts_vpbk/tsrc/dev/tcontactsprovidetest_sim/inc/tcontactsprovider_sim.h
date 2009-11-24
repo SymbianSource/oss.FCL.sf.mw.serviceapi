@@ -25,9 +25,9 @@
 #include <f32file.h>
 
 
-#include <LiwCommon.h>
-#include <LiwBufferExtension.h>
-#include <LiwServiceHandler.h>
+#include <liwcommon.h>
+#include <liwbufferextension.h>
+#include <liwservicehandler.h>
 
 
 

@@ -16,14 +16,14 @@
 */
 
 
-#include <epos_hposlmdatabaseinfo.h>
-#include <epos_cposlmdatabasemanager.h>
-#include <epos_cposlandmarkparser.h>
-#include <epos_cposlandmarkencoder.h>
-#include <epos_cposlmitemiterator.h>
-#include <epos_cposlandmarkdatabase.h>
-#include <epos_cposlandmarksearch.h>
-#include <epos_cposlmcategorymanager.h>
+#include <EPos_HPosLmDatabaseInfo.h>
+#include <EPos_CPosLmDatabaseManager.h>
+#include <EPos_CPosLandmarkParser.h>
+#include <EPos_CPosLandmarkEncoder.h>
+#include <EPos_CPosLmItemIterator.h>
+#include <EPos_CPosLandmarkDatabase.h>
+#include <EPos_CPosLandmarkSearch.h>
+#include <EPos_CPosLmCategoryManager.h>
 #include "landmarkservice.h"
 #include "clandmarkcmdgetcategories.h"
 #include "clandmarkcmdgetlandmarks.h"

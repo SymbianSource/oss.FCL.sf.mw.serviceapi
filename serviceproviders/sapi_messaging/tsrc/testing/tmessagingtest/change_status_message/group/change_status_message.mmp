@@ -44,7 +44,7 @@ DEFFILE         change_status_message.def
 
 SOURCEPATH      ../src
 SOURCE          change_status_message.cpp
-SOURCE          change_status_messageBlocks.cpp
+SOURCE          change_status_messageblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

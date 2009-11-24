@@ -37,7 +37,7 @@ DEFFILE         tlmcategorytests.def
 
 SOURCEPATH      ../src
 SOURCE          clmcategoriestest.cpp
-SOURCE          clmcategoriestestBlocks.cpp
+SOURCE          clmcategoriestestblocks.cpp
 
 
 USERINCLUDE     ../inc 

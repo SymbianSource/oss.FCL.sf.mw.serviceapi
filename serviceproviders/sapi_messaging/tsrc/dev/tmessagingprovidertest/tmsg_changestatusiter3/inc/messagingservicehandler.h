@@ -20,8 +20,8 @@
 #ifndef __MESSAGINGSERVICEHANDLER_H
 #define __MESSAGINGSERVICEHANDLER_H
 
-#include <LiwCommon.h>
-#include <LiwServiceIfBase.h>
+#include <liwcommon.h>
+#include <liwserviceifbase.h>
 
 /**
 * Provides implementation to CLiwServiceIfBase interface.

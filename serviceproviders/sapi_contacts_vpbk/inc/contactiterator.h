@@ -20,8 +20,8 @@
 #define C_CCONTACTITERATOR_H
 
 //System includes
-#include <LiwServiceIfBase.h>
-#include <LiwCommon.h>
+#include <liwserviceifbase.h>
+#include <liwcommon.h>
 
 //User include
 #include "contactiter.h"

@@ -18,7 +18,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "tmediathumbnailtest.h"
 
 // EXTERNAL DATA STRUCTURES

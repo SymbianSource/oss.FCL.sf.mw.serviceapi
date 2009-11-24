@@ -48,7 +48,7 @@ DEFFILE         tlandmark_provider.def
 
 SOURCEPATH      ../src
 SOURCE          tlandmark_provider.cpp
-SOURCE          tlandmark_providerBlocks.cpp
+SOURCE          tlandmark_providerblocks.cpp
 SOURCE          tgetlist.cpp
 
 //RESOURCE        resource_file

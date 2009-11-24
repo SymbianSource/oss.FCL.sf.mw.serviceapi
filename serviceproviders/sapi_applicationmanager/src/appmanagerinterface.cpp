@@ -19,8 +19,8 @@
 
 
 
-#include <Liwcommon.h>
-#include <Liwbufferextension.h>
+#include <liwcommon.h>
+#include <liwbufferextension.h>
 #include <utf.h>
 
 #include "appmanagerinterface.h"

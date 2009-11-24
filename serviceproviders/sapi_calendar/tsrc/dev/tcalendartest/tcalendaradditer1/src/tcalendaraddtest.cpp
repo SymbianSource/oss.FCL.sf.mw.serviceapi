@@ -24,7 +24,7 @@
 #include <msvapi.h>
 #include <msvids.h>
 
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 
 #include "tcalendaraddtest.h"
 //#include <SAPI_TEST\testprg.h>

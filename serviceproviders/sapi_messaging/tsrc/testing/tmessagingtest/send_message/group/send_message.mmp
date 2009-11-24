@@ -50,7 +50,7 @@ DEFFILE         send_message.def
 
 SOURCEPATH      ../src
 SOURCE          send_message.cpp
-SOURCE          send_messageBlocks.cpp
+SOURCE          send_messageblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

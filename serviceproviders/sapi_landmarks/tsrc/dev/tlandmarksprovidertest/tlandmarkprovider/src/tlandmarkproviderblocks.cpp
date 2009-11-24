@@ -23,18 +23,18 @@
 #include <f32file.h>
 #include <StifParser.h>
 #include <e32std.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <liwgenericparam.h>
 #include <liwservicehandler.h>
 #include <liwvariant.h>
-#include <epos_cposlandmarkdatabase.h>
-#include <epos_cposlandmark.h>
-#include <epos_cposlandmarkencoder.h>
-#include <epos_cposlmcategorymanager.h>
+#include <EPos_CPosLandmarkDatabase.h>
+#include <EPos_CPosLandmark.h>
+#include <EPos_CPosLandmarkEncoder.h>
+#include <EPos_CPosLmCategoryManager.h>
 #include <EPos_HPosLmDatabaseInfo.h>
 #include <EPos_CPosLmDatabaseManager.h>
 #include <lbsposition.h> 
-#include "TLandmarkProvider.h"
+#include "tlandmarkprovider.h"
 #include "landmarkliwparams.hrh"
 
 // EXTERNAL DATA STRUCTURES

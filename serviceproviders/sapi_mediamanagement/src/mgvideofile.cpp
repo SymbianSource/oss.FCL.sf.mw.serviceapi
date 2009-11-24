@@ -16,7 +16,7 @@
 */
 
 
-#include <mclfitem.h>
+#include <MCLFItem.h>
 #include <e32base.h>
 #include <liwvariant.h>
 

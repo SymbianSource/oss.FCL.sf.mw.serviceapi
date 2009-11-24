@@ -83,7 +83,7 @@ void CGetLoc::ConstructL(RPositionServer& aPositionServer ,
         }
 
     //CleanupStack ::Pop(this->iGenericPosInfo );
-    CleanupStack::Pop(&iPositioner);
+    //CleanupStack::Pop(&iPositioner);
     }
 /**
  * Function name: NewL , 

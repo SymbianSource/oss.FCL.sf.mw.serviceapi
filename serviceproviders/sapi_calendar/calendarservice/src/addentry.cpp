@@ -21,7 +21,7 @@
 #include <calinstance.h>
 #include <calentryview.h>
 #include <calinstanceview.h>
-#include <caleninterimutils2.h>
+#include <CalenInterimUtils2.h>
 #include <calrrule.h>
 #include <calalarm.h>
 #include <caluser.h>
@@ -525,14 +525,38 @@ void CCalendarAddEntry::UpdateEntryAttributesL( CCalEntry* aEntry )
 					User::Leave( KErrNotSupported );	
 				}
 		    
-		    TDateTime stTime;
-	    	stTime = aEntry->StartTimeL().TimeUtcL().DateTime();
-		    alTime.MinutesFrom( stTime, minutes );// calculate the offset between alarm time and start time
-		    CCalAlarm* alarm = CCalAlarm::NewL();
-		    CleanupStack::PushL( alarm );
-		    alarm->SetTimeOffset(-minutes.Int());
-			aEntry->SetAlarmL(alarm); // set the alarm for the entry
-		    CleanupStack::PopAndDestroy( alarm );
+		    if( aEntry->EntryTypeL() != CCalEntry::ETodo )
+		        {
+		        TDateTime stTime;
+	    	    stTime = aEntry->StartTimeL().TimeUtcL().DateTime();
+		        alTime.MinutesFrom( stTime, minutes );// calculate the offset between alarm time and start time
+		        CCalAlarm* alarm = CCalAlarm::NewL();
+		        CleanupStack::PushL( alarm );
+		        alarm->SetTimeOffset(-minutes.Int());
+			    aEntry->SetAlarmL(alarm); // set the alarm for the entry
+		        CleanupStack::PopAndDestroy( alarm );
+		        }
+		    else
+		        {
+                TTime endTime;
+                endTime = aEntry->EndTimeL().TimeUtcL();
+                if ( endTime != Time::NullTTime() )
+                    {
+                    alTime.MinutesFrom( endTime, minutes );// calculate the offset between alarm time and start time
+                    if(minutes.Int() < 0 )
+                        {
+                        CCalAlarm* alarm = CCalAlarm::NewL();
+                        CleanupStack::PushL( alarm );
+                        alarm->SetTimeOffset(-minutes.Int());
+                        aEntry->SetAlarmL(alarm); // set the alarm for the entry
+                        CleanupStack::PopAndDestroy( alarm );
+                        }
+                    else
+                        {
+                        User::Leave( KErrNotSupported );
+                        }
+                    }
+ 		        }
 		    }	
 		}
 			

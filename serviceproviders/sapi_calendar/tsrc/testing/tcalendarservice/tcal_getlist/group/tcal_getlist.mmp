@@ -56,7 +56,7 @@ DEFFILE         tcal_getlist.def
 
 SOURCEPATH      ../src
 SOURCE          tcal_getlist.cpp
-SOURCE          tcal_getlistBlocks.cpp
+SOURCE          tcal_getlistblocks.cpp
 SOURCE          calgetlisttestcases.cpp
 
 //RESOURCE        resource_file

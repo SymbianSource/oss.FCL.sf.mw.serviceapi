@@ -19,8 +19,8 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
-#include "TDeleteMessageTest.h"
+#include <StifTestInterface.h>
+#include "tdeletemessagetest.h"
 
 
 

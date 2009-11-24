@@ -17,7 +17,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "tmsgget_async.h"
 #include <SettingServerClient.h>
 

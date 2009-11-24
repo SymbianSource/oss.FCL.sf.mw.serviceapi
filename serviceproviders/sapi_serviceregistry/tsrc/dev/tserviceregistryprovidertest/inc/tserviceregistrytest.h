@@ -25,9 +25,9 @@
 #include <TestScripterInternal.h>
 #include <StifTestModule.h>
 
-#include <LiwCommon.h>
-#include <LiwBufferExtension.h>
-#include <LiwServiceHandler.h>
+#include <liwcommon.h>
+#include <liwbufferextension.h>
+#include <liwservicehandler.h>
 
 // CONSTANTS
 //const ?type ?constant_var = ?constant;

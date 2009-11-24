@@ -19,7 +19,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 //#include <SAPI_TEST\testprg.h>
 #include"messagenotify.h"
 #include "messagenotificationtest.h"

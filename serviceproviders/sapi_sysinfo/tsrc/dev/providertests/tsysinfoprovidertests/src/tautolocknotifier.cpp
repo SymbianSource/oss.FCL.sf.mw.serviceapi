@@ -18,10 +18,10 @@
 
 
 #include <e32std.h>
-#include <LiwServiceHandler.h>
+#include <liwservicehandler.h>
 
 #include "tsysinfoprovidertests.h"
-#include "Tautolocknotifier.h"
+#include "tautolocknotifier.h"
 #include "watchtimer.h"
 #include "entitykeys.h"
 #include "sysinfoaiwparams.hrh"

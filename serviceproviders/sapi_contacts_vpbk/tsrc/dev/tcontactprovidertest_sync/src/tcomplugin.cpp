@@ -19,8 +19,8 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
-#include "Tcomplugin.h"
+#include <StifTestInterface.h>
+#include "tcomplugin.h"
 #include <CVPbkContactStoreUriArray.h>
 #include <TVPbkContactStoreUriPtr.h>
 #include <CVPbkContactManager.h>

@@ -35,8 +35,8 @@ CAPABILITY      ALL -TCB
 DEFFILE         tcontactprovidertest.def
 
 SOURCEPATH      ../src
-SOURCE          Tcomplugin.cpp
-SOURCE          TcompluginBlocks.cpp
+SOURCE          tcomplugin.cpp
+SOURCE          tcompluginblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

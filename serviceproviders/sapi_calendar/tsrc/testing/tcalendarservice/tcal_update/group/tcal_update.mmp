@@ -55,7 +55,7 @@ DEFFILE         tcal_update.def
 
 SOURCEPATH      ../src
 SOURCE          tcal_update.cpp
-SOURCE          tcal_updateBlocks.cpp
+SOURCE          tcal_updateblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

@@ -21,10 +21,10 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <msvids.h> 
 ////#include <senduiconsts.h>
-#include <LiwCommon.h>
+#include <liwcommon.h>
 #include "messaginginterface.h"
 
 #include "notify.h"

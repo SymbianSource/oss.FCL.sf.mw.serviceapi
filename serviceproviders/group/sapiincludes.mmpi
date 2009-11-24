@@ -12,8 +12,8 @@
 * Contributors:
 *
 * Description: 	Sapi include path dependencies.
-*	%created_by:	vahegde %
-*	%date_created:	Wed Jun 24 18:02:52 2009 %
+*	%created_by:	slathia %
+*	%date_created:	Sat Oct 31 14:39:55 2009 %
 *  Copyright © 2006-2007 Nokia.  All rights reserved.
 *  This material, including documentation and any related computer
 *  programs, is protected by copyright controlled by Nokia.  All
@@ -30,8 +30,8 @@
 #include <bldvariant.hrh>
 
 #include <platform_paths.hrh>
-SYSTEMINCLUDE \Epoc32\include\icl
-SYSTEMINCLUDE \Epoc32\include\libc
+SYSTEMINCLUDE /epoc32/include/icl
+SYSTEMINCLUDE /epoc32/include/libc
 
 APP_LAYER_SYSTEMINCLUDE
 

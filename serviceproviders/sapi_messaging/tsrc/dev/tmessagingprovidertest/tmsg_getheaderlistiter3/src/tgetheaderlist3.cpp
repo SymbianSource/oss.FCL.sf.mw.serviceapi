@@ -20,11 +20,11 @@
 #include <e32base.h>
 ////#include <senduiconsts.h>
 #include "messaginginterface.h"
-#include <BADESCA.H>
+#include <badesca.h>
 #include "getheader.h"
 #include <f32file.h>
-#include<LiwServiceHandler.h>
-#include<MSVSTD.H>
+#include<liwservicehandler.h>
+#include<msvstd.h>
 #include "messageheader.h"
 #ifdef MAIN
 #define getheader_test3 main

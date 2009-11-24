@@ -55,7 +55,7 @@ DEFFILE         tlogprovidertest.def
 
 SOURCEPATH      ../src
 SOURCE          tlogprovidertest.cpp
-SOURCE          tlogprovidertestBlocks.cpp
+SOURCE          tlogprovidertestblocks.cpp
 SOURCE          taddtest.cpp
 SOURCE          tcallback.cpp
 SOURCE          teventdetails.cpp

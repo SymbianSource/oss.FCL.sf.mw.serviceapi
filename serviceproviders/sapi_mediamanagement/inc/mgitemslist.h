@@ -15,7 +15,6 @@
 *
 */
 
-
 #ifndef __CMGITEMSLIST_H
 #define __CMGITEMSLIST_H
 
@@ -25,6 +24,8 @@
 class MCLFItemListModel;
 class MgMediaItemFactory;
 class CMgMediaItem;
+class CClfOperationObserver;
+
 /**
  *  This class implements the abstract methods of CLiwIterable   
  *  class so that the user may iterate over the result 
@@ -42,7 +43,7 @@ public:
      * @param aCmdId specifies whether the SAPI is GetFiles or GetFilesInfo
      * @return A pointer of type CMgItemsList
      */
-     static CMgItemsList* NewL( MCLFItemListModel* aItemListModel, TMgCmdId aCmdId );
+     static CMgItemsList* NewL( MCLFItemListModel* aItemListModel, CClfOperationObserver* aOperationObserver, TMgCmdId aCmdId );
     
     /**
     * Destructor.
@@ -74,7 +75,7 @@ private:
      * @param  aCmdId specifies whether the SAPI is GetFiles or GetFilesInfo
      */
     
-    CMgItemsList( MCLFItemListModel* aItemListModel, TMgCmdId aCmdId );
+    CMgItemsList( MCLFItemListModel* aItemListModel, CClfOperationObserver* aOperationObserver, TMgCmdId aCmdId );
     
 private: // data
 
@@ -82,6 +83,9 @@ private: // data
     * A pointer to MCLFItemListModel class
     */
     MCLFItemListModel* iItemListModel;
+    
+    CClfOperationObserver* iOperationObserver;
+        
     /**
     * Indicates whether GetFiles or GetFilesInfo SAPI is being processed
     */

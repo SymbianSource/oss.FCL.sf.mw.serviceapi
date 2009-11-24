@@ -18,7 +18,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "appmanagertest.h"
 
 // EXTERNAL DATA STRUCTURES

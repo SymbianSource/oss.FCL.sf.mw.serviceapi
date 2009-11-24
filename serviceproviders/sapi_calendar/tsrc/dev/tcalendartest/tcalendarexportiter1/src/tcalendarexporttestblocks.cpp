@@ -22,7 +22,7 @@
 #include <e32svr.h>
 #include <StifParser.h>
 //#include <SAPI_TEST\testprg.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 
 #include "tcalendarexporttest.h"
 

@@ -20,7 +20,7 @@
 #define __MGCLFOPERATIONOBSERVER_H
 
 
-#include <mclfoperationobserver.h>
+#include <MCLFOperationObserver.h>
 #include <e32base.h>
 
 class MCLFItemListModel;

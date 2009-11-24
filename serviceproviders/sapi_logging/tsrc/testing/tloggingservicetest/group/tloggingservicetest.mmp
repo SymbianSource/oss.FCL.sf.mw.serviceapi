@@ -58,7 +58,7 @@ DEFFILE         tloggingservicetest.def
 
 SOURCEPATH      ../src
 SOURCE          tloggingservicetest.cpp
-SOURCE          tloggingservicetestBlocks.cpp
+SOURCE          tloggingservicetestblocks.cpp
 SOURCE          taddeventsync.cpp
 SOURCE          taddeventasync.cpp
 SOURCE          tgetlist.cpp

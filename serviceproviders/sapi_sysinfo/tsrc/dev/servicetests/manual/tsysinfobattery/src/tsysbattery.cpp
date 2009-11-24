@@ -19,8 +19,8 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
-#include "TSysBattery.h"
+#include <StifTestInterface.h>
+#include "tsysbattery.h"
 
 // ============================ MEMBER FUNCTIONS ===============================
 

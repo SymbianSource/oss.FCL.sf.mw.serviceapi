@@ -21,9 +21,9 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include <LiwServiceHandler.h>
-#include <LiwCommon.h>
+#include <StifTestInterface.h>
+#include <liwservicehandler.h>
+#include <liwcommon.h>
 #include <VPbkEng.rsg>
 
 
@@ -42,7 +42,7 @@
 #include<f32file.h>
 
 
-#include "Tcomplugin.h"
+#include "tcomplugin.h"
 _LIT(LogFileName , "C:\\Notifications.txt") ;
 
 _LIT(KError,"Error code is");

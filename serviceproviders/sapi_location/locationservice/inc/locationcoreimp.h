@@ -20,7 +20,7 @@
 #define C_LOCATIONCOREIMP_H
 
 #include <lbs.h>
-#include <LbsSatellite.h>
+#include <lbssatellite.h>
 #include "locationservice.h"
 
 

@@ -18,7 +18,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "tappmgrprovider.h"
 
 // EXTERNAL DATA STRUCTURES

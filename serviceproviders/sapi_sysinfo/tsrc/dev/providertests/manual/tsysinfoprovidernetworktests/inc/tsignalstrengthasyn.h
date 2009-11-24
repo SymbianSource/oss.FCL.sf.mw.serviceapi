@@ -19,7 +19,7 @@
 #ifndef __CTSIGSTRENGTHASYNC_H__
 #define __CTSIGSTRENGTHASYNC_H__
 
-#include <Liwcommon.h>
+#include <liwcommon.h>
 
 #include "watchtimer.h"
 #include "sysinfoservice.h"

@@ -19,15 +19,15 @@
 
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <liwcommon.h>
 #include <liwservicehandler.h>
 #include <EPos_HPosLmDatabaseInfo.h> 
 #include <EPos_CPosLmDatabaseManager.h> 
-#include <epos_cposlandmarkdatabase.h>
-#include <epos_landmarks.h>
-#include <epos_cposlandmark.h>
-#include <LiwCommon.h>
+#include <EPos_CPosLandmarkDatabase.h>
+#include <EPos_Landmarks.h>
+#include <EPos_CPosLandmark.h>
+#include <liwcommon.h>
 #include "tlmproviderdbtests.h"
 #include "landmarkliwparams.hrh"
 

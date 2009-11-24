@@ -21,8 +21,8 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
-#include <LiwServiceHandler.h>
+#include <StifTestInterface.h>
+#include <liwservicehandler.h>
 #include "mediamgmt.h"
 
 using namespace LIW;

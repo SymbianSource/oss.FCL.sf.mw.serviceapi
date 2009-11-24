@@ -16,8 +16,8 @@
 */
 
 
-#include <LiwCommon.h>
-#include <LiwGenericParam.h>
+#include <liwcommon.h>
+#include <liwgenericparam.h>
 
 // User Includes
 #include "contactinterfacecallback.h"

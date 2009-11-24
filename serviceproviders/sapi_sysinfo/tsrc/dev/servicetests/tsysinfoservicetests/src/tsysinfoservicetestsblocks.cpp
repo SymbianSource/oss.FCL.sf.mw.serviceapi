@@ -21,16 +21,16 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <hal.h>
 #include "tsysinfoservicetests.h"
 #include "tbatterystrengthasyn.h"
 #include "tuseractivitynotifier.h"
-#include "Tautolocknotifier.h"
+#include "tautolocknotifier.h"
 
 #include "sysinfoservice.h"
 #include "entitykeys.h"
-#include <COEMAIN.H> 
+#include <coemain.h> 
 
 using namespace SysInfo;
 _LIT(KROMInstallDir,"\\system\\install\\");

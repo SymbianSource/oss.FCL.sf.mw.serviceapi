@@ -16,12 +16,13 @@
 */
 
 
-#include <mclfitem.h>
-#include <mclfitemlistmodel.h>
+#include <MCLFItem.h>
+#include <MCLFItemListModel.h>
 
 #include "mgitemslist.h"
 #include "mgmediaitemfactory.h"
 #include "mgmediaitem.h"
+#include "mgclfoperationobserver.h"
 
 
 _LIT8( KMgFileNameAndPath, "FileNameAndPath" );
@@ -34,8 +35,9 @@ const TInt KStartItemIndex = -1;
 // ---------------------------------------------------------------------------
 //
 
-CMgItemsList::CMgItemsList( MCLFItemListModel* aItemListModel, TMgCmdId aCmdId )
+CMgItemsList::CMgItemsList( MCLFItemListModel* aItemListModel, CClfOperationObserver* aOperationObserver, TMgCmdId aCmdId )
             : iItemListModel(aItemListModel),
+              iOperationObserver(aOperationObserver),
             	iCmdId(aCmdId),
               iCount(iItemListModel->ItemCount()),
               iCurrent(KStartItemIndex),
@@ -49,9 +51,9 @@ CMgItemsList::CMgItemsList( MCLFItemListModel* aItemListModel, TMgCmdId aCmdId )
 // ---------------------------------------------------------------------------
 //
 
-CMgItemsList* CMgItemsList::NewL( MCLFItemListModel* aItemListModel, TMgCmdId aCmdId )
+CMgItemsList* CMgItemsList::NewL( MCLFItemListModel* aItemListModel, CClfOperationObserver* aOperationObserver, TMgCmdId aCmdId )
     {
-    return new( ELeave ) CMgItemsList( aItemListModel, aCmdId );
+    return new( ELeave ) CMgItemsList( aItemListModel, aOperationObserver, aCmdId );
     }
 
 
@@ -63,11 +65,23 @@ CMgItemsList* CMgItemsList::NewL( MCLFItemListModel* aItemListModel, TMgCmdId aC
 CMgItemsList::~CMgItemsList()
     {
 
-	delete iItemListModel;
-
-  	delete iMediaItem;
-
-	}
+    if(iItemListModel)
+        {
+            iItemListModel->CancelRefresh();
+            delete iItemListModel;
+            iItemListModel = NULL;
+        }
+    if(iOperationObserver)
+        {
+            delete iOperationObserver;
+            iOperationObserver = NULL;
+        }
+    if(iMediaItem)
+        {
+            delete iMediaItem;
+            iMediaItem = NULL;
+        }
+    }
 // ---------------------------------------------------------------------------
 // CMgItemsList::Reset
 // Resets the iterator to point to the beginning of list
@@ -89,8 +103,8 @@ TBool CMgItemsList::NextL( TLiwVariant& aItem )
     {
 
     iCurrent++;
-
-    if( iCurrent<iCount )
+    
+    if( iCurrent< iCount )
         {
 
         const MCLFItem& item = iItemListModel->Item( iCurrent );

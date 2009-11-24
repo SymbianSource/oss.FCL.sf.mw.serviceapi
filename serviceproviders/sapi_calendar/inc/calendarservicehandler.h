@@ -19,8 +19,8 @@
 #ifndef __CALENDARSERVICEHANDLER_H
 #define __CALENDARSERVICEHANDLER_H
 
-#include <LiwCommon.h>
-#include <LiwServiceIfBase.h>
+#include <liwcommon.h>
+#include <liwserviceifbase.h>
 
 /**
 * Provides implementation to CLiwServiceIfBase interface.

@@ -54,7 +54,7 @@ DEFFILE         tcontact_getIds.def
 
 SOURCEPATH      ../src
 SOURCE          tcontact_getIds.cpp
-SOURCE          tContact_getIdsBlocks.cpp
+SOURCE          tcontact_getIdsblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

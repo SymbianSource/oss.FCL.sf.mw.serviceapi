@@ -19,9 +19,9 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
-#include "Clmlandmarkstest.h"
-#include <epos_cposlandmarkdatabase.h> 
+#include <StifTestInterface.h>
+#include "clmlandmarkstest.h"
+#include <EPos_CPosLandmarkDatabase.h> 
 
 
 // ============================ MEMBER FUNCTIONS ===============================

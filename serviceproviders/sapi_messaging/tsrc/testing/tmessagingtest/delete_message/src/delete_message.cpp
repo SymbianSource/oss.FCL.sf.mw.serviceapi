@@ -19,7 +19,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "delete_message.h"
 
 // EXTERNAL DATA STRUCTURES

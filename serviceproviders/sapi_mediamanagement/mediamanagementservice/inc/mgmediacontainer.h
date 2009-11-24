@@ -20,8 +20,8 @@
 #define MGMEDIACONTAINER_H_
 
 
-#include<COECNTRL.H>
-#include<W32STD.H>
+#include<coecntrl.h>
+#include<w32std.h>
 #include<e32std.h>
 #include<e32base.h>
 // CLASS DECLARATION

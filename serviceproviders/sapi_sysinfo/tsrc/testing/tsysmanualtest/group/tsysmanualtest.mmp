@@ -49,7 +49,7 @@ DEFFILE         tsysmanualtest.def
 
 SOURCEPATH      ../src
 SOURCE          tsysmanualtest.cpp
-SOURCE          tsysmanualtestBlocks.cpp
+SOURCE          tsysmanualtestblocks.cpp
 SOURCE          tasyncaccandvibra.cpp
 SOURCE          tsysbatterynot.cpp
 SOURCE          tmemnot.cpp

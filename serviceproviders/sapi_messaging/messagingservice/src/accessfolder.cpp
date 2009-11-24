@@ -20,8 +20,8 @@
 #include <e32base.h>
 #include <badesca.h>
 #include <msvapi.h>
-#include <MsvUids.h>
-#include <senduiconsts.h>
+#include <msvuids.h>
+#include <SendUiConsts.h>
 
 #include "messageheader.h"
 #include "accessfolder.h"

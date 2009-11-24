@@ -21,15 +21,15 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include<f32file.h>
-#include <Liwcommon.h>
-#include<LiwServiceHandler.h>
+#include <liwcommon.h>
+#include<liwservicehandler.h>
 
 #include "tsysinfoprovidergeneraltests.h"
 #include "tuseractivitynotifier.h"
-#include "Tmemnotifier.h"
-#include "Tcriticalmemnoti.h"
+#include "tmemnotifier.h"
+#include "tcriticalmemnoti.h"
 #include "sysinfoservice.h"
 #include "sysinfointerface.h"
 #include"entitykeys.h"

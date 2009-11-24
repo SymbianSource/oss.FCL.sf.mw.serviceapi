@@ -21,7 +21,7 @@
 // INCLUDE FILES
 #include <e32base.h>
 
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 
 #include "tcalendarchangenotifytest.h"
 //#include <SAPI_TEST\testprg.h>

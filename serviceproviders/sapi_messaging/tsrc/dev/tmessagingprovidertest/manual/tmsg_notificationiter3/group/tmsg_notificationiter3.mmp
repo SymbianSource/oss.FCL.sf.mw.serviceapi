@@ -38,7 +38,7 @@ DEFFILE         tmsg_notificationiter3.def
 
 SOURCEPATH      ../src
 SOURCE          messagenotificationtest.cpp
-SOURCE          messagenotificationtestBlocks.cpp
+SOURCE          messagenotificationtestblocks.cpp
 SOURCE			notify.cpp
 
 USERINCLUDE     ../inc 

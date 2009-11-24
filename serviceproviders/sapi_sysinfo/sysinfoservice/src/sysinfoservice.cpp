@@ -16,27 +16,27 @@
 */
 
 
-#include <W32STD.H>
+#include <w32std.h>
 #include <hal.h>
-#include <FeatMgr.h>
+#include <featmgr.h>
 #include <bldvariant.hrh>
 #include <PtiEngine.h>
 #include <driveinfo.h>
 
 
 #include <centralrepository.h>
-#include <HWRMVibraSDKCRKeys.h>
-#include <SettingsInternalCRKeys.h>
-#include <HWRMLightDomainCRKeys.h>
+#include <hwrmvibrasdkcrkeys.h>
+#include <settingsinternalcrkeys.h>
+#include <hwrmlightdomaincrkeys.h>
 #include <AknFepInternalCRKeys.h>
-#include <IR_SOCK.H>
+#include <ir_sock.h>
 #include <btserversdkcrkeys.h>
-#include <SysUtilDomainCRKeys.h>
+#include <sysutildomaincrkeys.h>
 
 #include <e32property.h>
-#include <HWRMDomainPSKeys.h>
+#include <hwrmdomainpskeys.h>
 #include <NetworkHandlingDomainPSKeys.h>
-#include <HWRMPowerStateSDKPSKeys.h>
+#include <hwrmpowerstatesdkpskeys.h>
 #include <wlaninternalpskeys.h>
 #include <UikonInternalPSKeys.h>
 #include <btengsettings.h>
@@ -47,7 +47,7 @@
 
 #include "sysinfoservice.h"
 #include "sysinfo.h"
-#include "SysInfoUtils.h"
+#include "sysinfoutils.h"
 #include "entitykeys.h"
 #include "activerequests.h"
 #include "deviceinfo.h"

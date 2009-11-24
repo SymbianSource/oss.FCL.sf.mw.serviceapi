@@ -21,7 +21,7 @@
 // INCLUDE FILES
 
 #include "sensrservicetest.h"
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 
 
 

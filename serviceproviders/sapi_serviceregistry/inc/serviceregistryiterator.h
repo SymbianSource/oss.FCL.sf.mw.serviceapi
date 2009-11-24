@@ -21,7 +21,7 @@
 
 #include <liwgenericparam.h> 
 #include <liwcommon.h>
-#include <LiwVariant.h>
+#include <liwvariant.h>
 
 /**
  *  This class implements the abstract methods of CLiwIterable   

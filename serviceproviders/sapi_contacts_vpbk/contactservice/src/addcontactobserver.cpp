@@ -22,10 +22,10 @@
 
 //System include 
 #include "contactservice.h"// for iContactService
-#include <mvpbkcontactstore.h>// for iContactStore
-#include <mvpbkstorecontact.h>// used in many function to get the store contact
-#include <mvpbkcontactoperationbase.h>//for observer
-#include <mvpbkcontactlink.h>//for param in ContactsSaved()
+#include <MVPbkContactStore.h>// for iContactStore
+#include <MVPbkStoreContact.h>// used in many function to get the store contact
+#include <MVPbkContactOperationBase.h>//for observer
+#include <MVPbkContactLink.h>//for param in ContactsSaved()
 #include <MVPbkContactGroup.h>
 #include <MVPbkContactFieldTextData.h>
 #include <MVPbkContactFieldData.h>

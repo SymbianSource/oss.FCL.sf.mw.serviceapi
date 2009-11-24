@@ -18,10 +18,10 @@
 
 
 
-#include <mclfitemlistmodel.h>
-#include <mclfcontentlistingengine.h>
-#include <contentlistingfactory.h>
-#include <mclfsortingstyle.h>
+#include <MCLFItemListModel.h>
+#include <MCLFContentListingEngine.h>
+#include <ContentListingFactory.h>
+#include <MCLFSortingStyle.h>
 
 
 #include "mgservice.h"

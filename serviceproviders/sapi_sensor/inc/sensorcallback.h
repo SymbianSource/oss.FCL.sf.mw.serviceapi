@@ -20,8 +20,8 @@
 #define CSENSORCALLBACK_H
 
 
-#include <Liwserviceifbase.h>
-#include <LiwCommon.h>
+#include <liwserviceifbase.h>
+#include <liwcommon.h>
 #include <sensrvtypes.h>
 #include <sensrvdatalistener.h>
 #include <sensrvchannelinfo.h>

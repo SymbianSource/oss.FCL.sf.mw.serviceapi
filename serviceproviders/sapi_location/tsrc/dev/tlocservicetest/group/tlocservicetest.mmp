@@ -31,11 +31,11 @@ CAPABILITY      ALL -TCB
 #endif
 
 //TARGETPATH      ?target_path
-DEFFILE         TLocTest.def
+DEFFILE         tloctest.def
 
 SOURCEPATH      ../src
-SOURCE          TLocTest.cpp
-SOURCE          TLocTestBlocks.cpp
+SOURCE          tloctest.cpp
+SOURCE          tloctestblocks.cpp
 SOURCE			tfunctionthread.cpp
 SOURCE 			tstraysignaltest.cpp
 SOURCE 			tstraygetlocationtest.cpp

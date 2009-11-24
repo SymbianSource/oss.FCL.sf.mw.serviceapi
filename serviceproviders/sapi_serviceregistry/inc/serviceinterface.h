@@ -20,9 +20,9 @@
 #define SERVICEINTERFACE_H
 
 #include <liwcommon.h>
-#include <LiwVariant.h>
-#include <LiwGenericParam.h>
-#include <LiwServiceHandler.h>
+#include <liwvariant.h>
+#include <liwgenericparam.h>
+#include <liwservicehandler.h>
 
 
 // CLASS DECLARATION

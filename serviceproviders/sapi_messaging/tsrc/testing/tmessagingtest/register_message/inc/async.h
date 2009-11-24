@@ -17,9 +17,9 @@
 
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 //#include <senduiconsts.h>
-#include <CMsvAttachment.h>
+#include <cmsvattachment.h>
 #include "messagingservice.h"
 #include "messageheader.h"
 

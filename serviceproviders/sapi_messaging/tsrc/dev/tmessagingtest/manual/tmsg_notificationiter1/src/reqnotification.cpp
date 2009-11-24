@@ -22,7 +22,7 @@
 #include <e32base.h>
 ////#include <senduiconsts.h>
 #include "messagingservice.h"
-#include <BADESCA.H>
+#include <badesca.h>
 
 #include <f32file.h>
 #include "messageheader.h"

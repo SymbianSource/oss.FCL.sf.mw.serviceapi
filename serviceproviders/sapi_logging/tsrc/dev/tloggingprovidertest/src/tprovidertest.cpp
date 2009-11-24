@@ -19,7 +19,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "tprovidertest.h"
 #include "teventdetails.h"
 #include "tfilterdetails.h"

@@ -20,7 +20,7 @@
 #include <msvstd.h>
 #include <msvapi.h>
 #include <msvids.h>
-#include <senduiconsts.h>
+#include <SendUiConsts.h>
 
 #include "messageheader.h"
 #include "messagingservice.h"

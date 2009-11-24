@@ -16,7 +16,7 @@
 */
 
 
-#include "testappmnguiApplication.h"
+#include "testappmnguiapplication.h"
 #include <eikstart.h>
 
 #pragma message("Please ensure that you read the ReadMe file.")

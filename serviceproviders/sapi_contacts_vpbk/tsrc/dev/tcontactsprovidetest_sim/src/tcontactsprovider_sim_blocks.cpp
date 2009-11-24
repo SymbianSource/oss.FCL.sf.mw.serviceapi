@@ -24,14 +24,14 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 
 #include <f32file.h>
 #include <e32des16.h>
 #include <e32base.h>
 
-#include <LiwServiceHandler.h>
-#include <LiwCommon.h>
+#include <liwservicehandler.h>
+#include <liwcommon.h>
 
 #include "serviceerrno.h"
 

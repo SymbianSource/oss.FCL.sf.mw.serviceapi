@@ -51,7 +51,7 @@ DEFFILE         tproviderlmarktest.def
 
 SOURCEPATH      ../src
 SOURCE          tproviderlmarktest.cpp
-SOURCE          tproviderlmarktestBlocks.cpp
+SOURCE          tproviderlmarktestblocks.cpp
 SOURCE          tprovidertestobserver.cpp
 SOURCE          txmlconvertor.cpp
 

@@ -19,7 +19,7 @@
 #include <coemain.h>
 #include <testappmngui.rsg>
 
-#include "testappmnguiAppView.h"
+#include "testappmnguiappview.h"
 
 // Standard construction sequence
 CtestappmnguiAppView* CtestappmnguiAppView::NewL(const TRect& aRect)

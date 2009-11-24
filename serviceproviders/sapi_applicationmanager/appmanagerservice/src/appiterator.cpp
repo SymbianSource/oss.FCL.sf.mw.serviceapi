@@ -18,9 +18,9 @@
 
 
 #include <e32cmn.h>
-#include <APMSTD.H>
-#include <APAID.H>
-#include <APGCLI.H>
+#include <apmstd.h>
+#include <apaid.h>
+#include <apgcli.h>
 #include "appiterator.h"
 #include "appinfo.h"
 #include "appmanagercommon.h"

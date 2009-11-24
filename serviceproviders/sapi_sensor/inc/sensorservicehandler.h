@@ -18,7 +18,7 @@
 #ifndef C_CSENSORSERVICEHANDLER_H
 #define C_CSENSORSERVICEHANDLER_H
 
-#include <Liwserviceifbase.h>
+#include <liwserviceifbase.h>
 
 /**
  * CsensorProvider - inherits the CLiwServiceIfBase to Load the sensor

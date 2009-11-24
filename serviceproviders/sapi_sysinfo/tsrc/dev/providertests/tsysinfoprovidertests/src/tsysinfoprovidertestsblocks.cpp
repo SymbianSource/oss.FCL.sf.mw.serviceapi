@@ -21,12 +21,12 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <f32file.h>
 #include <hal.h>
 #include <liwcommon.h>
-#include <LiwServiceHandler.h>
-#include <COEMAIN.H> 
+#include <liwservicehandler.h>
+#include <coemain.h> 
 
 #include "tsysinfoprovidertests.h"
 #include "entitykeys.h"

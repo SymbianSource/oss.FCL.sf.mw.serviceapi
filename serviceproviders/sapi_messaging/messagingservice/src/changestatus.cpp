@@ -20,7 +20,7 @@
 #include <miuthdr.h>
 
 #include "messageheader.h"
-#include "ChangeStatus.h"
+#include "changestatus.h"
 
 // ---------------------------------------------------------------------------
 // two-phased constructor

@@ -18,7 +18,7 @@
 #ifndef C_LOGINTERFACE_H
 #define C_LOGINTERFACE_H
 
-#include <LiwCommon.h>
+#include <liwcommon.h>
 #include "serviceerrno.h"
 
 /**

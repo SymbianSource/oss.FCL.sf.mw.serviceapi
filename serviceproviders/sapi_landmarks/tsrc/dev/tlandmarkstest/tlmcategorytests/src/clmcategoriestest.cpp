@@ -19,10 +19,10 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
-#include "Clmcategoriestest.h"
-#include <epos_cposlandmarkdatabase.h> 
-#include <epos_cposlmcategorymanager.h> 
+#include <StifTestInterface.h>
+#include "clmcategoriestest.h"
+#include <EPos_CPosLandmarkDatabase.h> 
+#include <EPos_CPosLmCategoryManager.h> 
 
 
 // ============================ MEMBER FUNCTIONS ===============================

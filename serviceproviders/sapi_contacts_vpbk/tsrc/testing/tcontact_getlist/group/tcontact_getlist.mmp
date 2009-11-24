@@ -50,11 +50,11 @@ CAPABILITY      ALL -TCB
 #endif
 
 //TARGETPATH      ?target_path
-DEFFILE         tContact_getlist.def
+DEFFILE         tcontact_getlist.def
 
 SOURCEPATH      ../src
-SOURCE          tContact_getlist.cpp
-SOURCE          tContact_getlistBlocks.cpp
+SOURCE          tcontact_getlist.cpp
+SOURCE          tcontact_getlistblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

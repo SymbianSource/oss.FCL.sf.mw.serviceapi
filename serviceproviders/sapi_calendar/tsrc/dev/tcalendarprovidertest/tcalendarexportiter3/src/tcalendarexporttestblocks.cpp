@@ -22,11 +22,11 @@
 #include <e32svr.h>
 #include <StifParser.h>
 //#include <SAPI_TEST\testprg.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 
 #include <badesca.h>
 
-#include<LiwServiceHandler.h>
+#include<liwservicehandler.h>
 
 #include "tcalendarexporttest.h"
 #include "teststartconsolealarmserver2.h"

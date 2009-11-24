@@ -16,10 +16,10 @@
 */
 
 
-#include <epos_cposlandmarkcategory.h>
-#include <epos_cposlandmarkdatabase.h>
-#include <epos_cposlmcategorymanager.h>
-#include <epos_cposlmitemiterator.h>
+#include <EPos_CPosLandmarkCategory.h>
+#include <EPos_CPosLandmarkDatabase.h>
+#include <EPos_CPosLmCategoryManager.h>
+#include <EPos_CPosLmItemIterator.h>
 #include "clandmarkcategoryiterable.h"
 #include "landmarkliwparams.hrh"
 

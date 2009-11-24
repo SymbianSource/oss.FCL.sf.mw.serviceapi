@@ -21,7 +21,7 @@
 // INCLUDE FILES
 
 #include "tlocmanualtest.h"
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 
 
 

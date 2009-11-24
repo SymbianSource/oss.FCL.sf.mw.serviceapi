@@ -20,9 +20,9 @@
 #define C_IMPORTSTORELISTOBSERVER_H
 
 #include <s32file.h> // Used for RFileReadStream 
-#include <mvpbkcontactstoreListobserver.h>    //base class for vCardEng
-#include <mvpbkcontactobserver.h>    //base class for vCardEng
-#include <mvpbkcontactcopyobserver.h>    //base class for vCardEng
+#include <MVPbkContactStoreListObserver.h>    //base class for vCardEng
+#include <MVPbkContactObserver.h>    //base class for vCardEng
+#include <MVPbkContactCopyObserver.h>    //base class for vCardEng
 #include <CVPbkVCardEng.h>
 #include <MVPbkContactStore.h>
 

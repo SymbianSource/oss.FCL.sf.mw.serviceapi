@@ -18,7 +18,7 @@
 #ifndef C_LOCATIONCB_H
 #define C_LOCATIONCB_H
 
-#include <LiwCommon.h> 
+#include <liwcommon.h> 
 #include "locationservice.h"
 
 const TInt KGetLocationCB = 0 ;

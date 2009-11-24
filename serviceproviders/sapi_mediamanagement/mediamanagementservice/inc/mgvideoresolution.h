@@ -19,7 +19,7 @@
 #define MGVIDEORESOLUTION_H_
 
 
-#include <VideoPlayer.h>
+#include <videoplayer.h>
 
 #include<e32std.h>
 #include<e32base.h>

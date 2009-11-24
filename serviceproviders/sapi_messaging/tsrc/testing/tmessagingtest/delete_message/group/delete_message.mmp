@@ -43,7 +43,7 @@ DEFFILE         delete_message.def
 
 SOURCEPATH      ../src
 SOURCE          delete_message.cpp
-SOURCE          delete_messageBlocks.cpp
+SOURCE          delete_messageblocks.cpp
 
 //RESOURCE        resource_file
 //RESOURCE        resource_file2

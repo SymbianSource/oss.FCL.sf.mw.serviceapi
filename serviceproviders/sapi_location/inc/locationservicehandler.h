@@ -20,7 +20,7 @@
 
 
 #include <liwserviceifbase.h>
-#include <LiwCommon.h>
+#include <liwcommon.h>
 
 /**
  * InerfaceName ILocation

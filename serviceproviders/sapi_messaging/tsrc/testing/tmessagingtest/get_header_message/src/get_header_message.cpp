@@ -19,7 +19,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "get_header_message.h"
 
 // EXTERNAL DATA STRUCTURES

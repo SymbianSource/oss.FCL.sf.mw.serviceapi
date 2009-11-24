@@ -19,8 +19,8 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
-#include "SAPILocTest.h"
+#include <StifTestInterface.h>
+#include "sapiloctest.h"
 //#include <SAPI_TEST\testprg.h>
 #include "locationservice.h"
 // EXTERNAL DATA STRUCTURES

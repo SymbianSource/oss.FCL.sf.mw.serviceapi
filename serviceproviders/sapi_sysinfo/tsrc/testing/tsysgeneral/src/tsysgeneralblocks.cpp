@@ -21,9 +21,9 @@
 // INCLUDE FILES
 #include <e32svr.h>
 #include <StifParser.h>
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include "tsysgeneral.h"
-#include <COEMAIN.H> 
+#include <coemain.h> 
 // EXTERNAL DATA STRUCTURES
 //extern  ?external_data;
 

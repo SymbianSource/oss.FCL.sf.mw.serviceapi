@@ -19,7 +19,7 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
+#include <StifTestInterface.h>
 #include <gmxmlparser.h>
 #include <gmxmlnode.h>
 #include "tprovidertest.h"

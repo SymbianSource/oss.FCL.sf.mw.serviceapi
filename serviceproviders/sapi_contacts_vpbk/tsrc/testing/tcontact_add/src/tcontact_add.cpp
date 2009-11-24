@@ -19,8 +19,8 @@
 
 
 // INCLUDE FILES
-#include <Stiftestinterface.h>
-#include "tContact_add.h"
+#include <StifTestInterface.h>
+#include "tcontact_add.h"
 
 // EXTERNAL DATA STRUCTURES
 //extern  ?external_data;

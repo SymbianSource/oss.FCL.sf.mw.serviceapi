@@ -31,10 +31,10 @@
 #include <f32file.h>
 #include <StifParser.h>
 #include <e32std.h>
-#include <Stiftestinterface.h>
-#include <Liwgenericparam.h>
-#include <Liwservicehandler.h>
-#include <Liwvariant.h>
+#include <StifTestInterface.h>
+#include <liwgenericparam.h>
+#include <liwservicehandler.h>
+#include <liwvariant.h>
 #include <utf.h>
 
 /*#include "sensorservice.h"

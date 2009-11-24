@@ -29,10 +29,10 @@
 #include<javaregistryentry.h>
 #include<javaregistrypackageentry.h>
 
-#include <AppVersion.h> 
-#include <BADESCA.H> // CDesC16Array
+#include <appversion.h> 
+#include <badesca.h> // CDesC16Array
 
-#include "appManagercommon.h"
+#include "appmanagercommon.h"
 
 
 

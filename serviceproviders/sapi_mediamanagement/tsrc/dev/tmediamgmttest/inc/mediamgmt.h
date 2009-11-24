@@ -204,6 +204,7 @@ class Callback : public MMgOperationObserver
 	TInt HandleNotifyL(TInt aCmdId,TInt aEventId,CLiwGenericParamList& aEventParamList,const CLiwGenericParamList& aInParamList);
      virtual void MgNotifyL(TUint  aTransactionID, 
                                MCLFItemListModel*  aListModel,
+                               CClfOperationObserver* aOperationObserver,
         					   TMgOperationEvent& aOperationEvent,
                                const TInt& aError );
 };
