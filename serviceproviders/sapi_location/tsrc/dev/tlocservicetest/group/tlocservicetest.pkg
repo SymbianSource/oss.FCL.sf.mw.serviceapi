@@ -32,8 +32,8 @@
 ;SAPI Binaries to Install
 
 ;locationservice binaries
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\locationservice.dll"-"C:\sys\bin\locationservice.dll"
-"..\..\..\..\..\..\..\epoc32\release\armv5\urel\tlocservicetest.dll"-"C:\sys\bin\tlocservicetest.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\locationservice.dll"-"C:\sys\bin\locationservice.dll"
+"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tlocservicetest.dll"-"C:\sys\bin\tlocservicetest.dll"
 
 
 ;ini file

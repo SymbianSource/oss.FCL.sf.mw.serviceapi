@@ -2307,7 +2307,7 @@ TInt Ctlandmark_provider::TestGetListLMVarByOrder( CStifItemParser& aItem )
     	getlistlandmark_map->InsertL(KLandmarkName,TLiwVariant(KName));
       
     	//description
-    	getlistlandmark_map->InsertL(KLandmarkDesc,TLiwVariant(KDescription));
+    	//getlistlandmark_map->InsertL(KLandmarkDesc,TLiwVariant(KDescription));
     
     	param.SetNameAndValueL(KFilter,TLiwVariant(getlistlandmark_map));
     	inps->AppendL(param);
@@ -3515,7 +3515,7 @@ TInt Ctlandmark_provider::TestImportVarByOrder( CStifItemParser& aItem )
       	getlistlandmark_map->InsertL(KLandmarkName,TLiwVariant(KName));
       
     	//description
-    	getlistlandmark_map->InsertL(KLandmarkDesc,TLiwVariant(KDescription));
+    	//getlistlandmark_map->InsertL(KLandmarkDesc,TLiwVariant(KDescription));
     
     	param.SetNameAndValueL(KFilter,TLiwVariant(getlistlandmark_map));
     	inps->AppendL(param);
@@ -3758,7 +3758,7 @@ TInt Ctlandmark_provider::TestImportVarByPos( CStifItemParser& aItem )
       	getlistlandmark_map->InsertL(KLandmarkName,TLiwVariant(KName));
       
     	//description
-    	getlistlandmark_map->InsertL(KLandmarkDesc,TLiwVariant(KDescription));
+    	//getlistlandmark_map->InsertL(KLandmarkDesc,TLiwVariant(KDescription));
     
     	param.SetNameAndValueL(KFilter,TLiwVariant(getlistlandmark_map));
     	inps->AppendL(param);
@@ -4709,7 +4709,7 @@ void GetLandMarkId(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam
     getlistlandmark_map->InsertL(KLandmarkName,TLiwVariant(landmark_name));
       
     //description
-    getlistlandmark_map->InsertL(KLandmarkDesc,TLiwVariant(landmark_description));
+    //getlistlandmark_map->InsertL(KLandmarkDesc,TLiwVariant(landmark_description));
     
     param.SetNameAndValueL(KFilter,TLiwVariant(getlistlandmark_map));
     inparam->AppendL(param);

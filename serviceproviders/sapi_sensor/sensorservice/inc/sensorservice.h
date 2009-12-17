@@ -122,6 +122,18 @@ class CSensorService : public CBase
 		 */		 
 		 IMPORT_C void GetChannelPropertyL(const TSensrvChannelInfo& aChannelInfo, 
 										   RSensrvPropertyList& aChannelPropertyList);
+		 /**
+          * Get Scale Factor
+          * @since S60 v5.0
+          * @param aChannelInfo refers to channel whose property will be obtained
+          * @param aMeasureRange will be populated  with obtained channel properties
+          * @param aScaleRange will be populated  with obtained channel properties
+          * @leave KErrNotFound - No open channel with that id for this client found,
+          *                    or property does not exist.
+          */      
+		 IMPORT_C void GetScaleFactorL(const TSensrvChannelInfo& aChannelInfo, 
+		                                  TSensrvProperty& aMeasureRange,
+										  TSensrvProperty& aScaleRange);
 
 	private:
 	 	/**

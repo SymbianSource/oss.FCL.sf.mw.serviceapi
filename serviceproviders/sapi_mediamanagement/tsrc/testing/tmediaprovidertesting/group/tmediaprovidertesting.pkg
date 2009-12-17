@@ -47,7 +47,7 @@
 ; None
 
 ; Install files
-"\epoc32\release\armv5\urel\tmediaprovidertesting.dll"   -   "!:\Sys\Bin\tmediaprovidertesting.dll"
+"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tmediaprovidertesting.dll"   -   "!:\Sys\Bin\tmediaprovidertesting.dll"
 
 ;cfg files
 "..\conf\tmediamgmttest_image.cfg" - 				"!:\TestFramework\tmediamgmttest_image.cfg"

@@ -33,7 +33,7 @@ UID             0x1000008D 0x2000CFB9
 
 DEFFILE        appmanagerservice.def
 
-VERSION		1.1
+VERSION		1.2
 
 
 

@@ -32,8 +32,8 @@
 ;SAPI Binaries to Install
 
 ;Mediaservice binaries
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\mediamanagementservice.dll"-"C:\sys\bin\mediamanagementservice.dll"
-"..\..\..\..\..\..\..\epoc32\release\armv5\urel\tmediamgmttest.dll"-"C:\sys\bin\tmediamgmttest.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\mediamanagementservice.dll"-"C:\sys\bin\mediamanagementservice.dll"
+"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tmediamgmttest.dll"-"C:\sys\bin\tmediamgmttest.dll"
 
 
 ;ini file

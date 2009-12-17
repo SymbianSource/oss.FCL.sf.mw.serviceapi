@@ -83,6 +83,19 @@ void MLogCallback :: HandleNotifyL(TUint aTransid ,TUint aStatus , CLogIter *ite
 	
 	
 }
+
+void MLogCallback :: HandleRequestL(TUint aTransid ,TUint aStatus , CLogsEvent *aEvent )
+{
+ 	++count ;
+ 	 
+    
+    delete aEvent ;
+	if(count > 0)
+		{
+		 iScheduler->AsyncStop() ;
+		}
+	    
+}
  
 
 

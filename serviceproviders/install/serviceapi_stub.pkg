@@ -18,7 +18,7 @@
 &EN
 
 ;Header
-#{"Platform Service Extensions"},(0x200100BE),1,1,0, TYPE=SA
+#{"Platform Service Extensions"},(0x200100BE),2,0,0, TYPE=SA
 
 ;Localised Vendor name
 %{"Nokia"}

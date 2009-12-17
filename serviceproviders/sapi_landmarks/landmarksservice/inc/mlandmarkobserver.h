@@ -19,9 +19,10 @@
 #ifndef __MLANDMARKOBSERVER_H__
 #define __MLANDMARKOBSERVER_H__
 
+#include <EPos_Landmarks.h>
 // FORWARD DECLARATION
 class CPosLmItemIterator;
-
+class CLandmarkHandler;
 /**
  * MLandmarkObserver
  * This class is an observer interface.
@@ -40,7 +41,7 @@ public:
 	 * @param aDatabaseUri The uri of the database on which the iterator can be used.
 	 */
 	virtual void HandleLandmarkItemsL( CPosLmItemIterator* aIterator,
-			TInt32 aTransactionId, TInt aError, const TDesC& aDatabaseUri ) = 0;
+			TInt32 aTransactionId, TInt aError, CLandmarkHandler* aHandler ) = 0;
 
 	/**
 	 * HandleCategoryItemsL.
@@ -52,7 +53,13 @@ public:
 	 * @param aDatabaseUri The uri of the database on which the iterator can be used.
 	 */
 	virtual void HandleCategoryItemsL( CPosLmItemIterator* aIterator,
-			TInt32 aTransactionId, TInt aError, const TDesC& aDatabaseUri ) = 0;
+			TInt32 aTransactionId, TInt aError, CLandmarkHandler* aHandler ) = 0;
+	
+	virtual void HandleAddItemsL( TPosLmItemId aId,
+				TInt32 aTransactionId, TInt aError ) = 0;
+	
+	virtual void HandleItemsL( TInt32 aTransactionId, TInt aError ) = 0;
+	
 	}
 ;
 

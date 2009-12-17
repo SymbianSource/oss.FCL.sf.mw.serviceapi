@@ -39,7 +39,7 @@ RESOURCE REGISTRY_INFO theInfo
                     version_no = 1;
                     display_name = "Application Manager Service Provider";
                     default_data = "Service.AppManager";
-                    opaque_data = "IAppManager" "::" "<meta><cap>RUD</cap><ver>1.1</ver><res>appmanagerprovidername.rsc</res></meta>";
+                    opaque_data = "IAppManager" "::" "<meta><cap>RUD</cap><ver>2.0</ver><res>appmanagerprovidername.rsc</res></meta>";
                     }
                 };
             }

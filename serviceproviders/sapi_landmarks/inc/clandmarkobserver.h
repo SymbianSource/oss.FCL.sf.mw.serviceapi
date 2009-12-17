@@ -46,23 +46,28 @@ NONSHARABLE_CLASS(CLandmarkObserver): public CBase, public MLandmarkObserver
         */
         static CLandmarkObserver* NewL( CLandmarkInterface* aLmIface );
 
-        /**
-        * ~CLandmarkObserver
-        * Destructor.
-        */
-        ~CLandmarkObserver() {}
+	/**
+	 * ~CLandmarkObserver
+	 * Destructor.
+	 */
+	~CLandmarkObserver();
 
     public:// from MLandmarkObserver
 
-        // HandleLandmarkItemsL.
-        // Notifies client of state change and calls MLiwNotifyCallback::HandleNotifyL().
-        void HandleLandmarkItemsL( CPosLmItemIterator* aIterator,
-            TInt32 aTransactionId, TInt aError, const TDesC& aDatabaseUri );
+	// HandleLandmarkItemsL.
+	// Notifies client of state change and calls MLiwNotifyCallback::HandleNotifyL().
+	void HandleLandmarkItemsL(CPosLmItemIterator* aIterator,
+			TInt32 aTransactionId, TInt aError, CLandmarkHandler* aHandler);
 
-        // HandleCategoryItemsL.
-        // Notifies client of state change and calls MLiwNotifyCallback::HandleNotifyL().
-        void HandleCategoryItemsL( CPosLmItemIterator* aIterator,
-            TInt32 aTransactionId, TInt aError, const TDesC& aDatabaseUri );
+	// HandleCategoryItemsL.
+	// Notifies client of state change and calls MLiwNotifyCallback::HandleNotifyL().
+	void HandleCategoryItemsL(CPosLmItemIterator* aIterator,
+			TInt32 aTransactionId, TInt aError, CLandmarkHandler* aHandler);
+
+	void HandleAddItemsL(TPosLmItemId aId, TInt32 aTransactionId, TInt aError);
+
+	void HandleItemsL(TInt32 aTransactionId, TInt aError);
+
 
     private: // Constructors
 
@@ -80,6 +85,11 @@ NONSHARABLE_CLASS(CLandmarkObserver): public CBase, public MLandmarkObserver
         * Handle to CLandmarkInterface instance.
         */
         CLandmarkInterface* iLmIface;
+	/**
+	 * iId
+	 * The id of the added/modified landmark/category.
+	 */
+	HBufC* iId;
     };
 
 #endif // __CLANDMARKOBSERVER_H__

@@ -32,8 +32,8 @@
 ;SAPI Binaries to Install
 
 ;Sensorservice binaries
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\sensorservice.dll"-"C:\sys\bin\contactservice.dll"
-"..\..\..\..\..\..\..\epoc32\release\armv5\urel\tsensorservice_test.dll"-"C:\sys\bin\tsensorservice_test.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\sensorservice.dll"-"C:\sys\bin\contactservice.dll"
+"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tsensorservice_test.dll"-"C:\sys\bin\tsensorservice_test.dll"
 
 
 ;ini file

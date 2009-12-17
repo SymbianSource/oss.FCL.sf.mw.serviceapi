@@ -32,8 +32,8 @@
 ;SAPI Binaries to Install
 
 ;Loggingservice binaries
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\loggingservice.dll"-"C:\sys\bin\loggingservice.dll"
-"..\..\..\..\..\..\..\epoc32\release\armv5\urel\tlogprovidertest.dll"-"C:\sys\bin\tlogprovidertest.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\loggingservice.dll"-"C:\sys\bin\loggingservice.dll"
+"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tlogprovidertest.dll"-"C:\sys\bin\tlogprovidertest.dll"
 
 
 ;ini file

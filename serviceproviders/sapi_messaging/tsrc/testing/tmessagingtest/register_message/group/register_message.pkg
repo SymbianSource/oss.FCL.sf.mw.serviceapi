@@ -43,14 +43,14 @@
 :"Nokia Corporation"
 
 ;INI FILE
-  "../init/testframework.ini"    -   "c:\testframework\testframework.ini"
+  "..\init\testframework.ini"    -   "c:\testframework\testframework.ini"
   
 ;CFG FILES
-  "../conf/register_message.cfg"        -   "c:\testframework\register_message.cfg"
+  "..\conf\register_message.cfg"        -   "c:\testframework\register_message.cfg"
 
-;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\messagingservice.dll"-"C:\sys\bin\messagingservice.dll"  
+;"..\..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\messagingservice.dll"-"C:\sys\bin\messagingservice.dll"  
 ;TEST DLL
-  "..\..\..\..\..\..\..\..\..\epoc32\release\ARMV5\urel\register_message.dll"           -   "!:\Sys\Bin\register_message.dll"
+  "..\..\..\..\..\..\..\..\..\..\epoc32\release\ARMV5\urel\register_message.dll"           -   "!:\Sys\Bin\register_message.dll"
     
 
   

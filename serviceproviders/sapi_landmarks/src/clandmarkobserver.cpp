@@ -22,6 +22,7 @@
 #include "clandmarkobserver.h"
 #include "clandmarkiterable.h"
 #include "clandmarkcategoryiterable.h"
+#include "clandmarkmanagehandlers.h"
 #include "landmarkinterface.h"
 #include "landmarkliwparams.hrh"
 #include "../../inc/serviceerrno.h"
@@ -49,6 +50,10 @@ CLandmarkObserver::CLandmarkObserver( CLandmarkInterface* aLmIface )
     {
     }
 
+CLandmarkObserver::~CLandmarkObserver()
+	{
+	delete iId;
+	}
 // -----------------------------------------------------------------------------
 // CLandmarkObserver::HandleCategoryItems( CPosLmItemIterator* aIterator, 
 // 		TInt32 aTransactionId, TInt aError, const TDesC aDatabaseUri )
@@ -56,7 +61,7 @@ CLandmarkObserver::CLandmarkObserver( CLandmarkInterface* aLmIface )
 // -----------------------------------------------------------------------------
 //
 void CLandmarkObserver::HandleLandmarkItemsL( CPosLmItemIterator* aIterator, 
-		TInt32 aTransactionId, TInt aError, const TDesC& aDatabaseUri )
+		TInt32 aTransactionId, TInt aError, CLandmarkHandler* aHandler )
     {
     TInt SapiErr = SErrNone;
     //retrieve callback
@@ -81,9 +86,12 @@ void CLandmarkObserver::HandleLandmarkItemsL( CPosLmItemIterator* aIterator,
     else
     	{
     	//instantiate CLandmarkIterable
-        CLiwIterable* iterable = CLandmarkIterable::NewL(aIterator,aDatabaseUri);
-        CleanupClosePushL(*iterable);
+    	TPtrC dbUri;
+    	aHandler->GetDatabaseUri (dbUri );
+    	CLandmarkIterable* iterable = CLandmarkIterable::NewL(aIterator,dbUri);
+        iterable->PushL();
         //pack to aOutParamList
+        iterable->SetHandler(aHandler);
         eventParamList->AppendL(TLiwGenericParam(KErrorCode,TLiwVariant((TInt32)SapiErr)));
         eventParamList->AppendL(TLiwGenericParam(KReturnValue,TLiwVariant(iterable)));
         callback->HandleNotifyL(aTransactionId,KLiwEventCompleted,*eventParamList,*inParamList);
@@ -100,7 +108,7 @@ void CLandmarkObserver::HandleLandmarkItemsL( CPosLmItemIterator* aIterator,
 // -----------------------------------------------------------------------------
 //
 void CLandmarkObserver::HandleCategoryItemsL( CPosLmItemIterator* aIterator, 
-		TInt32 aTransactionId, TInt aError, const TDesC& aDatabaseUri )
+		TInt32 aTransactionId, TInt aError, CLandmarkHandler* aHandler )
     {
     TInt SapiErr = SErrNone;
     //retrieve callback
@@ -125,9 +133,12 @@ void CLandmarkObserver::HandleCategoryItemsL( CPosLmItemIterator* aIterator,
     else
     	{
     	//instantiate CLandmarkIterable
-        CLiwIterable* iterable = CLandmarkCategoryIterable::NewL(aIterator,aDatabaseUri);
-        CleanupClosePushL(*iterable);
+    	TPtrC dbUri;
+        aHandler->GetDatabaseUri (dbUri );
+        CLandmarkCategoryIterable* iterable = CLandmarkCategoryIterable::NewL(aIterator,dbUri);
+        iterable->PushL();
         //pack to aOutParamList
+        iterable->SetHandler(aHandler);
         eventParamList->AppendL(TLiwGenericParam(KErrorCode,TLiwVariant((TInt32)SapiErr)));
         eventParamList->AppendL(TLiwGenericParam(KReturnValue,TLiwVariant(iterable)));
         callback->HandleNotifyL(aTransactionId,KLiwEventCompleted,*eventParamList,*inParamList);
@@ -137,4 +148,84 @@ void CLandmarkObserver::HandleCategoryItemsL( CPosLmItemIterator* aIterator,
     CleanupStack::PopAndDestroy(eventParamList);
     }
 
+void CLandmarkObserver::HandleAddItemsL(TPosLmItemId aId,
+		TInt32 aTransactionId, TInt aError)
+	{
+	if (iId)
+		{
+		delete iId;
+		iId = NULL;
+		}
+	TInt SapiErr = SErrNone;
+	//retrieve callback
+	MLiwNotifyCallback* callback = iLmIface->Callback(aTransactionId);
+	if (!callback)
+		{
+		//how to flag error
+		return;
+		}
+	//Create param list
+	CLiwGenericParamList* eventParamList = CLiwGenericParamList::NewL();
+	CleanupStack::PushL(eventParamList);
+	CLiwGenericParamList* inParamList = CLiwGenericParamList::NewL();
+	CleanupStack::PushL(inParamList);
+
+	if (aError != KErrNone)
+		{
+		SapiErr = iLmIface->SapiError(aError);
+		eventParamList->AppendL(TLiwGenericParam(KErrorCode, TLiwVariant(
+				(TInt32) SapiErr)));
+		callback->HandleNotifyL(aTransactionId, KLiwEventError,
+				*eventParamList, *inParamList);
+		}
+	else
+		{
+		iId = HBufC::NewL(KMaxIDStringLength);
+		iId->Des().Num(aId, EDecimal);
+		//pack to aOutParamList
+		eventParamList->AppendL(TLiwGenericParam(KErrorCode, TLiwVariant(
+				(TInt32) SapiErr)));
+		eventParamList->AppendL(TLiwGenericParam(KReturnValue, TLiwVariant(iId)));
+		callback->HandleNotifyL(aTransactionId, KLiwEventCompleted,
+				*eventParamList, *inParamList);
+		}
+	CleanupStack::PopAndDestroy(inParamList);
+	CleanupStack::PopAndDestroy(eventParamList);
+	}
+
+void CLandmarkObserver::HandleItemsL(TInt32 aTransactionId, TInt aError)
+	{
+	TInt SapiErr = SErrNone;
+	//retrieve callback
+	MLiwNotifyCallback* callback = iLmIface->Callback(aTransactionId);
+	if (!callback)
+		{
+		//how to flag error
+		return;
+		}
+	//Create param list
+	CLiwGenericParamList* eventParamList = CLiwGenericParamList::NewL();
+	CleanupStack::PushL(eventParamList);
+	CLiwGenericParamList* inParamList = CLiwGenericParamList::NewL();
+	CleanupStack::PushL(inParamList);
+
+	if (aError != KErrNone)
+		{
+		SapiErr = iLmIface->SapiError(aError);
+		eventParamList->AppendL(TLiwGenericParam(KErrorCode, TLiwVariant(
+				(TInt32) SapiErr)));
+		callback->HandleNotifyL(aTransactionId, KLiwEventError,
+				*eventParamList, *inParamList);
+		}
+	else
+		{
+		//pack to aOutParamList
+		eventParamList->AppendL(TLiwGenericParam(KErrorCode, TLiwVariant(
+				(TInt32) SapiErr)));
+		callback->HandleNotifyL(aTransactionId, KLiwEventCompleted,
+				*eventParamList, *inParamList);
+		}
+	CleanupStack::PopAndDestroy(inParamList);
+	CleanupStack::PopAndDestroy(eventParamList);
+	}
 //End of file

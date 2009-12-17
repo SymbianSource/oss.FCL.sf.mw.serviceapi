@@ -271,6 +271,17 @@ class CLogsFilter : public CBase
             {
             return iLogFilter->Number() ;
             }
+        
+        /**
+        * Set StartTime for the event filter
+        *
+        * @param aStartTime, StartTime to be set
+        */
+
+        inline void SetStartTime(const TTime& aStartTime)
+            {
+            iLogFilter->SetStartTime(aStartTime) ;
+            }
 
         /**
         * Set EndTime for the event filter

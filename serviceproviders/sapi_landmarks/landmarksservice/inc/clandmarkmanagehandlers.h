@@ -127,6 +127,11 @@ public: // New methods
 	 */
 	static CLandmarkHandler* CreateL( const TDesC& aDatabaseUri );
 
+	
+	TInt DecRef();
+	
+	void IncRef();
+	
 	/**
 	 * ~CLandmarkHandler
 	 * Destructor.
@@ -207,6 +212,7 @@ private: // Data members
 	 * The handle to the CPosLandmarkSearch of the database.
 	 */
 	CPosLandmarkSearch* iLandmarkSearchHandle;
+	TInt iRefCount;
 	};
 
 #include "clandmarkhandler.inl"

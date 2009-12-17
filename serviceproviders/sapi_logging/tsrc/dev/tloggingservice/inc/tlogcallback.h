@@ -35,6 +35,8 @@ NONSHARABLE_CLASS (MLogCallback) :public MLoggingCallback
 								   
 	 MLogCallback() ;
 	 
+	 void HandleRequestL(TUint aTransid ,TUint aStatus , CLogsEvent *aEvent )  ;
+	 
 	 //---------------------------------------------------------
 	 // Starts the wait loop
 	 //---------------------------------------------------------

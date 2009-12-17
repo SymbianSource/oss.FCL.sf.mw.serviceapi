@@ -54,3 +54,14 @@ inline void CLandmarkHandler::GetDatabaseUri( TPtrC& aDatabaseUri ) const
 	{
 	aDatabaseUri.Set (iDatabaseUri->Des ( ) );
 	}
+inline TInt CLandmarkHandler::DecRef() 
+    {
+    iRefCount--;
+    return iRefCount;
+    
+    }
+
+inline void CLandmarkHandler::IncRef() 
+    {
+    iRefCount++;
+    }

@@ -32,8 +32,8 @@
 ;SAPI Binaries to Install
 
 ;Calendarservice binaries
-;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\Calendarservice.dll"-"C:\sys\bin\Calendarservice.dll"
-"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tcalendaradditer1.dll"-"C:\sys\bin\tcalendaradditer1.dll"
+;"..\..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\Calendarservice.dll"-"C:\sys\bin\Calendarservice.dll"
+"..\..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tcalendaradditer1.dll"-"C:\sys\bin\tcalendaradditer1.dll"
 
 
 ;ini file

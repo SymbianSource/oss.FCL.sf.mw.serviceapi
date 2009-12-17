@@ -32,11 +32,11 @@
 ;SAPI Binaries to Install
 
 
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\appmanagerservice.dll"-"C:\sys\bin\appmanagerservice.dll"
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\appmanagerprovider.dll"-"C:\sys\bin\appmanagerprovider.dll"
-"..\..\..\..\..\..\..\epoc32\release\armv5\urel\tappmanagerprovidertest.dll"-"C:\sys\bin\tappmanagerprovidertest.dll"
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\liwServiceHandler.dll"     	-"!:\sys\bin\liwServiceHandler.dll"
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\liwResolver.dll"          	-"!:\sys\bin\liwResolver.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\appmanagerservice.dll"-"C:\sys\bin\appmanagerservice.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\appmanagerprovider.dll"-"C:\sys\bin\appmanagerprovider.dll"
+"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tappmanagerprovidertest.dll"-"C:\sys\bin\tappmanagerprovidertest.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\liwServiceHandler.dll"     	-"!:\sys\bin\liwServiceHandler.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\liwResolver.dll"          	-"!:\sys\bin\liwResolver.dll"
 
 ;ini file
 "..\init\Testframework.ini"-"c:\Testframework\Testframework.ini"
@@ -45,15 +45,15 @@
 "..\conf\tappmanagerprovidertest.cfg"-"c:\Testframework\tappmanagerprovidertest.cfg"
 
 ; SAPI resource files
-;"..\..\..\..\..\..\..\epoc32\data\Z\Resource\Plugins\appmanagerprovider.rsc"-"C:\resource\plugins\appmanagerprovider.rsc"
+;"..\..\..\..\..\..\..\..\..\epoc32\data\Z\Resource\Plugins\appmanagerprovider.rsc"-"C:\resource\plugins\appmanagerprovider.rsc"
 
-;"..\..\..\..\..\..\..\epoc32\data\z\resource\liwServiceHandler.RSC"    			-"!:\resource\liwServiceHandler.RSC"
-;"..\..\..\..\..\..\..\epoc32\data\z\resource\plugins\liwResolver.RSC"				-"!:\resource\plugins\liwResolver.RSC"
+;"..\..\..\..\..\..\..\..\..\epoc32\data\z\resource\liwServiceHandler.RSC"    			-"!:\resource\liwServiceHandler.RSC"
+;"..\..\..\..\..\..\..\..\..\epoc32\data\z\resource\plugins\liwResolver.RSC"				-"!:\resource\plugins\liwResolver.RSC"
 
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\RTSecMgrServer.exe"          -"!:\sys\bin\RTSecMgrServer.exe"
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\RTSecMgrUtil.dll"          -"!:\sys\bin\RTSecMgrUtil.dll"
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\RTSecMgrClient.dll"          -"!:\sys\bin\RTSecMgrClient.dll"
-;"..\..\..\..\..\..\..\epoc32\data\Z\resource\apps\RTSecManager.rsc"     - "!:\resource\RTSecManager.rsc"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\RTSecMgrServer.exe"          -"!:\sys\bin\RTSecMgrServer.exe"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\RTSecMgrUtil.dll"          -"!:\sys\bin\RTSecMgrUtil.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\RTSecMgrClient.dll"          -"!:\sys\bin\RTSecMgrClient.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\data\Z\resource\apps\RTSecManager.rsc"     - "!:\resource\RTSecManager.rsc"
 
 "..\data\c\hello.txt"  - "C:\Data\Hello.txt"
 "..\data\c\images\AppTest1.jpg"  - "C:\Data\Images\AppTest1.jpg"

@@ -34,6 +34,8 @@ NONSHARABLE_CLASS (MLogCallback):public MLoggingCallback
 	 void HandleNotifyL(TUint aTransid ,TUint aStatus , CLogIter *iter )  ;
 	 
 	 void CancelNotifyL(TUint aTransid);
+	 
+	 void HandleRequestL( TUint aTransid, TUint aStatus, CLogsEvent *aEvent ) ;
 								   
 	 MLogCallback() ;
 	 

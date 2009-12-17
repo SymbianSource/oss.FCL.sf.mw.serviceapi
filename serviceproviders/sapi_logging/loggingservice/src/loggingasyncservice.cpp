@@ -21,6 +21,91 @@
 #include "loggingfilter.h"
 #include "logiter.h"
 
+// ---------------------------------------------------------------------------
+// Two-phased constructor.
+// ---------------------------------------------------------------------------
+//
+CAsyncWaiter* CAsyncWaiter::NewL(TInt aPriority)
+    {
+    CAsyncWaiter* self = new(ELeave) CAsyncWaiter(aPriority);
+    return self;
+    }
+
+// ---------------------------------------------------------------------------
+// Two-phased constructor.
+// ---------------------------------------------------------------------------
+//
+CAsyncWaiter* CAsyncWaiter::NewLC(TInt aPriority)
+    {
+    CAsyncWaiter* self = new(ELeave) CAsyncWaiter(aPriority);
+    CleanupStack::PushL(self);
+    return self;
+    }
+
+// ---------------------------------------------------------------------------
+// Two-phased constructor.
+// ---------------------------------------------------------------------------
+//
+CAsyncWaiter::CAsyncWaiter(TInt aPriority) : CActive(aPriority)
+    {
+    CActiveScheduler::Add(this);
+    }   
+
+// ---------------------------------------------------------------------------
+// Destructor.
+// ---------------------------------------------------------------------------
+//
+CAsyncWaiter::~CAsyncWaiter()
+    {
+    Cancel();
+    }
+
+// ---------------------------------------------------------------------------
+// Starts the active scheduler.
+// ---------------------------------------------------------------------------
+//
+void CAsyncWaiter::StartAndWait()
+    {
+    iStatus = KRequestPending;
+    SetActive();
+    iWait.Start();
+    }
+
+// ---------------------------------------------------------------------------
+// Returns the error
+// ---------------------------------------------------------------------------
+//
+TInt CAsyncWaiter::Result() const
+    {
+    return iError;
+    }
+
+// ---------------------------------------------------------------------------
+// Inherited from CActive class 
+// ---------------------------------------------------------------------------
+//
+void CAsyncWaiter::RunL()
+    {
+    iError = iStatus.Int();
+    iWait.AsyncStop();
+    }
+
+// ---------------------------------------------------------------------------
+// Inherited from CActive class 
+// ---------------------------------------------------------------------------
+//
+void CAsyncWaiter::DoCancel()
+    {
+    iError = KErrCancel;
+    if( iStatus == KRequestPending )
+        {
+        TRequestStatus* s=&iStatus;
+        User::RequestComplete( s, KErrCancel );
+        }
+
+    iWait.AsyncStop();
+    }
+
 /**
 * Default Constructor Method
 */
@@ -35,6 +120,8 @@ CLogAsyncService :: CLogAsyncService(): CActive(EPriorityStandard)
 CLogAsyncService :: ~CLogAsyncService()
     {
     Cancel();
+    delete iFilter;
+    delete iLogViewEvent;
     delete iLogClient ;
     iFs.Close() ;
     }
@@ -70,6 +157,8 @@ void CLogAsyncService :: ConstructL( MLoggingCallback* aCallback )
     iCallback = aCallback;
     iIter = NULL ;
     iTask = ESleep;
+    iLogViewEvent = CLogViewEvent::NewL(*iLogClient);
+    iFilter = CLogFilter::NewL();
     DoInitialiseL() ;
     }
 
@@ -156,8 +245,17 @@ void CLogAsyncService :: RunCmdL()
             }
         case ENotification:
             {
+            CAsyncWaiter* waiter = CAsyncWaiter::NewL();
+            CleanupStack::PushL(waiter);
+            TBool t = iLogViewEvent->SetFilterL(*iFilter,waiter->iStatus);
+            waiter->StartAndWait();
+            iLogViewEvent->FirstL(waiter->iStatus);
+            waiter->StartAndWait();
+            CleanupStack::PopAndDestroy(waiter);
             NotifyUpdates( iTransId, iInterval );
-            iCallback->HandleNotifyL( iTransId, KErrNone , NULL ) ;
+            CLogsEvent* resultNotification = CLogsEvent::NewL();
+            resultNotification->SetEvent(iLogViewEvent->Event());
+            iCallback->HandleReqeustL( iTransId, KErrNone , resultNotification ) ;
             break;
             }
         

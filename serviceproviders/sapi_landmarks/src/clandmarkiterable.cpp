@@ -22,6 +22,7 @@
 #include <EPos_CPosLmItemIterator.h>
 #include <lbsposition.h>
 #include "clandmarkiterable.h"
+#include "clandmarkmanagehandlers.h"
 #include "landmarkliwparams.hrh"
 
 // ============================ MEMBER FUNCTIONS ===============================
@@ -79,9 +80,18 @@ CLandmarkIterable::CLandmarkIterable( CPosLmItemIterator* aIterator )
     delete iLandmarkId;
     iCategoryIds.ResetAndDestroy();
     iCategoryIds.Close();
+    if (iHandler && !iHandler->DecRef())
+        {
+        delete iHandler;
+        }
     ReleaseLandmarkResources();
     }
 
+ void CLandmarkIterable::SetHandler(CLandmarkHandler* aHandler)
+     {
+     iHandler = aHandler;
+     iHandler->IncRef();
+     }
 // -----------------------------------------------------------------------------
 // CLandmarkIterable::Reset()
 // Resets the iterator. NextL has to be called to retrieve the first item.
@@ -249,6 +259,10 @@ TBool CLandmarkIterable::NextL( TLiwVariant& aEntry )
                 {
                 fieldMap->InsertL(KLandmarkTelephone,variant);
                 }
+            if ( EPositionFieldState == fieldId)
+                {
+                fieldMap->InsertL(KLandmarkstate,variant);
+                }
             fieldId = iLandmark->NextPositionFieldId(fieldId);
             }
         landmarkMap->InsertL(KLandmarkFields,TLiwVariant(fieldMap));
@@ -262,6 +276,10 @@ TBool CLandmarkIterable::NextL( TLiwVariant& aEntry )
     CleanupStack::PopAndDestroy (landmarkMap );
     
     return ETrue;
+    }
+void CLandmarkIterable::Close()
+    {
+    DecRef();
     }
 
 //end of file

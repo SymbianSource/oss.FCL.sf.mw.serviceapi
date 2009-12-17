@@ -295,66 +295,53 @@ void CLandmarkInterface::SwitchCmdL( const TDesC8& aCmdName,
         User::Leave (SErrInvalidServiceArgument );
         }
 
-    if ( !aCmdName.CompareF(KCancel) && (KLiwOptCancel & aCmdOptions) )
-        {
-        Cancel (aInParamList, aOutParamList, aCmdOptions, aCallback );
-        }
-    else
-        if ( !aCmdName.CompareF(KGetList) )
-            {
-            GetListL (aInParamList, aOutParamList, aCmdOptions, aCallback );
-            }
-        else
-            //since no other APIs support async return error if callback is 
-            //provide
-            if ( aCallback )
-                {
-                iErrMsg = KAsyncNotSupported().AllocL ( );
-                User::Leave (SErrInvalidServiceArgument );
-                }
-            else
-                if ( !aCmdName.CompareF(KAdd) )
-                    {
-                    AddL (aInParamList, aOutParamList, aCmdOptions, aCallback );
-                    }
-                else
-                    if ( !aCmdName.CompareF(KRemove) )
-                        {
-                        RemoveL (aInParamList, aOutParamList, aCmdOptions,
-                                aCallback );
-                        }
-                    else
-                        if ( !aCmdName.CompareF(KOrganise) )
-                            {
-                            OrganiseL (aInParamList, aOutParamList,
-                                    aCmdOptions, aCallback );
-                            }
-                        else
-                            if ( !aCmdName.CompareF(KImport) )
-                                {
-                                ImportL (aInParamList, aOutParamList,
-                                        aCmdOptions, aCallback );
-                                }
-                            else
-                                if ( !aCmdName.CompareF(KExport) )
-                                    {
-                                    ExportL (aInParamList, aOutParamList,
-                                            aCmdOptions, aCallback );
-                                    }
-                                else
-                                    if ( !aCmdName.CompareF(KNew) )
-                                        {
-                                        NewTemplateL (aInParamList,
-                                                aOutParamList, aCmdOptions,
-                                                aCallback );
-                                        }
-                                    else
-                                        {
-                                        // invalid command return error in outparam list
-                                        iErrMsg = KInvalidServiceCmd().AllocL ( );
-                                        User::Leave (SErrInvalidServiceArgument );
-                                        }
-    }
+	if (!aCmdName.CompareF(KCancel) && (KLiwOptCancel & aCmdOptions))
+		{
+		Cancel(aInParamList, aOutParamList, aCmdOptions, aCallback);
+		}
+	else if (!aCmdName.CompareF(KGetList))
+		{
+		GetListL(aInParamList, aOutParamList, aCmdOptions, aCallback);
+		}
+	else if (!aCmdName.CompareF(KAdd))
+		{
+		AddL(aInParamList, aOutParamList, aCmdOptions, aCallback);
+		}
+	else if (!aCmdName.CompareF(KRemove))
+		{
+		RemoveL(aInParamList, aOutParamList, aCmdOptions, aCallback);
+		}
+	else if (!aCmdName.CompareF(KOrganise))
+		{
+		OrganiseL(aInParamList, aOutParamList, aCmdOptions, aCallback);
+		}
+	else if (!aCmdName.CompareF(KImport))
+		{
+		ImportL(aInParamList, aOutParamList, aCmdOptions, aCallback);
+		}
+	else if (!aCmdName.CompareF(KExport))
+		{
+		ExportL(aInParamList, aOutParamList, aCmdOptions, aCallback);
+		}
+	else
+	//since no other APIs support async return error if callback is 
+	//provide
+	if (aCallback)
+		{
+		iErrMsg = KAsyncNotSupported().AllocL();
+		User::Leave(SErrInvalidServiceArgument);
+		}
+	else if (!aCmdName.CompareF(KNew))
+		{
+		NewTemplateL(aInParamList, aOutParamList, aCmdOptions, aCallback);
+		}
+	else
+		{
+		// invalid command return error in outparam list
+		iErrMsg = KInvalidServiceCmd().AllocL();
+		User::Leave(SErrInvalidServiceArgument);
+		}
+	}
 
 // ---------------------------------------------------------------------------
 // CLandmarkInterface::GetListL(const CLiwGenericParamList& aInParamList,
@@ -437,18 +424,18 @@ void CLandmarkInterface::GetListL( const CLiwGenericParamList& aInParamList,
 // This function calls the appropriate functions based on the content type.
 // ---------------------------------------------------------------------------
 //
-void CLandmarkInterface::AddL( const CLiwGenericParamList& aInParamList,
-        CLiwGenericParamList& aOutParamList, TUint /*aCmdOptions*/,
-        MLiwNotifyCallback* /*aCallback*/)
+void CLandmarkInterface::AddL(const CLiwGenericParamList& aInParamList,
+		CLiwGenericParamList& aOutParamList, TUint aCmdOptions,
+		MLiwNotifyCallback* aCallback)
     {
-    //Input param List must have contentType and data specified
-    if ( aInParamList.Count ( )< EIndex2 )
-        {
-        ErrorMessageL (KAdd, KArgsMissing );
-        iErrMsg->Des().Append (KMissing );
-        //leave since argument is improper
-        User::Leave (SErrMissingArgument );
-        }
+	//Input param List must have contentType and data specified
+	if (aInParamList.Count() < EIndex2)
+		{
+		ErrorMessageL(KAdd, KArgsMissing);
+		iErrMsg->Des().Append(KMissing);
+		//leave since argument is improper
+		User::Leave(SErrMissingArgument);
+		}
 
     //position to start search in input params
     TInt index = 0;
@@ -471,25 +458,24 @@ void CLandmarkInterface::AddL( const CLiwGenericParamList& aInParamList,
     ValidateParamL (KAdd, KContentType, variant, LIW::EVariantTypeDesC );
     TPtrC contentType(variant.AsDes ( ));
 
-    //Content type is Landmark
-    if ( contentType == KLandmark )
-        {
-        AddLandmarksL (aInParamList,aOutParamList );
-        }
-    //Content type is Category.
-    else
-        if ( contentType == KCategory )
-            {
-            AddCategoryL (aInParamList,aOutParamList );
-            }
-        else
-            {
-            ErrorMessageL (KAdd, KContentType );
-            iErrMsg->Des().Append (KInvalid );
-            //leave since argument is improper
-            User::Leave (SErrInvalidServiceArgument );
-            }
-    }
+	//Content type is Landmark
+	if (contentType == KLandmark)
+		{
+		AddLandmarksL(aInParamList, aOutParamList, aCmdOptions, aCallback);
+		}
+	//Content type is Category.
+	else if (contentType == KCategory)
+		{
+		AddCategoryL(aInParamList, aOutParamList, aCmdOptions, aCallback);
+		}
+	else
+		{
+		ErrorMessageL(KAdd, KContentType);
+		iErrMsg->Des().Append(KInvalid);
+		//leave since argument is improper
+		User::Leave(SErrInvalidServiceArgument);
+		}
+	}
 
 // ---------------------------------------------------------------------------
 // CLandmarkInterface::RemoveL(const CLiwGenericParamList& aInParamList,
@@ -499,12 +485,12 @@ void CLandmarkInterface::AddL( const CLiwGenericParamList& aInParamList,
 // This calls the appropriate service function based on the content type.
 // ---------------------------------------------------------------------------
 //
-void CLandmarkInterface::RemoveL( const CLiwGenericParamList& aInParamList,
-        CLiwGenericParamList& /*aOutParamList*/, TUint /*aCmdOptions*/,
-        MLiwNotifyCallback* /*aCallback*/)
-    {
+void CLandmarkInterface::RemoveL(const CLiwGenericParamList& aInParamList,
+		CLiwGenericParamList& aOutParamList, TUint /*aCmdOptions*/,
+		MLiwNotifyCallback* aCallback)
+	{
     //Input param List must have contentType and data specified
-    if ( aInParamList.Count ( )< EIndex2 )
+	if (aInParamList.Count() < EIndex2)
         {
         ErrorMessageL (KAdd, KArgsMissing );
         iErrMsg->Des().Append (KMissing );
@@ -562,14 +548,13 @@ void CLandmarkInterface::RemoveL( const CLiwGenericParamList& aInParamList,
         variant = param->Value ( );
         ValidateParamL (KRemove, KDataFields, variant, LIW::EVariantTypeMap );
         const CLiwMap* landmarkMap = variant.AsMap ( );
-        CleanupStack::PushL( 
-                TCleanupItem( TLiwVariant::VariantCleanup, &variant ) );
-        ValidateParamL (KRemove, KId, landmarkMap,
-                LIW::EVariantTypeDesC, ETrue, variant );
-        TPtrC lmPtr(variant.AsDes ( ));
-        TLex lmparseString(lmPtr); //Get Id as string and convert to TUint32
-        TPosLmItemId lmid;
-        TInt parseErr = lmparseString.Val (lmid, EDecimal );
+		CleanupStack::PushL(TCleanupItem(TLiwVariant::VariantCleanup, &variant));
+		ValidateParamL(KRemove, KId, landmarkMap, LIW::EVariantTypeDesC, ETrue,
+				variant);
+		TPtrC lmPtr(variant.AsDes());
+		TLex lmparseString(lmPtr); //Get Id as string and convert to TUint32
+		TPosLmItemId lmid;
+		TInt parseErr = lmparseString.Val(lmid, EDecimal);
         TBuf<KMaxIDStringLength> lmIdString(KNullDesC ( ));
         if ( !parseErr )
             {
@@ -587,37 +572,53 @@ void CLandmarkInterface::RemoveL( const CLiwGenericParamList& aInParamList,
             {
             dbUri.Set (variant.AsDes ( ) );
             }
-        iService->RemoveItemL (lmid, CLandmarkService::ELandmark, dbUri );
+		//Async Call
+		if (aCallback)
+			{
+			//Get the transaction ID
+			TInt32 transactionId(aCallback->GetTransactionID());
+			CLandmarkCallbackMap* map = new (ELeave) CLandmarkCallbackMap(
+					transactionId, aCallback);
+			CleanupStack::PushL(map);
+			iCallbackMap.AppendL(map);
+			CleanupStack::Pop(map);
+			iService->RemoveItemL(transactionId, lmid,
+					CLandmarkService::ELandmark, dbUri);
+			aOutParamList.AppendL(TLiwGenericParam(KTransactionId, TLiwVariant(
+					TInt32(transactionId))));
+			}
+		else //sync call
+			{
+			iService->RemoveItemL(lmid, CLandmarkService::ELandmark, dbUri);
+			}
         CleanupStack::PopAndDestroy(&variant);
         }
     //Content type is Category.
-    else
-        if ( contentType == KCategory )
-            {
-            index = 0;
-            if ( posBased )
-                {
-                param = &aInParamList[EIndex1];
-                }
-            else
-                {
-                param = aInParamList.FindFirst (index, KDataFields );
-                if ( !param )
-                    {
-                    ErrorMessageL (KRemove, KDataFields );
-                    iErrMsg->Des().Append (KMissing );
-                    //leave since argument is improper
-                    User::Leave (SErrMissingArgument );
-                    }
-                }
-            variant = param->Value ( );
-            ValidateParamL (KRemove, KDataFields, variant, LIW::EVariantTypeMap );
-            const CLiwMap* categoryMap = variant.AsMap ( );
-            CleanupStack::PushL( 
-                    TCleanupItem( TLiwVariant::VariantCleanup, &variant ) );
-            ValidateParamL (KRemove, KId, categoryMap,
-                    LIW::EVariantTypeDesC, ETrue, variant );
-            TPtrC catPtr(variant.AsDes ( ));
+	else if (contentType == KCategory)
+		{
+		index = 0;
+		if (posBased)
+			{
+			param = &aInParamList[EIndex1];
+			}
+		else
+			{
+			param = aInParamList.FindFirst(index, KDataFields);
+			if (!param)
+				{
+				ErrorMessageL(KRemove, KDataFields);
+				iErrMsg->Des().Append(KMissing);
+				//leave since argument is improper
+				User::Leave(SErrMissingArgument);
+				}
+			}
+		variant = param->Value();
+		ValidateParamL(KRemove, KDataFields, variant, LIW::EVariantTypeMap);
+		const CLiwMap* categoryMap = variant.AsMap();
+		CleanupStack::PushL(TCleanupItem(TLiwVariant::VariantCleanup, &variant));
+		ValidateParamL(KRemove, KId, categoryMap, LIW::EVariantTypeDesC, ETrue,
+				variant);
+		TPtrC catPtr(variant.AsDes());
             TLex catparseString(catPtr); //Get Id as string and convert to TUint32
             TPosLmItemId catid;
             TInt parseErr = catparseString.Val (catid, EDecimal );
@@ -638,7 +639,25 @@ void CLandmarkInterface::RemoveL( const CLiwGenericParamList& aInParamList,
                 {
                 dbUri.Set (variant.AsDes ( ) );
                 }
-            iService->RemoveItemL (catid, CLandmarkService::ECategory, dbUri );
+		//Async Call
+		if (aCallback)
+			{
+			//Get the transaction ID
+			TInt32 transactionId(aCallback->GetTransactionID());
+			CLandmarkCallbackMap* map = new (ELeave) CLandmarkCallbackMap(
+					transactionId, aCallback);
+			CleanupStack::PushL(map);
+			iCallbackMap.AppendL(map);
+			CleanupStack::Pop(map);
+			iService->RemoveItemL(transactionId, catid,
+					CLandmarkService::ECategory, dbUri);
+			aOutParamList.AppendL(TLiwGenericParam(KTransactionId, TLiwVariant(
+					TInt32(transactionId))));
+			}
+		else //sync call
+			{
+			iService->RemoveItemL(catid, CLandmarkService::ECategory, dbUri);
+			}
             CleanupStack::PopAndDestroy(&variant);
             }
         else
@@ -660,7 +679,7 @@ void CLandmarkInterface::RemoveL( const CLiwGenericParamList& aInParamList,
 //
 void CLandmarkInterface::ImportL( const CLiwGenericParamList& aInParamList,
         CLiwGenericParamList& aOutParamList, TUint /*aCmdOptions*/,
-        MLiwNotifyCallback* /*aCallback*/)
+        MLiwNotifyCallback* aCallback)
     {
     //Input param List must have contentType and importData specified
     if ( aInParamList.Count ( )< EIndex2 )
@@ -758,24 +777,44 @@ void CLandmarkInterface::ImportL( const CLiwGenericParamList& aInParamList,
             {
             dbUri.Set (variant.AsDes ( ) );
             }
-        CPosLmItemIterator* iterator=  NULL;
-        //call the service function for import
-        iService->ImportL (iterator, *parser, dbUri );
-        CleanupStack::PopAndDestroy (parser );
+        //Async Call
+		if (aCallback)
+			{
+			//Get the transaction ID
+			TInt32 transactionId(aCallback->GetTransactionID());
+			CLandmarkCallbackMap* map = new (ELeave) CLandmarkCallbackMap(
+					transactionId, aCallback);
+			CleanupStack::PushL(map);
+			iCallbackMap.AppendL(map);
+			CleanupStack::Pop(map);
+			iService->ImportL(transactionId, *parser, dbUri);
+			aOutParamList.AppendL(TLiwGenericParam(KTransactionId, TLiwVariant(
+					TInt32(transactionId))));
+			CleanupStack::Pop (parser );
+			}
+		else //sync call
+			{
+			CPosLmItemIterator* iterator=  NULL;
+			//call the service function for import
+			iService->ImportL (iterator, *parser, dbUri );
+			CleanupStack::PushL(iterator);
+			// if dbURI is not specified retrieve default databse URI
+			if ( dbUri == KNullDesC )
+				{
+				iService->GetDefaultDbUriL (dbUri );
+				}
+			//instantiate CLandmarkIterable
+			CLiwIterable* iterable = CLandmarkIterable::NewL (iterator, dbUri );
+			CleanupStack::Pop(iterator);
+			CleanupClosePushL(*iterable);
+			aOutParamList.AppendL (TLiwGenericParam (KReturnValue,
+					TLiwVariant (iterable ) ) );
+			CleanupStack::PopAndDestroy(iterable);
+			CleanupStack::PopAndDestroy (parser );
+			}
+        
+        
         CleanupStack::PopAndDestroy (mimeType8 );
-        CleanupStack::PushL(iterator);
-        // if dbURI is not specified retrieve default databse URI
-        if ( dbUri == KNullDesC )
-            {
-            iService->GetDefaultDbUriL (dbUri );
-            }
-        //instantiate CLandmarkIterable
-        CLiwIterable* iterable = CLandmarkIterable::NewL (iterator, dbUri );
-        CleanupStack::Pop(iterator);
-        CleanupClosePushL(*iterable);
-        aOutParamList.AppendL (TLiwGenericParam (KReturnValue,
-                TLiwVariant (iterable ) ) );
-        CleanupStack::PopAndDestroy(iterable);
         CleanupStack::PopAndDestroy(&variant);
         }
     else
@@ -796,8 +835,8 @@ void CLandmarkInterface::ImportL( const CLiwGenericParamList& aInParamList,
 // ---------------------------------------------------------------------------
 //
 void CLandmarkInterface::ExportL( const CLiwGenericParamList& aInParamList,
-        CLiwGenericParamList& /*aOutParamList*/, TUint /*aCmdOptions*/,
-        MLiwNotifyCallback* /*aCallback*/)
+        CLiwGenericParamList& aOutParamList, TUint /*aCmdOptions*/,
+        MLiwNotifyCallback* aCallback)
     {
     //Input param List must have contentType and exportData specified
     if ( aInParamList.Count ( )< EIndex2 )
@@ -867,23 +906,7 @@ void CLandmarkInterface::ExportL( const CLiwGenericParamList& aInParamList,
             //leave since argument is improper
             User::Leave (SErrInvalidServiceArgument );
 			}
-        ValidateParamL (KExport, KMimeType, exportData, LIW::EVariantTypeDesC,
-                ETrue, variant );
-		if( variant.AsDes() == KNullDesC )
-			{
-			ErrorMessageL (KExport, KMimeType );
-            iErrMsg->Des().Append (KInvalid );
-            //leave since argument is improper
-            User::Leave (SErrInvalidServiceArgument );
-			}
-        //instantiate CPosLandmarkEncoder based on mime type.
-        HBufC8* mimeType8 = 
-            CnvUtfConverter::ConvertFromUnicodeToUtf8L ( variant.AsDes ( ) );
-        CleanupStack::PushL( mimeType8 );       
-        CPosLandmarkEncoder* encoder = CPosLandmarkEncoder::NewL ( *mimeType8 );
-        CleanupStack::PushL (encoder );
-        CBufBase* exportBuffer = encoder->SetUseOutputBufferL();
-        CleanupStack::PushL(exportBuffer);
+        
         ValidateParamL (KExport, KIdList, exportData,
                 LIW::EVariantTypeList, ETrue, variant );
         const CLiwList* lmList = variant.AsList ( );
@@ -929,29 +952,69 @@ void CLandmarkInterface::ExportL( const CLiwGenericParamList& aInParamList,
             {
             dbUri.Set (variant.AsDes ( ) );
             }
-        iService->ExportL (*encoder, landmarkIdArray, dbUri );
-        ExecuteAndDeleteLD (encoder->FinalizeEncodingL ( ) );
-        //Write to file
+        ValidateParamL (KExport, KMimeType, exportData, LIW::EVariantTypeDesC,
+                        ETrue, variant );
+		if( variant.AsDes() == KNullDesC )
+			{
+			ErrorMessageL (KExport, KMimeType );
+			iErrMsg->Des().Append (KInvalid );
+			//leave since argument is improper
+			User::Leave (SErrInvalidServiceArgument );
+			}
+		//instantiate CPosLandmarkEncoder based on mime type.
+		HBufC8* mimeType8 = 
+			CnvUtfConverter::ConvertFromUnicodeToUtf8L ( variant.AsDes ( ) );
+		CleanupStack::PushL( mimeType8 );       
+		CPosLandmarkEncoder* encoder = CPosLandmarkEncoder::NewL ( *mimeType8 );
+		CleanupStack::PushL (encoder );
         ValidateParamL (KExport, KDestinationFile, exportData,
-                        LIW::EVariantTypeDesC, ETrue, variant );
-        RFs fs;
-        User::LeaveIfError(fs.Connect());
-        CleanupClosePushL(fs);
-        RFile file;
-        CleanupClosePushL(file);
-        User::LeaveIfError(file.Create(fs, variant.AsDes(), 
-                EFileShareExclusive | EFileStreamText | EFileWrite));
-        TInt size = exportBuffer->Size();
-        for( TInt i = 0; i < size; ++i )
-            {
-            file.Write(i,exportBuffer->Ptr(i));
-            }
-        CleanupStack::PopAndDestroy(&file);
-        CleanupStack::PopAndDestroy(&fs);
-        CleanupStack::PopAndDestroy (&landmarkIdArray );
-        CleanupStack::PopAndDestroy (exportBuffer);
-        CleanupStack::PopAndDestroy (encoder );
-        CleanupStack::PopAndDestroy (mimeType8 );
+							LIW::EVariantTypeDesC, ETrue, variant );
+        
+        
+        
+        //Async Call
+		if (aCallback)
+			{
+			//Get the transaction ID
+			TInt32 transactionId(aCallback->GetTransactionID());
+			CLandmarkCallbackMap* map = new (ELeave) CLandmarkCallbackMap(
+					transactionId, aCallback);
+			CleanupStack::PushL(map);
+			iCallbackMap.AppendL(map);
+			CleanupStack::Pop(map);
+			iService->ExportL(transactionId, *encoder, landmarkIdArray, 
+					variant.AsDes(), dbUri);
+			CleanupStack::Pop(encoder );
+			aOutParamList.AppendL(TLiwGenericParam(KTransactionId, TLiwVariant(
+					TInt32(transactionId))));
+			}
+		else //sync call
+			{
+			CBufBase* exportBuffer = encoder->SetUseOutputBufferL();
+			CleanupStack::PushL(exportBuffer);
+			iService->ExportL (*encoder, landmarkIdArray, dbUri );
+			ExecuteAndDeleteLD (encoder->FinalizeEncodingL ( ) );
+			//Write to file			
+			RFs fs;
+			User::LeaveIfError(fs.Connect());
+			CleanupClosePushL(fs);
+			RFile file;
+			CleanupClosePushL(file);
+			User::LeaveIfError(file.Create(fs, variant.AsDes(), 
+					EFileShareExclusive | EFileStreamText | EFileWrite));
+			TInt size = exportBuffer->Size();
+			for( TInt i = 0; i < size; ++i )
+				{
+				file.Write(i,exportBuffer->Ptr(i));
+				}
+			CleanupStack::PopAndDestroy(&file);
+			CleanupStack::PopAndDestroy(&fs);
+			CleanupStack::PopAndDestroy (exportBuffer);
+			CleanupStack::PopAndDestroy (encoder );
+			}
+		
+		CleanupStack::PopAndDestroy (mimeType8 );
+        CleanupStack::PopAndDestroy (&landmarkIdArray );       
         CleanupStack::PopAndDestroy(&variant);
         }
     else
@@ -971,9 +1034,9 @@ void CLandmarkInterface::ExportL( const CLiwGenericParamList& aInParamList,
 // This calls the appropriate service function for organising landmarks.
 // ---------------------------------------------------------------------------
 //
-void CLandmarkInterface::OrganiseL( const CLiwGenericParamList& aInParamList,
-        CLiwGenericParamList& /*aOutParamList*/, TUint /*aCmdOptions*/,
-        MLiwNotifyCallback* /*aCallback*/)
+void CLandmarkInterface::OrganiseL(const CLiwGenericParamList& aInParamList,
+		CLiwGenericParamList& aOutParamList, TUint /*aCmdOptions*/,
+		MLiwNotifyCallback* aCallback)
     {
     //Input param List must have contentType, filter and operationType specified
     if ( aInParamList.Count ( )< EIndex3 )
@@ -1121,23 +1184,50 @@ void CLandmarkInterface::OrganiseL( const CLiwGenericParamList& aInParamList,
         ValidateParamL (KOrganise, KOperationType, variant,
                 LIW::EVariantTypeDesC );
         TPtrC operationType = variant.AsDes ( );
-        if ( operationType == KAssociate )
-            {
-            iService->LinkCategoryToLandmarksL (catid, landmarkIdArray, dbUri );
-            }
-        else
-            if ( operationType == KDisassociate )
-                {
-                iService->UnlinkCategoryToLandmarksL (catid, landmarkIdArray,
-                        dbUri );
-                }
-            else
-                {
-                ErrorMessageL (KOrganise, KOperationType );
-                iErrMsg->Des().Append (KInvalid );
-                //leave since argument is improper
-                User::Leave (SErrInvalidServiceArgument );
-                }
+		if (operationType != KAssociate && operationType != KDisassociate)
+			{
+			ErrorMessageL(KOrganise, KOperationType);
+			iErrMsg->Des().Append(KInvalid);
+			//leave since argument is improper
+			User::Leave(SErrInvalidServiceArgument);
+			}
+		//Async Call
+		if (aCallback)
+			{
+			//Get the transaction ID
+			TInt32 transactionId(aCallback->GetTransactionID());
+			CLandmarkCallbackMap* map = new (ELeave) CLandmarkCallbackMap(
+					transactionId, aCallback);
+			CleanupStack::PushL(map);
+			iCallbackMap.AppendL(map);
+			CleanupStack::Pop(map);
+			if (operationType == KAssociate)
+				{
+				iService->LinkCategoryToLandmarksL(transactionId, catid,
+						landmarkIdArray, dbUri);
+				}
+			else 
+				{
+				iService->UnlinkCategoryToLandmarksL(transactionId, catid,
+						landmarkIdArray, dbUri);
+				}
+			aOutParamList.AppendL(TLiwGenericParam(KTransactionId, TLiwVariant(
+					TInt32(transactionId))));
+			}
+		else //sync call
+			{
+			if (operationType == KAssociate)
+				{
+				iService->LinkCategoryToLandmarksL(catid, landmarkIdArray,
+						dbUri);
+				}
+			else 
+				{
+				iService->UnlinkCategoryToLandmarksL(catid, landmarkIdArray,
+						dbUri);
+				}
+			}
+
         CleanupStack::PopAndDestroy(&variantDb);
         CleanupStack::PopAndDestroy (&landmarkIdArray );        
         CleanupStack::PopAndDestroy(&variant);
@@ -1395,6 +1485,35 @@ void CLandmarkInterface::GetLandmarksL(
                 	//Do whatever is default
                 	}
                 }
+            //changes for implementing CJSE 2.1 spec :categoryId
+            if ( ValidateParamL (KGetList, KCategoryIdChanged, filter,
+                               LIW::EVariantTypeDesC, EFalse, variant ) )
+               {
+               TPtrC catPtr(variant.AsDes());
+                                      
+               TPosLmItemId catid;
+               TLex catparseString(catPtr); //Get Id as string and convert to TUint32
+               TInt parseErr = catparseString.Val (catid, EDecimal );
+               if (parseErr) {
+                   ErrorMessageL (KGetList, KMaximumDistance );
+                   iErrMsg->Des().Append (KInvalid );
+                   User::Leave (KErrArgument );
+               }
+
+               TBuf<KMaxIDStringLength> catIdString(KNullDesC ( ));
+               if ( !parseErr )
+                  {
+                  catIdString.Num(catid);
+                  }
+               CPosLmCategoryCriteria* crit = CPosLmCategoryCriteria::NewLC();
+               crit->SetCategoryItemId(catid);
+               //add to the criteria
+               //Adding successfully to the criteria will pass the ownership
+               User::LeaveIfError (criteria->AddArgument (crit));
+               CleanupStack::Pop (crit);
+               }
+            
+            //CJSE Changes done 
             if ( ValidateParamL (KGetList, KCategoryName, filter,
                     LIW::EVariantTypeDesC, EFalse, variant ) )
                 {
@@ -1932,8 +2051,10 @@ void CLandmarkInterface::GetListDatabasesL(
 // This calls the appropriate service function for adding landmarks.
 // ---------------------------------------------------------------------------
 //
-void CLandmarkInterface::AddLandmarksL( const CLiwGenericParamList& aInParamList,
-        CLiwGenericParamList& aOutParamList )
+void CLandmarkInterface::AddLandmarksL(
+		const CLiwGenericParamList& aInParamList,
+		CLiwGenericParamList& aOutParamList, TUint /*aCmdOptions*/,
+		MLiwNotifyCallback* aCallback)
     {
     //position to start search in input params
     TInt index = 0;
@@ -2179,25 +2300,49 @@ void CLandmarkInterface::AddLandmarksL( const CLiwGenericParamList& aInParamList
                     variant.AsDes ( ) );
             }
         }
-    //checks if the landmark passed is to update an existing lanmark or add a
-    //new landmark.
-    if ( update )
-        {
-        iService->UpdateItemL (*landmark, dbUri );
-        }
-    else
-        {
-        lmid = iService->AddItemL (*landmark, dbUri );
-        }
-    CleanupStack::PopAndDestroy (landmark );
-    CleanupStack::PopAndDestroy(&variant);
-    CleanupStack::PopAndDestroy(&variantDb);
-    
-    iId = HBufC::NewL(KMaxIDStringLength);
-    iId->Des().Num(lmid,EDecimal);
-    aOutParamList.AppendL (TLiwGenericParam (KReturnValue,
-            TLiwVariant (iId ) ) );
-    }
+	//Async Call
+	if (aCallback)
+		{
+		//Get the transaction ID
+		TInt32 transactionId(aCallback->GetTransactionID());
+		CLandmarkCallbackMap* map = new (ELeave) CLandmarkCallbackMap(
+				transactionId, aCallback);
+		CleanupStack::PushL(map);
+		iCallbackMap.AppendL(map);
+		CleanupStack::Pop(map);
+		//checks if the landmark passed is to update an existing lanmark or add a
+		//new landmark.
+		if (update)
+			{
+			iService->UpdateItemL(transactionId, *landmark, dbUri);
+			}
+		else
+			{
+			iService->AddItemL(transactionId, *landmark, dbUri);
+			}
+		aOutParamList.AppendL(TLiwGenericParam(KTransactionId, TLiwVariant(
+				TInt32(transactionId))));
+		}
+	else //sync call
+		{
+		//checks if the landmark passed is to update an existing lanmark or add a
+		//new landmark.
+		if (update)
+			{
+			iService->UpdateItemL(*landmark, dbUri);
+			}
+		else
+			{
+			lmid = iService->AddItemL(*landmark, dbUri);
+			}
+		iId = HBufC::NewL(KMaxIDStringLength);
+		iId->Des().Num(lmid, EDecimal);
+		aOutParamList.AppendL(TLiwGenericParam(KReturnValue, TLiwVariant(iId)));
+		}
+	CleanupStack::PopAndDestroy(landmark);
+	CleanupStack::PopAndDestroy(&variant);
+	CleanupStack::PopAndDestroy(&variantDb);
+	}
 
 // ---------------------------------------------------------------------------
 // CLandmarkInterface::AddCategoryL(const CLiwGenericParamList& aInParamList)
@@ -2205,7 +2350,8 @@ void CLandmarkInterface::AddLandmarksL( const CLiwGenericParamList& aInParamList
 // ---------------------------------------------------------------------------
 //
 void CLandmarkInterface::AddCategoryL(const CLiwGenericParamList& aInParamList,
-        CLiwGenericParamList& aOutParamList )
+		CLiwGenericParamList& aOutParamList, TUint /*aCmdOptions*/,
+		MLiwNotifyCallback* aCallback)
     {
     //position to start search in input params
     TInt index = 0;
@@ -2318,6 +2464,31 @@ void CLandmarkInterface::AddCategoryL(const CLiwGenericParamList& aInParamList,
         CleanupStack::PopAndDestroy(&iconVariant);
         }
 
+	//Async Call
+	if (aCallback)
+		{
+		//Get the transaction ID
+		TInt32 transactionId(aCallback->GetTransactionID());
+		CLandmarkCallbackMap* map = new (ELeave) CLandmarkCallbackMap(
+				transactionId, aCallback);
+		CleanupStack::PushL(map);
+		iCallbackMap.AppendL(map);
+		CleanupStack::Pop(map);
+		//checks if the landmark passed is to update an existing lanmark or add a
+		//new landmark.
+		if (update)
+			{
+			iService->UpdateItemL(transactionId, *category, dbUri);
+			}
+		else
+			{
+			iService->AddItemL(transactionId, *category, dbUri);
+			}
+		aOutParamList.AppendL(TLiwGenericParam(KTransactionId, TLiwVariant(
+				TInt32(transactionId))));
+		}
+	else //sync call
+		{
     if ( update )
         {
         iService->UpdateItemL (*category, dbUri );
@@ -2326,15 +2497,15 @@ void CLandmarkInterface::AddCategoryL(const CLiwGenericParamList& aInParamList,
         {
         catid = iService->AddItemL (*category, dbUri );
         }
+		iId = HBufC::NewL(KMaxIDStringLength);
+		iId->Des().Num(catid, EDecimal);
+		aOutParamList.AppendL(TLiwGenericParam(KReturnValue, TLiwVariant(iId)));
+		}
 
     CleanupStack::PopAndDestroy (category );
     CleanupStack::PopAndDestroy(&variant);
     CleanupStack::PopAndDestroy(&variantDb);
     
-    iId = HBufC::NewL(KMaxIDStringLength);
-    iId->Des().Num(catid,EDecimal);
-    aOutParamList.AppendL (TLiwGenericParam (KReturnValue,
-            TLiwVariant (iId ) ) );
     }
 
 // ---------------------------------------------------------------------------

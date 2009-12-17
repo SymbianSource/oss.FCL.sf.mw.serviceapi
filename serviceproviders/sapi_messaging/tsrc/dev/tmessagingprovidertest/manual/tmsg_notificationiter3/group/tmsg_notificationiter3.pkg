@@ -33,7 +33,7 @@
 
 ;Messagingservice binaries
 ;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\messagingservice.dll"-"C:\sys\bin\messagingservice.dll"
-"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tmsg_notificationiter3.dll"-"C:\sys\bin\tmsg_notificationiter3.dll"
+"..\..\..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tmsg_notificationiter3.dll"-"C:\sys\bin\tmsg_notificationiter3.dll"
 
 
 ;ini file

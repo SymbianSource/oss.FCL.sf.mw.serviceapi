@@ -30,6 +30,7 @@
 #include "../sapi_sensor/group/bld.inf"
 #include "../sapi_sysinfo/group/bld.inf"
 #include "../sapi_serviceregistry/group/bld.inf"
+#include "../jsapi/group/bld.inf"
 
 
 PRJ_EXPORTS
@@ -37,5 +38,6 @@ PRJ_EXPORTS
 ../rom/serviceapiresource.iby                     LANGUAGE_MW_LAYER_IBY_EXPORT_PATH(serviceapiresource.iby)
 
 ../install/serviceapi_stub.sis	/epoc32/data/z/system/install/serviceapi_stub.sis
+../install/platformservices_stub.sis	/epoc32/data/z/system/install/platformservices_stub.sis
 //  End of File
 

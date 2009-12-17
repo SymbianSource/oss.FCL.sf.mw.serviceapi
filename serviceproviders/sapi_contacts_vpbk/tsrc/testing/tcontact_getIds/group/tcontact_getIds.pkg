@@ -32,8 +32,8 @@
 ;SAPI Binaries to Install
 
 ;Contactservice binaries
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\contactservice.dll"-"C:\sys\bin\contactservice.dll"
-"..\..\..\..\..\..\..\epoc32\release\armv5\urel\tcontact_getIds.dll"-"C:\sys\bin\tcontact_getIds.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\contactservice.dll"-"C:\sys\bin\contactservice.dll"
+"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tcontact_getIds.dll"-"C:\sys\bin\tcontact_getIds.dll"
 
 
 ;ini file

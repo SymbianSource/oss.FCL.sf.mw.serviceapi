@@ -231,7 +231,7 @@ TInt Cchange_status_message::Test1L( CStifItemParser& aItem )
 	      TBool fl;
 	      headers->GetUnreadFlag(fl);
 
-	      TInt fla = fl;
+	      TBool fla = fl;
 	      
 	      delete headers;
 	      delete array;
@@ -240,7 +240,7 @@ TInt Cchange_status_message::Test1L( CStifItemParser& aItem )
 	      
 	      if((status == 0) && (flag == 1))
           {
-		      if(fla == 32)
+		      if(fla)
 		      {     
 		        __UHEAP_MARKEND;
 		        return KErrNone;
@@ -253,7 +253,7 @@ TInt Cchange_status_message::Test1L( CStifItemParser& aItem )
           }
 	      else if((status == 0) && (flag == 0))
           { 
-			  if(fla == 0)
+			  if(!fla)
 		      {     
 		        __UHEAP_MARKEND;
 		        return KErrNone;

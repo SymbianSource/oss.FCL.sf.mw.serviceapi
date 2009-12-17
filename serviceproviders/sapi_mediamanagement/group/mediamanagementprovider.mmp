@@ -26,7 +26,7 @@ EPOCSTACKSIZE   0x5000
 
 DEFFILE         mediamanagementprovider.def
 
-VERSION		1.1
+VERSION		1.2
 
 CAPABILITY      CAP_ECOM_PLUGIN
 VENDORID        VID_DEFAULT

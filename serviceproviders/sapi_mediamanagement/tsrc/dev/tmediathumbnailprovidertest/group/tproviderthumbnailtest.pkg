@@ -34,7 +34,7 @@
 ;Loggingservice binaries
 
 
-"\epoc32\release\armv5\urel\tmediathumbnailprovidertest.dll"   -   "!:\Sys\Bin\tmediathumbnailprovidertest.dll"
+"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tmediathumbnailprovidertest.dll"   -   "!:\Sys\Bin\tmediathumbnailprovidertest.dll"
 
 ;ini file
 "..\init\Testframework.ini"-"c:\Testframework\Testframework.ini"

@@ -52,7 +52,14 @@ CLandmarkManageHandlers::CLandmarkManageHandlers( )
 //
 CLandmarkManageHandlers::~CLandmarkManageHandlers( )
 	{
-	iHandlers.ResetAndDestroy ( );
+    TInt count = iHandlers.Count();
+    for (TInt i = 0; i < count; i++)
+        {
+        if (!iHandlers[i]->DecRef())
+            {
+            delete iHandlers[i];
+            }
+        }
 	iHandlers.Close();
 	}
 
@@ -66,7 +73,10 @@ void CLandmarkManageHandlers::CloseHandler( CLandmarkHandler* aHandler )
 	TInt index = iHandlers.Find (aHandler );
 	if ( index != KErrNotFound )
 		{
-		delete iHandlers[index];
+        if (!iHandlers[index]->DecRef())
+            {
+            delete iHandlers[index];
+            }
 		iHandlers[index] = NULL;
 		iHandlers.Remove (index );
 		}
@@ -210,6 +220,7 @@ void CLandmarkHandler::ConstructL( const TDesC& aDatabaseUri )
 	//Create other handles with respect to the open database
 	iLmCategoryManagerHandle = CPosLmCategoryManager::NewL (*iLandmarkDatabaseHandle );
 	iLandmarkSearchHandle = CPosLandmarkSearch::NewL (*iLandmarkDatabaseHandle );
+    IncRef();
 	}
 
 // -----------------------------------------------------------------------------

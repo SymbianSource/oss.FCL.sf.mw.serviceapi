@@ -29,5 +29,5 @@ rls_string STRING_landmarkprovider_opaque_data_string "IDataSource"
 
 rls_string STRING_landmarkprovider_capability_meta_data_seperator_string	"::"
 
-rls_string STRING_landmarkprovider_capability_meta_data_string "<meta> <cap>RUD</cap> <cap>WUD</cap> <ver>1.1</ver><res>landmarkprovidername.rsc</res> </meta>"
+rls_string STRING_landmarkprovider_capability_meta_data_string "<meta> <cap>RUD</cap> <cap>WUD</cap> <ver>2.0</ver><res>landmarkprovidername.rsc</res> </meta>"
 // End of File

@@ -6,4 +6,5 @@ EXPORTS
 	_ZN14CSensorService4NewLEv @ 5 NONAME
 	_ZTI14CSensorService @ 6 NONAME ; #<TI>#
 	_ZTV14CSensorService @ 7 NONAME ; #<VT>#
+	_ZN14CSensorService15GetScaleFactorLERK18TSensrvChannelInfoR15TSensrvPropertyS4_ @ 8 NONAME
 

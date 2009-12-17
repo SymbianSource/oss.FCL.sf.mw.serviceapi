@@ -31,8 +31,8 @@
 
 ;SAPI Binaries to Install
 
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\appmanagerservice.dll"-"C:\sys\bin\appmanagerservice.dll"
-"..\..\..\..\..\..\..\epoc32\release\armv5\urel\tappmgrtest.dll"-"C:\sys\bin\tappmgrtest.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\appmanagerservice.dll"-"C:\sys\bin\appmanagerservice.dll"
+"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tappmgrtest.dll"-"C:\sys\bin\tappmgrtest.dll"
 
 
 ;ini file

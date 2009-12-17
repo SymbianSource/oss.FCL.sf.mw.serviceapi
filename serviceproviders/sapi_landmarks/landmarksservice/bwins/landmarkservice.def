@@ -25,4 +25,13 @@ EXPORTS
 	?UpdateItemL@CLandmarkService@@QAEXABVCPosLandmark@@ABVTDesC16@@@Z @ 24 NONAME ; void CLandmarkService::UpdateItemL(class CPosLandmark const &, class TDesC16 const &)
 	?UpdateItemL@CLandmarkService@@QAEXABVCPosLandmarkCategory@@ABVTDesC16@@@Z @ 25 NONAME ; void CLandmarkService::UpdateItemL(class CPosLandmarkCategory const &, class TDesC16 const &)
 	?UpdateItemL@CLandmarkService@@QAEXVTPosLmDatabaseSettings@@ABVTDesC16@@@Z @ 26 NONAME ; void CLandmarkService::UpdateItemL(class TPosLmDatabaseSettings, class TDesC16 const &)
+	?AddItemL@CLandmarkService@@QAEXJAAVCPosLandmark@@ABVTDesC16@@@Z @ 27 NONAME ; void CLandmarkService::AddItemL(long, class CPosLandmark &, class TDesC16 const &)
+	?AddItemL@CLandmarkService@@QAEXJAAVCPosLandmarkCategory@@ABVTDesC16@@@Z @ 28 NONAME ; void CLandmarkService::AddItemL(long, class CPosLandmarkCategory &, class TDesC16 const &)
+	?UpdateItemL@CLandmarkService@@QAEXJABVCPosLandmark@@ABVTDesC16@@@Z @ 29 NONAME ; void CLandmarkService::UpdateItemL(long, class CPosLandmark const &, class TDesC16 const &)
+	?UpdateItemL@CLandmarkService@@QAEXJABVCPosLandmarkCategory@@ABVTDesC16@@@Z @ 30 NONAME ; void CLandmarkService::UpdateItemL(long, class CPosLandmarkCategory const &, class TDesC16 const &)
+	?RemoveItemL@CLandmarkService@@QAEXJKW4TPosItem@1@ABVTDesC16@@@Z @ 31 NONAME ; void CLandmarkService::RemoveItemL(long, unsigned long, enum CLandmarkService::TPosItem, class TDesC16 const &)
+	?LinkCategoryToLandmarksL@CLandmarkService@@QAEXJKAAV?$RArray@K@@ABVTDesC16@@@Z @ 32 NONAME ; void CLandmarkService::LinkCategoryToLandmarksL(long, unsigned long, class RArray<unsigned long> &, class TDesC16 const &)
+	?UnlinkCategoryToLandmarksL@CLandmarkService@@QAEXJKAAV?$RArray@K@@ABVTDesC16@@@Z @ 33 NONAME ; void CLandmarkService::UnlinkCategoryToLandmarksL(long, unsigned long, class RArray<unsigned long> &, class TDesC16 const &)
+	?ExportL@CLandmarkService@@QBEXJAAVCPosLandmarkEncoder@@ABV?$RArray@K@@ABVTDesC16@@2@Z @ 34 NONAME ; void CLandmarkService::ExportL(long, class CPosLandmarkEncoder &, class RArray<unsigned long> const &, class TDesC16 const &, class TDesC16 const &) const
+	?ImportL@CLandmarkService@@QAEXJAAVCPosLandmarkParser@@ABVTDesC16@@@Z @ 35 NONAME ; void CLandmarkService::ImportL(long, class CPosLandmarkParser &, class TDesC16 const &)
 

@@ -24,7 +24,7 @@ CAPABILITY      CAP_ECOM_PLUGIN
 
 UID             0x10009D8D 0x102833A7
 		
-VERSION		1.1
+VERSION		1.2
 							
 //Source files directory
 SOURCEPATH      ../src

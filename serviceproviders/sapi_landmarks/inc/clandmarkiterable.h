@@ -26,6 +26,7 @@
 class CPosLandmark;
 class CPosLandmarkDatabase;
 class CPosLmItemIterator;
+class CLandmarkHandler;
 
 /**
 * CLandmarkIterable
@@ -54,6 +55,9 @@ NONSHARABLE_CLASS(CLandmarkIterable): public CLiwIterable
         * Destructor.
         */
         ~CLandmarkIterable();
+        
+        void SetHandler(CLandmarkHandler* aHandler);
+        void Close(); 
 
     protected: //from CLiwIterable
 
@@ -83,6 +87,7 @@ NONSHARABLE_CLASS(CLandmarkIterable): public CLiwIterable
 
     private: //data
 
+        CLandmarkHandler* iHandler;
         /**
         * iIterator
         * The handle to the CPosLmItemIterator landmark iterator. 

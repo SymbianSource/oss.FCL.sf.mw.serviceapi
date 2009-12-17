@@ -153,6 +153,11 @@ _LIT8(KFlagsKey , "LogFlags") ;
 _LIT8(KEndTimeKey , "EndTime") ;
 
 /**
+* StartTime Key, for getlist filter
+*/
+_LIT8(KStartTimeKey , "StartTime") ;
+
+/**
 * Error Code
 */
 _LIT8(KErrCode , "ErrorCode") ;

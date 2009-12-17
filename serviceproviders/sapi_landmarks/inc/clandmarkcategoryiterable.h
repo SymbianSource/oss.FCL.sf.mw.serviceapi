@@ -27,7 +27,7 @@ class CPosLandmarkCategory;
 class CPosLandmarkDatabase;
 class CPosLmCategoryManager;
 class CPosLmItemIterator;
-
+class CLandmarkHandler;
 /**
 * CLandmarkCategoryIterable
 * This class inherits from CLiwIterable and implements the Reset() and 
@@ -55,6 +55,10 @@ NONSHARABLE_CLASS(CLandmarkCategoryIterable): public CLiwIterable
         * Destructor.
         */
         ~CLandmarkCategoryIterable();
+        
+        void SetHandler(CLandmarkHandler* aHandler);
+        
+        void Close(); 
 
     protected: //from CLiwIterable
 
@@ -84,6 +88,7 @@ NONSHARABLE_CLASS(CLandmarkCategoryIterable): public CLiwIterable
 
     private: //data
 
+        CLandmarkHandler* iHandler;
         /**
         * iIterator
         * The handle to the CPosLmItemIterator landmark iterator.

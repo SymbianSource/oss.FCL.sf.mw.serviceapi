@@ -21,6 +21,7 @@
 #include <EPos_CPosLmCategoryManager.h>
 #include <EPos_CPosLmItemIterator.h>
 #include "clandmarkcategoryiterable.h"
+#include "clandmarkmanagehandlers.h"
 #include "landmarkliwparams.hrh"
 
 // ============================ MEMBER FUNCTIONS ===============================
@@ -77,7 +78,17 @@ CLandmarkCategoryIterable::~CLandmarkCategoryIterable()
     delete iDatabase;
     delete iCategoryId;
     delete iGlobalCategoryId;
+    if (iHandler && !iHandler->DecRef())
+        {
+        delete iHandler;
+        }
     ReleaseLandmarkResources();
+    }
+
+void CLandmarkCategoryIterable::SetHandler(CLandmarkHandler* aHandler)
+    {
+    iHandler = aHandler;
+    iHandler->IncRef();
     }
 
 // -----------------------------------------------------------------------------
@@ -145,5 +156,8 @@ TBool CLandmarkCategoryIterable::NextL( TLiwVariant& aEntry )
     CleanupStack::PopAndDestroy(categoryMap);
     return ETrue;
     }
-
+void CLandmarkCategoryIterable::Close()
+    {
+    DecRef();
+    }
 //end of file

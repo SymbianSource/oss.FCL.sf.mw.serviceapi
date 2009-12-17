@@ -389,7 +389,8 @@ NONSHARABLE_CLASS(CLandmarkInterface): public CBase, public MLiwInterface
         *
         */
         void AddLandmarksL( const CLiwGenericParamList& aInParamList,
-                CLiwGenericParamList& aOutParamList );
+                CLiwGenericParamList& aOutParamList, TUint aCmdOptions,
+                MLiwNotifyCallback* aCallback );
 
         /**
         * AddCategoryL
@@ -401,7 +402,8 @@ NONSHARABLE_CLASS(CLandmarkInterface): public CBase, public MLiwInterface
         *
         */
         void AddCategoryL ( const CLiwGenericParamList& aInParamList,
-                CLiwGenericParamList& aOutParamList );
+                CLiwGenericParamList& aOutParamList, TUint aCmdOptions,
+                MLiwNotifyCallback* aCallback );
 
         /**
         * AddDatabaseL

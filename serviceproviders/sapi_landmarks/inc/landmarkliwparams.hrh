@@ -91,12 +91,14 @@ _LIT8(KLandmarkDistrict,"District");
 _LIT8(KLandmarkBuildingName,"BuildingName");
 _LIT8(KLandmarkStreet,"Street");
 _LIT8(KLandmarkTelephone,"Telephone");
+_LIT8(KLandmarkstate,"state");
 
 //
 //Landmark category datamembers
 //
 _LIT8(KCategoryName,"CategoryName");
 _LIT8(KGlobalCategory,"GlobalId");
+_LIT8(KCategoryIdChanged,"categoryId");
 
 //
 //landmark database datamembers

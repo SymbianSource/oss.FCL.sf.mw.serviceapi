@@ -31,7 +31,8 @@
 #include "clandmarkfilter.h"
 #include "clandmarkmanageobjects.h"
 #include "mlandmarkobserver.h"
-
+#include "clandmarkdummyao.h"
+#include "clandmarkoperation.h"
 //CONSTANTS
 _LIT(KProtocolSeparator, "://");
 _LIT(KLocalProtocol, "file");
@@ -78,6 +79,7 @@ void CLandmarkService::ConstructL( )
 
 	iDatabaseManager = CPosLmDatabaseManager::NewL ( );
 	iManageHandler = CLandmarkManageHandlers::NewL ( );
+	iManageObjects = CLandmarkManageObjects::NewL();
 	SetActiveL(KNullDesC);
 	}
 
@@ -140,6 +142,28 @@ EXPORT_C void CLandmarkService::ImportL( CPosLmItemIterator*& aIterator,
 #endif    
 	}
 
+EXPORT_C void CLandmarkService::ImportL( TInt32 aTransactionId, CPosLandmarkParser& aLandmarkParser,
+		const TDesC& aDatabaseUri )
+	{
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::ImportL: Async"));
+#endif
+
+	CLandmarkHandler* handler = iManageHandler->GetHandlerL(aDatabaseUri);
+	if ( !handler )
+		{
+		handler = iManageHandler->CreateHandlerL(aDatabaseUri);
+		}
+	CLandmarkOperation* import = CLandmarkOperation::NewLC(iObserver,
+				iManageObjects);
+	import->ImportL(aTransactionId,handler,aLandmarkParser);
+	iManageObjects->AppendL(import);
+	CleanupStack::Pop(import);
+
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::ImportL:Async:Exit"));
+#endif    
+	}
 // -----------------------------------------------------------------------------
 // CLandmarkService::ExportL( CPosLandmarkEncoder* aLandmarkEncoder,
 //  const RArray<TPosLmItemId>& aLandmarkIdArray, const TDesC& aDatabaseUri )
@@ -157,6 +181,25 @@ EXPORT_C void CLandmarkService::ExportL( CPosLandmarkEncoder& aLandmarkEncoder,
 	CPosLandmarkDatabase* db = handler->LandmarkDatabaseHandle();
 	ExecuteAndDeleteLD(db->ExportLandmarksL(aLandmarkEncoder,aLandmarkIdArray,
 					CPosLandmarkDatabase::EIncludeCategories));
+	}
+
+EXPORT_C void CLandmarkService::ExportL( TInt32 aTransactionId,
+		CPosLandmarkEncoder& aLandmarkEncoder,
+		const RArray<TPosLmItemId>& aLandmarkIdArray,
+		const TDesC& aDestinationFile,
+		const TDesC& aDatabaseUri ) const
+	{
+	CLandmarkHandler* handler = iManageHandler->GetHandlerL(aDatabaseUri);
+	if (!handler)
+		{
+		handler = iManageHandler->CreateHandlerL(aDatabaseUri);
+		}
+	CPosLandmarkDatabase* db = handler->LandmarkDatabaseHandle();
+	CLandmarkOperation* exportAO = CLandmarkOperation::NewLC(iObserver,
+					iManageObjects);
+	exportAO->ExportL(aTransactionId,db,aLandmarkEncoder,aLandmarkIdArray,aDestinationFile);
+	iManageObjects->AppendL(exportAO);
+	CleanupStack::Pop(exportAO);
 	}
 
 // -----------------------------------------------------------------------------
@@ -233,11 +276,6 @@ EXPORT_C void CLandmarkService::GetListL( TInt32 aTransactionId,
 		User::Leave(KErrGeneral);
 		}
 
-	if ( !iManageObjects )
-		{
-		iManageObjects = CLandmarkManageObjects::NewL();
-		}
-
 	if ( aFilter.IsLandmark() )
 		{
 		CLandmarkCmdBase* getLm = CLandmarkCmdGetLandmarks::NewLC(iObserver,
@@ -288,6 +326,31 @@ EXPORT_C TPosLmItemId CLandmarkService::AddItemL( CPosLandmark& aLandmark,
 	return db->AddLandmarkL(aLandmark);
 	}
 
+EXPORT_C void CLandmarkService::AddItemL(TInt32 aTransactionId,
+		CPosLandmark& aLandmark, const TDesC& aDatabaseUri)
+	{
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::AddItemL: Landmark: Async"));
+#endif
+
+	//Leave if observer has not been set for the async call.
+	if (!iObserver)
+		{
+		User::Leave(KErrGeneral);
+		}
+
+	TPosLmItemId id = 0;
+	TRAPD(err,id = AddItemL(aLandmark,aDatabaseUri));
+	CLandmarkDummyAO* addLm = new (ELeave) CLandmarkDummyAO(iObserver,
+			iManageObjects);
+	CleanupStack::PushL(addLm);
+	addLm->Start(aTransactionId, CLandmarkDummyAO::EAdd, id, err);
+	iManageObjects->AppendL(addLm);
+	CleanupStack::Pop(addLm);
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::AddItemL: Landmark: Async: Exit"));
+#endif
+	}
 // -----------------------------------------------------------------------------
 // CLandmarkService::AddItemL( CPosLandmarkCategory& aCategory,const TDesC& aDatabaseUri )
 // Adds a landmark category to the given database.
@@ -312,6 +375,31 @@ EXPORT_C TPosLmItemId CLandmarkService::AddItemL( CPosLandmarkCategory& aCategor
 #endif 
 	
 	return cat->AddCategoryL(aCategory);
+	}
+EXPORT_C void CLandmarkService::AddItemL(TInt32 aTransactionId,
+		CPosLandmarkCategory& aCategory, const TDesC& aDatabaseUri)
+	{
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::AddItemL: Category: Async"));
+#endif
+
+	//Leave if observer has not been set for the async call.
+	if (!iObserver)
+		{
+		User::Leave(KErrGeneral);
+		}
+
+	TPosLmItemId id = 0;
+	TRAPD(err,id = AddItemL(aCategory,aDatabaseUri));
+	CLandmarkDummyAO* addCat = new (ELeave) CLandmarkDummyAO(iObserver,
+			iManageObjects);
+	CleanupStack::PushL(addCat);
+	addCat->Start(aTransactionId, CLandmarkDummyAO::EAdd, id, err);
+	iManageObjects->AppendL(addCat);
+	CleanupStack::Pop(addCat);
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::AddItemL: Category: Async: Exit"));
+#endif
 	}
 // -----------------------------------------------------------------------------
 // CLandmarkService::AddItemL( CPosLandmarkCategory& aCategory,const TDesC& aDatabaseUri )
@@ -366,6 +454,32 @@ EXPORT_C void CLandmarkService::UpdateItemL( const CPosLandmark& aLandmark,
 #endif    
 	}
 
+EXPORT_C void CLandmarkService::UpdateItemL(TInt32 aTransactionId,
+		const CPosLandmark& aLandmark, const TDesC& aDatabaseUri)
+	{
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::UpdateItemL: Landmark: Async"));
+#endif
+
+	//Leave if observer has not been set for the async call.
+	if (!iObserver)
+		{
+		User::Leave(KErrGeneral);
+		}
+
+	//start async now
+	TPosLmItemId id = 0;
+	TRAPD(err,UpdateItemL(aLandmark,aDatabaseUri));
+	CLandmarkDummyAO* updateLm = new (ELeave) CLandmarkDummyAO(iObserver,
+			iManageObjects);
+	CleanupStack::PushL(updateLm);
+	updateLm->Start(aTransactionId, CLandmarkDummyAO::EUpdate, id, err);
+	iManageObjects->AppendL(updateLm);
+	CleanupStack::Pop(updateLm);
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::UpdateItemL: Landmark: Async: Exit"));
+#endif
+	}
 // -----------------------------------------------------------------------------
 // CLandmarkService::UpdateItemL( const CPosLandmarkCategory& aCategory,
 //    const TDesC& aDatabaseUri )
@@ -390,6 +504,33 @@ EXPORT_C void CLandmarkService::UpdateItemL( const CPosLandmarkCategory& aCatego
 #ifdef _DEBUG
 	iLog.Write(_L("CLandmarkService::UpdateItemL: Category; Exit"));
 #endif    
+	}
+
+EXPORT_C void CLandmarkService::UpdateItemL(TInt32 aTransactionId,
+		const CPosLandmarkCategory& aCategory, const TDesC& aDatabaseUri)
+	{
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::UpdateItemL: Landmark: Async"));
+#endif
+
+	//Leave if observer has not been set for the async call.
+	if (!iObserver)
+		{
+		User::Leave(KErrGeneral);
+		}
+
+	//start async now
+	TPosLmItemId id = 0;
+	TRAPD(err,UpdateItemL(aCategory,aDatabaseUri));
+	CLandmarkDummyAO* updateCat = new (ELeave) CLandmarkDummyAO(iObserver,
+			iManageObjects);
+	CleanupStack::PushL(updateCat);
+	updateCat->Start(aTransactionId, CLandmarkDummyAO::EUpdate, id, err);
+	iManageObjects->AppendL(updateCat);
+	CleanupStack::Pop(updateCat);
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::UpdateItemL: Landmark: Async: Exit"));
+#endif
 	}
 
 // -----------------------------------------------------------------------------
@@ -535,6 +676,32 @@ EXPORT_C void CLandmarkService::RemoveItemL( TPosLmItemId aItemId,
 #endif    
 	}
 
+EXPORT_C void CLandmarkService::RemoveItemL(TInt32 aTransactionId,
+		TPosLmItemId aItemId, TPosItem aItemIsLandmark,
+		const TDesC& aDatabaseUri)
+	{
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::RemoveItemL: Async"));
+#endif
+
+	//Leave if observer has not been set for the async call.
+	if (!iObserver)
+		{
+		User::Leave(KErrGeneral);
+		}
+
+	TPosLmItemId id = 0;
+	TRAPD(err,RemoveItemL(aItemId,aItemIsLandmark,aDatabaseUri));
+	CLandmarkDummyAO* rem = new (ELeave) CLandmarkDummyAO(iObserver,
+			iManageObjects);
+	CleanupStack::PushL(rem);
+	rem->Start(aTransactionId, CLandmarkDummyAO::ERemove, id, err);
+	iManageObjects->AppendL(rem);
+	CleanupStack::Pop(rem);
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::RemoveItemL: Async: Exit"));
+#endif
+	}
 // -----------------------------------------------------------------------------
 // CLandmarkService::RemoveItemL( const TDesC& aDatabaseUri )
 // Removes the given database.
@@ -612,6 +779,34 @@ EXPORT_C void CLandmarkService::LinkCategoryToLandmarksL ( TPosLmItemId aCategor
 #endif    
 	}
 
+EXPORT_C void CLandmarkService::LinkCategoryToLandmarksL(TInt32 aTransactionId,
+		TPosLmItemId aCategoryId, RArray<TPosLmItemId>& aLandmarkIdArray,
+		const TDesC& aDatabaseUri)
+	{
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::LinkCategoryToLandmarksL :Async"));
+#endif
+	//Leave if observer has not been set for the async call.
+	if (!iObserver)
+		{
+		User::Leave(KErrGeneral);
+		}
+
+	CLandmarkHandler* handler = iManageHandler->GetHandlerL(aDatabaseUri);
+	if (!handler)
+		{
+		handler = iManageHandler->CreateHandlerL(aDatabaseUri);
+		}
+	CPosLmCategoryManager* cat = handler->CategoryManagerHandle();
+	CLandmarkOperation* linkCat = CLandmarkOperation::NewLC(iObserver,
+			iManageObjects);
+	linkCat->LinkL(aTransactionId,aCategoryId,aLandmarkIdArray,cat);
+	iManageObjects->AppendL(linkCat);
+	CleanupStack::Pop(linkCat);
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::LinkCategoryToLandmarksL: Async: Exit"));
+#endif    
+	}
 // -----------------------------------------------------------------------------
 // CLandmarkService::UnlinkCategoryToLandmarksL( TPosLmItemId aCategoryId,
 //    RArray< TPosLmItemId >& aLandmarkIdArray, const TDesC& aDatabaseUri )
@@ -636,6 +831,35 @@ EXPORT_C void CLandmarkService::UnlinkCategoryToLandmarksL (
 
 #ifdef _DEBUG
 	iLog.Write(_L("CLandmarkService::UnlinkCategoryToLandmarksL: Exit"));
+#endif    
+	}
+
+EXPORT_C void CLandmarkService::UnlinkCategoryToLandmarksL(TInt32 aTransactionId,
+		TPosLmItemId aCategoryId, RArray<TPosLmItemId>& aLandmarkIdArray,
+		const TDesC& aDatabaseUri)
+	{
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::UnlinkCategoryToLandmarksL :Async"));
+#endif
+	//Leave if observer has not been set for the async call.
+	if (!iObserver)
+		{
+		User::Leave(KErrGeneral);
+		}
+
+	CLandmarkHandler* handler = iManageHandler->GetHandlerL(aDatabaseUri);
+	if (!handler)
+		{
+		handler = iManageHandler->CreateHandlerL(aDatabaseUri);
+		}
+	CPosLmCategoryManager* cat = handler->CategoryManagerHandle();
+	CLandmarkOperation* linkCat = CLandmarkOperation::NewLC(iObserver,
+			iManageObjects);
+	linkCat->UnLinkL(aTransactionId,aCategoryId,aLandmarkIdArray,cat);
+	iManageObjects->AppendL(linkCat);
+	CleanupStack::Pop(linkCat);
+#ifdef _DEBUG
+	iLog.Write(_L("CLandmarkService::UnlinkCategoryToLandmarksL: Async: Exit"));
 #endif    
 	}
 

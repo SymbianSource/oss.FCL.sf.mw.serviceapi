@@ -272,7 +272,14 @@ class CCalendarInterface : public CBase, public MLiwInterface
 	     * @return void
 	    */
 		void RemoveCalEntryListFromArray( CIterableCalEntryList* aCalEntryList );
-
+		/**
+		 * Checks the duration of the calendar entry according to the 
+		 * repeatrule frequency 
+		 * @param repeatrule frequency is passed to check the duration
+		 *
+		 * @return true or false 
+		 */
+		bool isValidEntryDuration(int type);
 
 	private:
 	
@@ -636,7 +643,18 @@ class CCalendarInterface : public CBase, public MLiwInterface
 	     * @internal
 	    */		
 		RPointerArray<CIterableCalEntryList> iArrayCalEntryList;
-
+		
+		/**
+		 * variable for storing the begin time.
+		 * @internal
+		 */
+		TTime iStTime;
+		
+		/**
+		 * variable for storing the end time.
+		 * @internal
+		 */
+		TTime iEnTime;
 	};
 
 

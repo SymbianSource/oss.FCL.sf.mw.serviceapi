@@ -42,12 +42,12 @@
 ; Unique Vendor name
 :"Nokia Corporation"
 
-"../init/testframework.ini"    -   "!:\testframework\testframework.ini"
+"..\init\testframework.ini"    -   "!:\testframework\testframework.ini"
 
 ;CFG FILES
-  "../conf/tmediamgmtprovidertest.cfg"        -   "!:\testframework\tmediamgmtprovidertest.cfg"
+  "..\conf\tmediamgmtprovidertest.cfg"        -   "!:\testframework\tmediamgmtprovidertest.cfg"
 ; Main DLL
-  "\epoc32\release\ARMV5\urel\tmediamgmtprovidertest.dll"         -   "!:\Sys\Bin\tmediamgmtprovidertest.dll"
+  "..\..\..\..\..\..\..\..\..\epoc32\release\ARMV5\urel\tmediamgmtprovidertest.dll"         -   "!:\Sys\Bin\tmediamgmtprovidertest.dll"
 
 ;TEST DLL
-; "\epoc32\release\ARMV5\urel\mediamanagementservice.dll"           -   "!:\Sys\Bin\mediamanagementservice.dll"
+; "..\..\..\..\..\..\..\..\..\epoc32\release\ARMV5\urel\mediamanagementservice.dll"           -   "!:\Sys\Bin\mediamanagementservice.dll"

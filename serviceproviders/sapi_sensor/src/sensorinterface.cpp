@@ -21,7 +21,7 @@
 #include <liwcommon.h>
 #include <sensrvchannelinfo.h>
 #include <sensrvtypes.h>
-
+#include<e32math.h>
 // User Includes
 #include "sensorservice.h"
 #include "sensorinterface.h"
@@ -482,6 +482,82 @@ void CSensorInterface::ExecuteServiceCommandL
         outMap->DecRef();
 
         }//end of GetChannelProperty
+     else if( ( aCmdName.CompareF( KCmdGetScaleFactor ) == 0 ) )
+         {
+         if( aCallback )
+             {
+             iErrorString = KErrSensorInvalidReq.operator()().Alloc();
+             User::Leave( SErrInvalidServiceArgument );
+             }
+         const TLiwGenericParam* channelInfoParam = NULL;
+         channelInfoParam = aInParamList.FindFirst( position, KChnlInfoMap );
+         if ( !channelInfoParam )
+                     {
+                     //Position based parsing
+                     if( aInParamList.Count() != 0 )
+                         {
+                         channelInfoParam =  &aInParamList[EParamIndex0];
+                         }
+                     else
+                        {
+                        iErrorString = KErrMissingChnlMap.operator()().Alloc();
+                        User::Leave( SErrMissingArgument );
+                        }
+                     }
+         CheckInputTypeL( &channelInfoParam->Value(),
+                                  LIW::EVariantTypeMap,
+                                  KChnlInfoMap.operator&() );
+         
+         TSensrvChannelInfo channelInfo;
+         const CLiwMap* chnlInfoMap = ( channelInfoParam->Value() ).AsMap();
+         //Retreive Channel Info
+         GetChannelInfoL( channelInfo , chnlInfoMap );
+         
+         TSensrvProperty measureProperty;
+         TSensrvProperty scaleProperty;
+         TRAPD(anErr,iSensorService->GetScaleFactorL( channelInfo ,
+                                                       measureProperty,scaleProperty ));
+         
+         if( anErr != KErrNone )
+             {
+             iErrorString = KErrInvalidChnlMap.operator()().Alloc();
+             User::Leave(KErrArgument);
+             }
+         TReal scaleFactor ;
+         TReal measureValue;
+         TInt scaleValue;
+         measureProperty.GetValue( measureValue );// 0 or 1
+         scaleProperty.GetValue( scaleValue); // 8 or 12
+         TReal outputValue;
+         TInt errPow;
+         errPow = Math::Pow(outputValue,2,scaleValue-1);
+         if( errPow == KErrNone )
+             {
+             if( measureValue == 0 )
+               {
+               scaleFactor = (2*9.8)/outputValue;
+               aOutParamList.AppendL( TLiwGenericParam( KReturnValue ,
+                                                                TLiwVariant( scaleFactor ) ) );
+               }
+            else if(measureValue == 1)
+               {
+               scaleFactor = (8*9.8)/outputValue;
+               aOutParamList.AppendL( TLiwGenericParam( KReturnValue ,
+                                                                TLiwVariant( scaleFactor ) ) );
+               }
+            else
+               {
+               iErrorString = KErrInvalidMeasureRange.operator()().Alloc();
+               User::Leave(KErrArgument);
+               }
+             }
+         else
+             {
+             iErrorString = KErrInvalidPowValue.operator()().Alloc();
+             User::Leave(KErrArgument);
+             }
+         
+         }//end of GetScaleFactor
      else
       	{
        	iErrorString = KErrSensorInvalidCmd.operator()().Alloc();

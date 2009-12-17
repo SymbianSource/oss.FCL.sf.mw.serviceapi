@@ -68,6 +68,15 @@ class LoggingInterfaceCB : public MLoggingCallback
         */
 
         void HandleNotifyL( TUint aTransid, TUint aStatus, CLogIter *aiter ) ;
+		
+        /**
+        * Implementation of HandleRequestL method, derived from MLoggingCB
+        *
+        * @param aTransid, Transaction id
+        * @param aStaus ,  status of the async request
+        * @param, aEvent,  data for the occured event
+	    */        
+        void HandleRequestL( TUint aTransid, TUint aStatus, CLogsEvent *aEvent ) ;
 
         /**
         * Implementation of CancelNotifyL method, derived from MLoggingCB

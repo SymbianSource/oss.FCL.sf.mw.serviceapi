@@ -24,7 +24,15 @@
 #include <StifParser.h>
 #include <StifTestInterface.h>
 #include <logcli.h>
+#ifndef SYMBIAN_ENABLE_SPLIT_HEADERS
 #include <logwrap.h>
+#else
+#include <logwrap.h>
+#include <logengevents.h>
+#include <logwraplimits.h>
+#include <logfilterandeventconstants.hrh>
+#include <logengdurations.h>
+#endif
 
 #include "loggingasyncservice.h"
 #include "loggingservice.h"

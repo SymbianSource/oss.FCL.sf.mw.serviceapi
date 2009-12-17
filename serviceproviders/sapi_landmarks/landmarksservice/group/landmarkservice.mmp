@@ -24,7 +24,7 @@ CAPABILITY    ALL -TCB
 VENDORID      VID_DEFAULT
 nostrictdef
 
-VERSION		1.1
+VERSION		1.2
 
 SOURCEPATH    ../src
 SOURCE        landmarkservice.cpp
@@ -32,7 +32,7 @@ SOURCE        clandmarkmanagehandlers.cpp
 SOURCE        clandmarkmanageobjects.cpp
 SOURCE        clandmarkcmdgetcategories.cpp
 SOURCE        clandmarkcmdgetlandmarks.cpp
-SOURCE        clandmarkfilter.cpp
+SOURCE        clandmarkfilter.cpp clandmarkdummyao.cpp clandmarkoperation.cpp
 
 USERINCLUDE   ../inc
 
@@ -41,6 +41,7 @@ LIBRARY      eposlandmarks.lib // for landmarks and categories
 LIBRARY      eposlmdbmanlib.lib // for database management
 LIBRARY      eposlmsearchlib.lib // for searching in single database
 LIBRARY      flogger.lib // for logging function entries in debug mode
+LIBRARY      efsrv.lib
 
 paged
 

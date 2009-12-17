@@ -24,7 +24,8 @@
 
 //FORWARD DECLARATION
 class CLandmarkCmdBase;
-
+class CLandmarkDummyAO;
+class CLandmarkOperation;
 /**
  * CLandmarkManageObjects
  * This class inherits from CActive. This acts as a garbage collector for inactive 
@@ -63,6 +64,8 @@ public:
 	 * @param aObject The pointer to the newly created active object.
 	 */
 	void AppendL( CLandmarkCmdBase* aObject );
+	void AppendL( CLandmarkDummyAO* aObject );
+	void AppendL( CLandmarkOperation* aObject );
 
 	/**
 	 * CancelObject
@@ -96,6 +99,8 @@ private://Data
 	 * Array of active object pointers.
 	 */
 	RPointerArray<CLandmarkCmdBase> iObjects;
+	RPointerArray<CLandmarkDummyAO> iDummyObjects;
+	RPointerArray<CLandmarkOperation> iOrgObjects;
 	};
 
 #endif // __CLANDMARKMANAGEOBJECTS_H__

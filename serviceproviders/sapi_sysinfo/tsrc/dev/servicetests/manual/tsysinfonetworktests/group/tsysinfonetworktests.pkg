@@ -32,8 +32,8 @@
 ;SAPI Binaries to Install
 
 ;Sysinfoservice binaries
-;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\sysinfoservice.dll"-"C:\sys\bin\sysinfoservice.dll"
-"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tsysinfonetworktests.dll"-"C:\sys\bin\tsysinfonetworktests.dll"
+;"..\..\..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\sysinfoservice.dll"-"C:\sys\bin\sysinfoservice.dll"
+"..\..\..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tsysinfonetworktests.dll"-"C:\sys\bin\tsysinfonetworktests.dll"
 
 
 ;ini file

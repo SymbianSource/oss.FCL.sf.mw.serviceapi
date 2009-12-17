@@ -27,7 +27,7 @@ UID             	0x10009D8D 0x2000CFB6
 
 DEFFILE				sensorprovider.def
 
-VERSION		1.1
+VERSION		1.2
 
 USERINCLUDE     	../inc
 USERINCLUDE     	../../inc

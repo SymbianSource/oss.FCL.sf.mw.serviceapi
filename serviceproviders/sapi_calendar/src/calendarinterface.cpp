@@ -1303,7 +1303,7 @@ CEntryAttributes* CCalendarInterface::GetAddParametersL( const CLiwGenericParamL
 				if ( entryType == -1 )
 					{
 					AppendErrorMessageL( KCmdAdd, KLocalId, KInvalid );
-					User::Leave( KErrArgument );
+					User::Leave( KErrNotFound );
 					}
 					
 				// Leave if tring to set different entry type
@@ -1313,7 +1313,7 @@ CEntryAttributes* CCalendarInterface::GetAddParametersL( const CLiwGenericParamL
 					if ( tmpType != entryType )
 						{
 						AppendErrorMessageL( KCmdAdd, _L8("Entry Type "), KInvalid );
-						User::Leave( KErrArgument );
+						User::Leave( KErrBadName );
 						}
 					}
 				}
@@ -1357,7 +1357,7 @@ CEntryAttributes* CCalendarInterface::GetAddParametersL( const CLiwGenericParamL
 				{
 				ValidateParamTypeL( inParam, LIW::EVariantTypeTTime, 
 									KCmdAdd, KStartTime, KInvalid );
-				
+				iStTime = inParam.AsTTime();
 				entryAttributes->SetStartTimeL( inParam.AsTTime() );
 				}
 				
@@ -1368,7 +1368,7 @@ CEntryAttributes* CCalendarInterface::GetAddParametersL( const CLiwGenericParamL
 				{
 				ValidateParamTypeL( inParam, LIW::EVariantTypeTTime, 
 									KCmdAdd, KEndTime, KInvalid );
-				
+				iEnTime = inParam.AsTTime();
 				entryAttributes->SetEndTimeL( inParam.AsTTime() );
 				}
 				
@@ -1610,6 +1610,11 @@ CEntryAttributes* CCalendarInterface::GetAddParametersL( const CLiwGenericParamL
 							{
 							ValidateParamTypeL( rptParam, LIW::EVariantTypeTInt32, 
 											KCmdAdd, KRepeatType, KInvalid );
+							if(!isValidEntryDuration(rptParam.AsTInt32()))
+							{
+                                AppendErrorMessageL( KCmdAdd, KRepeatType, KInvalid );
+                                User::Leave( KErrBadName );
+							}
 
 							rrule = CRepeatInfo::NewL( rptParam.AsTInt32() );
 							CleanupStack::PushL( rrule );
@@ -3069,3 +3074,56 @@ TBool CCalendarInterface::CheckCalendarInUse( const TDesC& aCalendarName )
 		}
 	return retValue;
 	}
+
+
+bool CCalendarInterface::isValidEntryDuration(int type)
+    {
+    TTime temp;
+    TDateTime temp1;
+    switch(type)
+        {
+        case TCalRRule::EDaily :
+            {
+            TTimeIntervalDays days = 1;
+            temp = iStTime + days;
+                      
+            }
+            break;
+
+        case TCalRRule::EWeekly :
+            {
+            TTimeIntervalDays days = 7;
+            temp = iStTime + days;
+                                        
+            }
+            break;
+
+        case TCalRRule::EMonthly :
+            {
+            TTimeIntervalMonths month = 1;
+            temp = iStTime + month;
+                  
+            }
+            break;
+
+        case TCalRRule::EYearly :
+            {
+            TTimeIntervalYears yr = 1;
+            temp = iStTime + yr;
+               
+            }
+            break;
+
+        }
+
+    if(temp < iEnTime)
+        {
+        return false;
+        }
+
+    else
+        {
+        return true;
+        }
+    
+    }

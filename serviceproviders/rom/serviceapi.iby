@@ -70,7 +70,10 @@ ECOM_PLUGIN(sysinfoprovider.dll, sysinfoprovider.rsc)
 
 ECOM_PLUGIN(serviceregistryprovider.dll, serviceregistryprovider.rsc)
 
-data=ZSYSTEM\INSTALL\serviceapi_stub.sis	    System\Install\serviceapi_stub.sis
+data=ZSYSTEM\INSTALL\serviceapi_stub.sis	    			System\Install\serviceapi_stub.sis
+
+data=ZSYSTEM\INSTALL\platformservices_stub.sis	    System\Install\platformservices_stub.sis
+data=ZSYSTEM\WidgetLibs\platformservices.js	    		System\WidgetLibs\platformservices.js
 
 #endif // SERVICEAPI_IBY
 

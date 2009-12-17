@@ -26,8 +26,8 @@
 ;SAPI Binaries to Install
 
 ;Messagingservice binaries
-;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\messagingservice.dll"-"C:\sys\bin\messagingservice.dll"
-"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\get_message_async.dll"-"C:\sys\bin\get_message_async.dll"
+;"..\..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\messagingservice.dll"-"C:\sys\bin\messagingservice.dll"
+"..\..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\get_message_async.dll"-"C:\sys\bin\get_message_async.dll"
 
 
 ;ini file

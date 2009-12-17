@@ -159,8 +159,8 @@ void CServiceInterface::ProcessCommandL(const TDesC8& aCmdName,
             }
             else 
             {
-            // Synchronous request not supported for this method.            
-            User::Leave(KErrNotSupported);
+            // Synchronous request            
+            GetListL(aInParamList, aOutParamList, transactionID, aCallBack);
             }
         }//GetList
     else if(aCmdName.CompareF(KCmdCancel) == 0)
@@ -465,7 +465,10 @@ void  CServiceInterface::GetListL(const CLiwGenericParamList& aInParamList,
     minver.Reset();
     maxver.Reset();  
     serviceName.Reset();
-    interfaceName.Reset();     
+    interfaceName.Reset();    
+    
+    if(aCallBack) 
+    {
            
     if(!IsActive())
         {
@@ -487,7 +490,18 @@ void  CServiceInterface::GetListL(const CLiwGenericParamList& aInParamList,
     aOutParamList.AppendL(TLiwGenericParam(KErrorCode, 
                           TLiwVariant(TInt32(SErrNone))));
     }
+    else
+    {
+        GetListProviderL(this);
+        aOutParamList.AppendL(TLiwGenericParam(KErrorCode, 
+                          TLiwVariant(TInt32(SErrNone))));
+        aOutParamList.AppendL(TLiwGenericParam(KReturnValue, 
+                                TLiwVariant(iIterator)));                             
+        iIterator->DecRef(); 
+        iIterator = NULL;
+    }
 
+    }
 void CServiceInterface :: DoCancel()
     {
     iThread.Kill(KErrNone); 

@@ -122,6 +122,9 @@ _LIT8( KStopNotification, "Cancel" );
 // API:GetChannelProperty :
 // Command :
 _LIT8(KCmdGetChnlProperty,"GetChannelProperty" );
+
+//API: GetScaleFactor
+_LIT8(KCmdGetScaleFactor,"GetScaleFactor" );
 // Output params:
 // Keys for channel property map
 _LIT8( KPropertyDataType, "PropertyDataType" );
@@ -178,6 +181,8 @@ _LIT( KErrStopNotifMissingTransId, "Transaction id is missing" );
 _LIT( KErrStopNotifInvalidTransId, "Transaction id is incorrect" );
 _LIT( KErrStopNotifCancelBit, "Insufficent argument for cancel request" );
 _LIT( KErrInvalidChnlMap, "Channel info map values are inconsistent and not found" );
+_LIT( KErrInvalidMeasureRange, "Measure range is invalid value" );
+_LIT( KErrInvalidPowValue, "Power function resulted in failure" );
 _LIT( KErrMissingChnlMap, "Channel info map is missing" );
 _LIT( KErrMissingPropMap, "Channel property map is missing" );
 _LIT( KErrPropMissingArgs, "Missing input params" );

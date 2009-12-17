@@ -38,7 +38,7 @@ RESOURCE REGISTRY_INFO theInfo
                     version_no = 1;
                     display_name = "Messaging Service Provider";
                     default_data = "Service.Messaging";
-                    opaque_data = "IMessaging" "::" "<meta><cap>RUD</cap><cap>WUD</cap><cap>NWS</cap><ver>1.1</ver><res>messagingprovidername.rsc</res></meta>";
+                    opaque_data = "IMessaging" "::" "<meta><cap>RUD</cap><cap>WUD</cap><cap>NWS</cap><ver>2.0</ver><res>messagingprovidername.rsc</res></meta>";
                     }
                 };
             }

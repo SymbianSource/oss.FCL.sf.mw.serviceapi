@@ -214,6 +214,15 @@ class MLoggingCallback
         * @param iter , Logging iterator
         */
         virtual void HandleNotifyL(TUint aTransid ,TUint aStatus , CLogIter *iter ) = 0 ;
+		
+        /**
+        * HandleRequestL ,  method to get log data on an event
+        * methods
+        * @param aTransId , Transaction id
+        * @param aStatus
+        * @param aEvent , data for the occured event
+        */           
+        virtual void HandleRequestL(TUint aTransid ,TUint aStatus , CLogsEvent *event ) = 0 ;
 
         /**
         * CancelNotifyL , generic method to get updates on the async

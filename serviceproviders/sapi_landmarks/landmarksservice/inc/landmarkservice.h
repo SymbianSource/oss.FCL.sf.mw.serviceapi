@@ -116,6 +116,9 @@ public: // Functions to retrieve data members
 	IMPORT_C void ImportL( CPosLmItemIterator*& aIterator,
 			CPosLandmarkParser& aLandmarkParser,
 			const TDesC& aDatabaseUri = KNullDesC );
+	IMPORT_C void ImportL( TInt32 aTransactionId,
+			CPosLandmarkParser& aLandmarkParser,
+			const TDesC& aDatabaseUri = KNullDesC );
 
 	/**
 	 * ExportL.
@@ -127,6 +130,12 @@ public: // Functions to retrieve data members
 	 */
 	IMPORT_C void ExportL( CPosLandmarkEncoder& aLandmarkEncoder,
 			const RArray<TPosLmItemId>& aLandmarkIdArray,
+			const TDesC& aDatabaseUri = KNullDesC ) const;
+	
+	IMPORT_C void ExportL( TInt32 aTransactionId,
+			CPosLandmarkEncoder& aLandmarkEncoder,
+			const RArray<TPosLmItemId>& aLandmarkIdArray,
+			const TDesC& aDestinationFile,
 			const TDesC& aDatabaseUri = KNullDesC ) const;
 
 	/**
@@ -174,6 +183,8 @@ public: // Functions to retrieve data members
 	IMPORT_C TPosLmItemId AddItemL( CPosLandmark& aLandmark,
 			const TDesC& aDatabaseUri = KNullDesC );
 
+	IMPORT_C void AddItemL(TInt32 aTransactionId, CPosLandmark& aLandmark,
+			const TDesC& aDatabaseUri = KNullDesC);
 	/**
 	 * AddItemL.
 	 * Adds a new Landmark category to the given database.
@@ -184,6 +195,9 @@ public: // Functions to retrieve data members
 	IMPORT_C TPosLmItemId AddItemL( CPosLandmarkCategory& aCategory,
 			const TDesC& aDatabaseUri = KNullDesC );
 
+	IMPORT_C void AddItemL(TInt32 aTransactionId,
+			CPosLandmarkCategory& aCategory, const TDesC& aDatabaseUri =
+					KNullDesC);
 	/**
 	 * AddItemL.
 	 * Adds a new database to terminal.
@@ -201,6 +215,9 @@ public: // Functions to retrieve data members
 	IMPORT_C void UpdateItemL( const CPosLandmark& aLandmark,
 			const TDesC& aDatabaseUri = KNullDesC );
 
+	IMPORT_C void UpdateItemL(TInt32 aTransactionId,
+			const CPosLandmark& aLandmark, const TDesC& aDatabaseUri =
+					KNullDesC);
 	/**
 	 * UpdateItemL.
 	 * Updates an existing Landmark category in the given database.
@@ -211,6 +228,9 @@ public: // Functions to retrieve data members
 	IMPORT_C void UpdateItemL( const CPosLandmarkCategory& aCategory,
 			const TDesC& aDatabaseUri = KNullDesC );
 
+	IMPORT_C void UpdateItemL(TInt32 aTransactionId,
+			const CPosLandmarkCategory& aCategory, const TDesC& aDatabaseUri =
+					KNullDesC);
 	/**
 	 * UpdateItemL.
 	 * Updates existing Database Information.
@@ -253,6 +273,8 @@ public: // Functions to retrieve data members
 	IMPORT_C void RemoveItemL( TPosLmItemId aItemId, TPosItem aItemIsLandmark,
 			const TDesC& aDatabaseUri = KNullDesC );
 
+	IMPORT_C void RemoveItemL(TInt32 aTransactionId, TPosLmItemId aItemId,
+			TPosItem aItemIsLandmark, const TDesC& aDatabaseUri = KNullDesC);
 	/**
 	 * RemoveItemL.
 	 * Removes the given database.
@@ -278,6 +300,9 @@ public: // Functions to retrieve data members
 	IMPORT_C void LinkCategoryToLandmarksL( TPosLmItemId aCategoryId,
 			RArray< TPosLmItemId >& aLandmarkIdArray,
 			const TDesC& aDatabaseUri = KNullDesC );
+	IMPORT_C void LinkCategoryToLandmarksL(TInt32 aTransactionId,
+			TPosLmItemId aCategoryId, RArray<TPosLmItemId>& aLandmarkIdArray,
+			const TDesC& aDatabaseUri = KNullDesC);
 
 	/**
 	 * UnlinkCategoryToLandmarksL.
@@ -289,6 +314,9 @@ public: // Functions to retrieve data members
 	 */
 	IMPORT_C void UnlinkCategoryToLandmarksL( TPosLmItemId aCategoryId,
 			RArray< TPosLmItemId >& aLandmarkIdArray,
+			const TDesC& aDatabaseUri = KNullDesC );
+	IMPORT_C void UnlinkCategoryToLandmarksL(TInt32 aTransactionId,
+			TPosLmItemId aCategoryId, RArray<TPosLmItemId>& aLandmarkIdArray,
 			const TDesC& aDatabaseUri = KNullDesC );
 
 	/**

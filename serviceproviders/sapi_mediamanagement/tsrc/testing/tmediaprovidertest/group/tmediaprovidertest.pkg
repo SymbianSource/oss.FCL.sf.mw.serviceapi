@@ -45,8 +45,8 @@
   "../conf/tmediaprovidertest.cfg"        -   "!:\testframework\tmediaprovidertest.cfg"
 
 ; Main DLL
-;"..\..\..\..\..\..\..\epoc32\release\armv5\urel\mediamanagementservice.dll"-"C:\sys\bin\mediamanagementservice.dll"
-"..\..\..\..\..\..\..\epoc32\release\armv5\urel\tmediaprovidertest.dll"-"C:\sys\bin\tmediaprovidertest.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\mediamanagementservice.dll"-"C:\sys\bin\mediamanagementservice.dll"
+"..\..\..\..\..\..\..\..\..\epoc32\release\armv5\urel\tmediaprovidertest.dll"-"C:\sys\bin\tmediaprovidertest.dll"
 
 
 

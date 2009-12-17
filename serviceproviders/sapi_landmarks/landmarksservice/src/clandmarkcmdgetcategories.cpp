@@ -120,13 +120,10 @@ void CLandmarkCmdGetCategories::RunL( )
 		{
 		User::LeaveIfError (iStatus.Int ( ) );
 		CPosLmItemIterator* iterator=  NULL;
-		CPosLandmarkDatabase* db = iHandle->LandmarkDatabaseHandle ( );
-		TPtrC dbUri;
-		iHandle->GetDatabaseUri (dbUri );
 		CPosLandmarkSearch* search = iHandle->LandmarkSearchHandle ( );
 		iterator = search->MatchIteratorL ( );
 		CleanupStack::PushL (iterator );
-		TRAP_IGNORE(iObserver->HandleCategoryItemsL(iterator,iTransactionId,KErrNone,dbUri));
+		TRAP_IGNORE(iObserver->HandleCategoryItemsL(iterator,iTransactionId,KErrNone,iHandle));
 		CleanupStack::Pop (iterator );
 		//set active garbage collector
 		if ( !iManageObjects->IsActive() )
@@ -157,7 +154,7 @@ void CLandmarkCmdGetCategories::DoCancel( )
 //
 TInt CLandmarkCmdGetCategories::RunError( TInt aError )
 	{
-	TRAP_IGNORE(iObserver->HandleCategoryItemsL(NULL,iTransactionId,aError,KNullDesC));
+	TRAP_IGNORE(iObserver->HandleCategoryItemsL(NULL,iTransactionId,aError,NULL));
 	if ( !iManageObjects->IsActive() )
 		{
 		iManageObjects->Start ( );

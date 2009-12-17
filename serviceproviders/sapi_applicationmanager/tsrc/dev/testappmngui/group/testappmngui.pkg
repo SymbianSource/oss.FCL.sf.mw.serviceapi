@@ -47,7 +47,7 @@
 "..\data\C\msg.sisx" - "!:\msg.sisx"
 
 ; Main EXE
-;"\epoc32\release\ARMV5\urel\tappmanagertest.dll"  -   "!:\sys\bin\tappmanagertest.dll"
+;"..\..\..\..\..\..\..\..\..\epoc32\release\ARMV5\urel\tappmanagertest.dll"  -   "!:\sys\bin\tappmanagertest.dll"
 
 ;"..\conf\tappmanagertest.cfg" - "!:\Testframework\tappmanagertest.cfg"
 ;"..\init\TestFramework.ini"   - "!:\Testframework\TestFrame.ini"

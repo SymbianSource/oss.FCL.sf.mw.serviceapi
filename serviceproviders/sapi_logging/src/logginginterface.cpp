@@ -1277,6 +1277,12 @@ CLogIter*  CLoggingInterface :: GetListL(  const TLiwGenericParam  *aFilter,
                 filter->SetFlags( val ) ;
                 }
             }
+        
+        if( mapParam->FindL( KStartTimeKey , var ) )
+            {
+            CheckInputTypeL( &var, LIW::EVariantTypeTTime, KStartTimeKey.operator&() );
+            filter->SetStartTime( var.AsTTime() ) ;
+            }
                 
         if( mapParam->FindL( KEndTimeKey , var ) )
             {

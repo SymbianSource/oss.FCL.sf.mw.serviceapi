@@ -25,7 +25,7 @@ UID                     0x1000008d 0x102833A6
 
 EPOCALLOWDLLDATA
 
-VERSION		1.1
+VERSION		1.2
 
 CAPABILITY              CAP_GENERAL_DLL
 VENDORID                0

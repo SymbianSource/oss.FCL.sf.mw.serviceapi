@@ -193,6 +193,8 @@ class CLogAsyncService : public CActive
         TInt               iTask ;
         RFs                iFs ;
         TTimeIntervalMicroSeconds32 iInterval ;
+        CLogViewEvent* iLogViewEvent;
+        CLogFilter* iFilter;
 
     };
 
@@ -213,6 +215,15 @@ class MLoggingCallback
         * @param iter , Logging iterator
         */
         virtual void HandleNotifyL(TUint aTransid ,TUint aStatus , CLogIter *iter ) = 0 ;
+		
+        /**
+        * HandleReqeustL , method to get output on notification
+        * methods
+        * @param aTransId , Transaction id
+        * @param aStatus
+        * @param aLogEvent , event containing the output
+        */
+        virtual void HandleReqeustL(TUint aTransid, TUint aStatus, CLogsEvent *aLogEvent) = 0;
 
         /**
         * CancelNotifyL , generic method to get updates on the async
@@ -233,5 +244,67 @@ class MLoggingCallback
         }
 
     } ;
+
+/**
+ * Utility class for waiting for asychronous requests
+*/
+class CAsyncWaiter : public CActive
+    {
+public:
+    /**
+     * Two-phased constructor.
+     * @param aPriority  set aPriority to  EPriorityStandard
+     * @return CAsyncWaiter object
+    */
+    static CAsyncWaiter* NewL( TInt aPriority = EPriorityStandard );
+    static CAsyncWaiter* NewLC( TInt aPriority = EPriorityStandard );
+    /**
+     * Destructor.
+    */
+    ~CAsyncWaiter();
+    
+    /**
+     * Starts the active scheduler.
+    */
+    void StartAndWait();
+    /**
+     * Starts the active scheduler.
+    */
+    TInt Result() const;
+    
+private:
+    
+    /** 
+     * Constructor.
+     * @param aPriority 
+    */
+    CAsyncWaiter( TInt aPriority );
+    
+    /**
+     * Inherited from CActive class 
+    */
+    void RunL();
+    
+    /**
+     * Inherited from CActive class 
+    */
+    void DoCancel();
+    
+private:
+    
+    /**
+     * wait scheduler
+     */
+    CActiveSchedulerWait iWait;
+    
+    /**
+     * error
+    */
+    TInt iError;
+    };
+
+    
+
+
 
 #endif
