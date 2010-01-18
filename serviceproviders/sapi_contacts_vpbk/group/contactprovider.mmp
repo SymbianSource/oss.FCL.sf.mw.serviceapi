@@ -65,6 +65,7 @@ LIBRARY       vpbkvcardEng.lib
 LIBRARY       charconv.lib 
 LIBRARY		  efsrv.lib 
 LIBRARY       estor.lib 
+LIBRARY 	  CentralRepository.lib
 
 #if defined(WINS)
     deffile ../bwins/contactproviderwinscw.def

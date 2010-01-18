@@ -224,8 +224,8 @@ void CAddContactObserver::CreateAndAddFieldToContactL()
             TDes16 desVal = bufVal;
             TPtrC ptrVal; //desVal.Left(0);
             TInt valLen = val->Length();
-            (MVPbkContactFieldUriData::Cast(cntField->FieldData())).SetUriL( bufVal );
- 
+            //(MVPbkContactFieldUriData::Cast(cntField->FieldData())).SetUriL( bufVal );
+            (static_cast<MVPbkContactFieldUriData&>(cntField->FieldData())).SetUriL( bufVal );
             len = val->Find(_L(":"));
                   
             if(len != -1)

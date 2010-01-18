@@ -40,7 +40,7 @@
 #include "contacterrormessage.hrh"
 #include "../../inc/serviceerrno.h"
 #include "contactsmaxlength.h"
-
+#include <centralrepository.h>
 using namespace LIW;
 
 #define KMissingArg -100
@@ -70,6 +70,7 @@ void CContactInterface::ConstructL()
     {
     iContactService = CContactService::NewL();    
 	iErrorMess = HBufC::NewL(250);    
+	iRepository = CRepository::NewL( TUid::Uid(KCRUidPhonebookStoreConfiguration) );
     }
 /*
 -----------------------------------------------------------------------------
@@ -99,6 +100,7 @@ CContactInterface::~CContactInterface()
     delete iContactService;
     delete iErrorMess;
     delete iDburi;
+    delete iRepository;
     iCallbackMap.ResetAndDestroy();
     iCallbackMap.Close();		
     }
@@ -401,9 +403,10 @@ void CContactInterface::ProcessAddDataL(const CLiwMap* aMap,
     TBool xspid = EFalse;
     TBool xspidIsDes = EFalse;
     TBool atleastOneField = EFalse;
-    iDburi = HBufC::NewL(VPbkContactStoreUris::DefaultCntDbUri().Length());    
+    //iDburi = HBufC::NewL(VPbkContactStoreUris::DefaultCntDbUri().Length());    
     //set the DBUri to the default value.    
-    iDburi->Des().Copy(VPbkContactStoreUris::DefaultCntDbUri());
+    //iDburi->Des().Copy(VPbkContactStoreUris::DefaultCntDbUri());
+    iDburi = GetDefaultDBUri().AllocLC();
     //get the number of entries in the map
     TInt keyCount = aMap->Count();
 
@@ -1052,7 +1055,8 @@ void CContactInterface::
 	HBufC8* cntid = NULL;
 	CContactIter* iter;
 	CContactIterator* iterator;
-	TPtrC dbUri(VPbkContactStoreUris::DefaultCntDbUri());	
+	//TPtrC dbUri(VPbkContactStoreUris::DefaultCntDbUri());
+	TPtrC dbUri = GetDefaultDBUri();
 	//Switch based on the Ttype var value
 	switch(listType)
 	    {	    
@@ -1591,7 +1595,35 @@ TInt CContactInterface::CancelCommandL(const CLiwGenericParamList& aInParamList,
 			    }
 	    return errCode;	
 	}
-	
+
+TPtrC CContactInterface::GetDefaultDBUri()
+    {
+       TPtrC dbUri;
+       HBufC* defaultStoreUri = HBufC::NewL(KInitialStoreUriSize);
+       TPtr ptr = defaultStoreUri->Des();
+       TInt actualSize = 0;
+       TInt ret = iRepository->Get
+          (KPhonebookDefaultSavingStoreUri, ptr, actualSize);
+        if (ret == KErrOverflow || ret != KErrNone)
+        {
+            delete defaultStoreUri;
+            defaultStoreUri = NULL;
+            defaultStoreUri = HBufC::NewL(actualSize);
+            ptr.Set(defaultStoreUri->Des());
+            TInt status = iRepository->Get(KPhonebookDefaultSavingStoreUri, ptr);
+            if(status == KErrNone)
+                {
+                TPtrC dbUri(VPbkContactStoreUris::DefaultCntDbUri());
+                delete defaultStoreUri;
+                defaultStoreUri = NULL;
+                return dbUri;
+                }
+            delete defaultStoreUri;
+            defaultStoreUri = NULL;
+         }   
+       dbUri.Set(ptr);
+       return dbUri;
+    }
 	
 /*
 -----------------------------------------------------------------------------
@@ -1746,7 +1778,7 @@ void CContactInterface::AddCommandL(const CLiwGenericParamList& aInParamList,
                     User::Leave(err);
                     }
                 } 
-            
+            CleanupStack::Pop();
             CleanupStack::Pop(contact);
             } //end of if pMap
         else
@@ -1774,8 +1806,7 @@ void CContactInterface::AddCommandL(const CLiwGenericParamList& aInParamList,
 		    CleanupStack::PushL( TCleanupItem( TLiwVariant::VariantCleanup , &valueUri) );
 
 			//set the Db Uri to default database.
-            TPtrC dbUri(VPbkContactStoreUris::DefaultCntDbUri());
-
+            TPtrC dbUri = GetDefaultDBUri();
             TPtrC grpIdUnicode(KNullDesC);
             TPtrC grpLabel(KNullDesC);
 
@@ -2016,7 +2047,8 @@ void CContactInterface::ImportCommandL(const CLiwGenericParamList& aInParamList,
         const CLiwMap* pMap = paramImportData->Value().AsMap();
         if(NULL != pMap)
             {
-            TPtrC  dburi(VPbkContactStoreUris::DefaultCntDbUri());
+            //TPtrC  dburi(VPbkContactStoreUris::DefaultCntDbUri());
+            TPtrC dburi = GetDefaultDBUri();
             TLiwVariant valueFname;
             CleanupStack::PushL( TCleanupItem( TLiwVariant::VariantCleanup , &valueFname) );
 
@@ -2207,7 +2239,8 @@ void CContactInterface::ExportCommandL(const CLiwGenericParamList& aInParamList,
             TLiwVariant valueUri;
             CleanupStack::PushL( TCleanupItem( TLiwVariant::VariantCleanup , &valueUri) );
 
-            TPtrC dburi(VPbkContactStoreUris::DefaultCntDbUri());
+            //TPtrC dburi(VPbkContactStoreUris::DefaultCntDbUri());
+            TPtrC dburi = GetDefaultDBUri();
             if( EFalse != pMap->FindL(KDBUri,valueUri))
                 {
                 if(EVariantTypeDesC != valueUri.TypeId())
@@ -2402,7 +2435,8 @@ void CContactInterface::DeleteCommandL(const CLiwGenericParamList& aInParamList,
             TLiwVariant valueId;
             CleanupStack::PushL( TCleanupItem( TLiwVariant::VariantCleanup , &valueId) );
 
-            TPtrC dbUri(VPbkContactStoreUris::DefaultCntDbUri());
+            //TPtrC dbUri(VPbkContactStoreUris::DefaultCntDbUri());
+            TPtrC dbUri = GetDefaultDBUri();
             const CLiwList* contactIdList = NULL;
 
             if( EFalse != pMap->FindL(KDBUri,valueUri))
@@ -2596,7 +2630,8 @@ void CContactInterface::OrganiseGroupCommandL(const CLiwGenericParamList& aInPar
 			TLiwVariant valueUri;
             CleanupStack::PushL( TCleanupItem( TLiwVariant::VariantCleanup , &valueUri) );
 
-            TPtrC dbUri(VPbkContactStoreUris::DefaultCntDbUri());
+            //TPtrC dbUri(VPbkContactStoreUris::DefaultCntDbUri());
+            TPtrC dbUri = GetDefaultDBUri();
             TBool associateType = EFalse;
             HBufC8* groupId = NULL;
 

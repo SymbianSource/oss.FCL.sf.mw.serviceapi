@@ -513,21 +513,49 @@ void CSensorInterface::ExecuteServiceCommandL
          //Retreive Channel Info
          GetChannelInfoL( channelInfo , chnlInfoMap );
          
-         TSensrvProperty measureProperty;
-         TSensrvProperty scaleProperty;
-         TRAPD(anErr,iSensorService->GetScaleFactorL( channelInfo ,
-                                                       measureProperty,scaleProperty ));
+         RSensrvPropertyList propertyList;
+         CleanupClosePushL( propertyList );
+         TRAPD( anErr, iSensorService->GetChannelPropertyL( channelInfo,
+                                                            propertyList ) );
          
          if( anErr != KErrNone )
              {
+             CleanupStack::PopAndDestroy( &propertyList );
              iErrorString = KErrInvalidChnlMap.operator()().Alloc();
              User::Leave(KErrArgument);
              }
          TReal scaleFactor ;
-         TReal measureValue;
+         TInt measureValue;
          TInt scaleValue;
-         measureProperty.GetValue( measureValue );// 0 or 1
-         scaleProperty.GetValue( scaleValue); // 8 or 12
+         TInt propCount = propertyList.Count();
+         TInt j=0;
+         TInt k=0;
+         // If no properties listed then leave with error - Not found
+         if( propCount == 0 )
+            {
+            User::Leave( KErrNotFound );
+            }
+         
+         for (TInt i = 0; i < propCount; i++ )
+             {
+             if(propertyList[i].GetPropertyId()== KSensrvPropIdMeasureRange)
+                 {
+                 if(j<1)
+                     {
+                     propertyList[i].GetValue( measureValue );
+                     j++;
+                     }
+                 }
+             if(propertyList[i].GetPropertyId()== KSensrvPropIdScaledRange)
+                 {
+                 if(k<1)
+                     {	
+                 		 propertyList[i].GetValue( scaleValue );
+               			 }
+                 }
+                             
+             }
+         CleanupStack::PopAndDestroy( &propertyList );
          TReal outputValue;
          TInt errPow;
          errPow = Math::Pow(outputValue,2,scaleValue-1);

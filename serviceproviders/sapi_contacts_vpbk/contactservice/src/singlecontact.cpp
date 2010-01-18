@@ -149,7 +149,8 @@ CSingleContactField* CSingleContact::GetXSPIDFieldL(MVPbkStoreContact* aSingleCo
                       if(EVPbkFieldStorageTypeUri == storageType )
                           {
                           //TDesC val = label.Alloc();
-                          uri.Set((MVPbkContactFieldUriData::Cast(field.FieldData())).Uri());
+                          //uri.Set((MVPbkContactFieldUriData::Cast(field.FieldData())).Uri());
+                          uri.Set((static_cast<const MVPbkContactFieldUriData&>(field.FieldData())).Uri());
                    /*       TBuf<10> bufVal1;
                           bufVal1.Copy(label);
                           TBuf<100> bufVal2;

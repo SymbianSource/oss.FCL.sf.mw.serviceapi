@@ -59,6 +59,9 @@ public:
 			TInt aError);
 
 private:
+    
+    void Delay(TInt aError);
+    
 	//from CActive
 
 	// RunL.
@@ -92,6 +95,7 @@ private:
 
 	TPosLmItemId iId;
 
+	TBool iIsDelay;
 	};
 
 #endif /* CLANDMARKDUMMYAO_H_ */

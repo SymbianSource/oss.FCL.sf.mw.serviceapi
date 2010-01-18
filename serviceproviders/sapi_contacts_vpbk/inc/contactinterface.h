@@ -20,15 +20,22 @@
 
 //System includes
 #include <liwvariant.h>
+#include <centralrepository.h>
 
 // User Includes
 #include "contactinterface.hrh"
 #include "singlecontact.h"
 #include "contactcallbackmap.h"
+const TInt KInitialStoreUriSize = 1;
+const TUint32 KPhonebookDefaultSavingStoreUri               = 0x00000001;
+const TUint32 KCRUidPhonebook = 0x101f8794;
+const TUint32 KCRUidPhonebookStoreConfiguration             = 0x1020727f;
+
+
 // Forward Declarations
 class CContactService;
 class CContactInterfaceCallback;
-
+class CRepository;
 /**
  * CContactInterface - Provides interface between the AIW FrameWork
  * and Service Provider.
@@ -241,7 +248,9 @@ class CContactInterface : public CBase, public MLiwInterface
                             TInt aTransId);                                                               
                                                                                                                                   
 		MLiwNotifyCallback* Callback( TInt32 aTransactionId );                                 
-    private:
+	private:
+	    TPtrC GetDefaultDBUri();
+	private:
         // POINTER MEMBER
         /**
          * contact service implementation object.
@@ -258,6 +267,8 @@ class CContactInterface : public CBase, public MLiwInterface
         HBufC* iErrorMess;
         //this is used only for add api due to reset problem with TLiwVariant
         HBufC* iDburi;
+        
+        CRepository *iRepository;
   
     };
 

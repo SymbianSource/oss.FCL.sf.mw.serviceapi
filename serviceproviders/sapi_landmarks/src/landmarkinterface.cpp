@@ -2299,6 +2299,12 @@ void CLandmarkInterface::AddLandmarksL(
             landmark->SetPositionFieldL (EPositionFieldBuildingTelephone,
                     variant.AsDes ( ) );
             }
+        if ( ValidateParamL (KAdd, KLandmarkstate, lmFields,
+                        LIW::EVariantTypeDesC, EFalse, variant ) )
+            {
+            landmark->SetPositionFieldL (EPositionFieldState,
+                    variant.AsDes ( ) );
+            }
         }
 	//Async Call
 	if (aCallback)

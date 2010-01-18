@@ -32,7 +32,7 @@
 CLandmarkDummyAO::CLandmarkDummyAO(MLandmarkObserver* aObserver,
 		CLandmarkManageObjects* aManageObjects) :
 	CActive(EPriorityNormal), iObserver(aObserver), iManageObjects(
-			aManageObjects)
+			aManageObjects),iIsDelay(EFalse)
 	{
 	CActiveScheduler::Add(this);
 	}
@@ -56,24 +56,39 @@ void CLandmarkDummyAO::Start(TInt32 aTransactionId,
 	SetActive();
 	TRequestStatus* status = &iStatus;
 	User::RequestComplete(status, aError);
+	iIsDelay = ETrue;
 	}
 
+void CLandmarkDummyAO::Delay(TInt aError)
+    {
+    SetActive();
+    TRequestStatus* status = &iStatus;
+    User::RequestComplete(status, aError);
+    iIsDelay = EFalse;
+    }
 void CLandmarkDummyAO::RunL()
 	{
-	switch(iCmd)
-	 {
-	 case EAdd: TRAP_IGNORE(iObserver->HandleAddItemsL(iId,iTransactionId,iStatus.Int()));
-				break;
-	 case EUpdate:
-	 case ERemove: TRAP_IGNORE(iObserver->HandleItemsL(iTransactionId,iStatus.Int()));
-	 				break;
-	 default:
-		 break;
-	 }
-	
-	if (!iManageObjects->IsActive())
-		{
-		iManageObjects->Start();
-		}
+	/*if( iIsDelay )
+	    {
+	    Delay(iStatus.Int());
+	    }
+	else*/
+	    //{
+        switch(iCmd)
+         {
+         case EAdd: TRAP_IGNORE(iObserver->HandleAddItemsL(iId,iTransactionId,iStatus.Int()));
+                    break;
+         case EUpdate:
+         case ERemove: TRAP_IGNORE(iObserver->HandleItemsL(iTransactionId,iStatus.Int()));
+                        break;
+         default:
+             break;
+         }
+        
+        if (!iManageObjects->IsActive())
+            {
+            iManageObjects->Start();
+            }
+       // }
 	}
 

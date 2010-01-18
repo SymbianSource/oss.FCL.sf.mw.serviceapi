@@ -240,37 +240,4 @@ EXPORT_C void CSensorService::GetChannelPropertyL( const TSensrvChannelInfo& aCh
 		}
 			
 	}
-/*
------------------------------------------------------------------------------
-    CSensorService::GetScaleFactorL()
-    Description   : Get property of specified channel
-    Return values : NA
------------------------------------------------------------------------------
-*/  
 
-EXPORT_C void CSensorService::GetScaleFactorL(const TSensrvChannelInfo& aChannelInfo, 
-                          TSensrvProperty& aMeasureRange,TSensrvProperty& aScaleRange)
-    {
-    TInt index;
-    //Channel Id of the specified channel in the inpiut parameter
-    TUint32 channelId = aChannelInfo.iChannelId;
-    //Find if specified channel is already opened
-    if ( ( IsChannelOpen( channelId,index ) ) )
-        {
-        iChannelList[index]->GetPropertyL( KSensrvPropIdMeasureRange,-1, aMeasureRange );
-        iChannelList[index]->GetPropertyL( KSensrvPropIdScaledRange,-1, aScaleRange );
-        }
-    //else open new channel and get property change listener for it
-     else
-        {
-        CSensrvChannel* sensorChannel = CSensrvChannel::NewL( aChannelInfo );
-        CleanupStack::PushL( sensorChannel );
-        //open requested channel
-        sensorChannel->OpenChannelL();
-        sensorChannel->GetPropertyL( KSensrvPropIdMeasureRange,-1, aMeasureRange );
-        sensorChannel->GetPropertyL( KSensrvPropIdScaledRange,-1, aScaleRange );
-        sensorChannel->CloseChannel();
-        CleanupStack::PopAndDestroy( sensorChannel );
-        }
-            
-    }
