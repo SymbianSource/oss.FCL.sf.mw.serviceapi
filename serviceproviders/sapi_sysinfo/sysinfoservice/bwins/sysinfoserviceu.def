@@ -60,4 +60,6 @@ EXPORTS
 	?Count@CCameraResolutionList@@QBEHXZ @ 59 NONAME ; int CCameraResolutionList::Count(void) const
 	?MimeTypesList@CCameraInfo@@QBEPAVCStringList@@XZ @ 60 NONAME ; class CStringList * CCameraInfo::MimeTypesList(void) const
 	?ResolutionList@CCameraInfo@@QBEPAVCCameraResolutionList@@XZ @ 61 NONAME ; class CCameraResolutionList * CCameraInfo::ResolutionList(void) const
+	??ACVideoDecDataList@@QBEPAUCVideoDecData@0@H@Z @ 62 NONAME ; struct CVideoDecDataList::CVideoDecData * CVideoDecDataList::operator[](int) const
+	?Count@CVideoDecDataList@@QBEHXZ @ 63 NONAME ; int CVideoDecDataList::Count(void) const
 

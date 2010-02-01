@@ -53,7 +53,8 @@ NONSHARABLE_CLASS(CSysData) : public CBase
         EResolution,
         EStringList,
         EStringData,
-        ECameraInfo
+        ECameraInfo,
+        EVideoDecList
         };
     public:
     /**
@@ -922,5 +923,65 @@ private:
     CCameraResolutionList* iResList;
     CStringList* iMimeTypesList;
     };
+/**
+*  @ref CVideoDecDataList
+*
+*  @lib sysinfoservice.lib
+*  @since S60 3.2
+*/
+NONSHARABLE_CLASS(CVideoDecDataList) : public CSysData
+    {
+    public:
+    struct CVideoDecData
+    {
+        CVideoDecData(const TDesC  &iManufacturer,const TDesC  &iIdentifier,TInt iMaxBitrate,TBool    iAccelerated,const TDesC &iVersion)
+                :MaxBitrate(iMaxBitrate),Accelerated(iAccelerated)
+                    {
+                    Manufacturer = iManufacturer.AllocL();
+                    Identifier = iIdentifier.AllocL();
+                    Version=iVersion.AllocL();
+                    }
+        
+        TInt     MaxBitrate;
+        TBool    Accelerated;  
+        HBufC*      Manufacturer;
+        HBufC*      Identifier;
+        HBufC*      Version;
+    };
+    public:
+    /**
+    * Two-phased constructor.
+    *
+    * @return A new instance of this class.
+    */    
+    static CVideoDecDataList* NewL();
+    /**
+    * @return drive number.
+    */
+    void AppendL(CVideoDecData *entry);
+    IMPORT_C CVideoDecData *operator[](TInt aIndex) const;
+    /**
+    * @return number of drives.
+    */
+    IMPORT_C TInt Count() const;
 
+    /**
+    * Destructor.
+    */
+    ~CVideoDecDataList();
+
+    private:
+    /**
+    * C++ default constructor.
+    */
+    CVideoDecDataList();
+    /**
+    * Symbian 2nd phase constructor.
+    */
+    void ConstructL();
+    
+    private:
+    RArray<CVideoDecData *>    iDecData;
+    TInt            iCount;
+};
 #endif __SYSINFO_H__
