@@ -20,7 +20,7 @@
 NAME AMgr
 
 #include <eikon.rh>
-#include <eikcore.rsg>
+#include <EIKCORE.rsg>
 #include <avkon.rsg>
 #include <avkon.rh>
 #include <avkon.hrh>
