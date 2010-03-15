@@ -489,6 +489,16 @@ TBool Ctmediaprovidertesting::CompareTIntResult(const TDesC8& aKey,
     TInt expRes = expValue.AsTInt32();
     TInt resRes = resValue.AsTInt32();
     
+   TInt expMax = expRes + 200;
+           
+   if(aKey == KMgFileSize) 
+        {
+        if(resRes >= expRes &&  resRes <expMax)
+            {           
+            equal = ETrue;           
+            }
+        }
+  
     expIntStr.AppendNum(expRes);
     resIntStr.AppendNum(resRes);
     

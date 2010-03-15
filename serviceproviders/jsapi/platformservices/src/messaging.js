@@ -104,43 +104,10 @@ var __device_messaging_service_entry = {
 };
 
 
-
-/*
- Copyright © 2009 Nokia. All rights reserved.
- Code licensed under the BSD License:
- Software License Agreement (BSD License) Copyright © 2009 Nokia.
- All rights reserved.
- Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- Neither the name of Nokia Corporation. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission of Nokia Corporation.
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- version: 1.0
- */
 // S60 sp-based messaging provider
 var FILE_SCHEME = 'file://';
-//Constant values as per the CJSE Spec
-//var INVALID_URI_ERR = 108;
 
-/*
- * Global object for Async utility functions:
- * 1)addToGlobalArray
- * 2)getFromArray
- * 3)removeFromArray
- */
 
-//var error = new DeviceError(0, 'dummy');
-/*
- if(undefined == com.nokia.device.messaging)
- {
- com.nokia.device.messaging={};
- }
- nokia.device.messaging.SORT_ASCENDING = 0;
- nokia.device.messaging.SORT_DESCENDING = 1;
- nokia.device.messaging.SORT_BY_DATE = 0;
- nokia.device.messaging.SORT_BY_SENDER = 1;
- nokia.device.messaging.STATUS_READ = 0;
- nokia.device.messaging.STATUS_UNREAD = 1;*/
 function __sp_messaging_descriptor(){
     //Read-only properties
     this.interfaceName = "messaging";
@@ -209,7 +176,9 @@ function __sp_attachment_build(attachment){
         }
         //device1.0: added this statement.. with out this the script will crib..also checking for proper URI
         if (attachment.uri.slice(0, 7) == FILE_SCHEME) {
+			
             if (attachment.uri.charAt(7) == "/") {
+				
                 if (attachment.uri.charAt(9) != ":") {
                     throw new DeviceException(this.error.URI_NOT_FOUND_ERR, "specified uri not found");
                 }
@@ -249,8 +218,8 @@ function __sp_message_build(message, id){
     var attachFlag = 0;
     sp_message.MessageParam = {};
     modifyObjectBaseProp(sp_message.MessageParam);
-    sp_message.MessageParam.LaunchEditor = false; //Defaults to no editor
-    sp_message.MessageType = (message.type == undefined || message.type == null) ? "SMS" : message.type;
+    sp_message.MessageParam.LaunchEditor = false; //Defaults to no editor    
+    sp_message.MessageType = (message.type == undefined || message.type == null || message.type == "") ? "SMS" : message.type;
     //alert(message.to[0]+" "+message.type)
     if (message.to) {
         if (typeof(message.to) == "string") {
@@ -500,6 +469,13 @@ function __sp_messaging_getList(msg_cb, match, sortkey, sortorder, ErrorCallback
         if (typeof msg_cb != "function") {
             throw new DeviceException(this.error.INVALID_ARG_ERR, "Messaging:getList:callback is not a function"); //BadArgumentType error
         }
+		
+        if (ErrorCallback!=null && typeof ErrorCallback!="undefined") {
+        if (typeof(ErrorCallback) != 'function') {
+            throw new DeviceException(this.error.INVALID_ARG_ERR, "Messaging: startEditor: ErrorCallback is invalid");
+        }
+    }
+
     if (match != null && match != undefined && typeof match != "object") {
         //	a("match not object")
         throw new DeviceException(this.error.INVALID_ARG_ERR, "Messaging:getList:match is invalid"); //BadArgumentType error
@@ -514,21 +490,22 @@ function __sp_messaging_getList(msg_cb, match, sortkey, sortorder, ErrorCallback
     }
     
     if (sortkey != null && sortkey != undefined && typeof sortkey == "number") {
-        if ((sortkey != 0) && (sortkey != 1)) 
-            throw new DeviceException(this.error.INVALID_ARG_ERR, "Messaging:getList:sortkey is invalid"); //BadArgumentType error
-    }
+        if ((sortkey != 0) && (sortkey != 1)) {
+			//alert("sortkey_2");
+			//throw new DeviceException(this.error.INVALID_ARG_ERR, "Messaging:getList:sortkey is invalid"); //BadArgumentType error
+		    ErrorCallback( new DeviceException(this.error.DATA_OUT_OF_RANGE_ERR, "Messaging:getList:sortkey is out of range")); //BadArgumentType error 
+			return;
+			}
+	}
     
     if (sortorder != null && sortorder != undefined && typeof sortorder == "number") {
-        //	a(sortorder+" "+typeof sortorder)
-        if ((sortorder != 0) && (sortorder != 1)) 
-            throw new DeviceException(this.error.INVALID_ARG_ERR, "Messaging:getList:sortorder is invalid"); //BadArgumentType error
+        	//alert(sortorder+" "+typeof sortorder)
+        if ((sortorder != 0) && (sortorder != 1)) {
+			ErrorCallback(new DeviceException(this.error.DATA_OUT_OF_RANGE_ERR, "Messaging:getList:sortorder is out of range")); //BadArgumentType error
+			return;
+		}
     }
     
-    if (ErrorCallback) {
-        if (typeof(ErrorCallback) != 'function') {
-            throw new DeviceException(this.error.INVALID_ARG_ERR, "Messaging: startEditor: ErrorCallback is invalid");
-        }
-    }
     
     
     var criteria = {};
@@ -1128,7 +1105,7 @@ function __sp_messaging_getMessage(id){
 }
 
 function __sp_messaging_delete(id){
-    a("messageId" + typeof id);
+    //a("messageId" + typeof id);
     if (!id) {
         throw new DeviceException(this.error.MISSING_ARG_ERR, "Messaging:delete:id is missing");//SErrMissingArgument = 1003  
     }
@@ -1153,7 +1130,7 @@ function __sp_messaging_delete(id){
     try {
         //		a("criteria.MessageId" + criteria.MessageId);
         var result = this.so.IMessaging.Delete(criteria);
-        a("MapErrorCode[ result.ErrorCode ]" + MapErrorCode[result.ErrorCode]);
+        //a("MapErrorCode[ result.ErrorCode ]" + MapErrorCode[result.ErrorCode]);
         if (criteria) {
             delete criteria.MessageId;
         }
@@ -1194,7 +1171,7 @@ function __sp_messaging_setStatus(id, status){
     }
     
     if (typeof status == "number" && status != 0 && status != 1) {
-        throw new DeviceException(this.error.INVALID_ARG_ERR, "Messaging:setStatus:status is invalid"); //BadArgumentType error
+        throw new DeviceException(this.error.DATA_OUT_OF_RANGE_ERR, "Messaging:setStatus:status is out of range"); //BadArgumentType error
     }
     
     if ((typeof id == "string") && !(isNaN(id))) {
@@ -1215,7 +1192,7 @@ function __sp_messaging_setStatus(id, status){
     }
     else 
         if ((status == this.STATUS_READ)) {
-            a("in read")
+            //a("in read")
             criteria.Status = "Read";
         }
     try {

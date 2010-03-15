@@ -112,7 +112,7 @@ void CLocationService::ConstructL()
  */
 void CLocationService::GetHighAccuracyModuleL(TPositionModuleId* aModId)
     {
-    TPositionModuleId moduleId;
+    TPositionModuleId moduleId = TUid::Null();
     TPositionModuleInfo modInfo;
     TUint numOfModules = 0;
 

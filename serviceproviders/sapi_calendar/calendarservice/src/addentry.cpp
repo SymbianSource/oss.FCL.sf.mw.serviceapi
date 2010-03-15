@@ -179,7 +179,7 @@ void CCalendarAddEntry::UpdateEntryL( TUIDSet*& aGuidAdded )
 		
 		TCalTime instanceStTime = iCalendarEntry->InstanceStartTime();
         
-		CCalInstance* instance;
+		CCalInstance* instance = NULL;
 		
 
 		// Fetch instance having start time and LocalUid specified and GlobalUid specified
@@ -262,7 +262,7 @@ void CCalendarAddEntry::UpdateEntryL( TUIDSet*& aGuidAdded )
 	else
 		{
 		// Fetch entry to be modified
-		CCalEntry* entry ;
+		CCalEntry* entry = NULL;
 
 		if(iCalendarEntry->ModifiedAttributes() & CEntryAttributes::ELocalUid)
             {

@@ -22,6 +22,8 @@
 #include <platform_paths.hrh>
 
 MW_LAYER_SYSTEMINCLUDE
+APP_LAYER_SYSTEMINCLUDE
+
 
 
 TARGET          tcalendargetlistiter3.dll

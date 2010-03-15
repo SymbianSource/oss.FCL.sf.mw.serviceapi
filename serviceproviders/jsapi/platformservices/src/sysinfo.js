@@ -323,13 +323,13 @@ function __sp_device_sysinfo_toBool(chargeStatus) {
 		}
 }
 
-function mappingVerification(errorCode) {
-	if(errorCode == 1016 || errorCode == 1012 || errorCode == 1010 || errorCode == 1009 || errorCode == 1005 || errorCode == 1000 || errorCode == 1011 || errorCode == 1007 || errorCode  == 1003 || errorCode == 1002){
-		return true;
-		}
-	else{
-		return false;		
-		}
+function mappingVerification_sysinfo(errorCode) {
+    if (errorCode === 1016 || errorCode === 1012 || errorCode === 1010 || errorCode === 1009 || errorCode === 1005 || errorCode === 1000 || errorCode === 1011 || errorCode === 1007 || errorCode === 1003 || errorCode === 1002 || errorCode === 1004 ) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 function __sp_device_sysinfo_extract(sysinfo){
@@ -559,7 +559,7 @@ function __sp_sysinfo_get(channel, sysinfo_success_cb, ErrorCallback){
             	glob_obj.addToGlobalArray(rval.TransactionID, sysinfo_success_cb, ErrorCallback);
         	}
             if (rval.ErrorCode != 0) {     
-						var doMap = mappingVerification(rval.ErrorCode);
+						var doMap = mappingVerification_sysinfo(rval.ErrorCode);
 						if(doMap) {
 							switch(MapErrorCode[rval.ErrorCode])
 							{						

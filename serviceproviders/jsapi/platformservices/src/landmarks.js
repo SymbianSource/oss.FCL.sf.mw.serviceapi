@@ -113,20 +113,6 @@ function __device_landmarks_cancel(transactionId){
 }
 
 
-
-
-/*
- Copyright � 2009 Nokia. All rights reserved.
- Code licensed under the BSD License:
- Software License Agreement (BSD License) Copyright � 2009 Nokia.
- All rights reserved.
- Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- Neither the name of Nokia Corporation. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission of Nokia Corporation.
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- version: 1.0
- */
 //utillity function for converting error code from PS to CJSE codes
 //this gets used in communicating errors via error callback
 var err_missing_argument = 1003;
@@ -320,7 +306,7 @@ function __sp_landmarks_category_iterator_has_next(){
     else {
         this.catItem = this.iter.getNext();
         this.hasElement = true;
-        if (typeof this.catItem == "undefined") {
+        if (typeof this.catItem == "undefined" || this.catItem == null) {
             this.catItem = null;
             return false;
         }
@@ -339,15 +325,20 @@ function __sp_landmarks_category_iterator_get_next(){
         if (typeof(this.catItem) == "undefined") {
             this.catItem = null;
         }
-        return new __sp_device_category_obj(tempitem);
+        
+        if(tempitem){
+            return new __sp_device_category_obj(tempitem);
+        }
+        else {
+            return null;
+        }
     }
     else {
         this.catItem = this.iter.getNext();
-        if (typeof this.catItem == "undefined") {
+        if (typeof this.catItem == "undefined" || this.catItem == null) {
             this.hasElement = true;
             this.catItem = null;
             return null;
-            
         }
         else {
             this.hasElement = true;
@@ -407,18 +398,6 @@ function __sp_landmark_position_obj(location){
         this.Latitude = location.latitude;
     }
     
-    
-    /*if(location.altitude) 
-    
-     this.Altitude = location.altitude;
-    
-     if(location.hAccuracy)
-    
-     this.HAccuracy = location.hAccuracy;
-    
-     if(location.vAccuracy)
-    
-     this.VAccuracy = location.vAccuracy;*/
     
 }
 
@@ -938,11 +917,16 @@ function __sp_landmarks_iterator_get_next(){
         if (typeof(this.lmItem) == "undefined") {
             this.lmItem = null;
         }
-        return new __sp_device_landmark_obj(tempitem);
+        if(tempitem){
+            return new __sp_device_landmark_obj(tempitem);
+        }
+        else{
+            return null;
+        } 
     }
     else {
         this.lmItem = this.iter.getNext();
-        if (typeof this.lmItem == "undefined") {
+        if (typeof this.lmItem == "undefined" || this.lmItem == null) {
             this.hasElement = true;
             this.lmItem = null;
             return null;
@@ -955,7 +939,7 @@ function __sp_landmarks_iterator_get_next(){
             //update 
             
             this.lmItem = this.iter.getNext();
-            if (typeof(this.lmItem) == "undefined") {
+            if (typeof(this.lmItem) == "undefined" || this.lmItem == null) {
                 this.lmItem = null;
             }
             return new __sp_device_landmark_obj(tempObject);

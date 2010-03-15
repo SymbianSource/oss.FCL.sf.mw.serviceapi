@@ -1571,7 +1571,7 @@ void CLocationInterface :: FillCoordinatesL ( TCoordinate& aCoordinate , const C
 	    }
 	 else//set the default value
 		 {
-		 aPositionUpdateoption.SetUpdateTimeOut(TTimeIntervalMicroSeconds(KLocUpdateTimeOut));
+		 //aPositionUpdateoption.SetUpdateTimeOut(TTimeIntervalMicroSeconds(KLocUpdateTimeOut));
 		 	
 		 }
 	    

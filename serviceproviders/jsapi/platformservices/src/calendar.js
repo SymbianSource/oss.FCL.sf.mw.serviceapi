@@ -78,25 +78,6 @@ var __device_calendar_service_entry = {"name": null,
 					  "providers": [{"descriptor": __sp_calendar_descriptor, "instance": __sp_calendar_instance}]
 					 };
 		   
-//alert(("after com.nokia.device.service");
-
-
-
-/*
-Copyright � 2009 Nokia. All rights reserved.
-Code licensed under the BSD License:
-Software License Agreement (BSD License) Copyright � 2009 Nokia.
-All rights reserved.
-Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. 
-Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution. 
-Neither the name of Nokia Corporation. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission of Nokia Corporation. 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-version: 1.0
-*/
-
 var dataGetList = 0;
 var isUpdate = 0;
 // S60 sp-based calendar provider
@@ -215,10 +196,19 @@ function __sp_calendar_isInputValid(match){
 						if (typeof(match.time.begin) != "object") {
 							return false;
 						}
-						if(match.time.begin == "Invalid Date" )
+						
+						/*if(match.time.begin == "Invalid Date" )
+						{
+							return false;
+						}*/
+						
+						var validDate = new Date("January 1, 1970 00:01"); 
+						if(match.time.begin < validDate)
 						{
 							return false;
 						}
+					
+						
 						try{
 							(match.time.begin).getTime();
 						}
@@ -430,7 +420,7 @@ function __sp_device_calendar_entry(sp_entry){
   //	////alert("sp_entry id" + sp_entry.id);
 	this.id = sp_entry.id;
 	}
-	if (sp_entry.type) {
+	if (sp_entry.Type ) {
 	//	////alert("sp_entry.Type" + sp_entry.type);
   this.type = sp_entry.Type;
 	}
@@ -455,6 +445,14 @@ function __sp_device_calendar_entry(sp_entry){
   if (sp_entry.Status) {
   	this.status = sp_entry.Status;
   }
+  if (sp_entry.Status == "TodoCompleted") {
+  	this.status = "Completed";
+  }
+  else if(sp_entry.Status == "TodoNeedsAction"){
+  	this.status = "NeedsAction";
+  }
+  
+  
   if (sp_entry.ExDates) {
   	this.exceptionDates = sp_entry.ExDates;
   }
@@ -644,18 +642,16 @@ function __sp_calendar_entry(entry,str){
 	}
 	
 	if (entry.status) {
-		if (this.Type == "ToDo") {
+		this.Status = entry.status;
+		if (entry.status == "NeedsAction" || entry.status == "Completed") {
 			this.Status = "Todo"+entry.status;
 		}
-		else {
-			this.Status = entry.status;
-		}
 	}
-	else if(isUpdate && (entry.status == null))
+	/*else if(isUpdate && (entry.status == null))
 	{
 		this.Status = "Tentative";
 		//////alert("status****" + this.Status);
-	}
+	}*/
 	
 	if (entry.exceptionDates) {
 		this.ExDates = entry.exceptionDates;
@@ -776,10 +772,12 @@ function __sp_calendar_startEditor(editor_cb, entry, err_cb){
 		   	throw new DeviceException( this.error.INVALID_ARG_ERR, "Calendar: startEditor: error callback is invalid");
 		}
 	}
-	if(entry == null || entry == undefined)
+	
+	if(entry != null)
 	{
-		throw new DeviceException( this.error.INVALID_ARG_ERR, "Calendar: startEditor: entry is invalid");
+		throw new DeviceException( this.error.NOT_SUPPORTED_ERR, "Calendar: startEditor: Entry should be null");
 	}
+	
 	var finished = function(arg1, arg2, arg3){
 	
 	

@@ -134,51 +134,7 @@ var __device_contacts_service_entry = {"name": null,
 					  "providers": [{"descriptor": __sp_contacts_descriptor, "instance": __sp_contacts_instance}]
 					 };
 		   
-		   
-		   
-		   
-		   
-		   
-		   
 
-
-
-
-
-
-
-
-
-
-
-/*
- Copyright © 2009 Nokia. All rights reserved.
- Code licensed under the BSD License:
- Software License Agreement (BSD License) Copyright © 2009 Nokia.
- All rights reserved.
- Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- Neither the name of Nokia Corporation. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission of Nokia Corporation.
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- version: 1.0
- */
-// Table of user callbacks. These are "indexed" by transaction IDs.
-// These need to be global since the actual sp callback does
-// not have the location instance object in its scope chain
-
-/*
- if((typeof (com.nokia.device.contacts) == 'undefined'))
- {
- com.nokia.device.contacts = {};
- }*/
-nokia.device.contacts.SORT_ASCENDING = 0;
-nokia.device.contacts.SORT_DESCENDING = 1;
-
-
-//nokia.devive.
-//SORT_ASCENDING = 0;
-//SORT_DESCENDING = 1;
 
 function __sp_contacts_descriptor(){
   //Read-only properties 
@@ -890,6 +846,29 @@ function __sp_device_groupinfo_build(sp_group, groupinfo){
     __s60_enumerate_group_object(sp_group, __sp_device_groupinfo_extract, groupinfo);
 }
 
+//Iterate the group data
+function __sp_groupinfo_iterator_get_next(){
+    var sp_group = this.iter.getNext();
+    if (typeof sp_group == "undefined") {
+        return null;
+    }
+    var rval = {};
+    __sp_device_groupinfo_build(sp_group, rval);
+    sp_group.close();
+    return rval;
+}
+
+function __sp_groupinfo_iterator(js_iterator){
+    this.iter = js_iterator;
+    this.next = __sp_groupinfo_iterator_get_next;
+    this.close = function(){
+        this.iter.close();
+    };
+}
+
+
+
+
 
 
 //Build group data
@@ -1485,7 +1464,9 @@ function __sp_contacts_getGroups_cb(arg1, arg2, arg3){
     
     iter = arg3.ReturnValue;
     if (arg3.ReturnValue) {
-        iter = new __sp_group_iterator(arg3.ReturnValue);
+//        iter = new __sp_group_iterator(arg3.ReturnValue);
+					iter = new __sp_groupinfo_iterator(arg3.ReturnValue);
+        
     }
     else 
         if (arg3.ErrorCode != 0) {
@@ -2323,7 +2304,7 @@ function __sp_contacts_getGroupInfo(grpid){
 
 function mappingVerification(errorCode){
     //alert ("In mappingVerification errorCode = "+errorCode);	
-    if (errorCode === 1016 || errorCode === 1012 || errorCode === 1010 || errorCode === 1009 || errorCode === 1005 || errorCode === 1000 || errorCode === 1011 || errorCode === 1007 || errorCode === 1003 || errorCode === 1002) {
+    if (errorCode === 1016 || errorCode === 1012 || errorCode === 1010 || errorCode === 1009 || errorCode === 1005 || errorCode === 1000 || errorCode === 1011 || errorCode === 1007 || errorCode === 1003 || errorCode === 1002 || errorCode === 1004 ) {
         //alert("errorCode = "+errorCode);
         return true;
     }
