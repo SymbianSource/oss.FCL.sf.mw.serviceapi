@@ -782,10 +782,6 @@ function __sp_messaging_startEditor(message){
             throw new DeviceException(this.error.DATA_OUT_OF_RANGE_ERR, "Messaging:startEditor:subject is too lengthy");//SErrMissingArgument = 1003
         }
     }
-    if (message.to == undefined || message.to == null) {
-        //	a("starteditor4");
-        throw new DeviceException(this.error.MISSING_ARG_ERR, "Messaging:startEditor:to field is missing");//SErrMissingArgument = 1003
-    }
     
     if (message.attachments != undefined && message.attachments != null && typeof message.attachments != "object") {
         //		a("INVALID_ARG_ERR");

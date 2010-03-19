@@ -876,40 +876,7 @@ void CSysInfoInterface::ConvertSysData2AiwParamL(const CSysData* aInSysData,
             CleanupStack::PopAndDestroy( camResList );
             }
             break; 
-        case CSysData::EVideoDecList:
-            {
-            CLiwList* decResList = CLiwDefaultList::NewL();
-            CleanupClosePushL( *decResList );
-            const CVideoDecDataList* declist = ((CVideoDecDataList*) aInSysData);
-            count = declist->Count();
-            CVideoDecDataList::CVideoDecData * decinfo = NULL;
-            
-            for ( int index=0; index<count; index++ )
-                {
-                TInt val = 0;
-                CLiwMap* resMap = CLiwDefaultMap::NewL();
-                CleanupStack::PushL( resMap );
-                decinfo=(*declist)[index];
-                TPtrC temp;
-                temp.Set(*(decinfo->Manufacturer));
-                TPtrC temp1;
-                temp1.Set(*(decinfo->Identifier));
-                
-                resMap->InsertL( KDecManufacturer, temp );
-                resMap->InsertL( KIdentifier, temp1 );
-                resMap->InsertL( KMaxBitrate, (TInt32)decinfo->MaxBitrate );
-                resMap->InsertL( KAccelerated, (TBool)decinfo->Accelerated );
-                resMap->InsertL( KVersion, decinfo->Version );
-                
-                decResList->AppendL( resMap );
-                CleanupStack::Pop( resMap );
-                resMap->Close();
-                }
-            aOutMapParam->InsertL( KCapability, decResList );
-            CleanupStack::PopAndDestroy( decResList );
-            //aOutMapParam->InsertL( KCapability, 1 );
-            }
-            break; 
+
         default:
             User::Leave(KErrArgument);
         }

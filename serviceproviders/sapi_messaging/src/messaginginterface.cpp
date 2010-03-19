@@ -792,6 +792,7 @@ CSendMessageParams* CMessagingInterface::GetSendParametersL(
 	
 	TInt pos = 0;
 	TBool indexBaseInp = ETrue;
+	TBool isToPresent = ETrue;
 	
 	const TLiwGenericParam* inMessageType = aInParamList.FindFirst( pos, KMtm );
 	if ( inMessageType ) 
@@ -851,7 +852,7 @@ CSendMessageParams* CMessagingInterface::GetSendParametersL(
 		}
 	else
 		{	
-		AppendErrorMessageL( KCmdSendMessage, KRecipientTo, KMissing, 1 );
+	    isToPresent = EFalse;
 		}
 
 	// Read BodyText
@@ -993,6 +994,11 @@ CSendMessageParams* CMessagingInterface::GetSendParametersL(
 			//this is an optional parameter so check for not null constraint, ignore this in case of NULL
 			if ( inMap->FindL( KLaunchEditor, inParam ) && CheckInputTypeL( &inParam, EFalse, LIW::EVariantTypeTBool, KCmdSendMessage, KLaunchEditor, KTypeInvalid ) ) 
 				{
+			     if(!isToPresent && !(inParam.AsTBool()))
+			        {
+			        CleanupStack::PopAndDestroy( &inParam );
+			        AppendErrorMessageL( KCmdSendMessage, KRecipientTo, KMissing, 1 );
+			        }
 				sendParams->SetLaunchEditor( inParam.AsTBool() );
 				}
 			

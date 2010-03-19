@@ -25,7 +25,7 @@
 #include <sysutildomaincrkeys.h>
 
 #include <UikonInternalPSKeys.h>
-#include <NetworkHandlingDomainPSKeys.h>
+#include <networkhandlingdomainpskeys.h>
 #include <hwrmdomainpskeys.h>
 #include <hwrmpowerstatesdkpskeys.h>
 #include <ir_sock.h>
