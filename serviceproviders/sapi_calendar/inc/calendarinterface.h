@@ -479,12 +479,12 @@ class CCalendarInterface : public CBase, public MLiwInterface
 		 *
 	     * @return void
 	    */
-		void CCalendarInterface::GetDesCFieldFromMapL( const CLiwGenericParamList& aInParamList, 
-														const TDesC8& aCmdName, 
-														const TDesC8& aMapName, 
-														const TDesC8& aFieldName, 
-														TBool aPosBased, 
-														HBufC*& aOutputField );
+		void GetDesCFieldFromMapL( const CLiwGenericParamList& aInParamList, 
+									const TDesC8& aCmdName, 
+									const TDesC8& aMapName, 
+									const TDesC8& aFieldName, 
+									TBool aPosBased, 
+									HBufC*& aOutputField );
 
 		/**
 	     * Extracts 8-bit Descriptor Field from Map in input param list
@@ -497,12 +497,12 @@ class CCalendarInterface : public CBase, public MLiwInterface
 		 *
 	     * @return void
 	    */
-		void CCalendarInterface::GetDesC8FieldFromMapL( const CLiwGenericParamList& aInParamList, 
-														const TDesC8& aCmdName, 
-														const TDesC8& aMapName, 
-														const TDesC8& aFieldName, 
-														TBool aPosBased, 
-														HBufC8*& aOutputField );
+		void GetDesC8FieldFromMapL( const CLiwGenericParamList& aInParamList, 
+									const TDesC8& aCmdName, 
+									const TDesC8& aMapName, 
+									const TDesC8& aFieldName, 
+									TBool aPosBased, 
+									HBufC8*& aOutputField );
 
 		/**
 	     * Extracts Entry attributes for Add/Update request
@@ -622,7 +622,7 @@ class CCalendarInterface : public CBase, public MLiwInterface
 		 *
 	     * @return True if given calendar is in use
 	    */
-		TBool CCalendarInterface::CheckCalendarInUse( const TDesC& aCalendarName );
+		TBool CheckCalendarInUse( const TDesC& aCalendarName );
 		
 	private:
 

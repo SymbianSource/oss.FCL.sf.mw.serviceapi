@@ -384,7 +384,7 @@ class CEntryAttributes : public CBase
 	     * Two-phased constructor.
 	     * @return An instance of CEntryAttributes
 	    */
-		IMPORT_C static CEntryAttributes* CEntryAttributes::NewL();
+		IMPORT_C static CEntryAttributes* NewL();
 		/** 
 	     * Destructor.
 	    */

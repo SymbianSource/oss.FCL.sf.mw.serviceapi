@@ -641,7 +641,7 @@ class CRecipientList : public CBase
 	     * Two-phased constructor.
 	     * @return CRecipientList*
 	    */
-		IMPORT_C static CRecipientList* CRecipientList::NewL();
+		IMPORT_C static CRecipientList* NewL();
 
 	    /**
 	     * Destructor.

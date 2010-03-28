@@ -71,12 +71,12 @@ class CMessagingInterface : public CBase, public MLiwInterface
 		 *
 		 * @return TBool
 		 */
-		TBool CMessagingInterface::CheckInputTypeL( const TLiwVariant* aSource, 
-                                            TBool aLeaveFlag, 
-                                            LIW::TVariantTypeId aExpectedtype, 
-                                            const TDesC8& aCmdName, 
-											const TDesC8& aParameter,
-											const TDesC& aMessage );
+		TBool CheckInputTypeL( const TLiwVariant* aSource, 
+                               TBool aLeaveFlag, 
+                               LIW::TVariantTypeId aExpectedtype, 
+                               const TDesC8& aCmdName, 
+							   const TDesC8& aParameter,
+							   const TDesC& aMessage );
 	
 		
 	    /**
