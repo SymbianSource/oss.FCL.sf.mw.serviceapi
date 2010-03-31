@@ -89,12 +89,21 @@ void  LoggingInterfaceCB :: HandleNotifyL( TUint aTransId, TUint aStatus, CLogIt
         {
         case EReadEvents :
             {
+            if( aStatus == KErrNone )
+            	{	
             CLiwLogIter *iter = CLiwLogIter :: NewL( aIter ) ;
             CleanupClosePushL( *iter );
             OutParm->AppendL( TLiwGenericParam ( KResponse , TLiwVariant( iter ) )  ) ;
             CleanupStack :: Pop( iter ) ;
             iter->DecRef();
             iCallBack->HandleNotifyL( aTransId, KLiwEventCompleted, *OutParm, *InParm ) ;
+          		}
+          	else
+          		{
+          		iCallBack->HandleNotifyL( aTransId, KLiwEventError, *OutParm, *InParm ) ;
+          		delete aIter;
+          		aIter = NULL; 
+          		}	
             CleanupStack::PopAndDestroy( InParm );
             CleanupStack::PopAndDestroy( OutParm );
             CleanupStack :: Pop( this ) ;
@@ -104,13 +113,22 @@ void  LoggingInterfaceCB :: HandleNotifyL( TUint aTransId, TUint aStatus, CLogIt
     
         case EGetEvent :
             {
+            if( aStatus == KErrNone )
+            	{		
             CLiwLogIter *iter = CLiwLogIter :: NewL( aIter ) ;
             CleanupClosePushL( *iter );
             OutParm->AppendL( TLiwGenericParam ( KResponse , TLiwVariant( iter ) )  ) ;
             CleanupStack :: Pop( iter ) ;
             iter->DecRef();
             iCallBack->HandleNotifyL( aTransId, KLiwEventCompleted, *OutParm, *InParm ) ;
-            CleanupStack::PopAndDestroy( InParm );
+          		}
+          	else
+          		{
+          		iCallBack->HandleNotifyL( aTransId, KLiwEventError, *OutParm, *InParm ) ;
+          		delete aIter;
+          		aIter = NULL; 
+          		}		
+          	CleanupStack::PopAndDestroy( InParm );
             CleanupStack::PopAndDestroy( OutParm );
             CleanupStack :: Pop( this ) ;
             delete this ;
@@ -119,12 +137,21 @@ void  LoggingInterfaceCB :: HandleNotifyL( TUint aTransId, TUint aStatus, CLogIt
     
         case EGetRecent :
             {
+            if( aStatus == KErrNone )
+            	{		
             CLiwLogIter *iter = CLiwLogIter :: NewL( aIter ) ;
             CleanupClosePushL( *iter );
             OutParm->AppendL( TLiwGenericParam ( KResponse , TLiwVariant( iter ) )  ) ;
             CleanupStack :: Pop( iter ) ;
             iter->DecRef();
             iCallBack->HandleNotifyL( aTransId, KLiwEventCompleted, *OutParm, *InParm ) ;
+          		}
+          	else
+          		{
+          		iCallBack->HandleNotifyL( aTransId, KLiwEventError, *OutParm, *InParm ) ;
+          		delete aIter;
+          		aIter = NULL; 
+          		}			
             CleanupStack::PopAndDestroy( InParm );
             CleanupStack::PopAndDestroy( OutParm );
             CleanupStack :: Pop( this ) ;

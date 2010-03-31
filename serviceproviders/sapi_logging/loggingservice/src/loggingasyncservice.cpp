@@ -210,7 +210,7 @@ void CLogAsyncService :: RunCmdL()
          case EReadEvents :
             {
             iIter->SetTaskId(EReadEvents) ;
-            iCallback->HandleNotifyL( iTransId, KErrNone, iIter  ) ;
+            iCallback->HandleNotifyL( iTransId, iStatus.Int(), iIter  ) ;
             iIter = NULL ;
             iTask = ESleep;
             break;
@@ -219,7 +219,7 @@ void CLogAsyncService :: RunCmdL()
         case EGetRecent:
             {
             iIter->SetTaskId(EGetRecent) ;
-            iCallback->HandleNotifyL( iTransId ,KErrNone, iIter ) ;
+            iCallback->HandleNotifyL( iTransId ,iStatus.Int(), iIter ) ;
             iIter = NULL ;
             iTask = ESleep;
             break;
@@ -231,14 +231,7 @@ void CLogAsyncService :: RunCmdL()
             iIter->SetTaskId( EGetEvent ) ;
             delete iUpdatedEvent ;
             iUpdatedEvent = NULL ;
-            
-            if( iStatus.Int() != KErrNone )
-                {
-                delete iIter;
-                iIter = NULL ;
-                }
-                
-            iCallback->HandleNotifyL(iTransId , KErrNone, iIter) ;
+            iCallback->HandleNotifyL(iTransId , iStatus.Int(), iIter) ;
             iIter = NULL ;
             iTask = ESleep;
             break ;
