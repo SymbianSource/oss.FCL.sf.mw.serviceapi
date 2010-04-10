@@ -124,6 +124,6 @@ class TSysRequest
 
 #include "sysrequest.inl"
 
-#endif _SYSREQUEST_H_
+#endif // _SYSREQUEST_H_
 
 //End of file

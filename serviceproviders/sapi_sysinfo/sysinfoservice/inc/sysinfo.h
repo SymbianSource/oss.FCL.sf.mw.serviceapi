@@ -984,4 +984,4 @@ NONSHARABLE_CLASS(CVideoDecDataList) : public CSysData
     RArray<CVideoDecData *>    iDecData;
     TInt            iCount;
 };
-#endif __SYSINFO_H__
+#endif // __SYSINFO_H__

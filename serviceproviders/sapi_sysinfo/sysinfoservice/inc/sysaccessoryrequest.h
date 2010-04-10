@@ -94,4 +94,4 @@ NONSHARABLE_CLASS(CAccessory): public CActiveRequest
     CAccessoryInfo::TAccessoryState iAccState;
     };
 
-#endif __SYSACCESSORYREQUEST_H__
+#endif // __SYSACCESSORYREQUEST_H__

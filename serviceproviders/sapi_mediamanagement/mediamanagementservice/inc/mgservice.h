@@ -330,4 +330,4 @@ class CMgService : public CBase
     	
       };
 
-#endif __CMGSERVICE_H
+#endif // __CMGSERVICE_H

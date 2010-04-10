@@ -38,4 +38,4 @@ _LIT8( KMgTrackNumber, "TrackNumber" );
 _LIT8( KMgComposer, "Composer" );
 _LIT8( KMgLinkFirstURL, "LinkFirstURL" );
 	
-#endif __MGCONSTS_H
+#endif // __MGCONSTS_H

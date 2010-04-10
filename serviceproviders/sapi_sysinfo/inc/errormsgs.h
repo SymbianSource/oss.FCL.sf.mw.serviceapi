@@ -40,4 +40,4 @@ _LIT16(KErrTransactionIdMissing,"Transaction ID missing");
 _LIT16(KErrCallbackNotPresent,"Callback object not found");
 _LIT16(KErrReadingGetInfo,"Output Data Not found");
 
-#endif __SYSINFO_ERRMSG_H__
+#endif // __SYSINFO_ERRMSG_H__

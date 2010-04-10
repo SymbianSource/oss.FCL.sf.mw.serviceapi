@@ -120,4 +120,4 @@ class CAsynchRequestManager : public CBase
 
       };
 
-#endif __ASYNCHREQUESTMANAGER_H
+#endif // __ASYNCHREQUESTMANAGER_H

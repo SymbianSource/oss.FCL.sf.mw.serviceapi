@@ -35,4 +35,4 @@ const TInt KAutoLockTimeoutMin(0);
 const TInt KLightTimeoutMax(60);
 const TInt KLightTimeoutMin(5);
 
-#endif __SYSRANGE_H__
+#endif // __SYSRANGE_H__

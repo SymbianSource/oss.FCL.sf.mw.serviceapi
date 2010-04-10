@@ -132,4 +132,4 @@ NONSHARABLE_CLASS(CNetwork): public CActiveRequest
 
 
 // CLASS DECLARATION
-#endif __SYSNETWORKREQUEST_H__
+#endif // __SYSNETWORKREQUEST_H__

@@ -454,4 +454,4 @@ NONSHARABLE_CLASS(CCriticalMemNotifier): public CActiveRequest
     };
 
 
-#endif __ACTIVE_REQUESTS_H__
+#endif // __ACTIVE_REQUESTS_H__

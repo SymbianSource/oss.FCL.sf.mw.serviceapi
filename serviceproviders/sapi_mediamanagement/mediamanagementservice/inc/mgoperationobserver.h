@@ -61,4 +61,4 @@ class MMgOperationObserver
 
 	};
 
-#endif __MGOPERATIONOBSERVER_H
+#endif // __MGOPERATIONOBSERVER_H

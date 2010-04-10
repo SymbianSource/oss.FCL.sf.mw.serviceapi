@@ -205,4 +205,4 @@ NONSHARABLE_CLASS(CConnection): public CActiveRequest,
     TBool                   iConnectionInit;
     };
 
-#endif __SYSCONNECTIONREQUEST_H__
+#endif // __SYSCONNECTIONREQUEST_H__

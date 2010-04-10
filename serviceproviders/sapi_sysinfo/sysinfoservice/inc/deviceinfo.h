@@ -126,4 +126,4 @@ NONSHARABLE_CLASS(CDeviceInfo):public CBase
         TInt        iMachineId;
     };
 
-#endif __DEVICE_INFO_H__
+#endif // __DEVICE_INFO_H__

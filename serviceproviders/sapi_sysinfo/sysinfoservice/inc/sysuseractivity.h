@@ -100,4 +100,4 @@ NONSHARABLE_CLASS(CUserActivity): public CActiveRequest
     TInt                        iTimeout;
     };
 
-#endif __SYSUSERACTIVITY_H__
+#endif // __SYSUSERACTIVITY_H__

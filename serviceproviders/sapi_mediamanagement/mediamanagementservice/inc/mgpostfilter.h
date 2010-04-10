@@ -155,4 +155,4 @@ NONSHARABLE_CLASS( CPostFilter ) : public CBase ,public MCLFPostFilter
     };
 
 
-#endif __CMGPOSTFILTER_H
+#endif // __CMGPOSTFILTER_H

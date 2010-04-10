@@ -335,5 +335,5 @@ class MMMFDevVideoPlayObserverImpl : public MMMFDevVideoPlayObserver
     virtual void MdvpoStreamEnd() {}
     };
 
-#endif __CSYSINFOSERVICE_H__
+#endif // __CSYSINFOSERVICE_H__
 

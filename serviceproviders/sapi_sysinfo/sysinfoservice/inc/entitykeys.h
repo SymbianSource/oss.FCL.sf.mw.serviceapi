@@ -134,4 +134,4 @@ enum TStatus
 	
 }
 
-#endif __ENTITYKEYS_H__
+#endif // __ENTITYKEYS_H__

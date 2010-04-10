@@ -140,4 +140,4 @@ NONSHARABLE_CLASS( CClfOperationObserver ) : public CBase, public MCLFOperationO
          MCLFSortingStyle* iSortingStyle;
 	};
 
-#endif __MGCLFOPERATIONOBSERVER_H
+#endif // __MGCLFOPERATIONOBSERVER_H

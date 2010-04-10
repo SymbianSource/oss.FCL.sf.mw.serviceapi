@@ -77,4 +77,4 @@ class RepositoryUtil
                                                             TDes& aValue);
     };
 
-#endif __SYSINFO_UTILS_H__
+#endif // __SYSINFO_UTILS_H__
