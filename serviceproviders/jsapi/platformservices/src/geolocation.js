@@ -16,36 +16,6 @@
 */
 
 var _infinity = 1.7976931348623157E+10308;
-/*function PositionError()
-{
-	this.UNKNOWN_ERROR = 0;
-	this.PERMISSION_DENIED = 1;
-	this.POSITION_UNAVAILABLE = 2;
-	this.TIMEOUT = 3;
-	this.code ;
-	this.message ;
-}
-function Coordinates()
-{
-	this.latitude = null;
-	this.longitude = null;
-	this.altitude = null;
-	this.accuracy = null;
-	this.altitudeAccuracy = null;
-	this.heading = null;
-	this.speed = null;
-}
-function Position()
-{
-	this.coords = null;
-	this.timestamp = null;
-}
-function PositionOptions()
-{
-	this.enableHighAccuracy = null;
-	this.timeout = null;
-	this.maximumAge = null;
-}*/
 
 function TransIdCbMap()
 {
@@ -106,27 +76,6 @@ var __device_geolocation_service_entry = {"name": null,
 					     "providers": [{"descriptor": __sp_location_descriptor, "instance": __sp_location_instance}]
 					    };
 
-
-
-
-
-
-/*
-Copyright � 2009 Nokia. All rights reserved.
-Code licensed under the BSD License:
-Software License Agreement (BSD License) Copyright � 2009 Nokia.
-All rights reserved.
-Redistribution and use of this software in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. 
-Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution. 
-Neither the name of Nokia Corporation. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission of Nokia Corporation. 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-version: 1.0
-*/
-
-
 // S60 sp-based location provider
  function Location_PositionError()
 	{
@@ -161,6 +110,24 @@ version: 1.0
 
 
 
+
+function getGeoLocationPosition(LiwPostionInfo)
+{	   		// LIW position info
+			var _pos_coord = new Location_Coordinates();			
+			_pos_coord.longitude = (LiwPostionInfo.Longitude == undefined)?null:LiwPostionInfo.Longitude;			
+			_pos_coord.latitude = (LiwPostionInfo.Latitude == undefined)?null:LiwPostionInfo.Latitude;
+			_pos_coord.altitude = (LiwPostionInfo.Altitude == undefined)?null:LiwPostionInfo.Altitude;
+			_pos_coord.accuracy = (LiwPostionInfo.HorizontalAccuracy == undefined)?null:LiwPostionInfo.HorizontalAccuracy;			
+			_pos_coord.altitudeAccuracy = (LiwPostionInfo.VerticalAccuracy == undefined)?null:LiwPostionInfo.VerticalAccuracy;
+			_pos_coord.heading = (LiwPostionInfo.Heading == undefined)?null:LiwPostionInfo.Heading;
+			_pos_coord.speed = (LiwPostionInfo.HorizontalSpeed == undefined)?null:LiwPostionInfo.HorizontalSpeed;			
+			var _pos_data = new Location_Position();			
+			_pos_data.coords = {};
+			modifyObjectBaseProp(_pos_data.coords);
+			_pos_data.coords =_pos_coord;
+			_pos_data.timestamp = (LiwPostionInfo.timestamp == undefined) ? null : LiwPostionInfo.timestamp;		
+	         return _pos_data;
+}
 
 
 var __sp_location_trace_transactionId = -1;
@@ -235,7 +202,7 @@ function __sp_getLocation_cb(arg1, arg2, arg3)
     }
     
     else {
-        alert("Geolocation: __sp_getLocation_cb: Callback not found ");
+
 		return;
     }
     
@@ -250,28 +217,12 @@ function __sp_getLocation_cb(arg1, arg2, arg3)
 		//there is no error so invoke consumer supplied success callback
 		else
 		{    
-			 var _pos_coord = new Location_Coordinates();
-			_pos_coord.longitude = (arg3.ReturnValue.Longitude == undefined)?null:arg3.ReturnValue.Longitude;
-			_pos_coord.latitude = (arg3.ReturnValue.Latitude == undefined)?null:arg3.ReturnValue.Latitude;
-			_pos_coord.altitude = (arg3.ReturnValue.Altitude == undefined)?null:arg3.ReturnValue.Altitude;
-			_pos_coord.accuracy = (arg3.ReturnValue.HorizontalAccuracy == undefined)?null:arg3.ReturnValue.HorizontalAccuracy;			
-			_pos_coord.altitudeAccuracy = (arg3.ReturnValue.VerticalAccuracy == undefined)?null:arg3.ReturnValue.VerticalAccuracy;
-			_pos_coord.heading = (arg3.ReturnValue.Heading == undefined)?null:arg3.ReturnValue.Heading;
-			_pos_coord.speed = (arg3.ReturnValue.HorizontalSpeed == undefined)?null:arg3.ReturnValue.HorizontalSpeed;
+		
 			
-			//Position Object
-			var _pos_data = new Location_Position();
-
-			_pos_data.coords = {};
-			modifyObjectBaseProp(_pos_data.coords);
-			_pos_data.coords =_pos_coord;
-			_pos_data.timestamp = new Date();
-			
+			var geoPosition = getGeoLocationPosition(arg3.ReturnValue);
 			//Invoke consumer callback			
-			success_cb1( _pos_data );			
-			delete _pos_data.timestamp;
-			delete _pos_data;
-			delete _pos_coord;	
+			success_cb1( geoPosition );
+			delete geoPosition;
 		}
 		 glob_obj.removeFromArray(arg1);	
 	}
@@ -338,28 +289,10 @@ function __sp_getLocation(success_cb,fail_cb,posOptions)
 							
 						}
 						
-						var _pos_coord = new Location_Coordinates();
-						_pos_coord.longitude = (arg3.ReturnValue.Longitude == undefined) ? null : arg3.ReturnValue.Longitude;
-						_pos_coord.latitude = (arg3.ReturnValue.Latitude == undefined) ? null : arg3.ReturnValue.Latitude;
-						_pos_coord.altitude = (arg3.ReturnValue.Altitude == undefined) ? null : arg3.ReturnValue.Altitude;
-						_pos_coord.accuracy = (arg3.ReturnValue.HorizontalAccuracy == undefined) ? null : arg3.ReturnValue.HorizontalAccuracy;
-						_pos_coord.altitudeAccuracy = (arg3.ReturnValue.VerticalAccuracy == undefined) ? null : arg3.ReturnValue.VerticalAccuracy;
-						_pos_coord.heading = (arg3.ReturnValue.Heading == undefined) ? null : arg3.ReturnValue.Heading;
-						_pos_coord.speed = (arg3.ReturnValue.HorizontalSpeed == undefined) ? null : arg3.ReturnValue.HorizontalSpeed;
 						
-						//Position Object
-						var _pos_data = new Location_Position();
-						_pos_data.coords = {};
-						modifyObjectBaseProp(_pos_data.coords);
-						_pos_data.coords = _pos_coord;
-						_pos_data.timestamp = new Date();
-						
-						//Invoke consumer callback
-						
-						success_cb(_pos_data);
-						delete _pos_data.timestamp;
-						delete _pos_data;
-						delete _pos_coord;
+						var geoPosition = getGeoLocationPosition(arg3.ReturnValue);
+						//Invoke consumer callback									
+						success_cb1( geoPosition );						
 						return;
 						
 					}
@@ -376,13 +309,11 @@ function __sp_getLocation(success_cb,fail_cb,posOptions)
 						return;
 					}
 					
-					    //alert("number");
-						updateoptions.UpdateMaxAge = posOptions.maximumAge ;
-						//alert("updateoptions.UpdateMaxAget"+ updateoptions.UpdateMaxAge);
-					
+						updateoptions.UpdateMaxAge = posOptions.maximumAge*1000 ;
+						
 				}
 				else {
-					//alert("!number");
+					
 					var errorMessage = "Invalid input type";
 					__sp_location_handle_error(fail_cb, 0, errorMessage);
 					return;
@@ -399,15 +330,15 @@ function __sp_getLocation(success_cb,fail_cb,posOptions)
 		if((posOptions.enableHighAccuracy !== undefined ))
 		{  
 			
-			if(posOptions.enableHighAccuracy == true) {////alert("1");
+			if(posOptions.enableHighAccuracy == true) {
 					criteria.EnableHighAccuracy = posOptions.enableHighAccuracy;
 				}				
-			else if(posOptions.enableHighAccuracy == false) {	////alert("2e");					
+			else if(posOptions.enableHighAccuracy == false) {					
 						criteria.EnableHighAccuracy = posOptions.enableHighAccuracy;
 					}				
 			else if ((posOptions.enableHighAccuracy == null) || (posOptions.enableHighAccuracy == "")) {
 							}
-			else{ ////alert("acc = else");
+			else{ 
 				if ((typeof(posOptions.enableHighAccuracy) != "boolean")) {
 					var errorFormat1 = "Wrong value for enableHighAccuracy param";
 					__sp_location_handle_error(fail_cb, 0, errorFormat1);
@@ -422,10 +353,9 @@ function __sp_getLocation(success_cb,fail_cb,posOptions)
 			
 		if (posOptions.timeout !== undefined) {
 			if ((posOptions.timeout !== null) || ((posOptions.timeout !== ""))) {
-				//alert("12");
+				
 				if ((posOptions.timeout == Infinity)) {
-					//alert("12345");
-					//alert("infinty condition");
+					
 					var errorMessage = "Invalid input type";
 					__sp_location_handle_error(fail_cb, 0, errorMessage);
 					return;
@@ -433,17 +363,17 @@ function __sp_getLocation(success_cb,fail_cb,posOptions)
 				
 				else 
 					if (!(isNaN(parseInt(posOptions.timeout)))) {
-						//alert("timeout = 0")
+						
 						if ((posOptions.timeout <= 2147483647)) {
 						
 						if ((posOptions.timeout == 0)) {
-							//alert("inside if int");
-							var errorMessage = "Invalid input type";
+							
+							
+							var errorMessage = "Data out of range";
 							__sp_location_handle_error(fail_cb, 0, errorMessage);
 							return;
 						}
-						//alert("true condition");
-						updateoptions.UpdateTimeOut = posOptions.timeout;
+						updateoptions.UpdateTimeOut = posOptions.timeout*1000;
 						
 					}
 					else{
@@ -458,7 +388,7 @@ function __sp_getLocation(success_cb,fail_cb,posOptions)
 			
 			}
 			else {
-				//alert("!number");
+
 				var errorMessage = "Invalid input type";
 				__sp_location_handle_error(fail_cb, 0, errorMessage);
 				return;
@@ -523,7 +453,6 @@ function __sp_traceLocation_cb(arg1, arg2, arg3){
 	    }
 	    
 	    else {
-	        alert("Geolocation: __sp_traceLocation_cb: Callback not found ");
 			return;
 	    }
     
@@ -540,30 +469,9 @@ function __sp_traceLocation_cb(arg1, arg2, arg3){
 		
 		else//there is no error so invoke consumer supplied success callback
 		{   
-			
-			 var _pos_coord = new Location_Coordinates();
-			_pos_coord.longitude = (arg3.ReturnValue.Longitude == undefined)?null:arg3.ReturnValue.Longitude;
-			_pos_coord.latitude = (arg3.ReturnValue.Latitude == undefined)?null:arg3.ReturnValue.Latitude;
-			_pos_coord.altitude = (arg3.ReturnValue.Altitude == undefined)?null:arg3.ReturnValue.Altitude;
-			_pos_coord.accuracy = (arg3.ReturnValue.HorizontalAccuracy == undefined)?null:arg3.ReturnValue.HorizontalAccuracy;		
-			_pos_coord.altitudeAccuracy = (arg3.ReturnValue.VerticalAccuracy == undefined)?null:arg3.ReturnValue.VerticalAccuracy;
-			_pos_coord.heading = (arg3.ReturnValue.Heading == undefined)?null:arg3.ReturnValue.Heading;
-			_pos_coord.speed = (arg3.ReturnValue.HorizontalSpeed == undefined)?null:arg3.ReturnValue.HorizontalSpeed;
-			
-			//Position Object
-			var _pos_data = new Location_Position();
-			_pos_data.coords = {};
-			modifyObjectBaseProp(_pos_data.coords);
-			_pos_data.coords =_pos_coord;
-			_pos_data.timestamp = new Date();
-			
-			
-			//Invoke consumer callback
-			
-			success_cb( _pos_data );
-			delete _pos_data.timestamp;
-			delete _pos_data;
-			delete _pos_coord;
+			var geoPosition = getGeoLocationPosition(arg3.ReturnValue);			
+			//Invoke consumer callback			
+			success_cb( geoPosition );			
 			return;
 		}
 	 glob_obj.removeFromArray(arg1);	
@@ -583,17 +491,16 @@ function __sp_traceLocation(trace_cb, fail_cb,posOptions)
 	
 	
 	if((typeof trace_cb != 'function' ))
-	{////alert("not fun");
+	{
 		var errorMessage = "Wrong callback type";
 		__sp_location_handle_error(fail_cb,0,errorMessage);
 		return;
 	}
 	
-	if ((fail_cb != undefined)) {////alert("!= fail_cb");
+	if ((fail_cb)) {
 				if ((fail_cb != null)
 				    &&(fail_cb != "")
-					&& (typeof(fail_cb) != "function")) {
-						//////alert("fail_cb fail");
+					&& (typeof(fail_cb) != "function")) {						
 					var errorObject = new Location_PositionError();
 					errorObject.code = -1;
 					throw errorObject;	
@@ -615,7 +522,7 @@ function __sp_traceLocation(trace_cb, fail_cb,posOptions)
 	
 	if (posOptions != undefined && posOptions != null) {
 		if ((typeof(posOptions) != "object")) {
-			////alert("!= object");
+			
 			var errorMessage = "Wrong posOptions type";
 			__sp_location_handle_error(fail_cb, 0, errorMessage);
 			return;
@@ -627,18 +534,16 @@ function __sp_traceLocation(trace_cb, fail_cb,posOptions)
 	
 		if ((posOptions.enableHighAccuracy !== undefined)) {
 		
-			if (posOptions.enableHighAccuracy == true) {////alert("1");
+			if (posOptions.enableHighAccuracy == true) {
 				criteria.EnableHighAccuracy = posOptions.enableHighAccuracy;
 			}
-			else 
-				if (posOptions.enableHighAccuracy == false) { ////alert("2e");					
+			else if (posOptions.enableHighAccuracy == false) { 				
 					criteria.EnableHighAccuracy = posOptions.enableHighAccuracy;
 				}
-				else 
-					if ((posOptions.enableHighAccuracy == null) || (posOptions.enableHighAccuracy == "")) {
+			else if ((posOptions.enableHighAccuracy == null) || (posOptions.enableHighAccuracy == "")) {
 					}
 					
-					else { 
+			else {
 						if ((typeof(posOptions.enableHighAccuracy) != "boolean")) {
 							var errorFormat = "Wrong value for enableHighAccuracy param";
 							__sp_location_handle_error(fail_cb, 0, errorFormat);
@@ -652,35 +557,34 @@ function __sp_traceLocation(trace_cb, fail_cb,posOptions)
 	
 	if (posOptions.timeout !== undefined) {
 			if ((posOptions.timeout !== null)  || ((posOptions.timeout !== ""))) {
-					//alert("12");
+					
 				if ((posOptions.timeout == Infinity)) {
-					//alert("12345");
-					//alert("infinty condition");
+					
 					var errorMessage = "Invalid input type";
 					__sp_location_handle_error(fail_cb, 0, errorMessage);
 					return;
 				}
 				
-				else if (!(isNaN(parseInt(posOptions.timeout)))) {//alert("timeout = 0")
+				else if (!(isNaN(parseInt(posOptions.timeout)))) {
 					
 					if ((posOptions.timeout == 0) ) {
-						//alert("inside if int");
+						
 						var errorMessage = "Invalid input type";
 						__sp_location_handle_error(fail_cb, 0, errorMessage);
 						return;
 					}
-						//alert("true condition");
-						updateoptions.UpdateTimeOut = posOptions.timeout ;
+						
+						updateoptions.UpdateTimeOut = posOptions.timeout*1000 ;
 					
 				}	
 			}	
 				
 		else if ((posOptions.timeout === null) ||((posOptions.timeout === ""))) {
-					//alert("true condition");
+					
 					//	updateoptions.UpdateTimeOut = posOptions.timeout * 1000;
 				}
 				else {
-					//alert("!number");
+					
 					var errorMessage = "Invalid input type";
 					__sp_location_handle_error(fail_cb, 0, errorMessage);
 					return;
@@ -704,15 +608,16 @@ function __sp_traceLocation(trace_cb, fail_cb,posOptions)
 			//If the param is specified and it is a number 
 			else if(!(isNaN(parseInt(posOptions.maximumAge))))
 			{
-		  		updateoptions.UpdateMaxAge = posOptions.maximumAge ;
+				
+		  		updateoptions.UpdateMaxAge = posOptions.maximumAge*1000;
 			}
 				
 			else if ((posOptions.maximumAge === null) || ((posOptions.maximumAge === ""))) {
-				//alert("true condition");
-			//	updateoptions.UpdateTimeOut = posOptions.timeout * 1000;
+								
+			  //	updateoptions.UpdateTimeOut = posOptions.timeout * 1000;
 				}
 			else {
-				//alert("!number");
+				
 				var errorMessage = "Invalid input type";
 				__sp_location_handle_error(fail_cb, 0, errorMessage);
 				return;

@@ -288,8 +288,14 @@ void LocationInterfaceCB :: HandleL(HPositionGenericInfo* aGenericInfo , TInt /*
 	            	
 	            }
 
-
-
+	        
+	        
+	        
+	        TTime timeReceived = pos.Time();//this is time from Jan 1 0AD	        
+            
+            result->InsertL(KTime,TLiwVariant(timeReceived));
+                
+            
 
 	    /*if( currCapability & TPositionModuleInfo :: ECapabilityNmea ) //Extract Nmea info if any and append it 	
 	        {                                                             //as part of out param list  

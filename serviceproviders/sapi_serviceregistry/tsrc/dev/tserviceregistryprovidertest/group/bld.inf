@@ -23,10 +23,10 @@ PRJ_PLATFORMS
 DEFAULT
 
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tserviceregistry.cfg /epoc32/winscw/c/testframework/tserviceregistry.cfg
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 tserviceregistrytest.mmp
 
 //  End of File

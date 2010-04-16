@@ -310,7 +310,7 @@ void CLiwCalEntryMap::PopulateMeetingKeyL( CLiwCalEntryMap* aMap, const TDesC8& 
 		if ( rdates.Count() > 0 )
 			{
     		CLiwDefaultList* dateList = CCalendarInterface::GetDatesListL( rdates );
-			aMap->InsertL( KRepeatDates, TLiwVariant( dateList ) );
+			aMap->InsertL( KExceptionDates, TLiwVariant( dateList ) );
 			dateList->DecRef();
 			}
 		rdates.Reset();
@@ -484,7 +484,7 @@ void CLiwCalEntryMap::PopulateKeyL( CLiwCalEntryMap* aMap, const TDesC8& aKey )
 		
 	else if(  aKey.CompareF( KStatus ) == 0 )	
 		{
-		if ( ( aMap->iCalEntry->EntryTypeL() == CCalEntry::EAppt ) &&
+		if ( ( aMap->iCalEntry->EntryTypeL() == CCalEntry::EAppt ) ||
 				( aMap->iCalEntry->EntryTypeL() == CCalEntry::ETodo ))
 			{
 			aMap->InsertL( KStatus, TLiwVariant( CCalendarInterface::GetStatusL( aMap->iCalEntry->StatusL() ) ) );

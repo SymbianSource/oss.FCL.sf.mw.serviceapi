@@ -52,7 +52,7 @@ const TInt KSSecond = 1000000;
 const TInt KSUpdateInterval = KSSecond;
 
 //Update time out
-const TInt KSUpdateTimeOut = 15*KSSecond;
+const TInt KSUpdateTimeOut = 60*KSSecond;
 
 //MaxAge
 const TInt KSMaxAge = 0;

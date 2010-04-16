@@ -1219,7 +1219,7 @@ CEntryAttributes* CCalendarInterface::GetAddParametersL( const CLiwGenericParamL
 	
 	CleanupStack::PushL( entryAttributes );
 	
-	TBool id;
+	TBool id = EFalse;
 	
 	const TLiwGenericParam* param = NULL;
 	

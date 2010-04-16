@@ -35,7 +35,7 @@
 
 #include <e32property.h>
 #include <hwrmdomainpskeys.h>
-#include <networkhandlingdomainpskeys.h>
+#include <NetworkHandlingDomainPSKeys.h>
 #include <hwrmpowerstatesdkpskeys.h>
 #include <wlaninternalpskeys.h>
 #include <UikonInternalPSKeys.h>

@@ -22,9 +22,9 @@ DEFAULT
 
 
 
-PRJ_EXPORTS
+PRJ_TESTEXPORTS
 ../conf/tmediathumbnailprovidertest.cfg		/epoc32/winscw/c/testframework/tmediathumbnailprovidertest.cfg
 
-PRJ_MMPFILES
+PRJ_TESTMMPFILES
 tmediathumbnailprovidertest.mmp
 //  End of File

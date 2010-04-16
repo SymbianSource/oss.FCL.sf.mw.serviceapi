@@ -565,7 +565,7 @@ return false;
 }else{
 this.catItem=this.iter.getNext();
 this.hasElement=true;
-if(typeof this.catItem=="undefined"){
+if(typeof this.catItem=="undefined"||this.catItem==null){
 this.catItem=null;
 return false;
 }else{
@@ -581,10 +581,14 @@ this.catItem=this.iter.getNext();
 if(typeof (this.catItem)=="undefined"){
 this.catItem=null;
 }
+if(_69){
 return new __sp_device_category_obj(_69);
 }else{
+return null;
+}
+}else{
 this.catItem=this.iter.getNext();
-if(typeof this.catItem=="undefined"){
+if(typeof this.catItem=="undefined"||this.catItem==null){
 this.hasElement=true;
 this.catItem=null;
 return null;
@@ -988,10 +992,14 @@ this.lmItem=this.iter.getNext();
 if(typeof (this.lmItem)=="undefined"){
 this.lmItem=null;
 }
+if(_90){
 return new __sp_device_landmark_obj(_90);
 }else{
+return null;
+}
+}else{
 this.lmItem=this.iter.getNext();
-if(typeof this.lmItem=="undefined"){
+if(typeof this.lmItem=="undefined"||this.lmItem==null){
 this.hasElement=true;
 this.lmItem=null;
 return null;
@@ -1000,7 +1008,7 @@ this.hasElement=true;
 var _91=new Object();
 _91=this.lmItem;
 this.lmItem=this.iter.getNext();
-if(typeof (this.lmItem)=="undefined"){
+if(typeof (this.lmItem)=="undefined"||this.lmItem==null){
 this.lmItem=null;
 }
 return new __sp_device_landmark_obj(_91);
@@ -3252,8 +3260,8 @@ return false;
 return true;
 }
 };
-function mappingVerification(_1eb){
-if(_1eb==1016||_1eb==1012||_1eb==1010||_1eb==1009||_1eb==1005||_1eb==1000||_1eb==1011||_1eb==1007||_1eb==1003||_1eb==1002){
+function mappingVerification_sysinfo(_1eb){
+if(_1eb===1016||_1eb===1012||_1eb===1010||_1eb===1009||_1eb===1005||_1eb===1000||_1eb===1011||_1eb===1007||_1eb===1003||_1eb===1002||_1eb===1004){
 return true;
 }else{
 return false;
@@ -3444,7 +3452,7 @@ if(rval.TransactionID){
 glob_obj.addToGlobalArray(rval.TransactionID,_1fa,_1fb);
 }
 if(rval.ErrorCode!=0){
-var _202=mappingVerification(rval.ErrorCode);
+var _202=mappingVerification_sysinfo(rval.ErrorCode);
 if(_202){
 switch(MapErrorCode[rval.ErrorCode]){
 case this.error.MISSING_ARG_ERR:
@@ -4003,28 +4011,44 @@ this.enableHighAccuracy;
 this.timeout;
 this.maximumAge;
 };
+function getGeoLocationPosition(_263){
+var _264=new Location_Coordinates();
+_264.longitude=(_263.Longitude==undefined)?null:_263.Longitude;
+_264.latitude=(_263.Latitude==undefined)?null:_263.Latitude;
+_264.altitude=(_263.Altitude==undefined)?null:_263.Altitude;
+_264.accuracy=(_263.HorizontalAccuracy==undefined)?null:_263.HorizontalAccuracy;
+_264.altitudeAccuracy=(_263.VerticalAccuracy==undefined)?null:_263.VerticalAccuracy;
+_264.heading=(_263.Heading==undefined)?null:_263.Heading;
+_264.speed=(_263.HorizontalSpeed==undefined)?null:_263.HorizontalSpeed;
+var _265=new Location_Position();
+_265.coords={};
+modifyObjectBaseProp(_265.coords);
+_265.coords=_264;
+_265.timestamp=(_263.timestamp==undefined)?null:_263.timestamp;
+return _265;
+};
 var __sp_location_trace_transactionId=-1;
-function __sp_location_handle_error(_263,_264,_265){
-if((_263!=undefined)&&(typeof _263=="function")&&(_263!=null)){
-var _266=new Location_PositionError();
-if((-21)==_264){
-_266.code=_266.PERMISSION_DENIED;
-_266.message="permission denied";
+function __sp_location_handle_error(_266,_267,_268){
+if((_266!=undefined)&&(typeof _266=="function")&&(_266!=null)){
+var _269=new Location_PositionError();
+if((-21)==_267){
+_269.code=_269.PERMISSION_DENIED;
+_269.message="permission denied";
 }else{
-if((-33)==_264){
-_266.code=_266.TIMEOUT;
-_266.message="request timed out";
+if((-33)==_267){
+_269.code=_269.TIMEOUT;
+_269.message="request timed out";
 }else{
-_266.code=_266.UNKNOWN_ERROR;
-_266.message="UnKnown Error";
+_269.code=_269.UNKNOWN_ERROR;
+_269.message="UnKnown Error";
 }
 }
-_263(_266);
+_266(_269);
 }else{
-var _266=new Location_PositionError();
-_266.code=_266.UNKNOWN_ERROR;
-_266.message="UnKnown Error";
-throw _266;
+var _269=new Location_PositionError();
+_269.code=_269.UNKNOWN_ERROR;
+_269.message="UnKnown Error";
+throw _269;
 }
 };
 function __sp_location_descriptor(){
@@ -4037,176 +4061,146 @@ this.version=1;
 };
 var obj;
 function __sp_getLocation_cb(arg1,arg2,arg3){
-var _26a;
-_26a=glob_obj.getFromArray(arg1);
-if(_26a){
-success_cb1=_26a.success_cb;
-error_cb=_26a.error_cb;
+var _26d;
+_26d=glob_obj.getFromArray(arg1);
+if(_26d){
+success_cb1=_26d.success_cb;
+error_cb=_26d.error_cb;
 }else{
-alert("Geolocation: __sp_getLocation_cb: Callback not found ");
 return;
 }
 if(arg3.ErrorCode){
 __sp_location_handle_error(error_cb,arg3.ErrorCode,arg3.ErrorMessage);
 return;
 }else{
-var _26b=new Location_Coordinates();
-_26b.longitude=(arg3.ReturnValue.Longitude==undefined)?null:arg3.ReturnValue.Longitude;
-_26b.latitude=(arg3.ReturnValue.Latitude==undefined)?null:arg3.ReturnValue.Latitude;
-_26b.altitude=(arg3.ReturnValue.Altitude==undefined)?null:arg3.ReturnValue.Altitude;
-_26b.accuracy=(arg3.ReturnValue.HorizontalAccuracy==undefined)?null:arg3.ReturnValue.HorizontalAccuracy;
-_26b.altitudeAccuracy=(arg3.ReturnValue.VerticalAccuracy==undefined)?null:arg3.ReturnValue.VerticalAccuracy;
-_26b.heading=(arg3.ReturnValue.Heading==undefined)?null:arg3.ReturnValue.Heading;
-_26b.speed=(arg3.ReturnValue.HorizontalSpeed==undefined)?null:arg3.ReturnValue.HorizontalSpeed;
-var _26c=new Location_Position();
-_26c.coords={};
-modifyObjectBaseProp(_26c.coords);
-_26c.coords=_26b;
-_26c.timestamp=new Date();
-success_cb1(_26c);
-delete _26c.timestamp;
-delete _26c;
-delete _26b;
+var _26e=getGeoLocationPosition(arg3.ReturnValue);
+success_cb1(_26e);
+delete _26e;
 }
 glob_obj.removeFromArray(arg1);
 };
-function __sp_getLocation(_26d,_26e,_26f){
-if((_26d==undefined)||(_26d==null)||(typeof (_26d)!="function")){
-var _270="Wrong callback type";
-__sp_location_handle_error(_26e,0,_270);
+function __sp_getLocation(_26f,_270,_271){
+if((_26f==undefined)||(_26f==null)||(typeof (_26f)!="function")){
+var _272="Wrong callback type";
+__sp_location_handle_error(_270,0,_272);
 }
-if((_26e!=undefined)){
-if((_26e!=null)&&(_26e!="")&&(typeof (_26e)!="function")){
-var _271=new Location_PositionError();
-_271.code=-1;
-throw _271;
+if((_270!=undefined)){
+if((_270!=null)&&(_270!="")&&(typeof (_270)!="function")){
+var _273=new Location_PositionError();
+_273.code=-1;
+throw _273;
 }
 }
-var _272;
-var _273={};
-modifyObjectBaseProp(_273);
-_273.LocationInformationClass="GenericLocationInfo";
-var _274={};
-modifyObjectBaseProp(_274);
-_274.UpdateInterval=0;
-if(_26f!=undefined&&_26f!=null){
-if((typeof (_26f)!="object")){
-var _275="Wrong posOptions type";
-__sp_location_handle_error(_26e,0,_275);
+var _274;
+var _275={};
+modifyObjectBaseProp(_275);
+_275.LocationInformationClass="GenericLocationInfo";
+var _276={};
+modifyObjectBaseProp(_276);
+_276.UpdateInterval=0;
+if(_271!=undefined&&_271!=null){
+if((typeof (_271)!="object")){
+var _277="Wrong posOptions type";
+__sp_location_handle_error(_270,0,_277);
 return;
 }
 }
-if(_26f!=undefined){
-if(_26f.maximumAge!=undefined){
-if(_26f.maximumAge){
-if((_26f.maximumAge==Infinity)){
-if((_26f.enableHighAccuracy==undefined)||(typeof (_26f.enableHighAccuracy)=="boolean")){
+if(_271!=undefined){
+if(_271.maximumAge!=undefined){
+if(_271.maximumAge){
+if((_271.maximumAge==Infinity)){
+if((_271.enableHighAccuracy==undefined)||(typeof (_271.enableHighAccuracy)=="boolean")){
 var arg3=this.so.ILocation.GetLastPosition();
 if(arg3.ErrorCode<0){
-var _275="Invalid input type";
-__sp_location_handle_error(_26e,0,_275);
+var _277="Invalid input type";
+__sp_location_handle_error(_270,0,_277);
 return;
 }
-var _277=new Location_Coordinates();
-_277.longitude=(arg3.ReturnValue.Longitude==undefined)?null:arg3.ReturnValue.Longitude;
-_277.latitude=(arg3.ReturnValue.Latitude==undefined)?null:arg3.ReturnValue.Latitude;
-_277.altitude=(arg3.ReturnValue.Altitude==undefined)?null:arg3.ReturnValue.Altitude;
-_277.accuracy=(arg3.ReturnValue.HorizontalAccuracy==undefined)?null:arg3.ReturnValue.HorizontalAccuracy;
-_277.altitudeAccuracy=(arg3.ReturnValue.VerticalAccuracy==undefined)?null:arg3.ReturnValue.VerticalAccuracy;
-_277.heading=(arg3.ReturnValue.Heading==undefined)?null:arg3.ReturnValue.Heading;
-_277.speed=(arg3.ReturnValue.HorizontalSpeed==undefined)?null:arg3.ReturnValue.HorizontalSpeed;
-var _278=new Location_Position();
-_278.coords={};
-modifyObjectBaseProp(_278.coords);
-_278.coords=_277;
-_278.timestamp=new Date();
-_26d(_278);
-delete _278.timestamp;
-delete _278;
-delete _277;
+var _279=getGeoLocationPosition(arg3.ReturnValue);
+success_cb1(_279);
 return;
 }
 }
-if(!(isNaN(parseInt(_26f.maximumAge)))){
-if((_26f.maximumAge==0)){
-var _275="Invalid input type";
-__sp_location_handle_error(_26e,0,_275);
+if(!(isNaN(parseInt(_271.maximumAge)))){
+if((_271.maximumAge==0)){
+var _277="Invalid input type";
+__sp_location_handle_error(_270,0,_277);
 return;
 }
-_274.UpdateMaxAge=_26f.maximumAge;
+_276.UpdateMaxAge=_271.maximumAge*1000;
 }else{
-var _275="Invalid input type";
-__sp_location_handle_error(_26e,0,_275);
+var _277="Invalid input type";
+__sp_location_handle_error(_270,0,_277);
 return;
 }
 }else{
-if((_26f.maximumAge==null)||(_26f.maximumAge=="")){
+if((_271.maximumAge==null)||(_271.maximumAge=="")){
 }
 }
 }
-if((_26f.enableHighAccuracy!==undefined)){
-if(_26f.enableHighAccuracy==true){
-_273.EnableHighAccuracy=_26f.enableHighAccuracy;
+if((_271.enableHighAccuracy!==undefined)){
+if(_271.enableHighAccuracy==true){
+_275.EnableHighAccuracy=_271.enableHighAccuracy;
 }else{
-if(_26f.enableHighAccuracy==false){
-_273.EnableHighAccuracy=_26f.enableHighAccuracy;
+if(_271.enableHighAccuracy==false){
+_275.EnableHighAccuracy=_271.enableHighAccuracy;
 }else{
-if((_26f.enableHighAccuracy==null)||(_26f.enableHighAccuracy=="")){
+if((_271.enableHighAccuracy==null)||(_271.enableHighAccuracy=="")){
 }else{
-if((typeof (_26f.enableHighAccuracy)!="boolean")){
-var _279="Wrong value for enableHighAccuracy param";
-__sp_location_handle_error(_26e,0,_279);
+if((typeof (_271.enableHighAccuracy)!="boolean")){
+var _27a="Wrong value for enableHighAccuracy param";
+__sp_location_handle_error(_270,0,_27a);
 return;
 }
 }
 }
 }
 }
-if(_26f.timeout!==undefined){
-if((_26f.timeout!==null)||((_26f.timeout!==""))){
-if((_26f.timeout==Infinity)){
-var _275="Invalid input type";
-__sp_location_handle_error(_26e,0,_275);
+if(_271.timeout!==undefined){
+if((_271.timeout!==null)||((_271.timeout!==""))){
+if((_271.timeout==Infinity)){
+var _277="Invalid input type";
+__sp_location_handle_error(_270,0,_277);
 return;
 }else{
-if(!(isNaN(parseInt(_26f.timeout)))){
-if((_26f.timeout<=2147483647)){
-if((_26f.timeout==0)){
-var _275="Invalid input type";
-__sp_location_handle_error(_26e,0,_275);
+if(!(isNaN(parseInt(_271.timeout)))){
+if((_271.timeout<=2147483647)){
+if((_271.timeout==0)){
+var _277="Data out of range";
+__sp_location_handle_error(_270,0,_277);
 return;
 }
-_274.UpdateTimeOut=_26f.timeout;
+_276.UpdateTimeOut=_271.timeout*1000;
 }else{
-var _275="Invalid input type";
-__sp_location_handle_error(_26e,0,_275);
-return;
-}
-}
-}
-}else{
-if((_26f.timeout===null)||((_26f.timeout===""))){
-}else{
-var _275="Invalid input type";
-__sp_location_handle_error(_26e,0,_275);
+var _277="Invalid input type";
+__sp_location_handle_error(_270,0,_277);
 return;
 }
 }
 }
+}else{
+if((_271.timeout===null)||((_271.timeout===""))){
+}else{
+var _277="Invalid input type";
+__sp_location_handle_error(_270,0,_277);
+return;
 }
-_274.PartialUpdates=false;
-_273.Updateoptions=_274;
+}
+}
+}
+_276.PartialUpdates=false;
+_275.Updateoptions=_276;
 try{
-temp_scb=_26d;
-temp_ecb=_26e;
-var rval=this.so.ILocation.GetLocation(_273,this.getLocationCb);
+temp_scb=_26f;
+temp_ecb=_270;
+var rval=this.so.ILocation.GetLocation(_275,this.getLocationCb);
 if(rval.TransactionID){
-glob_obj.addToGlobalArray(rval.TransactionID,_26d,_26e);
+glob_obj.addToGlobalArray(rval.TransactionID,_26f,_270);
 }
-delete _274;
-delete _273;
+delete _276;
+delete _275;
 if(rval.ErrorCode!=0){
-__sp_location_handle_error(_26e,rval.ErrorCode,rval.ErrorMessage);
+__sp_location_handle_error(_270,rval.ErrorCode,rval.ErrorMessage);
 return;
 }
 }
@@ -4217,35 +4211,19 @@ __device_handle_exception(e,"__sp_getLocation: "+e);
 var __sp_location_trace_ucb=null;
 var __sp_location_fail_cb=null;
 function __sp_traceLocation_cb(arg1,arg2,arg3){
-var _27e;
-_27e=glob_obj.getFromArray(arg1);
-if(_27e){
-success_cb=_27e.success_cb;
-error_cb=_27e.error_cb;
+var _27f;
+_27f=glob_obj.getFromArray(arg1);
+if(_27f){
+success_cb=_27f.success_cb;
+error_cb=_27f.error_cb;
 }else{
-alert("Geolocation: __sp_traceLocation_cb: Callback not found ");
 return;
 }
 if(arg3.ErrorCode){
 __sp_location_handle_error(error_cb,arg3.ErrorCode,arg3.ErrorMessage);
 }else{
-var _27f=new Location_Coordinates();
-_27f.longitude=(arg3.ReturnValue.Longitude==undefined)?null:arg3.ReturnValue.Longitude;
-_27f.latitude=(arg3.ReturnValue.Latitude==undefined)?null:arg3.ReturnValue.Latitude;
-_27f.altitude=(arg3.ReturnValue.Altitude==undefined)?null:arg3.ReturnValue.Altitude;
-_27f.accuracy=(arg3.ReturnValue.HorizontalAccuracy==undefined)?null:arg3.ReturnValue.HorizontalAccuracy;
-_27f.altitudeAccuracy=(arg3.ReturnValue.VerticalAccuracy==undefined)?null:arg3.ReturnValue.VerticalAccuracy;
-_27f.heading=(arg3.ReturnValue.Heading==undefined)?null:arg3.ReturnValue.Heading;
-_27f.speed=(arg3.ReturnValue.HorizontalSpeed==undefined)?null:arg3.ReturnValue.HorizontalSpeed;
-var _280=new Location_Position();
-_280.coords={};
-modifyObjectBaseProp(_280.coords);
-_280.coords=_27f;
-_280.timestamp=new Date();
+var _280=getGeoLocationPosition(arg3.ReturnValue);
 success_cb(_280);
-delete _280.timestamp;
-delete _280;
-delete _27f;
 return;
 }
 glob_obj.removeFromArray(arg1);
@@ -4261,7 +4239,7 @@ var _284="Wrong callback type";
 __sp_location_handle_error(_282,0,_284);
 return;
 }
-if((_282!=undefined)){
+if((_282)){
 if((_282!=null)&&(_282!="")&&(typeof (_282)!="function")){
 var _285=new Location_PositionError();
 _285.code=-1;
@@ -4314,7 +4292,7 @@ var _284="Invalid input type";
 __sp_location_handle_error(_282,0,_284);
 return;
 }
-_287.UpdateTimeOut=_283.timeout;
+_287.UpdateTimeOut=_283.timeout*1000;
 }
 }
 }else{
@@ -4332,7 +4310,7 @@ _287.UpdateTimeOut=0;
 _287.UpdateMaxAge=2147483647;
 }else{
 if(!(isNaN(parseInt(_283.maximumAge)))){
-_287.UpdateMaxAge=_283.maximumAge;
+_287.UpdateMaxAge=_283.maximumAge*1000;
 }else{
 if((_283.maximumAge===null)||((_283.maximumAge===""))){
 }else{
@@ -5026,7 +5004,7 @@ var _2e6=0;
 _2e5.MessageParam={};
 modifyObjectBaseProp(_2e5.MessageParam);
 _2e5.MessageParam.LaunchEditor=false;
-_2e5.MessageType=(_2e3.type==undefined||_2e3.type==null)?"SMS":_2e3.type;
+_2e5.MessageType=(_2e3.type==undefined||_2e3.type==null||_2e3.type=="")?"SMS":_2e3.type;
 if(_2e3.to){
 if(typeof (_2e3.to)=="string"){
 _2e5.To=_2e3.to;
@@ -5213,6 +5191,11 @@ if(typeof _2fb!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Messaging:getList:callback is not a function");
 }
 }
+if(_2ff!=null&&typeof _2ff!="undefined"){
+if(typeof (_2ff)!="function"){
+throw new DeviceException(this.error.INVALID_ARG_ERR,"Messaging: startEditor: ErrorCallback is invalid");
+}
+}
 if(_2fc!=null&&_2fc!=undefined&&typeof _2fc!="object"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Messaging:getList:match is invalid");
 }
@@ -5224,17 +5207,14 @@ throw new DeviceException(this.error.INVALID_ARG_ERR,"Messaging:getList:sortorde
 }
 if(_2fd!=null&&_2fd!=undefined&&typeof _2fd=="number"){
 if((_2fd!=0)&&(_2fd!=1)){
-throw new DeviceException(this.error.INVALID_ARG_ERR,"Messaging:getList:sortkey is invalid");
+_2ff(new DeviceException(this.error.DATA_OUT_OF_RANGE_ERR,"Messaging:getList:sortkey is out of range"));
+return;
 }
 }
 if(_2fe!=null&&_2fe!=undefined&&typeof _2fe=="number"){
 if((_2fe!=0)&&(_2fe!=1)){
-throw new DeviceException(this.error.INVALID_ARG_ERR,"Messaging:getList:sortorder is invalid");
-}
-}
-if(_2ff){
-if(typeof (_2ff)!="function"){
-throw new DeviceException(this.error.INVALID_ARG_ERR,"Messaging: startEditor: ErrorCallback is invalid");
+_2ff(new DeviceException(this.error.DATA_OUT_OF_RANGE_ERR,"Messaging:getList:sortorder is out of range"));
+return;
 }
 }
 var _300={};
@@ -5425,9 +5405,6 @@ if((_314.subject)){
 if((_314.subject).length>256){
 throw new DeviceException(this.error.DATA_OUT_OF_RANGE_ERR,"Messaging:startEditor:subject is too lengthy");
 }
-}
-if(_314.to==undefined||_314.to==null){
-throw new DeviceException(this.error.MISSING_ARG_ERR,"Messaging:startEditor:to field is missing");
 }
 if(_314.attachments!=undefined&&_314.attachments!=null&&typeof _314.attachments!="object"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Messaging:startEditor:attachment is invalid");
@@ -5697,7 +5674,6 @@ __device_handle_exception(e,"__sp_messaging_getMessage: "+e);
 }
 };
 function __sp_messaging_delete(id){
-a("messageId"+typeof id);
 if(!id){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Messaging:delete:id is missing");
 }else{
@@ -5719,7 +5695,6 @@ modifyObjectBaseProp(_33d);
 _33d.MessageId=id;
 try{
 var _33e=this.so.IMessaging.Delete(_33d);
-a("MapErrorCode[ result.ErrorCode ]"+MapErrorCode[_33e.ErrorCode]);
 if(_33d){
 delete _33d.MessageId;
 }
@@ -5750,7 +5725,7 @@ if(typeof _341!="number"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Messaging:setStatus:status is invalid");
 }
 if(typeof _341=="number"&&_341!=0&&_341!=1){
-throw new DeviceException(this.error.INVALID_ARG_ERR,"Messaging:setStatus:status is invalid");
+throw new DeviceException(this.error.DATA_OUT_OF_RANGE_ERR,"Messaging:setStatus:status is out of range");
 }
 if((typeof id=="string")&&!(isNaN(id))){
 id=Number(id);
@@ -5768,7 +5743,6 @@ if((_341==this.STATUS_UNREAD)){
 _342.Status="Unread";
 }else{
 if((_341==this.STATUS_READ)){
-a("in read");
 _342.Status="Read";
 }
 }
@@ -5958,7 +5932,8 @@ if(_35c.time.begin){
 if(typeof (_35c.time.begin)!="object"){
 return false;
 }
-if(_35c.time.begin=="Invalid Date"){
+var _35d=new Date("January 1, 1970 00:01");
+if(_35c.time.begin<_35d){
 return false;
 }
 try{
@@ -6070,128 +6045,135 @@ return false;
 }
 return true;
 };
-function __sp_calendar_getList_repeatRule(_35d){
-var _35e;
-switch(_35d.Type){
+function __sp_calendar_getList_repeatRule(_35e){
+var _35f;
+switch(_35e.Type){
 case 1:
-_35e="daily";
-this.frequency=_35e.toString();
+_35f="daily";
+this.frequency=_35f.toString();
 break;
 case 2:
-_35e="weekly";
-this.frequency=_35e.toString();
+_35f="weekly";
+this.frequency=_35f.toString();
 break;
 case 3:
-_35e="monthly";
-this.frequency=_35e.toString();
+_35f="monthly";
+this.frequency=_35f.toString();
 break;
 case 4:
-_35e="yearly";
-this.frequency=_35e.toString();
+_35f="yearly";
+this.frequency=_35f.toString();
 break;
 default:
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: Repeat Rule Type is Invalid");
 }
-if(_35d.StartDate){
-this.startDate=new Date(_35d.StartDate);
+if(_35e.StartDate){
+this.startDate=new Date(_35e.StartDate);
 }
-if(_35d.UntilDate){
-this.untilDate=new Date(_35d.UntilDate);
+if(_35e.UntilDate){
+this.untilDate=new Date(_35e.UntilDate);
 }
-if(_35d.Interval){
-this.interval=_35d.Interval;
+if(_35e.Interval){
+this.interval=_35e.Interval;
 }
-if(_35d.DaysInWeek){
+if(_35e.DaysInWeek){
 this.weekDays=[];
-for(var a in _35d.DaysInWeek){
-if(_35d.DaysInWeek[a]==6){
-_35d.DaysInWeek[a]=0;
+for(var a in _35e.DaysInWeek){
+if(_35e.DaysInWeek[a]==6){
+_35e.DaysInWeek[a]=0;
 }else{
-_35d.DaysInWeek[a]=_35d.DaysInWeek[a]+1;
+_35e.DaysInWeek[a]=_35e.DaysInWeek[a]+1;
 }
-this.weekDays.push(_35d.DaysInWeek[a]);
+this.weekDays.push(_35e.DaysInWeek[a]);
 }
 }
-if(_35d.Month){
-this.month=_35d.Month;
+if(_35e.Month){
+this.month=_35e.Month;
 }
-if(_35d.DaysOfMonth){
-if(_35d.DaysOfMonth.Day){
-if(_35d.DaysOfMonth.Day==6){
-_35d.DaysOfMonth.Day=0;
+if(_35e.DaysOfMonth){
+if(_35e.DaysOfMonth.Day){
+if(_35e.DaysOfMonth.Day==6){
+_35e.DaysOfMonth.Day=0;
 }else{
-_35d.DaysOfMonth.Day=_35d.DaysOfMonth.Day+1;
+_35e.DaysOfMonth.Day=_35e.DaysOfMonth.Day+1;
 }
-this.daysOfMonth.day=_35d.DaysOfMonth.Day;
+this.daysOfMonth.day=_35e.DaysOfMonth.Day;
 }
-if(_35d.DaysOfMonth.WeekNum){
-this.daysOfMonth.weekInMonth=_35d.DaysOfMonth.WeekNum;
+if(_35e.DaysOfMonth.WeekNum){
+this.daysOfMonth.weekInMonth=_35e.DaysOfMonth.WeekNum;
 }
 }
-if(_35d.MonthDays){
+if(_35e.MonthDays){
 this.monthDates=[];
-for(var i=0;i<_35d.MonthDays.length;i++){
-this.monthDates.push(_35d.MonthDays[i]-1);
+for(var i=0;i<_35e.MonthDays.length;i++){
+this.monthDates.push(_35e.MonthDays[i]-1);
 }
 }
 };
-function __sp_device_calendar_entry(_361){
-if(_361.id){
-this.id=_361.id;
+function __sp_device_calendar_entry(_362){
+if(_362.id){
+this.id=_362.id;
 }
-if(_361.type){
-this.type=_361.Type;
+if(_362.Type){
+this.type=_362.Type;
 }
-if(_361.Summary){
-this.summary=_361.Summary;
+if(_362.Summary){
+this.summary=_362.Summary;
 }
-if(_361.Description){
-this.description=_361.Description;
+if(_362.Description){
+this.description=_362.Description;
 }
-if(_361.Location){
-this.location=_361.Location;
+if(_362.Location){
+this.location=_362.Location;
 }
-if(_361.InstanceStartTime){
-this.instanceStartTime=_361.InstanceStartTime;
+if(_362.InstanceStartTime){
+this.instanceStartTime=_362.InstanceStartTime;
 }
-if(_361.Priority>=0||_361.Priority<=255){
-this.priority=_361.Priority;
+if(_362.Priority>=0||_362.Priority<=255){
+this.priority=_362.Priority;
 }
-if(_361.Status){
-this.status=_361.Status;
+if(_362.Status){
+this.status=_362.Status;
 }
-if(_361.ExDates){
-this.exceptionDates=_361.ExDates;
+if(_362.Status=="TodoCompleted"){
+this.status="Completed";
+}else{
+if(_362.Status=="TodoNeedsAction"){
+this.status="NeedsAction";
 }
-if(_361.RepeatRule){
-this.repeatRule=new __sp_calendar_getList_repeatRule(_361.RepeatRule);
+}
+if(_362.ExDates){
+this.exceptionDates=_362.ExDates;
+}
+if(_362.RepeatRule){
+this.repeatRule=new __sp_calendar_getList_repeatRule(_362.RepeatRule);
 }
 if(dataGetList==0){
-this.time=new __sp_calendar_entry_time(_361.InstanceStartTime,_361.InstanceEndTime,_361.AlarmTime);
+this.time=new __sp_calendar_entry_time(_362.InstanceStartTime,_362.InstanceEndTime,_362.AlarmTime);
 }else{
-this.time=new __sp_calendar_entry_time(_361.StartTime,_361.EndTime,_361.AlarmTime);
+this.time=new __sp_calendar_entry_time(_362.StartTime,_362.EndTime,_362.AlarmTime);
 }
 };
-function __sp_daysOfMonth_build(_362){
-if(_362.day){
-if(_362.day==0){
-_362.day=6;
+function __sp_daysOfMonth_build(_363){
+if(_363.day){
+if(_363.day==0){
+_363.day=6;
 }else{
-_362.day=_362.day-1;
+_363.day=_363.day-1;
 }
-this.Day=_362.day;
+this.Day=_363.day;
 }
-if(_362.weekInMonth){
-this.WeekNum=_362.weekInMonth;
+if(_363.weekInMonth){
+this.WeekNum=_363.weekInMonth;
 }
 };
-function __sp_calendar_addEntry_repeatRule(_363,str){
+function __sp_calendar_addEntry_repeatRule(_364,str){
 try{
-if(!(_363.frequency)){
+if(!(_364.frequency)){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: addEntry: frequency is missing");
 }else{
-var _365=_363.frequency;
-switch(_365){
+var _366=_364.frequency;
+switch(_366){
 case "daily":
 this.Type=1;
 break;
@@ -6207,40 +6189,40 @@ break;
 default:
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: "+str+" Repeat Rule Type is Invalid");
 }
-if(_363.startDate){
-this.StartDate=_363.startDate;
+if(_364.startDate){
+this.StartDate=_364.startDate;
 }
-if(_363.untilDate){
-this.UntilDate=_363.untilDate;
+if(_364.untilDate){
+this.UntilDate=_364.untilDate;
 }
-if(_363.interval){
-this.Interval=_363.interval;
+if(_364.interval){
+this.Interval=_364.interval;
 }
-if(_363.weekDays){
+if(_364.weekDays){
 this.DaysInWeek=[];
-for(var a in _363.weekDays){
-if(_363.weekDays[a]==0){
-_363.weekDays[a]=6;
+for(var a in _364.weekDays){
+if(_364.weekDays[a]==0){
+_364.weekDays[a]=6;
 }else{
-_363.weekDays[a]=_363.weekDays[a]-1;
+_364.weekDays[a]=_364.weekDays[a]-1;
 }
-this.DaysInWeek.push(_363.weekDays[a]);
+this.DaysInWeek.push(_364.weekDays[a]);
 }
 }
-if(_363.month){
-this.Month=_363.month;
+if(_364.month){
+this.Month=_364.month;
 }
-if(_363.monthDates){
+if(_364.monthDates){
 this.MonthDays=[];
-for(var i=0;i<_363.monthDates.length;i++){
-this.MonthDays.push(_363.monthDates[i]-1);
+for(var i=0;i<_364.monthDates.length;i++){
+this.MonthDays.push(_364.monthDates[i]-1);
 }
 }
-if(_363.daysOfMonth){
+if(_364.daysOfMonth){
 this.DaysOfMonth=new Array();
-for(var a in _363.daysOfMonth){
-var _368=new __sp_daysOfMonth_build(_363.daysOfMonth[a]);
-(this.DaysOfMonth).push(_368);
+for(var a in _364.daysOfMonth){
+var _369=new __sp_daysOfMonth_build(_364.daysOfMonth[a]);
+(this.DaysOfMonth).push(_369);
 }
 }
 }
@@ -6249,110 +6231,105 @@ catch(e){
 __device_handle_exception(e,"__sp_calendar_addEntry_repeatRule: "+e);
 }
 };
-function __sp_calendar_entry(_369,str){
+function __sp_calendar_entry(_36a,str){
 try{
-if(_369.type){
-this.Type=_369.type;
+if(_36a.type){
+this.Type=_36a.type;
 }
-if(_369.id){
-this.id=_369.id;
+if(_36a.id){
+this.id=_36a.id;
 if(isUpdate){
-if(_369.time){
-if(_369.time.begin){
-this.StartTime=_369.time.begin;
+if(_36a.time){
+if(_36a.time.begin){
+this.StartTime=_36a.time.begin;
 }
-if(_369.time.end){
-this.EndTime=_369.time.end;
-}
-}
+if(_36a.time.end){
+this.EndTime=_36a.time.end;
 }
 }
-if(_369.instanceStartTime){
-this.InstanceStartTime=_369.instanceStartTime;
 }
-if(_369.description){
-this.Description=_369.description;
+}
+if(_36a.instanceStartTime){
+this.InstanceStartTime=_36a.instanceStartTime;
+}
+if(_36a.description){
+this.Description=_36a.description;
 }else{
-if(isUpdate&&(_369.description==null)){
+if(isUpdate&&(_36a.description==null)){
 this.Description=" ";
 }
 }
-if(_369.summary){
-this.Summary=_369.summary;
+if(_36a.summary){
+this.Summary=_36a.summary;
 }else{
-if(isUpdate&&(_369.summary==null)){
+if(isUpdate&&(_36a.summary==null)){
 this.Summary=" ";
 }
 }
-if(_369.location){
-this.Location=_369.location;
+if(_36a.location){
+this.Location=_36a.location;
 }else{
-if(isUpdate&&(_369.location==null)){
+if(isUpdate&&(_36a.location==null)){
 this.Location=" ";
 }
 }
-if(_369.priority){
-if((_369.priority<0)||(_369.priority>255)){
+if(_36a.priority){
+if((_36a.priority<0)||(_36a.priority>255)){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: "+str+" Priority is Invalid");
 }else{
-this.Priority=_369.priority;
+this.Priority=_36a.priority;
 }
 }else{
-if(isUpdate&&(_369.priority==null)){
+if(isUpdate&&(_36a.priority==null)){
 this.Priority=0;
 }
 }
-if(_369.status){
-if(this.Type=="ToDo"){
-this.Status="Todo"+_369.status;
-}else{
-this.Status=_369.status;
-}
-}else{
-if(isUpdate&&(_369.status==null)){
-this.Status="Tentative";
+if(_36a.status){
+this.Status=_36a.status;
+if(_36a.status=="NeedsAction"||_36a.status=="Completed"){
+this.Status="Todo"+_36a.status;
 }
 }
-if(_369.exceptionDates){
-this.ExDates=_369.exceptionDates;
+if(_36a.exceptionDates){
+this.ExDates=_36a.exceptionDates;
 }
-if(_369.repeatRule){
-this.RepeatRule=new __sp_calendar_addEntry_repeatRule(_369.repeatRule,str);
+if(_36a.repeatRule){
+this.RepeatRule=new __sp_calendar_addEntry_repeatRule(_36a.repeatRule,str);
 }
-if(_369.type!=undefined&&_369.type!=null){
+if(_36a.type!=undefined&&_36a.type!=null){
 if(typeof this.Type!="string"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: "+str+" Type is not a string");
 }
 switch(this.Type){
 case "Meeting":
-if(_369.time){
-if(_369.time.begin){
-this.StartTime=_369.time.begin;
+if(_36a.time){
+if(_36a.time.begin){
+this.StartTime=_36a.time.begin;
 }
-if(_369.time.end){
-this.EndTime=_369.time.end;
+if(_36a.time.end){
+this.EndTime=_36a.time.end;
 }
 }
 break;
 case "Reminder":
 case "Anniversary":
-if(_369.time){
-if(_369.time.begin){
-this.StartTime=_369.time.begin;
+if(_36a.time){
+if(_36a.time.begin){
+this.StartTime=_36a.time.begin;
 }
 }
 break;
 case "ToDo":
-if(_369.time){
-if(_369.time.end){
-this.EndTime=_369.time.end;
+if(_36a.time){
+if(_36a.time.end){
+this.EndTime=_36a.time.end;
 }
 }
 break;
 case "DayEvent":
-if(_369.time){
-if(_369.time.begin){
-this.StartTime=_369.time.begin;
+if(_36a.time){
+if(_36a.time.begin){
+this.StartTime=_36a.time.begin;
 }
 }
 break;
@@ -6360,9 +6337,9 @@ default:
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: "+str+" Type is Invalid");
 }
 }
-if(_369.time){
-if(_369.time.alarm){
-this.AlarmTime=_369.time.alarm;
+if(_36a.time){
+if(_36a.time.alarm){
+this.AlarmTime=_36a.time.alarm;
 }
 }
 }
@@ -6371,48 +6348,48 @@ __device_handle_exception(e,"__sp_calendar_entry: "+e);
 }
 };
 function __sp_calendar_iterator_get_next(){
-var _36b=this.iter.getNext();
-if(typeof _36b=="undefined"){
+var _36c=this.iter.getNext();
+if(typeof _36c=="undefined"){
 return null;
 }
-var _36c=new __sp_device_calendar_entry(_36b);
-_36b.close();
-return _36c;
+var _36d=new __sp_device_calendar_entry(_36c);
+_36c.close();
+return _36d;
 };
-function __sp_calendar_iterator(_36d){
-this.iter=_36d;
+function __sp_calendar_iterator(_36e){
+this.iter=_36e;
 this.next=__sp_calendar_iterator_get_next;
 this.close=function(){
 this.iter.close();
 };
 };
 var CALENDAR_APP_ID=268458241;
-function __sp_calendar_startEditor(_36e,_36f,_370){
+function __sp_calendar_startEditor(_36f,_370,_371){
 try{
-if(!_36e){
+if(!_36f){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: startEditor: callback is missing");
 }else{
-if(typeof _36e!="function"){
+if(typeof _36f!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: startEditor: callback is invalid");
 }
 }
-if(_370){
-if(typeof _370!="function"){
+if(_371){
+if(typeof _371!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: startEditor: error callback is invalid");
 }
 }
-if(_36f==null||_36f==undefined){
-throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: startEditor: entry is invalid");
+if(_370!=null){
+throw new DeviceException(this.error.NOT_SUPPORTED_ERR,"Calendar: startEditor: Entry should be null");
 }
-var _371=function(arg1,arg2,arg3){
+var _372=function(arg1,arg2,arg3){
 var iter=null;
-_36e(iter);
+_36f(iter);
 if(arg2!=event_cancelled){
 var iter=null;
 if(arg3.ReturnValue){
 iter=new __sp_calendar_iterator(arg3.ReturnValue);
 }
-_36e(iter);
+_36f(iter);
 }
 if(arg3.ErrorCode!=0){
 switch(arg3.ErrorCode){
@@ -6420,18 +6397,18 @@ case this.error.MISSING_ARG_ERR:
 case this.error.INVALID_ARG_ERR:
 case this.error.NOT_SUPPORTED_ERR:
 if(arg3.ErrorMessage){
-var _376=splitErrorMessage(arg3.ErrorMessage);
-throw new DeviceException(MapErrorCode[arg3.ErrorCode],"Calendar: startEditor: "+_376);
+var _377=splitErrorMessage(arg3.ErrorMessage);
+throw new DeviceException(MapErrorCode[arg3.ErrorCode],"Calendar: startEditor: "+_377);
 }else{
 throw new DeviceException(MapErrorCode[arg3.ErrorCode],"Calendar: startEditor: Operation Failed");
 }
 break;
 default:
-_370(new DeviceException(MapErrorCode[arg3.ErrorCode],"Calendar: startEditor: Operation Failed"));
+_371(new DeviceException(MapErrorCode[arg3.ErrorCode],"Calendar: startEditor: Operation Failed"));
 }
 }
 };
-__s60_start_and_wait(CALENDAR_APP_ID,"",_371);
+__s60_start_and_wait(CALENDAR_APP_ID,"",_372);
 return 0;
 }
 catch(e){
@@ -6440,19 +6417,19 @@ __device_handle_exception(e,"__sp_calendar_startEditor: "+e);
 };
 var __sp_calendar_entry_types="MeetingReminderToDoAnniversaryDayEvent";
 function __sp_calendar_getList_cb(arg1,arg2,arg3){
-var _37a;
 var _37b;
 var _37c;
-_37a=glob_obj.getFromArray(arg1);
-if(_37a){
-_37b=_37a.success_cb;
-_37c=_37a.error_cb;
+var _37d;
+_37b=glob_obj.getFromArray(arg1);
+if(_37b){
+_37c=_37b.success_cb;
+_37d=_37b.error_cb;
 }else{
 alert("Calendar: __sp_calendar_getList_cb: Callback not found ");
 return;
 }
 if(arg3.ErrorCode!=0){
-_37c(new DeviceException(arg3.ErrorCode,"Calendar: getList: Operation Failed"));
+_37d(new DeviceException(arg3.ErrorCode,"Calendar: getList: Operation Failed"));
 return;
 }
 if(arg2!=event_cancelled){
@@ -6460,104 +6437,104 @@ var iter=null;
 if(arg3.ReturnValue){
 iter=new __sp_calendar_iterator(arg3.ReturnValue);
 }
-_37b(iter);
+_37c(iter);
 }
 glob_obj.removeFromArray(arg1);
 };
-function __sp_calendar_getList(_37e,_37f,_380){
+function __sp_calendar_getList(_37f,_380,_381){
 try{
-if(_37f){
-if(typeof _37f!="object"){
+if(_380){
+if(typeof _380!="object"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
 }
-if(_37f.id){
+if(_380.id){
 dataGetList=1;
-if(typeof _37f.id!="string"){
+if(typeof _380.id!="string"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
 }
 }else{
 dataGetList=0;
 }
 }
-if(!_37e){
+if(!_37f){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: getList: callback is missing");
 }else{
-if(typeof _37e!="function"){
+if(typeof _37f!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: callback is invalid");
 }
 }
-if(_380){
-if(typeof _380!="function"){
+if(_381){
+if(typeof _381!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: error callback is invalid");
 }
-if(_380==undefined||_380==null){
+if(_381==undefined||_381==null){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: getList: error callback is missing");
-}
-}
-var _381={};
-modifyObjectBaseProp(_381);
-_381.Type="IncludeAll";
-if(_37f){
-if(_37f.id){
-_381.id=_37f.id;
-}
-if((_37f.type)&&__sp_calendar_entry_types.match(_37f.type)){
-_381.Type=_37f.type;
-}else{
-if((_37f.type)&&typeof _37f.type!="string"){
-throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
-}
-}
-if(_37f.range){
-if(_37f.range.begin){
-if(typeof (_37f.range.begin)!="object"){
-throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
-}else{
-if((_37f.range.begin)=="Invalid Date"){
-throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
-}else{
-_381.StartRange=_37f.range.begin;
-}
-}
-}
-if(_37f.range.end){
-if(typeof (_37f.range.end)!="object"){
-throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
-}else{
-if((_37f.range.end)=="Invalid Date"){
-throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
-}else{
-_381.EndRange=_37f.range.end;
-}
-}
-}
-if((_37f.range.begin)&&(_37f.range.end)){
-if((_37f.range.begin)>(_37f.range.end)){
-throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
-}
-}
-}
-if(_37f.text){
-if(typeof (_37f.text)!="string"){
-throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
-}else{
-_381.SearchText=_37f.text;
-}
 }
 }
 var _382={};
 modifyObjectBaseProp(_382);
-_382.Type="CalendarEntry";
-_382.Filter=_381;
-temp_scb=_37e;
-temp_ecb=_380;
-var rval=this.so.IDataSource.GetList(_382,this.getListCb);
-if(rval.TransactionID){
-glob_obj.addToGlobalArray(rval.TransactionID,_37e,_380);
+_382.Type="IncludeAll";
+if(_380){
+if(_380.id){
+_382.id=_380.id;
 }
-if(_382){
-delete _382.Type;
-delete _382.Filter;
+if((_380.type)&&__sp_calendar_entry_types.match(_380.type)){
+_382.Type=_380.type;
+}else{
+if((_380.type)&&typeof _380.type!="string"){
+throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
+}
+}
+if(_380.range){
+if(_380.range.begin){
+if(typeof (_380.range.begin)!="object"){
+throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
+}else{
+if((_380.range.begin)=="Invalid Date"){
+throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
+}else{
+_382.StartRange=_380.range.begin;
+}
+}
+}
+if(_380.range.end){
+if(typeof (_380.range.end)!="object"){
+throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
+}else{
+if((_380.range.end)=="Invalid Date"){
+throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
+}else{
+_382.EndRange=_380.range.end;
+}
+}
+}
+if((_380.range.begin)&&(_380.range.end)){
+if((_380.range.begin)>(_380.range.end)){
+throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
+}
+}
+}
+if(_380.text){
+if(typeof (_380.text)!="string"){
+throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: getList: match is invalid");
+}else{
+_382.SearchText=_380.text;
+}
+}
+}
+var _383={};
+modifyObjectBaseProp(_383);
+_383.Type="CalendarEntry";
+_383.Filter=_382;
+temp_scb=_37f;
+temp_ecb=_381;
+var rval=this.so.IDataSource.GetList(_383,this.getListCb);
+if(rval.TransactionID){
+glob_obj.addToGlobalArray(rval.TransactionID,_37f,_381);
+}
+if(_383){
+delete _383.Type;
+delete _383.Filter;
 }
 if(rval.ErrorCode!=0){
 switch(rval.ErrorCode){
@@ -6565,14 +6542,14 @@ case this.error.MISSING_ARG_ERR:
 case this.error.INVALID_ARG_ERR:
 case this.error.NOT_SUPPORTED_ERR:
 if(rval.ErrorMessage){
-var _384=splitErrorMessage(rval.ErrorMessage);
-throw new DeviceException(MapErrorCode[rval.ErrorCode],"Calendar: getList: "+_384);
+var _385=splitErrorMessage(rval.ErrorMessage);
+throw new DeviceException(MapErrorCode[rval.ErrorCode],"Calendar: getList: "+_385);
 }else{
 throw new DeviceException(MapErrorCode[rval.ErrorCode],"Calendar: getList: Operation Failed");
 }
 break;
 default:
-_380(new DeviceException(MapErrorCode[rval.ErrorCode],"Calendar: getList: Operation Failed"));
+_381(new DeviceException(MapErrorCode[rval.ErrorCode],"Calendar: getList: Operation Failed"));
 }
 }
 return rval.TransactionID;
@@ -6581,49 +6558,49 @@ catch(e){
 __device_handle_exception(e,"sp_calendar_getList: "+e);
 }
 };
-function __sp_calendar_add(_385){
-if(_385){
-if(typeof _385!="object"){
+function __sp_calendar_add(_386){
+if(_386){
+if(typeof _386!="object"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: addEntry: calendarEntry param is invalid");
 }
-if(_385.id){
-_385.id=undefined;
+if(_386.id){
+_386.id=undefined;
 }
-if(!_385.type||!_385.time){
+if(!_386.type||!_386.time){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: addEntry: mandatory param missing");
 }else{
-if(typeof _385.type!="string"||typeof _385.time!="object"){
+if(typeof _386.type!="string"||typeof _386.time!="object"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: addEntry: mandatory param missing");
 }
 }
-if((_385.type!="ToDo")&&!_385.time.begin){
+if((_386.type!="ToDo")&&!_386.time.begin){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: addEntry: mandatory param StartTime missing");
 }
-if(!_385.time.end&&(_385.type=="ToDo"||_385.type=="Meeting")){
+if(!_386.time.end&&(_386.type=="ToDo"||_386.type=="Meeting")){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: addEntry: mandatory param EndTime missing");
 }
-if(_385.time.end&&_385.time.alarm){
-if(_385.time.end<_385.time.alarm){
+if(_386.time.end&&_386.time.alarm){
+if(_386.time.end<_386.time.alarm){
 throw new DeviceException(this.error.NOT_SUPPORTED_ERR,"Calendar: addEntry: alarm time greater than end time:Not supported");
 }
 }
-if(_385.type=="ToDo"){
-if(_385.status==0){
-if(typeof (_385.status)!="string"){
+if(_386.type=="ToDo"){
+if(_386.status==0){
+if(typeof (_386.status)!="string"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: addEntry: mandatory param missing");
 }
 }
 }
-if(_385.repeatRule){
-if(typeof _385.repeatRule!="object"){
+if(_386.repeatRule){
+if(typeof _386.repeatRule!="object"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: addEntry: repeatRule param type is invalid");
 }
-if(!_385.repeatRule.frequency||_385.repeatRule.frequency==null){
+if(!_386.repeatRule.frequency||_386.repeatRule.frequency==null){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: addEntry: mandatory param Frequency missing");
 }
 }
-var _386=__sp_calendar_isInputValid(_385);
-if(!_386){
+var _387=__sp_calendar_isInputValid(_386);
+if(!_387){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: addEntry: calendarEntry param is invalid");
 }
 }else{
@@ -6631,63 +6608,63 @@ throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: addEntry: mandat
 }
 try{
 var str="addEntry:";
-var _388={};
-modifyObjectBaseProp(_388);
-_388.Type="CalendarEntry";
-_388.Item=new __sp_calendar_entry(_385,str);
-var _389=this.so.IDataSource.Add(_388);
-if(_388){
-delete _388.Type;
-delete _388.Item;
+var _389={};
+modifyObjectBaseProp(_389);
+_389.Type="CalendarEntry";
+_389.Item=new __sp_calendar_entry(_386,str);
+var _38a=this.so.IDataSource.Add(_389);
+if(_389){
+delete _389.Type;
+delete _389.Item;
 }
-var _38a="Operation Failed";
-if(_389.ErrorMessage){
-_38a=splitErrorMessage(_389.ErrorMessage);
+var _38b="Operation Failed";
+if(_38a.ErrorMessage){
+_38b=splitErrorMessage(_38a.ErrorMessage);
 }
-if(_389.ErrorCode!=0){
-throw new DeviceException(MapErrorCode[_389.ErrorCode],"Calendar: addEntry: Operation Failed");
+if(_38a.ErrorCode!=0){
+throw new DeviceException(MapErrorCode[_38a.ErrorCode],"Calendar: addEntry: Operation Failed");
 return;
 }else{
-var _38b=_389.ReturnValue;
-return _38b;
+var _38c=_38a.ReturnValue;
+return _38c;
 }
 }
 catch(e){
 __device_handle_exception(e,"__sp_calendar_add: "+e);
 }
 };
-function __sp_calendar_update(_38c){
+function __sp_calendar_update(_38d){
 isUpdate=1;
-if(_38c){
-if(typeof _38c!="object"){
+if(_38d){
+if(typeof _38d!="object"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: updateEntry: calendarEntry param is invalid");
 }
-if(!_38c.id){
+if(!_38d.id){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: updateEntry: mandatory param - Id missing");
 }
-if(_38c.repeatRule){
-if(typeof _38c.repeatRule!="object"){
+if(_38d.repeatRule){
+if(typeof _38d.repeatRule!="object"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: updateEntry: repeatRule param type is invalid");
 }
-if((_38c.repeatRule.frequency==null||_38c.repeatRule.frequency==undefined)){
+if((_38d.repeatRule.frequency==null||_38d.repeatRule.frequency==undefined)){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: updateEntry: repeatRule param type is invalid");
 }
-if(_38c.repeatRule.startDate&&(_38c.repeatRule.startDate==null||_38c.repeatRule.startDate==undefined)){
+if(_38d.repeatRule.startDate&&(_38d.repeatRule.startDate==null||_38d.repeatRule.startDate==undefined)){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: updateEntry: repeatRule param type is invalid");
 }
-if(_38c.repeatRule.untilDate&&(_38c.repeatRule.untilDate==null||_38c.repeatRule.untilDate==undefined)){
+if(_38d.repeatRule.untilDate&&(_38d.repeatRule.untilDate==null||_38d.repeatRule.untilDate==undefined)){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: updateEntry: repeatRule param type is invalid");
 }
 }
-if(_38c.time){
-if(_38c.time.end&&_38c.time.alarm){
-if(_38c.time.alarm>_38c.time.end){
+if(_38d.time){
+if(_38d.time.end&&_38d.time.alarm){
+if(_38d.time.alarm>_38d.time.end){
 throw new DeviceException(this.error.NOT_SUPPORTED_ERR,"Calendar: updateEntry: alarm time greater than end time is not supported");
 }
 }
 }
-var _38d=__sp_calendar_isInputValid(_38c);
-if(!_38d){
+var _38e=__sp_calendar_isInputValid(_38d);
+if(!_38e){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: updateEntry: calendarEntry param is invalid");
 }
 }else{
@@ -6695,26 +6672,26 @@ throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: updateEntry: man
 }
 try{
 var str="updateEntry:";
-var _38f={};
-modifyObjectBaseProp(_38f);
-_38f.Type="CalendarEntry";
-_38f.Item=new __sp_calendar_entry(_38c,str);
+var _390={};
+modifyObjectBaseProp(_390);
+_390.Type="CalendarEntry";
+_390.Item=new __sp_calendar_entry(_38d,str);
 isUpdate=0;
-var _390=this.so.IDataSource.Add(_38f);
-if(_38f){
-delete _38f.Type;
-delete _38f.Item;
+var _391=this.so.IDataSource.Add(_390);
+if(_390){
+delete _390.Type;
+delete _390.Item;
 }
-var _391="Operation Failed";
-if(_390.ErrorMessage){
-_391=splitErrorMessage(_390.ErrorMessage);
+var _392="Operation Failed";
+if(_391.ErrorMessage){
+_392=splitErrorMessage(_391.ErrorMessage);
 }
-if(_390.ErrorCode!=0){
-throw new DeviceException(MapErrorCode[_390.ErrorCode],"Calendar: addEntry: Operation Failed");
+if(_391.ErrorCode!=0){
+throw new DeviceException(MapErrorCode[_391.ErrorCode],"Calendar: addEntry: Operation Failed");
 return;
 }else{
-var _392=_390.ReturnValue;
-return _392;
+var _393=_391.ReturnValue;
+return _393;
 }
 }
 catch(e){
@@ -6730,43 +6707,43 @@ throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: deleteEntry: dat
 if(!data.id){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: deleteEntry: id is missing");
 }
-var _394=__sp_calendar_isInputValid(data);
-if(!_394){
+var _395=__sp_calendar_isInputValid(data);
+if(!_395){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: deleteEntry: delete data is invalid");
 }
 }else{
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: deleteEntry: data is missing");
 }
-var _395={};
-modifyObjectBaseProp(_395);
-_395.Type="CalendarEntry";
-_395.Data={};
-modifyObjectBaseProp(_395.Data);
-_395.Data.IdList=[];
+var _396={};
+modifyObjectBaseProp(_396);
+_396.Type="CalendarEntry";
+_396.Data={};
+modifyObjectBaseProp(_396.Data);
+_396.Data.IdList=[];
 var list=[data.id];
-_395.Data.IdList=list;
+_396.Data.IdList=list;
 if(data.range){
 if(data.range.begin){
-_395.Data.StartRange=data.range.begin;
+_396.Data.StartRange=data.range.begin;
 }
 if(data.range.end){
-_395.Data.EndRange=data.range.end;
+_396.Data.EndRange=data.range.end;
 }
 }
-var rval=this.so.IDataSource.Delete(_395);
-if(_395){
-delete _395.Type;
-delete _395.Data.IdList;
-delete _395.Data.StartRange;
-delete _395.Data.EndRange;
+var rval=this.so.IDataSource.Delete(_396);
+if(_396){
+delete _396.Type;
+delete _396.Data.IdList;
+delete _396.Data.StartRange;
+delete _396.Data.EndRange;
 }
 if(list){
 delete list.id;
 }
 if(rval.ErrorCode!=0){
 if(rval.ErrorMessage){
-var _398=splitErrorMessage(rval.ErrorMessage);
-throw new DeviceException(MapErrorCode[rval.ErrorCode],"Calendar: deleteEntry: "+_398);
+var _399=splitErrorMessage(rval.ErrorMessage);
+throw new DeviceException(MapErrorCode[rval.ErrorCode],"Calendar: deleteEntry: "+_399);
 }else{
 throw new DeviceException(MapErrorCode[rval.ErrorCode],"Calendar: deleteEntry: Operation Failed");
 }
@@ -6776,29 +6753,29 @@ catch(e){
 __device_handle_exception(e,"__sp_calendar_delete: "+e);
 }
 };
-function __sp_calendar_cancel(_399){
+function __sp_calendar_cancel(_39a){
 try{
-if(!_399||_399==null||_399==undefined){
+if(!_39a||_39a==null||_39a==undefined){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Calendar: cancel: id is missing");
 }
-if(_399){
-if(typeof _399!="number"){
+if(_39a){
+if(typeof _39a!="number"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Calendar: cancel: id is missing");
 }
 }
-var _39a={};
-modifyObjectBaseProp(_39a);
-_39a.TransactionID=_399;
-var _39b=this.so.IDataSource.Cancel(_39a);
-if(_39a){
-delete _39a.TransactionID;
+var _39b={};
+modifyObjectBaseProp(_39b);
+_39b.TransactionID=_39a;
+var _39c=this.so.IDataSource.Cancel(_39b);
+if(_39b){
+delete _39b.TransactionID;
 }
-if(_39b.ErrorCode!=0){
-if(_39b.ErrorMessage){
-var _39c=splitErrorMessage(_39b.ErrorMessage);
-throw new DeviceException(MapErrorCode[_39b.ErrorCode],"Calendar: cancel: "+_39c);
+if(_39c.ErrorCode!=0){
+if(_39c.ErrorMessage){
+var _39d=splitErrorMessage(_39c.ErrorMessage);
+throw new DeviceException(MapErrorCode[_39c.ErrorCode],"Calendar: cancel: "+_39d);
 }else{
-throw new DeviceException(MapErrorCode[_39b.ErrorCode],"Calendar: cancel: Operation Failed");
+throw new DeviceException(MapErrorCode[_39c.ErrorCode],"Calendar: cancel: Operation Failed");
 }
 }
 }
@@ -6824,21 +6801,21 @@ catch(e){
 __device_handle_exception(e,"Calendar service not available");
 }
 };
-function __device_contacts_descriptor(_39d){
-this.interfaceName=_39d.interfaceName;
-this.version=_39d.version;
+function __device_contacts_descriptor(_39e){
+this.interfaceName=_39e.interfaceName;
+this.version=_39e.version;
 };
-function __device_contacts_startEditor(_39e,_39f,_3a0){
-return this.provider.startEditor(_39e,_39f,_3a0);
+function __device_contacts_startEditor(_39f,_3a0,_3a1){
+return this.provider.startEditor(_39f,_3a0,_3a1);
 };
-function __device_contacts_getContacts(_3a1,_3a2,_3a3,_3a4){
-return this.provider.getContacts(_3a1,_3a2,_3a3,_3a4);
+function __device_contacts_getContacts(_3a2,_3a3,_3a4,_3a5){
+return this.provider.getContacts(_3a2,_3a3,_3a4,_3a5);
 };
-function __device_contacts_add(_3a5){
-return this.provider.addContact(_3a5);
+function __device_contacts_add(_3a6){
+return this.provider.addContact(_3a6);
 };
-function __device_contacts_update(_3a6){
-this.provider.updateContact(_3a6);
+function __device_contacts_update(_3a7){
+this.provider.updateContact(_3a7);
 };
 function __device_contacts_delete(id){
 this.provider.deleteContacts(id);
@@ -6846,40 +6823,40 @@ this.provider.deleteContacts(id);
 function __device_contacts_getContactInfo(id){
 return this.provider.getContactInfo(id);
 };
-function __device_contacts_addGroup(_3a9){
-return this.provider.addGroup(_3a9);
+function __device_contacts_addGroup(_3aa){
+return this.provider.addGroup(_3aa);
 };
-function __device_contacts_getGroups(_3aa,_3ab){
-return this.provider.getGroups(_3aa,_3ab);
+function __device_contacts_getGroups(_3ab,_3ac){
+return this.provider.getGroups(_3ab,_3ac);
 };
 function __device_contacts_deleteGroups(id){
 this.provider.deleteGroups(id);
 };
-function __device_contacts_addContactsToGroup(_3ad,id){
-this.provider.addContactsToGroup(_3ad,id);
+function __device_contacts_addContactsToGroup(_3ae,id){
+this.provider.addContactsToGroup(_3ae,id);
 };
-function __device_contacts_getContactIds(_3af,_3b0,_3b1,_3b2){
-return this.provider.getContactIds(_3af,_3b0,_3b1,_3b2);
+function __device_contacts_getContactIds(_3b0,_3b1,_3b2,_3b3){
+return this.provider.getContactIds(_3b0,_3b1,_3b2,_3b3);
 };
-function __device_contacts_getGroupIds(_3b3,_3b4){
-return this.provider.getGroupIds(_3b3,_3b4);
+function __device_contacts_getGroupIds(_3b4,_3b5){
+return this.provider.getGroupIds(_3b4,_3b5);
 };
-function __device_contacts_removeContactsFromGroup(_3b5,id){
-this.provider.removeContactsFromGroup(_3b5,id);
+function __device_contacts_removeContactsFromGroup(_3b6,id){
+this.provider.removeContactsFromGroup(_3b6,id);
 };
-function __device_contacts_cancel(_3b7){
-this.provider.cancel(_3b7);
+function __device_contacts_cancel(_3b8){
+this.provider.cancel(_3b8);
 };
-function __device_contacts_updateGroup(_3b8){
-this.provider.updateGroup(_3b8);
+function __device_contacts_updateGroup(_3b9){
+this.provider.updateGroup(_3b9);
 };
-function __device_contacts_getGroupInfo(_3b9){
-return this.provider.getGroupInfo(_3b9);
+function __device_contacts_getGroupInfo(_3ba){
+return this.provider.getGroupInfo(_3ba);
 };
-function __device_contacts(_3ba){
-this.provider=_3ba;
-this.interfaceName=_3ba.descriptor.interfaceName;
-this.version=_3ba.descriptor.version;
+function __device_contacts(_3bb){
+this.provider=_3bb;
+this.interfaceName=_3bb.descriptor.interfaceName;
+this.version=_3bb.descriptor.version;
 this.SORT_ASCENDING=0;
 this.SORT_DESCENDING=1;
 this.startEditor=__device_contacts_startEditor;
@@ -6900,8 +6877,6 @@ this.updateGroup=__device_contacts_updateGroup;
 this.getGroupInfo=__device_contacts_getGroupInfo;
 };
 var __device_contacts_service_entry={"name":null,"version":null,"proto":__device_contacts,"descriptor":__device_contacts_descriptor,"providers":[{"descriptor":__sp_contacts_descriptor,"instance":__sp_contacts_instance}]};
-nokia.device.contacts.SORT_ASCENDING=0;
-nokia.device.contacts.SORT_DESCENDING=1;
 function __sp_contacts_descriptor(){
 this.interfaceName="contacts";
 if(window.__Service_Interface_Ver){
@@ -6910,27 +6885,27 @@ this.version=__Service_Interface_Ver;
 this.version=1;
 }
 };
-function __s60_enumerate_contact_object(_3bb,_3bc,func,_3be){
+function __s60_enumerate_contact_object(_3bc,_3bd,func,_3bf){
 try{
 var key;
-for(key in _3bb){
-var _3c0;
-if(_3bc){
-_3c0=_3bc+"."+key;
+for(key in _3bc){
+var _3c1;
+if(_3bd){
+_3c1=_3bd+"."+key;
 }else{
-_3c0=key;
+_3c1=key;
 }
-var _3c1=_3bb[key];
-if(_3c1 instanceof Array){
-func(_3c0,_3c1,_3be);
+var _3c2=_3bc[key];
+if(_3c2 instanceof Array){
+func(_3c1,_3c2,_3bf);
 }else{
-if(_3c1 instanceof Date){
-func(_3c0,_3c1,_3be);
+if(_3c2 instanceof Date){
+func(_3c1,_3c2,_3bf);
 }else{
-if(typeof _3c1=="object"){
-__s60_enumerate_contact_object(_3c1,_3c0,func,_3be);
+if(typeof _3c2=="object"){
+__s60_enumerate_contact_object(_3c2,_3c1,func,_3bf);
 }else{
-func(_3c0,_3c1,_3be);
+func(_3c1,_3c2,_3bf);
 }
 }
 }
@@ -6940,330 +6915,330 @@ catch(e){
 throw e;
 }
 };
-function __sp_contact_extract(name,_3c3,_3c4){
+function __sp_contact_extract(name,_3c4,_3c5){
 switch(name){
 case "name.last":
-_3c4.LastName={};
-modifyObjectBaseProp(_3c4.LastName);
-_3c4.LastName.Label="Last name";
-_3c4.LastName.Value=_3c3;
+_3c5.LastName={};
+modifyObjectBaseProp(_3c5.LastName);
+_3c5.LastName.Label="Last name";
+_3c5.LastName.Value=_3c4;
 break;
 case "name.first":
-_3c4.FirstName={};
-modifyObjectBaseProp(_3c4.FirstName);
-_3c4.FirstName.Label="First name";
-_3c4.FirstName.Value=_3c3;
+_3c5.FirstName={};
+modifyObjectBaseProp(_3c5.FirstName);
+_3c5.FirstName.Label="First name";
+_3c5.FirstName.Value=_3c4;
 break;
 case "name.middle":
-_3c4.MiddleName={};
-modifyObjectBaseProp(_3c4.MiddleName);
-_3c4.MiddleName.Label="Middle name";
-_3c4.MiddleName.Value=_3c3;
+_3c5.MiddleName={};
+modifyObjectBaseProp(_3c5.MiddleName);
+_3c5.MiddleName.Label="Middle name";
+_3c5.MiddleName.Value=_3c4;
 break;
 case "name.prefix":
-_3c4.Prefix={};
-modifyObjectBaseProp(_3c4.Prefix);
-_3c4.Prefix.Label="Prefix";
-_3c4.Prefix.Value=_3c3;
+_3c5.Prefix={};
+modifyObjectBaseProp(_3c5.Prefix);
+_3c5.Prefix.Label="Prefix";
+_3c5.Prefix.Value=_3c4;
 break;
 case "name.suffix":
-_3c4.Suffix={};
-modifyObjectBaseProp(_3c4.Suffix);
-_3c4.Suffix.Label="Suffix";
-_3c4.Suffix.Value=_3c3;
+_3c5.Suffix={};
+modifyObjectBaseProp(_3c5.Suffix);
+_3c5.Suffix.Label="Suffix";
+_3c5.Suffix.Value=_3c4;
 break;
 case "tel.land":
-_3c4.LandPhoneGen={};
-modifyObjectBaseProp(_3c4.LandPhoneGen);
-_3c4.LandPhoneGen.Label="Landline";
-_3c4.LandPhoneGen.Value=_3c3;
+_3c5.LandPhoneGen={};
+modifyObjectBaseProp(_3c5.LandPhoneGen);
+_3c5.LandPhoneGen.Label="Landline";
+_3c5.LandPhoneGen.Value=_3c4;
 break;
 case "tel.mobile":
-_3c4.MobilePhoneGen={};
-modifyObjectBaseProp(_3c4.MobilePhoneGen);
-_3c4.MobilePhoneGen.Label="Mobile";
-_3c4.MobilePhoneGen.Value=_3c3;
+_3c5.MobilePhoneGen={};
+modifyObjectBaseProp(_3c5.MobilePhoneGen);
+_3c5.MobilePhoneGen.Label="Mobile";
+_3c5.MobilePhoneGen.Value=_3c4;
 break;
 case "tel.video":
-_3c4.VideoNumberGen={};
-modifyObjectBaseProp(_3c4.VideoNumberGen);
-_3c4.VideoNumberGen.Label="Video";
-_3c4.VideoNumberGen.Value=_3c3;
+_3c5.VideoNumberGen={};
+modifyObjectBaseProp(_3c5.VideoNumberGen);
+_3c5.VideoNumberGen.Label="Video";
+_3c5.VideoNumberGen.Value=_3c4;
 break;
 case "tel.fax":
-_3c4.FaxNumberGen={};
-modifyObjectBaseProp(_3c4.FaxNumberGen);
-_3c4.FaxNumberGen.Label="Fax";
-_3c4.FaxNumberGen.Value=_3c3;
+_3c5.FaxNumberGen={};
+modifyObjectBaseProp(_3c5.FaxNumberGen);
+_3c5.FaxNumberGen.Label="Fax";
+_3c5.FaxNumberGen.Value=_3c4;
 break;
 case "tel.voip":
-_3c4.VOIPGen={};
-modifyObjectBaseProp(_3c4.VOIPGen);
-_3c4.VOIPGen.Label="Voip";
-_3c4.VOIPGen.Value=_3c3;
+_3c5.VOIPGen={};
+modifyObjectBaseProp(_3c5.VOIPGen);
+_3c5.VOIPGen.Label="Voip";
+_3c5.VOIPGen.Value=_3c4;
 break;
 case "tel.home.land":
-_3c4.LandPhoneHome={};
-modifyObjectBaseProp(_3c4.LandPhoneHome);
-_3c4.LandPhoneHome.Label="Home Landline";
-_3c4.LandPhoneHome.Value=_3c3;
+_3c5.LandPhoneHome={};
+modifyObjectBaseProp(_3c5.LandPhoneHome);
+_3c5.LandPhoneHome.Label="Home Landline";
+_3c5.LandPhoneHome.Value=_3c4;
 break;
 case "tel.home.mobile":
-_3c4.MobilePhoneHome={};
-modifyObjectBaseProp(_3c4.MobilePhoneHome);
-_3c4.MobilePhoneHome.Label="Home Mobile";
-_3c4.MobilePhoneHome.Value=_3c3;
+_3c5.MobilePhoneHome={};
+modifyObjectBaseProp(_3c5.MobilePhoneHome);
+_3c5.MobilePhoneHome.Label="Home Mobile";
+_3c5.MobilePhoneHome.Value=_3c4;
 break;
 case "tel.home.video":
-_3c4.VideoNumberHome={};
-modifyObjectBaseProp(_3c4.VideoNumberHome);
-_3c4.VideoNumberHome.Label="Home Video";
-_3c4.VideoNumberHome.Value=_3c3;
+_3c5.VideoNumberHome={};
+modifyObjectBaseProp(_3c5.VideoNumberHome);
+_3c5.VideoNumberHome.Label="Home Video";
+_3c5.VideoNumberHome.Value=_3c4;
 break;
 case "tel.home.fax":
-_3c4.FaxNumberHome={};
-modifyObjectBaseProp(_3c4.FaxNumberHome);
-_3c4.FaxNumberHome.Label="Home Fax";
-_3c4.FaxNumberHome.Value=_3c3;
+_3c5.FaxNumberHome={};
+modifyObjectBaseProp(_3c5.FaxNumberHome);
+_3c5.FaxNumberHome.Label="Home Fax";
+_3c5.FaxNumberHome.Value=_3c4;
 break;
 case "tel.home.voip":
-_3c4.VoipHome={};
-modifyObjectBaseProp(_3c4.VoipHome);
-_3c4.VoipHome.Label="Home Voip";
-_3c4.VoipHome.Value=_3c3;
+_3c5.VoipHome={};
+modifyObjectBaseProp(_3c5.VoipHome);
+_3c5.VoipHome.Label="Home Voip";
+_3c5.VoipHome.Value=_3c4;
 break;
 case "tel.work.land":
-_3c4.LandPhoneWork={};
-modifyObjectBaseProp(_3c4.LandPhoneWork);
-_3c4.LandPhoneWork.Label="Work Landline";
-_3c4.LandPhoneWork.Value=_3c3;
+_3c5.LandPhoneWork={};
+modifyObjectBaseProp(_3c5.LandPhoneWork);
+_3c5.LandPhoneWork.Label="Work Landline";
+_3c5.LandPhoneWork.Value=_3c4;
 break;
 case "tel.work.mobile":
-_3c4.MobilePhoneWork={};
-modifyObjectBaseProp(_3c4.MobilePhoneWork);
-_3c4.MobilePhoneWork.Label="Work Mobile";
-_3c4.MobilePhoneWork.Value=_3c3;
+_3c5.MobilePhoneWork={};
+modifyObjectBaseProp(_3c5.MobilePhoneWork);
+_3c5.MobilePhoneWork.Label="Work Mobile";
+_3c5.MobilePhoneWork.Value=_3c4;
 break;
 case "tel.work.video":
-_3c4.VideoNumberWork={};
-modifyObjectBaseProp(_3c4.VideoNumberWork);
-_3c4.VideoNumberWork.Label="Work Video";
-_3c4.VideoNumberWork.Value=_3c3;
+_3c5.VideoNumberWork={};
+modifyObjectBaseProp(_3c5.VideoNumberWork);
+_3c5.VideoNumberWork.Label="Work Video";
+_3c5.VideoNumberWork.Value=_3c4;
 break;
 case "tel.work.fax":
-_3c4.FaxNumberWork={};
-modifyObjectBaseProp(_3c4.FaxNumberWork);
-_3c4.FaxNumberWork.Label="Work Fax";
-_3c4.FaxNumberWork.Value=_3c3;
+_3c5.FaxNumberWork={};
+modifyObjectBaseProp(_3c5.FaxNumberWork);
+_3c5.FaxNumberWork.Label="Work Fax";
+_3c5.FaxNumberWork.Value=_3c4;
 break;
 case "tel.work.voip":
-_3c4.VoipWork={};
-modifyObjectBaseProp(_3c4.VoipWork);
-_3c4.VoipWork.Label="Work Voip";
-_3c4.VoipWork.Value=_3c3;
+_3c5.VoipWork={};
+modifyObjectBaseProp(_3c5.VoipWork);
+_3c5.VoipWork.Label="Work Voip";
+_3c5.VoipWork.Value=_3c4;
 break;
 case "address.street":
-_3c4.AddrStreetGen={};
-modifyObjectBaseProp(_3c4.AddrStreetGen);
-_3c4.AddrStreetGen.Label="Street Address";
-_3c4.AddrStreetGen.Value=_3c3;
+_3c5.AddrStreetGen={};
+modifyObjectBaseProp(_3c5.AddrStreetGen);
+_3c5.AddrStreetGen.Label="Street Address";
+_3c5.AddrStreetGen.Value=_3c4;
 break;
 case "address.local":
-_3c4.AddrLocalGen={};
-modifyObjectBaseProp(_3c4.AddrLocalGen);
-_3c4.AddrLocalGen.Label="City";
-_3c4.AddrLocalGen.Value=_3c3;
+_3c5.AddrLocalGen={};
+modifyObjectBaseProp(_3c5.AddrLocalGen);
+_3c5.AddrLocalGen.Label="City";
+_3c5.AddrLocalGen.Value=_3c4;
 break;
 case "address.region":
-_3c4.AddrRegionGen={};
-modifyObjectBaseProp(_3c4.AddrRegionGen);
-_3c4.AddrRegionGen.Label="State/Province";
-_3c4.AddrRegionGen.Value=_3c3;
+_3c5.AddrRegionGen={};
+modifyObjectBaseProp(_3c5.AddrRegionGen);
+_3c5.AddrRegionGen.Label="State/Province";
+_3c5.AddrRegionGen.Value=_3c4;
 break;
 case "address.code":
-_3c4.AddrPostCodeGen={};
-modifyObjectBaseProp(_3c4.AddrPostCodeGen);
-_3c4.AddrPostCodeGen.Label="Postal code";
-_3c4.AddrPostCodeGen.Value=_3c3;
+_3c5.AddrPostCodeGen={};
+modifyObjectBaseProp(_3c5.AddrPostCodeGen);
+_3c5.AddrPostCodeGen.Label="Postal code";
+_3c5.AddrPostCodeGen.Value=_3c4;
 break;
 case "address.country":
-_3c4.AddrCountryGen={};
-modifyObjectBaseProp(_3c4.AddrCountryGen);
-_3c4.AddrCountryGen.Label="Country";
-_3c4.AddrCountryGen.Value=_3c3;
+_3c5.AddrCountryGen={};
+modifyObjectBaseProp(_3c5.AddrCountryGen);
+_3c5.AddrCountryGen.Label="Country";
+_3c5.AddrCountryGen.Value=_3c4;
 break;
 case "address.email":
-_3c4.EmailGen={};
-modifyObjectBaseProp(_3c4.EmailGen);
-_3c4.EmailGen.Label="EMail";
-_3c4.EmailGen.Value=_3c3;
+_3c5.EmailGen={};
+modifyObjectBaseProp(_3c5.EmailGen);
+_3c5.EmailGen.Label="EMail";
+_3c5.EmailGen.Value=_3c4;
 break;
 case "address.uri":
-_3c4.URLGen={};
-modifyObjectBaseProp(_3c4.URLGen);
-_3c4.URLGen.Label="Website";
-_3c4.URLGen.Value=_3c3;
+_3c5.URLGen={};
+modifyObjectBaseProp(_3c5.URLGen);
+_3c5.URLGen.Label="Website";
+_3c5.URLGen.Value=_3c4;
 break;
 case "address.home.street":
-_3c4.AddrStreetHome={};
-modifyObjectBaseProp(_3c4.AddrStreetHome);
-_3c4.AddrStreetHome.Label="Home Address";
-_3c4.AddrStreetHome.Value=_3c3;
+_3c5.AddrStreetHome={};
+modifyObjectBaseProp(_3c5.AddrStreetHome);
+_3c5.AddrStreetHome.Label="Home Address";
+_3c5.AddrStreetHome.Value=_3c4;
 break;
 case "address.home.local":
-_3c4.AddrLocalHome={};
-modifyObjectBaseProp(_3c4.AddrLocalHome);
-_3c4.AddrLocalHome.Label="City";
-_3c4.AddrLocalHome.Value=_3c3;
+_3c5.AddrLocalHome={};
+modifyObjectBaseProp(_3c5.AddrLocalHome);
+_3c5.AddrLocalHome.Label="City";
+_3c5.AddrLocalHome.Value=_3c4;
 break;
 case "address.home.region":
-_3c4.AddrRegionHome={};
-modifyObjectBaseProp(_3c4.AddrRegionHome);
-_3c4.AddrRegionHome.Label="State/Province";
-_3c4.AddrRegionHome.Value=_3c3;
+_3c5.AddrRegionHome={};
+modifyObjectBaseProp(_3c5.AddrRegionHome);
+_3c5.AddrRegionHome.Label="State/Province";
+_3c5.AddrRegionHome.Value=_3c4;
 break;
 case "address.home.code":
-_3c4.AddrPostCodeHome={};
-modifyObjectBaseProp(_3c4.AddrPostCodeHome);
-_3c4.AddrPostCodeHome.Label="Postal code";
-_3c4.AddrPostCodeHome.Value=_3c3;
+_3c5.AddrPostCodeHome={};
+modifyObjectBaseProp(_3c5.AddrPostCodeHome);
+_3c5.AddrPostCodeHome.Label="Postal code";
+_3c5.AddrPostCodeHome.Value=_3c4;
 break;
 case "address.home.country":
-_3c4.AddrCountryHome={};
-modifyObjectBaseProp(_3c4.AddrCountryHome);
-_3c4.AddrCountryHome.Label="Country";
-_3c4.AddrCountryHome.Value=_3c3;
+_3c5.AddrCountryHome={};
+modifyObjectBaseProp(_3c5.AddrCountryHome);
+_3c5.AddrCountryHome.Label="Country";
+_3c5.AddrCountryHome.Value=_3c4;
 break;
 case "address.home.email":
-_3c4.EmailHome={};
-modifyObjectBaseProp(_3c4.EmailHome);
-_3c4.EmailHome.Label="Home EMail";
-_3c4.EmailHome.Value=_3c3;
+_3c5.EmailHome={};
+modifyObjectBaseProp(_3c5.EmailHome);
+_3c5.EmailHome.Label="Home EMail";
+_3c5.EmailHome.Value=_3c4;
 break;
 case "address.home.uri":
-_3c4.URLHome={};
-modifyObjectBaseProp(_3c4.URLHome);
-_3c4.URLHome.Label="Home Website";
-_3c4.URLHome.Value=_3c3;
+_3c5.URLHome={};
+modifyObjectBaseProp(_3c5.URLHome);
+_3c5.URLHome.Label="Home Website";
+_3c5.URLHome.Value=_3c4;
 break;
 case "address.work.street":
-_3c4.AddrStreetWork={};
-modifyObjectBaseProp(_3c4.AddrStreetWork);
-_3c4.AddrStreetWork.Label="Work Address";
-_3c4.AddrStreetWork.Value=_3c3;
+_3c5.AddrStreetWork={};
+modifyObjectBaseProp(_3c5.AddrStreetWork);
+_3c5.AddrStreetWork.Label="Work Address";
+_3c5.AddrStreetWork.Value=_3c4;
 break;
 case "address.work.local":
-_3c4.AddrLocalWork={};
-modifyObjectBaseProp(_3c4.AddrLocalWork);
-_3c4.AddrLocalWork.Label="City";
-_3c4.AddrLocalWork.Value=_3c3;
+_3c5.AddrLocalWork={};
+modifyObjectBaseProp(_3c5.AddrLocalWork);
+_3c5.AddrLocalWork.Label="City";
+_3c5.AddrLocalWork.Value=_3c4;
 break;
 case "address.work.region":
-_3c4.AddrRegionWork={};
-modifyObjectBaseProp(_3c4.AddrRegionWork);
-_3c4.AddrRegionWork.Label="State/Province";
-_3c4.AddrRegionWork.Value=_3c3;
+_3c5.AddrRegionWork={};
+modifyObjectBaseProp(_3c5.AddrRegionWork);
+_3c5.AddrRegionWork.Label="State/Province";
+_3c5.AddrRegionWork.Value=_3c4;
 break;
 case "address.work.code":
-_3c4.AddrPostCodeWork={};
-modifyObjectBaseProp(_3c4.AddrPostCodeWork);
-_3c4.AddrPostCodeWork.Label="Postal code";
-_3c4.AddrPostCodeWork.Value=_3c3;
+_3c5.AddrPostCodeWork={};
+modifyObjectBaseProp(_3c5.AddrPostCodeWork);
+_3c5.AddrPostCodeWork.Label="Postal code";
+_3c5.AddrPostCodeWork.Value=_3c4;
 break;
 case "address.work.country":
-_3c4.AddrCountryWork={};
-modifyObjectBaseProp(_3c4.AddrCountryWork);
-_3c4.AddrCountryWork.Label="Country";
-_3c4.AddrCountryWork.Value=_3c3;
+_3c5.AddrCountryWork={};
+modifyObjectBaseProp(_3c5.AddrCountryWork);
+_3c5.AddrCountryWork.Label="Country";
+_3c5.AddrCountryWork.Value=_3c4;
 break;
 case "address.work.email":
-_3c4.EmailWork={};
-modifyObjectBaseProp(_3c4.EmailWork);
-_3c4.EmailWork.Label="Work EMail";
-_3c4.EmailWork.Value=_3c3;
+_3c5.EmailWork={};
+modifyObjectBaseProp(_3c5.EmailWork);
+_3c5.EmailWork.Label="Work EMail";
+_3c5.EmailWork.Value=_3c4;
 break;
 case "address.work.uri":
-_3c4.URLWork={};
-modifyObjectBaseProp(_3c4.URLWork);
-_3c4.URLWork.Label="Work Website";
-_3c4.URLWork.Value=_3c3;
+_3c5.URLWork={};
+modifyObjectBaseProp(_3c5.URLWork);
+_3c5.URLWork.Label="Work Website";
+_3c5.URLWork.Value=_3c4;
 break;
 case "company.name":
-_3c4.CompanyName={};
-modifyObjectBaseProp(_3c4.CompanyName);
-_3c4.CompanyName.Label="Company";
-_3c4.CompanyName.Value=_3c3;
+_3c5.CompanyName={};
+modifyObjectBaseProp(_3c5.CompanyName);
+_3c5.CompanyName.Label="Company";
+_3c5.CompanyName.Value=_3c4;
 break;
 case "company.title":
-_3c4.JobTitle={};
-modifyObjectBaseProp(_3c4.JobTitle);
-_3c4.JobTitle.Label="Title";
-_3c4.JobTitle.Value=_3c3;
+_3c5.JobTitle={};
+modifyObjectBaseProp(_3c5.JobTitle);
+_3c5.JobTitle.Label="Title";
+_3c5.JobTitle.Value=_3c4;
 break;
 case "id":
-_3c4.id=_3c3;
+_3c5.id=_3c4;
 break;
 case "notes":
-_3c4.Note={};
-modifyObjectBaseProp(_3c4.Note);
-_3c4.Note.Label="Note";
-_3c4.Note.Value=_3c3;
+_3c5.Note={};
+modifyObjectBaseProp(_3c5.Note);
+_3c5.Note.Label="Note";
+_3c5.Note.Value=_3c4;
 break;
 case "anniversary":
-_3c4.Anniversary={};
-modifyObjectBaseProp(_3c4.Anniversary);
-_3c4.Anniversary.Label="Anniversary";
-_3c4.Anniversary.Value=_3c3;
+_3c5.Anniversary={};
+modifyObjectBaseProp(_3c5.Anniversary);
+_3c5.Anniversary.Label="Anniversary";
+_3c5.Anniversary.Value=_3c4;
 break;
 case "birthday":
-_3c4.Date={};
-modifyObjectBaseProp(_3c4.Date);
-_3c4.Date.Label="BirthDay";
-_3c4.Date.Value=_3c3;
+_3c5.Date={};
+modifyObjectBaseProp(_3c5.Date);
+_3c5.Date.Label="BirthDay";
+_3c5.Date.Value=_3c4;
 break;
 case "nickName":
-_3c4.SecondName={};
-modifyObjectBaseProp(_3c4.SecondName);
-_3c4.SecondName.Label="NickName";
-_3c4.SecondName.Value=_3c3;
+_3c5.SecondName={};
+modifyObjectBaseProp(_3c5.SecondName);
+_3c5.SecondName.Label="NickName";
+_3c5.SecondName.Value=_3c4;
 break;
 case "photo":
-_3c4.CallerObjImg={};
-modifyObjectBaseProp(_3c4.CallerObjImg);
-_3c4.CallerObjImg.Label="CallerObjImg";
-_3c4.CallerObjImg.Value=_3c3;
+_3c5.CallerObjImg={};
+modifyObjectBaseProp(_3c5.CallerObjImg);
+_3c5.CallerObjImg.Label="CallerObjImg";
+_3c5.CallerObjImg.Value=_3c4;
 break;
 case "xspid":
-_3c4.IMPP={};
-modifyObjectBaseProp(_3c4.IMPP);
-_3c4.IMPP.Label="IMPP";
-_3c4.IMPP.Value=_3c3;
+_3c5.IMPP={};
+modifyObjectBaseProp(_3c5.IMPP);
+_3c5.IMPP.Label="IMPP";
+_3c5.IMPP.Value=_3c4;
 break;
 }
 };
-function __s60_enumerate_build_contact_object(_3c5,_3c6,func,_3c8){
+function __s60_enumerate_build_contact_object(_3c6,_3c7,func,_3c9){
 var key;
-for(key in _3c5){
-var _3ca;
-if(_3c6){
-_3ca=_3c6+"."+key;
+for(key in _3c6){
+var _3cb;
+if(_3c7){
+_3cb=_3c7+"."+key;
 }else{
-_3ca=key;
+_3cb=key;
 }
-var _3cb=_3c5[key];
-if(_3ca=="IMPP"){
-func(_3ca,_3cb,_3c8);
+var _3cc=_3c6[key];
+if(_3cb=="IMPP"){
+func(_3cb,_3cc,_3c9);
 }
-if(typeof _3cb=="object"){
-__s60_enumerate_build_contact_object(_3cb,_3ca,func,_3c8);
+if(typeof _3cc=="object"){
+__s60_enumerate_build_contact_object(_3cc,_3cb,func,_3c9);
 }else{
-func(_3ca,_3cb,_3c8);
+func(_3cb,_3cc,_3c9);
 }
 }
 };
-function __sp_device_contact_extract(name,_3cd,_3ce){
+function __sp_device_contact_extract(name,_3ce,_3cf){
 if(name=="id"){
-_3ce.id=_3cd;
+_3cf.id=_3ce;
 return;
 }
 if(!name.match(".Value")){
@@ -7271,54 +7246,54 @@ return;
 }
 try{
 if(name.match("IMPP.Value.0")){
-_3ce.xspid=[];
+_3cf.xspid=[];
 }
 if(name.match("Name")){
 if(name.match("CompanyName")){
-if(!_3ce.company){
-_3ce.company={};
+if(!_3cf.company){
+_3cf.company={};
 }
 }else{
-if(!_3ce.name){
-_3ce.name={};
+if(!_3cf.name){
+_3cf.name={};
 }
 }
 }else{
 if(name.match("Phone")||name.match("Number")||name.match("VOIP")||name.match("Voip")){
-if(!_3ce.tel){
-_3ce.tel={};
+if(!_3cf.tel){
+_3cf.tel={};
 }
 if(name.match("Home")){
-if(!_3ce.tel.home){
-_3ce.tel.home={};
+if(!_3cf.tel.home){
+_3cf.tel.home={};
 }
 }else{
 if(name.match("Work")){
-if(!_3ce.tel.work){
-_3ce.tel.work={};
+if(!_3cf.tel.work){
+_3cf.tel.work={};
 }
 }
 }
 }else{
 if(name.match("Addr")||name.match("Email")||name.match("URL")){
-if(!_3ce.address){
-_3ce.address={};
+if(!_3cf.address){
+_3cf.address={};
 }
 if(name.match("Home")){
-if(!_3ce.address.home){
-_3ce.address.home={};
+if(!_3cf.address.home){
+_3cf.address.home={};
 }
 }else{
 if(name.match("Work")){
-if(!_3ce.address.work){
-_3ce.address.work={};
+if(!_3cf.address.work){
+_3cf.address.work={};
 }
 }
 }
 }else{
 if(name.match("JobTitle")){
-if(!_3ce.company){
-_3ce.company={};
+if(!_3cf.company){
+_3cf.company={};
 }
 }
 }
@@ -7329,280 +7304,297 @@ catch(e){
 __device_handle_exception(e,"__sp_device_contact_extract: "+e);
 }
 if(name.match("IMPP.Value")){
-var _3cf=name.split(".");
-var _3d0=_3cf[2];
-if(_3d0!=undefined){
-_3ce.xspid[_3cf[2]]=_3cd;
+var _3d0=name.split(".");
+var _3d1=_3d0[2];
+if(_3d1!=undefined){
+_3cf.xspid[_3d0[2]]=_3ce;
 return;
 }
 }
 switch(name){
 case "LastName.Value":
-_3ce.name.last=_3cd;
+_3cf.name.last=_3ce;
 break;
 case "FirstName.Value":
-_3ce.name.first=_3cd;
+_3cf.name.first=_3ce;
 break;
 case "MiddleName.Value":
-_3ce.name.middle=_3cd;
+_3cf.name.middle=_3ce;
 break;
 case "Prefix.Value":
-_3ce.name.prefix=_3cd;
+_3cf.name.prefix=_3ce;
 break;
 case "Suffix.Value":
-_3ce.name.suffix=_3cd;
+_3cf.name.suffix=_3ce;
 break;
 case "LandPhoneGen.Value":
-_3ce.tel.land=_3cd;
+_3cf.tel.land=_3ce;
 break;
 case "MobilePhoneGen.Value":
-_3ce.tel.mobile=_3cd;
+_3cf.tel.mobile=_3ce;
 break;
 case "VideoNumberGen.Value":
-_3ce.tel.video=_3cd;
+_3cf.tel.video=_3ce;
 break;
 case "FaxNumberGen.Value":
-_3ce.tel.fax=_3cd;
+_3cf.tel.fax=_3ce;
 break;
 case "VOIPGen.Value":
-_3ce.tel.voip=_3cd;
+_3cf.tel.voip=_3ce;
 break;
 case "LandPhoneHome.Value":
-_3ce.tel.home.land=_3cd;
+_3cf.tel.home.land=_3ce;
 break;
 case "MobilePhoneHome.Value":
-_3ce.tel.home.mobile=_3cd;
+_3cf.tel.home.mobile=_3ce;
 break;
 case "VideoNumberHome.Value":
-_3ce.tel.home.video=_3cd;
+_3cf.tel.home.video=_3ce;
 break;
 case "FaxNumberHome.Value":
-_3ce.tel.home.fax=_3cd;
+_3cf.tel.home.fax=_3ce;
 break;
 case "VoipHome.Value":
-_3ce.tel.home.voip=_3cd;
+_3cf.tel.home.voip=_3ce;
 break;
 case "LandPhoneWork.Value":
-_3ce.tel.work.land=_3cd;
+_3cf.tel.work.land=_3ce;
 break;
 case "MobilePhoneWork.Value":
-_3ce.tel.work.mobile=_3cd;
+_3cf.tel.work.mobile=_3ce;
 break;
 case "VideoNumberWork.Value":
-_3ce.tel.work.video=_3cd;
+_3cf.tel.work.video=_3ce;
 break;
 case "FaxNumberWork.Value":
-_3ce.tel.work.fax=_3cd;
+_3cf.tel.work.fax=_3ce;
 break;
 case "VoipWork.Value":
-_3ce.tel.work.voip=_3cd;
+_3cf.tel.work.voip=_3ce;
 break;
 case "AddrStreetGen.Value":
-_3ce.address.street=_3cd;
+_3cf.address.street=_3ce;
 break;
 case "AddrLocalGen.Value":
-_3ce.address.local=_3cd;
+_3cf.address.local=_3ce;
 break;
 case "AddrRegionGen.Value":
-_3ce.address.region=_3cd;
+_3cf.address.region=_3ce;
 break;
 case "AddrPostCodeGen.Value":
-_3ce.address.code=_3cd;
+_3cf.address.code=_3ce;
 break;
 case "AddrCountryGen.Value":
-_3ce.address.country=_3cd;
+_3cf.address.country=_3ce;
 break;
 case "EmailGen.Value":
-_3ce.address.email=_3cd;
+_3cf.address.email=_3ce;
 break;
 case "URLGen.Value":
-_3ce.address.uri=_3cd;
+_3cf.address.uri=_3ce;
 break;
 case "AddrStreetHome.Value":
-_3ce.address.home.street=_3cd;
+_3cf.address.home.street=_3ce;
 break;
 case "AddrLocalHome.Value":
-_3ce.address.home.local=_3cd;
+_3cf.address.home.local=_3ce;
 break;
 case "AddrRegionHome.Value":
-_3ce.address.home.region=_3cd;
+_3cf.address.home.region=_3ce;
 break;
 case "AddrPostCodeHome.Value":
-_3ce.address.home.code=_3cd;
+_3cf.address.home.code=_3ce;
 break;
 case "AddrCountryHome.Value":
-_3ce.address.home.country=_3cd;
+_3cf.address.home.country=_3ce;
 break;
 case "EmailHome.Value":
-_3ce.address.home.email=_3cd;
+_3cf.address.home.email=_3ce;
 break;
 case "URLHome.Value":
-_3ce.address.home.uri=_3cd;
+_3cf.address.home.uri=_3ce;
 break;
 case "AddrStreetWork.Value":
-_3ce.address.work.street=_3cd;
+_3cf.address.work.street=_3ce;
 break;
 case "AddrLocalWork.Value":
-_3ce.address.work.local=_3cd;
+_3cf.address.work.local=_3ce;
 break;
 case "AddrRegionWork.Value":
-_3ce.address.work.region=_3cd;
+_3cf.address.work.region=_3ce;
 break;
 case "AddrPostCodeWork.Value":
-_3ce.address.work.code=_3cd;
+_3cf.address.work.code=_3ce;
 break;
 case "AddrCountryWork.Value":
-_3ce.address.work.country=_3cd;
+_3cf.address.work.country=_3ce;
 break;
 case "EmailWork.Value":
-_3ce.address.work.email=_3cd;
+_3cf.address.work.email=_3ce;
 break;
 case "URLWork.Value":
-_3ce.address.work.uri=_3cd;
+_3cf.address.work.uri=_3ce;
 break;
 case "CompanyName.Value":
-_3ce.company.name=_3cd;
+_3cf.company.name=_3ce;
 break;
 case "JobTitle.Value":
-_3ce.company.title=_3cd;
+_3cf.company.title=_3ce;
 break;
 case "Note.Value":
-_3ce.notes=_3cd;
+_3cf.notes=_3ce;
 break;
 case "Anniversary.Value":
-_3ce.anniversary=_3cd;
+_3cf.anniversary=_3ce;
 break;
 case "Date.Value":
-_3ce.birthday=_3cd;
+_3cf.birthday=_3ce;
 break;
 case "SecondName.Value":
-_3ce.nickName=_3cd;
+_3cf.nickName=_3ce;
 break;
 case "CallerObjImg.Value":
-_3ce.photo=_3cd;
+_3cf.photo=_3ce;
 break;
 default:
 }
 };
-function __sp_device_contact_build(_3d1,_3d2){
-__s60_enumerate_build_contact_object(_3d1,null,__sp_device_contact_extract,_3d2);
+function __sp_device_contact_build(_3d2,_3d3){
+__s60_enumerate_build_contact_object(_3d2,null,__sp_device_contact_extract,_3d3);
 };
 function __sp_contact_iterator_get_next(){
-var _3d3=this.iter.getNext();
-if(typeof _3d3=="undefined"){
+var _3d4=this.iter.getNext();
+if(typeof _3d4=="undefined"){
 return null;
 }
 var rval={};
-__sp_device_contact_build(_3d3,rval);
-_3d3.close();
+__sp_device_contact_build(_3d4,rval);
+_3d4.close();
 return rval;
 };
-function __sp_contact_iterator(_3d5){
-this.iter=_3d5;
+function __sp_contact_iterator(_3d6){
+this.iter=_3d6;
 this.next=__sp_contact_iterator_get_next;
 this.close=function(){
 this.iter.close();
 };
 };
-function __s60_enumerate_group_object(_3d6,func,_3d8){
+function __s60_enumerate_group_object(_3d7,func,_3d9){
 var key;
-for(key in _3d6){
-var _3da=key;
-var _3db=_3d6[key];
-func(_3da,_3db,_3d8);
+for(key in _3d7){
+var _3db=key;
+var _3dc=_3d7[key];
+func(_3db,_3dc,_3d9);
 }
 };
-function __sp_device_groupinfo_extract(name,_3dd,_3de){
-if(_3de.group==undefined){
-_3de.group={};
+function __sp_device_groupinfo_extract(name,_3de,_3df){
+if(_3df.group==undefined){
+_3df.group={};
 }
 if(name=="id"){
-_3de.group.groupId=_3dd;
+_3df.group.groupId=_3de;
 }else{
 if(name=="GroupLabel"){
-_3de.group.groupName=_3dd;
+_3df.group.groupName=_3de;
 }else{
 if(name=="Contents"){
-_3de.contents=_3dd;
+_3df.contents=_3de;
 }
 }
 }
 return;
 };
-function __sp_device_groupinfo_build(_3df,_3e0){
-__s60_enumerate_group_object(_3df,__sp_device_groupinfo_extract,_3e0);
+function __sp_device_groupinfo_build(_3e0,_3e1){
+__s60_enumerate_group_object(_3e0,__sp_device_groupinfo_extract,_3e1);
 };
-function __sp_device_group_extract(name,_3e2,_3e3){
-if(name=="id"){
-_3e3.groupId=_3e2;
-return;
-}
-if(name=="GroupLabel"){
-_3e3.groupName=_3e2;
-return;
-}
-};
-function __sp_device_group_build(_3e4,_3e5){
-__s60_enumerate_object(_3e4,null,__sp_device_group_extract,_3e5);
-};
-function __sp_group_iterator_get_next(){
-var _3e6=this.iter.getNext();
-if(typeof _3e6=="undefined"){
+function __sp_groupinfo_iterator_get_next(){
+var _3e2=this.iter.getNext();
+if(typeof _3e2=="undefined"){
 return null;
 }
 var rval={};
-__sp_device_group_build(_3e6,rval);
-_3e6.close();
+__sp_device_groupinfo_build(_3e2,rval);
+_3e2.close();
 return rval;
 };
-function __sp_group_iterator(_3e8){
-this.iter=_3e8;
+function __sp_groupinfo_iterator(_3e4){
+this.iter=_3e4;
+this.next=__sp_groupinfo_iterator_get_next;
+this.close=function(){
+this.iter.close();
+};
+};
+function __sp_device_group_extract(name,_3e6,_3e7){
+if(name=="id"){
+_3e7.groupId=_3e6;
+return;
+}
+if(name=="GroupLabel"){
+_3e7.groupName=_3e6;
+return;
+}
+};
+function __sp_device_group_build(_3e8,_3e9){
+__s60_enumerate_object(_3e8,null,__sp_device_group_extract,_3e9);
+};
+function __sp_group_iterator_get_next(){
+var _3ea=this.iter.getNext();
+if(typeof _3ea=="undefined"){
+return null;
+}
+var rval={};
+__sp_device_group_build(_3ea,rval);
+_3ea.close();
+return rval;
+};
+function __sp_group_iterator(_3ec){
+this.iter=_3ec;
 this.next=__sp_group_iterator_get_next;
 this.close=function(){
 this.iter.close();
 };
 };
 var CONTACTS_APP_ID=270486734;
-function __sp_contacts_startEditor(_3e9,_3ea,_3eb){
-if(!_3e9){
+function __sp_contacts_startEditor(_3ed,_3ee,_3ef){
+if(!_3ed){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: StartEditor:Missing Success Callback");
 }
-if((typeof _3e9)!="function"){
+if((typeof _3ed)!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: StartEditor:Invalid Success Callback");
 }
-if((_3ea)==null){
-_3ea={};
+if((_3ee)==null){
+_3ee={};
 }
-if((typeof _3ea)=="undefined"){
-_3ea={};
+if((typeof _3ee)=="undefined"){
+_3ee={};
 }
-if((_3ea)==undefined){
-_3ea={};
+if((_3ee)==undefined){
+_3ee={};
 }
-if((typeof _3ea)!="object"){
+if((typeof _3ee)!="object"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: StartEditor:Invalid Contact Data");
 }
-if(_3eb){
-if((typeof _3eb)!="function"){
+if(_3ef){
+if((typeof _3ef)!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts :StartEditor:Invalid Error Callback");
 }
 }
-var _3ec=function(arg1,arg2,arg3){
+var _3f0=function(arg1,arg2,arg3){
 var iter=null;
-_3e9(iter);
+_3ed(iter);
 };
-__s60_start_and_wait(CONTACTS_APP_ID,"",_3ec);
+__s60_start_and_wait(CONTACTS_APP_ID,"",_3f0);
 return 0;
 };
 function __sp_contacts_getContacts_cb(arg1,arg2,arg3){
 var iter=null;
-var _3f5;
-var _3f6;
-var _3f7;
-_3f7=glob_obj.getFromArray(arg1);
-if(_3f7){
-_3f5=_3f7.success_cb;
-_3f6=_3f7.error_cb;
+var _3f9;
+var _3fa;
+var _3fb;
+_3fb=glob_obj.getFromArray(arg1);
+if(_3fb){
+_3f9=_3fb.success_cb;
+_3fa=_3fb.error_cb;
 }else{
 alert("Contacts: __sp_contacts_getContacts_cb : Callback not found ");
 return;
@@ -7611,39 +7603,39 @@ if(arg3.ReturnValue){
 iter=new __sp_contact_iterator(arg3.ReturnValue);
 }else{
 if(arg3.ErrorCode!=0){
-var _3f8;
+var _3fc;
 if(arg3.ErrorMessage){
-_3f8=splitErrorMessage(arg3.ErrorMessage);
+_3fc=splitErrorMessage(arg3.ErrorMessage);
 }else{
-_3f8="Operation Failed";
+_3fc="Operation Failed";
 }
-_3f6(new DeviceException(MapErrorCode[arg3.ErrorCode],"Contacts: getContacts: "+_3f8));
+_3fa(new DeviceException(MapErrorCode[arg3.ErrorCode],"Contacts: getContacts: "+_3fc));
 return;
 }
 }
-_3f5(iter);
+_3f9(iter);
 glob_obj.removeFromArray(arg1);
 };
-function __sp_contacts_getContacts(_3f9,_3fa,_3fb,_3fc){
-var _3fd={};
-modifyObjectBaseProp(_3fd);
-_3fd.Type="Contact";
-if(_3fa){
-_3fd.Filter={};
-modifyObjectBaseProp(_3fd.Filter);
-_3fd.Filter.SearchVal=_3fa;
+function __sp_contacts_getContacts(_3fd,_3fe,_3ff,_400){
+var _401={};
+modifyObjectBaseProp(_401);
+_401.Type="Contact";
+if(_3fe){
+_401.Filter={};
+modifyObjectBaseProp(_401.Filter);
+_401.Filter.SearchVal=_3fe;
 }
-if(_3fb!=null&&_3fb!=undefined){
-_3fd.Sort={};
-modifyObjectBaseProp(_3fd.Sort);
-if(typeof _3fb=="number"){
-if(_3fb==this.SORT_ASCENDING){
-_3fd.Sort.Order="Ascending";
+if(_3ff!=null&&_3ff!=undefined){
+_401.Sort={};
+modifyObjectBaseProp(_401.Sort);
+if(typeof _3ff=="number"){
+if(_3ff==this.SORT_ASCENDING){
+_401.Sort.Order="Ascending";
 }else{
-if(_3fb==this.SORT_DESCENDING){
-_3fd.Sort.Order="Descending";
+if(_3ff==this.SORT_DESCENDING){
+_401.Sort.Order="Descending";
 }else{
-_3fc(new DeviceException(this.error.DATA_OUT_OF_RANGE_ERR,"Contacts: getContacts: invalid sortOrder input"));
+_400(new DeviceException(this.error.DATA_OUT_OF_RANGE_ERR,"Contacts: getContacts: invalid sortOrder input"));
 return;
 }
 }
@@ -7652,77 +7644,77 @@ throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: getContacts: inv
 }
 }
 try{
-if(!_3f9){
+if(!_3fd){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: getContacts: callback is missing");
 }else{
-if(typeof _3f9!="function"){
+if(typeof _3fd!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: getContacts: callback is invalid");
 }
 }
-if(_3fc){
-if(typeof (_3fc)!="function"){
+if(_400){
+if(typeof (_400)!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: getContacts: ErrorCallback is invalid");
 }
 }
-temp_scb=_3f9;
-temp_ecb=_3fc;
-var rval=this.so.IDataSource.GetList(_3fd,this.getContactsCb);
+temp_scb=_3fd;
+temp_ecb=_400;
+var rval=this.so.IDataSource.GetList(_401,this.getContactsCb);
 if(rval.TransactionID){
-glob_obj.addToGlobalArray(rval.TransactionID,_3f9,_3fc);
+glob_obj.addToGlobalArray(rval.TransactionID,_3fd,_400);
 }
-if(_3fd.Sort){
-delete _3fd.Sort.Order;
+if(_401.Sort){
+delete _401.Sort.Order;
 }
-if(_3fd.Filter){
-delete _3fd.Filter.SearchVal;
+if(_401.Filter){
+delete _401.Filter.SearchVal;
 }
-if(_3fd){
-delete _3fd.Type;
-delete _3fd.Filter;
-delete _3fd.Sort;
+if(_401){
+delete _401.Type;
+delete _401.Filter;
+delete _401.Sort;
 }
 if(rval.ErrorCode!=0){
-var _3ff=mappingVerification(rval.ErrorCode);
-var _400=null;
+var _403=mappingVerification(rval.ErrorCode);
+var _404=null;
 if(rval.ErrorMessage){
-_400=splitErrorMessage(rval.ErrorMessage);
+_404=splitErrorMessage(rval.ErrorMessage);
 }
-if(_3ff){
+if(_403){
 switch(MapErrorCode[rval.ErrorCode]){
 case this.error.MISSING_ARG_ERR:
 case this.error.INVALID_ARG_ERR:
 case this.error.NOT_SUPPORTED_ERR:
-if(_400){
-throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContacts: "+_400);
+if(_404){
+throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContacts: "+_404);
 }else{
 throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContacts:Operation Failed");
 }
 break;
 default:
-if(_3fc!=undefined){
-if(_400){
-_3fc(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContacts: "+_400));
+if(_400!=undefined){
+if(_404){
+_400(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContacts: "+_404));
 }else{
-_3fc(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContacts:Operation Failed "));
+_400(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContacts:Operation Failed "));
 }
 }else{
-if(_400){
-throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContacts: "+_400);
+if(_404){
+throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContacts: "+_404);
 }else{
 throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContacts:Operation Failed");
 }
 }
 }
 }else{
-if(_3fc!=undefined){
-if(_400){
-_3fc(new DeviceException(rval.ErrorCode,"Contacts: getContacts: "+_400));
+if(_400!=undefined){
+if(_404){
+_400(new DeviceException(rval.ErrorCode,"Contacts: getContacts: "+_404));
 }else{
-_3fc(new DeviceException(rval.ErrorCode,"getContacts:Operation Failed "));
+_400(new DeviceException(rval.ErrorCode,"getContacts:Operation Failed "));
 }
 }else{
-if(_400){
-throw new DeviceException(rval.ErrorCode,"Contacts: getContacts: "+_400);
+if(_404){
+throw new DeviceException(rval.ErrorCode,"Contacts: getContacts: "+_404);
 }else{
 throw new DeviceException(rval.ErrorCode,"Contacts: getContacts:Operation Failed");
 }
@@ -7735,102 +7727,102 @@ catch(e){
 __device_handle_exception(e,"__sp_contacts_getContacts: "+e);
 }
 };
-function __sp_contacts_add(_401){
-if((_401)==null){
+function __sp_contacts_add(_405){
+if((_405)==null){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"addContact:Contact Data Needed");
 }
-if((typeof _401)=="undefined"){
+if((typeof _405)=="undefined"){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"addContact:Contact Data Needed");
 }
-if((_401)==undefined){
+if((_405)==undefined){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"addContact:Contact Data Needed");
 }
-if((typeof _401)!="object"){
+if((typeof _405)!="object"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"addContact:Invalid Contact Data");
 }
-var _402={};
-modifyObjectBaseProp(_402);
-__s60_enumerate_contact_object(_401,null,__sp_contact_extract,_402);
-var _403={};
-modifyObjectBaseProp(_403);
-_403.Type="Contact";
-_403.Data=_402;
+var _406={};
+modifyObjectBaseProp(_406);
+__s60_enumerate_contact_object(_405,null,__sp_contact_extract,_406);
+var _407={};
+modifyObjectBaseProp(_407);
+_407.Type="Contact";
+_407.Data=_406;
 try{
-if(_402.id){
+if(_406.id){
 throw new DeviceException(this.error.NOT_SUPPORTED_ERR,"Contacts: addContact: Id Not Supported");
 }
-var _404=this.so.IDataSource.Add(_403);
-if(_402){
-delete _402.id;
-}
-if(_403){
-delete _403.Type;
-delete _403.Data;
-}
-var _405=_404["ReturnValue"];
-if(_404.ErrorCode!=0){
-var _406=mappingVerification(_404.ErrorCode);
-if(_404.ErrorMessage){
-var _407=splitErrorMessage(_404.ErrorMessage);
+var _408=this.so.IDataSource.Add(_407);
 if(_406){
-throw new DeviceException(MapErrorCode[_404.ErrorCode],"Contacts: addContact: "+_407);
+delete _406.id;
+}
+if(_407){
+delete _407.Type;
+delete _407.Data;
+}
+var _409=_408["ReturnValue"];
+if(_408.ErrorCode!=0){
+var _40a=mappingVerification(_408.ErrorCode);
+if(_408.ErrorMessage){
+var _40b=splitErrorMessage(_408.ErrorMessage);
+if(_40a){
+throw new DeviceException(MapErrorCode[_408.ErrorCode],"Contacts: addContact: "+_40b);
 }else{
-throw new DeviceException(_404.ErrorCode,"Contacts: addContact: "+_407);
+throw new DeviceException(_408.ErrorCode,"Contacts: addContact: "+_40b);
 }
 }else{
-if(_406){
-throw new DeviceException(MapErrorCode[_404.ErrorCode],"Contacts: addContact: Operation Failed");
+if(_40a){
+throw new DeviceException(MapErrorCode[_408.ErrorCode],"Contacts: addContact: Operation Failed");
 }else{
-throw new DeviceException(_404.ErrorCode,"Contacts: addContact: Operation Failed");
+throw new DeviceException(_408.ErrorCode,"Contacts: addContact: Operation Failed");
 }
 }
 }
-return _405;
+return _409;
 }
 catch(e){
 __device_handle_exception(e,"__sp_contacts_addContact: "+e);
 }
 };
-function __sp_contacts_update(_408){
+function __sp_contacts_update(_40c){
 try{
-if(!(_408&&_408.id)){
+if(!(_40c&&_40c.id)){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: updateContact: contact is missing");
 }
-var _409={};
-modifyObjectBaseProp(_409);
-__s60_enumerate_contact_object(_408,null,__sp_contact_extract,_409);
-if(_409.id==undefined){
+var _40d={};
+modifyObjectBaseProp(_40d);
+__s60_enumerate_contact_object(_40c,null,__sp_contact_extract,_40d);
+if(_40d.id==undefined){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: updateContact: Invalid id type");
 }
-if(typeof _409.id!="string"){
+if(typeof _40d.id!="string"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: updateContact: Invalid id type");
 }
-var _40a={};
-modifyObjectBaseProp(_40a);
-_40a.Type="Contact";
-_40a.Data=_409;
-var _40b=this.so.IDataSource.Add(_40a);
-if(_409){
-delete _409.id;
+var _40e={};
+modifyObjectBaseProp(_40e);
+_40e.Type="Contact";
+_40e.Data=_40d;
+var _40f=this.so.IDataSource.Add(_40e);
+if(_40d){
+delete _40d.id;
 }
-if(_40a){
-delete _40a.Type;
-delete _40a.Data;
+if(_40e){
+delete _40e.Type;
+delete _40e.Data;
 }
-if(_40b.ErrorCode!=0){
-var _40c=mappingVerification(_40b.ErrorCode);
-if(_40b.ErrorMessage){
-var _40d=splitErrorMessage(_40b.ErrorMessage);
-if(_40c){
-throw new DeviceException(MapErrorCode[_40b.ErrorCode],"Contacts: updateContact: "+_40d);
+if(_40f.ErrorCode!=0){
+var _410=mappingVerification(_40f.ErrorCode);
+if(_40f.ErrorMessage){
+var _411=splitErrorMessage(_40f.ErrorMessage);
+if(_410){
+throw new DeviceException(MapErrorCode[_40f.ErrorCode],"Contacts: updateContact: "+_411);
 }else{
-throw new DeviceException(_40b.ErrorCode,"Contacts: updateContact: "+_40d);
+throw new DeviceException(_40f.ErrorCode,"Contacts: updateContact: "+_411);
 }
 }else{
-if(_40c){
-throw new DeviceException(MapErrorCode[_40b.ErrorCode],"Contacts: updateContact: Operation Failed");
+if(_410){
+throw new DeviceException(MapErrorCode[_40f.ErrorCode],"Contacts: updateContact: Operation Failed");
 }else{
-throw new DeviceException(_40b.ErrorCode,"Contacts: updateContact: Operation Failed");
+throw new DeviceException(_40f.ErrorCode,"Contacts: updateContact: Operation Failed");
 }
 }
 }
@@ -7841,44 +7833,44 @@ __device_handle_exception(e,"__sp_contacts_updateContact: "+e);
 };
 function __sp_contacts_delete(id){
 __device_debug("sp_contacts_delete id: "+id);
-var _40f={};
-modifyObjectBaseProp(_40f);
+var _413={};
+modifyObjectBaseProp(_413);
 if(id==undefined){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: deleteContacts: idlist is missing");
 }
 if(typeof id=="object"){
-_40f.IdList=id;
+_413.IdList=id;
 }else{
-_40f.IdList=[];
-_40f.IdList[0]=id;
+_413.IdList=[];
+_413.IdList[0]=id;
 }
-var _410={};
-modifyObjectBaseProp(_410);
-_410.Type="Contact";
-_410.Data=_40f;
+var _414={};
+modifyObjectBaseProp(_414);
+_414.Type="Contact";
+_414.Data=_413;
 try{
-var _411=this.so.IDataSource.Delete(_410);
-if(_40f){
-delete _40f.IdList;
+var _415=this.so.IDataSource.Delete(_414);
+if(_413){
+delete _413.IdList;
 }
-if(_410){
-delete _410.Type;
-delete _410.Data;
+if(_414){
+delete _414.Type;
+delete _414.Data;
 }
-if(_411.ErrorCode!=0){
-var _412=mappingVerification(_411.ErrorCode);
-if(_411.ErrorMessage){
-var _413=splitErrorMessage(_411.ErrorMessage);
-if(_412){
-throw new DeviceException(MapErrorCode[_411.ErrorCode],"Contacts: deleteContacts: "+_413);
+if(_415.ErrorCode!=0){
+var _416=mappingVerification(_415.ErrorCode);
+if(_415.ErrorMessage){
+var _417=splitErrorMessage(_415.ErrorMessage);
+if(_416){
+throw new DeviceException(MapErrorCode[_415.ErrorCode],"Contacts: deleteContacts: "+_417);
 }else{
-throw new DeviceException(_411.ErrorCode,"Contacts: deleteContacts: "+_413);
+throw new DeviceException(_415.ErrorCode,"Contacts: deleteContacts: "+_417);
 }
 }else{
-if(_412){
-throw new DeviceException(MapErrorCode[_411.ErrorCode],"Contacts: deleteContacts: Operation Failed");
+if(_416){
+throw new DeviceException(MapErrorCode[_415.ErrorCode],"Contacts: deleteContacts: Operation Failed");
 }else{
-throw new DeviceException(_411.ErrorCode,"Contacts: deleteContacts: Operation Failed");
+throw new DeviceException(_415.ErrorCode,"Contacts: deleteContacts: Operation Failed");
 }
 }
 }
@@ -7888,101 +7880,101 @@ __device_handle_exception(e,"__sp_contacts_deleteContacts: "+e);
 }
 };
 function __sp_contacts_get(id){
-var _415={};
-modifyObjectBaseProp(_415);
-_415.Type="Contact";
+var _419={};
+modifyObjectBaseProp(_419);
+_419.Type="Contact";
 if(id==null){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: getContactInfo: id should not be null");
 }
 if(typeof id!="string"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: getContactInfo: id should be string");
 }
-_415.Filter={};
-modifyObjectBaseProp(_415.Filter);
-_415.Filter.id=id;
+_419.Filter={};
+modifyObjectBaseProp(_419.Filter);
+_419.Filter.id=id;
 try{
-var rval=this.so.IDataSource.GetList(_415);
-if(_415.Filter){
-delete _415.Filter.id;
+var rval=this.so.IDataSource.GetList(_419);
+if(_419.Filter){
+delete _419.Filter.id;
 }
-if(_415){
-delete _415.Type;
-delete _415.Filter;
+if(_419){
+delete _419.Type;
+delete _419.Filter;
 }
 if(rval){
 if(rval.ErrorCode!=0){
-var _417=mappingVerification(rval.ErrorCode);
+var _41b=mappingVerification(rval.ErrorCode);
 if(rval.ErrorMessage){
-var _418=splitErrorMessage(rval.ErrorMessage);
-if(_417){
-throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactInfo: "+_418);
+var _41c=splitErrorMessage(rval.ErrorMessage);
+if(_41b){
+throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactInfo: "+_41c);
 }else{
-throw new DeviceException(rval.ErrorCode,"Contacts: getContactInfo: "+_418);
+throw new DeviceException(rval.ErrorCode,"Contacts: getContactInfo: "+_41c);
 }
 }else{
-if(_417){
+if(_41b){
 throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactInfo: Operation Failed");
 }else{
 throw new DeviceException(rval.ErrorCode,"Contacts: getContactInfo: Operation Failed");
 }
 }
 }
-var _419={};
-modifyObjectBaseProp(_419);
-var _41a=rval.ReturnValue.getNext();
-__sp_device_contact_build(_41a,_419);
-return _419;
+var _41d={};
+modifyObjectBaseProp(_41d);
+var _41e=rval.ReturnValue.getNext();
+__sp_device_contact_build(_41e,_41d);
+return _41d;
 }
 }
 catch(e){
 __device_handle_exception(e,"__sp_contacts_getContactInfo:"+e);
 }
 };
-function __sp_contacts_addGroup(_41b){
-var _41c={};
-modifyObjectBaseProp(_41c);
-_41c.GroupLabel=_41b;
-if(typeof (_41c.GroupLabel)==null){
+function __sp_contacts_addGroup(_41f){
+var _420={};
+modifyObjectBaseProp(_420);
+_420.GroupLabel=_41f;
+if(typeof (_420.GroupLabel)==null){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: addGroups: callback is missing");
 }
-if((typeof _41c.GroupLabel)=="undefined"){
+if((typeof _420.GroupLabel)=="undefined"){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"addGroup:Group Data Needed");
 }
-if((_41c.GroupLabel)==undefined){
+if((_420.GroupLabel)==undefined){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"addGroup:Group Data Needed");
 }
-var _41d={};
-modifyObjectBaseProp(_41d);
-_41d.Type="Group";
-_41d.Data=_41c;
+var _421={};
+modifyObjectBaseProp(_421);
+_421.Type="Group";
+_421.Data=_420;
 try{
-var _41e=this.so.IDataSource.Add(_41d);
-if(_41c){
-delete _41c.GroupLabel;
-}
-if(_41d){
-delete _41d.Type;
-delete _41d.Data;
-}
-var _41f=_41e["ReturnValue"];
-if(_41e.ErrorCode!=0){
-var _420=mappingVerification(_41e.ErrorCode);
-if(_41e.ErrorMessage){
-var _421=splitErrorMessage(_41e.ErrorMessage);
+var _422=this.so.IDataSource.Add(_421);
 if(_420){
-throw new DeviceException(MapErrorCode[_41e.ErrorCode],"Contacts: addGroup: "+_421);
+delete _420.GroupLabel;
+}
+if(_421){
+delete _421.Type;
+delete _421.Data;
+}
+var _423=_422["ReturnValue"];
+if(_422.ErrorCode!=0){
+var _424=mappingVerification(_422.ErrorCode);
+if(_422.ErrorMessage){
+var _425=splitErrorMessage(_422.ErrorMessage);
+if(_424){
+throw new DeviceException(MapErrorCode[_422.ErrorCode],"Contacts: addGroup: "+_425);
 }else{
-throw new DeviceException(_421,_41e.ErrorCode,"Contacts: addGroup: Operation Failed ");
+throw new DeviceException(_425,_422.ErrorCode,"Contacts: addGroup: Operation Failed ");
 }
 }else{
-if(_420){
-throw new DeviceException(MapErrorCode[_41e.ErrorCode],"Contacts: addGroup: Operation Failed");
+if(_424){
+throw new DeviceException(MapErrorCode[_422.ErrorCode],"Contacts: addGroup: Operation Failed");
 }else{
-throw new DeviceException(_41e.ErrorCode,"Contacts: addGroup: Operation Failed");
+throw new DeviceException(_422.ErrorCode,"Contacts: addGroup: Operation Failed");
 }
 }
 }
-return _41f;
+return _423;
 }
 catch(e){
 __device_handle_exception(e,"__sp_contacts_addGroup: "+e);
@@ -7990,102 +7982,102 @@ __device_handle_exception(e,"__sp_contacts_addGroup: "+e);
 };
 function __sp_contacts_getGroups_cb(arg1,arg2,arg3){
 var iter=null;
-var _426;
-var _427;
-var _428;
-_428=glob_obj.getFromArray(arg1);
-if(_428){
-_426=_428.success_cb;
-_427=_428.error_cb;
+var _42a;
+var _42b;
+var _42c;
+_42c=glob_obj.getFromArray(arg1);
+if(_42c){
+_42a=_42c.success_cb;
+_42b=_42c.error_cb;
 }else{
 return;
 }
 iter=arg3.ReturnValue;
 if(arg3.ReturnValue){
-iter=new __sp_group_iterator(arg3.ReturnValue);
+iter=new __sp_groupinfo_iterator(arg3.ReturnValue);
 }else{
 if(arg3.ErrorCode!=0){
-var _429;
+var _42d;
 if(arg3.ErrorMessage){
-_429=splitErrorMessage(arg3.ErrorMessage);
+_42d=splitErrorMessage(arg3.ErrorMessage);
 }else{
-_429="Operation Failed";
+_42d="Operation Failed";
 }
-_427(new DeviceException(_429,MapErrorCode[arg3.ErrorCode],"Contacts: getGroups:"));
+_42b(new DeviceException(_42d,MapErrorCode[arg3.ErrorCode],"Contacts: getGroups:"));
 return;
 }
 }
-_426(iter);
+_42a(iter);
 glob_obj.removeFromArray(arg1);
 };
-function __sp_contacts_getGroups(_42a,_42b){
-var _42c={};
-modifyObjectBaseProp(_42c);
-_42c.Type="Group";
+function __sp_contacts_getGroups(_42e,_42f){
+var _430={};
+modifyObjectBaseProp(_430);
+_430.Type="Group";
 try{
-if(!_42a){
+if(!_42e){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: getGroups: callback is missing");
 }else{
-if(typeof _42a!="function"){
+if(typeof _42e!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: getGroups: callback is invalid");
 }
 }
-if(_42b){
-if(typeof (_42b)!="function"){
+if(_42f){
+if(typeof (_42f)!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: getGroups: ErrorCallback is invalid");
 }
 }
-temp_scb=_42a;
-temp_ecb=_42b;
-var rval=this.so.IDataSource.GetList(_42c,this.getGroupsCb);
+temp_scb=_42e;
+temp_ecb=_42f;
+var rval=this.so.IDataSource.GetList(_430,this.getGroupsCb);
 if(rval.TransactionID){
-glob_obj.addToGlobalArray(rval.TransactionID,_42a,_42b);
+glob_obj.addToGlobalArray(rval.TransactionID,_42e,_42f);
 }
-if(_42c){
-delete _42c.Type;
+if(_430){
+delete _430.Type;
 }
 if(rval.ErrorCode!=0){
-var _42e=mappingVerification(rval.ErrorCode);
-var _42f=null;
+var _432=mappingVerification(rval.ErrorCode);
+var _433=null;
 if(rval.ErrorMessage){
-_42f=splitErrorMessage(rval.ErrorMessage);
+_433=splitErrorMessage(rval.ErrorMessage);
 }
-if(_42e){
+if(_432){
 switch(MapErrorCode[rval.ErrorCode]){
 case this.error.MISSING_ARG_ERR:
 case this.error.INVALID_ARG_ERR:
 case this.error.NOT_SUPPORTED_ERR:
-if(_42f){
-throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroups: "+_42f);
+if(_433){
+throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroups: "+_433);
 }else{
 throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroups: Operation Failed");
 }
 break;
 default:
-if(_42b!=undefined){
-if(_42f){
-_42b(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroups: "+_42f));
+if(_42f!=undefined){
+if(_433){
+_42f(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroups: "+_433));
 }else{
-_42b(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts:  getGroups: Operation Failed "));
+_42f(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts:  getGroups: Operation Failed "));
 }
 }else{
-if(_42f){
-throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroups: Operation Failed"+_42f);
+if(_433){
+throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroups: Operation Failed"+_433);
 }else{
 throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroups: Operation Failed");
 }
 }
 }
 }else{
-if(_42b!=undefined){
-if(_42f){
-_42b(new DeviceException(rval.ErrorCode,"Contacts: getGroups: "+_42f));
+if(_42f!=undefined){
+if(_433){
+_42f(new DeviceException(rval.ErrorCode,"Contacts: getGroups: "+_433));
 }else{
-_42b(new DeviceException(rval.ErrorCode,"Contacts: getGroups: Operation Failed"));
+_42f(new DeviceException(rval.ErrorCode,"Contacts: getGroups: Operation Failed"));
 }
 }else{
-if(_42f){
-throw new DeviceException(rval.ErrorCode,"Contacts: getGroups: Operation Failed"+_42f);
+if(_433){
+throw new DeviceException(rval.ErrorCode,"Contacts: getGroups: Operation Failed"+_433);
 }else{
 throw new DeviceException(rval.ErrorCode,"Contacts: getGroups: Operation Failed");
 }
@@ -8099,40 +8091,40 @@ __device_handle_exception(e,"__sp_contacts_getGroups: "+e);
 }
 };
 function __sp_contacts_deleteGroups(id){
-var _431={};
-modifyObjectBaseProp(_431);
-var _432=[];
+var _435={};
+modifyObjectBaseProp(_435);
+var _436=[];
 if(typeof id=="object"){
 var i=0;
 for(var val in id){
-_432[i]=id[val];
+_436[i]=id[val];
 i++;
 }
 }else{
-_432[0]=id;
+_436[0]=id;
 }
-_431.IdList=[];
-_431.IdList=_432;
-var _435={};
-modifyObjectBaseProp(_435);
-_435.Type="Group";
-_435.Data=_431;
+_435.IdList=[];
+_435.IdList=_436;
+var _439={};
+modifyObjectBaseProp(_439);
+_439.Type="Group";
+_439.Data=_435;
 try{
-var _436=this.so.IDataSource.Delete(_435);
-if(_436.ErrorCode!=0){
-var _437=mappingVerification(_436.ErrorCode);
-if(_436.ErrorMessage){
-var _438=splitErrorMessage(_436.ErrorMessage);
-if(_437){
-throw new DeviceException(MapErrorCode[_436.ErrorCode],"Contacts: deleteGroups: "+_438);
+var _43a=this.so.IDataSource.Delete(_439);
+if(_43a.ErrorCode!=0){
+var _43b=mappingVerification(_43a.ErrorCode);
+if(_43a.ErrorMessage){
+var _43c=splitErrorMessage(_43a.ErrorMessage);
+if(_43b){
+throw new DeviceException(MapErrorCode[_43a.ErrorCode],"Contacts: deleteGroups: "+_43c);
 }else{
-throw new DeviceException(_436.ErrorCode,"Contacts: deleteGroups: "+_438);
+throw new DeviceException(_43a.ErrorCode,"Contacts: deleteGroups: "+_43c);
 }
 }else{
-if(_437){
-throw new DeviceException(MapErrorCode[_436.ErrorCode],"Contacts: deleteGroups: Operation Failed");
+if(_43b){
+throw new DeviceException(MapErrorCode[_43a.ErrorCode],"Contacts: deleteGroups: Operation Failed");
 }else{
-throw new DeviceException(_436.ErrorCode,"Contacts: deleteGroups: Operation Failed");
+throw new DeviceException(_43a.ErrorCode,"Contacts: deleteGroups: Operation Failed");
 }
 }
 }
@@ -8141,59 +8133,59 @@ catch(e){
 __device_handle_exception(e,"__sp_contacts_deleteGroups: "+e);
 }
 };
-function __sp_contacts_addContactsToGroup(_439,id1){
+function __sp_contacts_addContactsToGroup(_43d,id1){
 try{
-var _43b={};
-modifyObjectBaseProp(_43b);
-var _43c=false;
-_43b.Type="Group";
+var _43f={};
+modifyObjectBaseProp(_43f);
+var _440=false;
+_43f.Type="Group";
 var map={};
 modifyObjectBaseProp(map);
-var _43e=[];
+var _442=[];
 if(typeof id1=="object"){
 var i=0;
 for(var val in id1){
-_43e[i]=id1[val];
+_442[i]=id1[val];
 i++;
 }
 }else{
-_43e[0]=id1;
+_442[0]=id1;
 }
-map.IdList=_43e;
-_43c=true;
-delete _43e.index;
-if(_439!=undefined){
-map.id=_439;
-_43c=true;
+map.IdList=_442;
+_440=true;
+delete _442.index;
+if(_43d!=undefined){
+map.id=_43d;
+_440=true;
 }
-if(_43c){
-_43b.Data=map;
+if(_440){
+_43f.Data=map;
 }
-_43b.OperationType="Associate";
-var _441=this.so.IDataSource.Organise(_43b);
+_43f.OperationType="Associate";
+var _445=this.so.IDataSource.Organise(_43f);
 if(map){
 delete map.id;
 delete map.IdList;
 }
-if(_43b){
-delete _43b.Data;
-delete _43b.OperationType;
-delete _43b.Type;
+if(_43f){
+delete _43f.Data;
+delete _43f.OperationType;
+delete _43f.Type;
 }
-if(_441.ErrorCode!=0){
-var _442=mappingVerification(_441.ErrorCode);
-if(_441.ErrorMessage){
-var _443=splitErrorMessage(_441.ErrorMessage);
-if(_442){
-throw new DeviceException(MapErrorCode[_441.ErrorCode],"Contacts: addContactsToGroup: "+_443);
+if(_445.ErrorCode!=0){
+var _446=mappingVerification(_445.ErrorCode);
+if(_445.ErrorMessage){
+var _447=splitErrorMessage(_445.ErrorMessage);
+if(_446){
+throw new DeviceException(MapErrorCode[_445.ErrorCode],"Contacts: addContactsToGroup: "+_447);
 }else{
-throw new DeviceException(_441.ErrorCode,"Contacts: addContactsToGroup: "+_443);
+throw new DeviceException(_445.ErrorCode,"Contacts: addContactsToGroup: "+_447);
 }
 }else{
-if(_442){
-throw new DeviceException(MapErrorCode[_441.ErrorCode],"Contacts: addContactsToGroup: Operation Failed");
+if(_446){
+throw new DeviceException(MapErrorCode[_445.ErrorCode],"Contacts: addContactsToGroup: Operation Failed");
 }else{
-throw new DeviceException(_441.ErrorCode,"Contacts: addContactsToGroup: Operation Failed");
+throw new DeviceException(_445.ErrorCode,"Contacts: addContactsToGroup: Operation Failed");
 }
 }
 }
@@ -8204,14 +8196,14 @@ __device_handle_exception(e,"__sp_contacts_addContactsToGroup: "+e);
 };
 function __sp_contacts_getContactIds_cb(arg1,arg2,arg3){
 var item=null;
-var _448=null;
-var _449;
-var _44a;
-var _44b;
-_44b=glob_obj.getFromArray(arg1);
-if(_44b){
-_449=_44b.success_cb;
-_44a=_44b.error_cb;
+var _44c=null;
+var _44d;
+var _44e;
+var _44f;
+_44f=glob_obj.getFromArray(arg1);
+if(_44f){
+_44d=_44f.success_cb;
+_44e=_44f.error_cb;
 }else{
 alert("Contacts: __sp_contacts_getContactIds_cb : Callback not found ");
 return;
@@ -8220,44 +8212,44 @@ var id=null;
 if(arg3["ReturnValue"]!=undefined){
 item=arg3["ReturnValue"];
 id=item["IdList"];
-_448=[];
-_448=id;
-delete _448.index;
+_44c=[];
+_44c=id;
+delete _44c.index;
 }else{
 if(arg3.ErrorCode!=0){
-var _44d;
+var _451;
 if(arg3.ErrorMessage){
-_44d=splitErrorMessage(arg3.ErrorMessage);
+_451=splitErrorMessage(arg3.ErrorMessage);
 }else{
-_44d="Operation Failed";
+_451="Operation Failed";
 }
-_44a(new DeviceException(MapErrorCode[arg3.ErrorCode],"Contacts: getContactIds:"+_44d));
+_44e(new DeviceException(MapErrorCode[arg3.ErrorCode],"Contacts: getContactIds:"+_451));
 return;
 }
 }
-_449(_448);
+_44d(_44c);
 glob_obj.removeFromArray(arg1);
 };
-function __sp_contacts_getContactIds(_44e,_44f,_450,_451){
-var _452={};
-modifyObjectBaseProp(_452);
-_452.Type="Contact";
-if(_44f){
-_452.Filter={};
-modifyObjectBaseProp(_452.Filter);
-_452.Filter.SearchVal=_44f;
+function __sp_contacts_getContactIds(_452,_453,_454,_455){
+var _456={};
+modifyObjectBaseProp(_456);
+_456.Type="Contact";
+if(_453){
+_456.Filter={};
+modifyObjectBaseProp(_456.Filter);
+_456.Filter.SearchVal=_453;
 }
-if(_450!=null&&_450!=undefined){
-_452.Sort={};
-modifyObjectBaseProp(_452.Sort);
-if(typeof _450=="number"){
-if(_450==this.SORT_ASCENDING){
-_452.Sort.Order="Ascending";
+if(_454!=null&&_454!=undefined){
+_456.Sort={};
+modifyObjectBaseProp(_456.Sort);
+if(typeof _454=="number"){
+if(_454==this.SORT_ASCENDING){
+_456.Sort.Order="Ascending";
 }else{
-if(_450==this.SORT_DESCENDING){
-_452.Sort.Order="Descending";
+if(_454==this.SORT_DESCENDING){
+_456.Sort.Order="Descending";
 }else{
-_451(new DeviceException(this.error.DATA_OUT_OF_RANGE_ERR,"Contacts: getContacts: invalid sortOrder input"));
+_455(new DeviceException(this.error.DATA_OUT_OF_RANGE_ERR,"Contacts: getContacts: invalid sortOrder input"));
 return;
 }
 }
@@ -8266,66 +8258,66 @@ throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: getContactIds: S
 }
 }
 try{
-if(!_44e){
+if(!_452){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: getContactIds: callback is missing");
 }else{
-if(typeof _44e!="function"){
+if(typeof _452!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: getContactIds: callback is invalid");
 }
 }
-if(_451){
-if(typeof (_451)!="function"){
+if(_455){
+if(typeof (_455)!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: getContactIds: ErrorCallback is invalid");
 }
 }
-temp_scb=_44e;
-temp_ecb=_451;
-var rval=this.so.IDataSource.GetIds(_452,this.getContactIdsCb);
+temp_scb=_452;
+temp_ecb=_455;
+var rval=this.so.IDataSource.GetIds(_456,this.getContactIdsCb);
 if(rval.TransactionID){
-glob_obj.addToGlobalArray(rval.TransactionID,_44e,_451);
+glob_obj.addToGlobalArray(rval.TransactionID,_452,_455);
 }
 if(rval.ErrorCode!=0){
-var _454=mappingVerification(rval.ErrorCode);
-var _455=null;
+var _458=mappingVerification(rval.ErrorCode);
+var _459=null;
 if(rval.ErrorMessage){
-var _455=splitErrorMessage(rval.ErrorMessage);
+var _459=splitErrorMessage(rval.ErrorMessage);
 }
-if(_454){
+if(_458){
 switch(MapErrorCode[rval.ErrorCode]){
 case this.error.MISSING_ARG_ERR:
 case this.error.INVALID_ARG_ERR:
 case this.error.NOT_SUPPORTED_ERR:
-if(_455){
-throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactIds: "+_455);
+if(_459){
+throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactIds: "+_459);
 }else{
 throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactIds: Operation Failed");
 }
 break;
 default:
-if(_451!=undefined){
-if(_455){
-_451(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactIds: "+_455));
+if(_455!=undefined){
+if(_459){
+_455(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactIds: "+_459));
 }else{
-_451(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactIds: Operation Failed "));
+_455(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactIds: Operation Failed "));
 }
 }else{
-if(_455){
-throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactIds:"+_455);
+if(_459){
+throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactIds:"+_459);
 }else{
 throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getContactIds: Operation Failed");
 }
 }
 }
 }else{
-if(_451!=undefined){
-if(_455){
-_451(new DeviceException(rval.ErrorCode,"Contacts: getContactIds: "+_455));
+if(_455!=undefined){
+if(_459){
+_455(new DeviceException(rval.ErrorCode,"Contacts: getContactIds: "+_459));
 }else{
-_451(new DeviceException(rval.ErrorCode,"Contacts: getContactIds: Operation Failed "));
+_455(new DeviceException(rval.ErrorCode,"Contacts: getContactIds: Operation Failed "));
 }
 }else{
-if(_455){
-throw new DeviceException(rval.ErrorCode,"Contacts: getContactIds:"+_455);
+if(_459){
+throw new DeviceException(rval.ErrorCode,"Contacts: getContactIds:"+_459);
 }else{
 throw new DeviceException(rval.ErrorCode,"Contacts: getContactIds: Operation Failed");
 }
@@ -8339,16 +8331,16 @@ __device_handle_exception(e,"__sp_contacts_getContactIds: "+e);
 }
 };
 function __sp_contacts_getGroupIds_cb(arg1,arg2,arg3){
-var _459=null;
+var _45d=null;
 var item=null;
-var _45b=[];
-var _45c;
-var _459;
+var _45f=[];
+var _460;
 var _45d;
-_45d=glob_obj.getFromArray(arg1);
-if(_45d){
-_45c=_45d.success_cb;
-_459=_45d.error_cb;
+var _461;
+_461=glob_obj.getFromArray(arg1);
+if(_461){
+_460=_461.success_cb;
+_45d=_461.error_cb;
 }else{
 return;
 }
@@ -8356,91 +8348,91 @@ if(arg3.ReturnValue){
 item=arg3["ReturnValue"];
 arg3.ReturnValue.close();
 var id=item["IdList"];
-_45b=id;
+_45f=id;
 }else{
 if(arg3.ErrorCode!=0){
-var _45f;
+var _463;
 if(rval.ErrorMessage){
-_45f=splitErrorMessage(rval.ErrorMessage);
+_463=splitErrorMessage(rval.ErrorMessage);
 }else{
-_45f="Operation Failed";
+_463="Operation Failed";
 }
-_459(new DeviceException(MapErrorCode[arg3.ErrorCode],"Contacts: getGroupIds:"+_45f));
+_45d(new DeviceException(MapErrorCode[arg3.ErrorCode],"Contacts: getGroupIds:"+_463));
 return;
 }
 }
-_45c(_45b);
-delete _45b.index;
+_460(_45f);
+delete _45f.index;
 glob_obj.removeFromArray(arg1);
 };
-function __sp_contacts_getGroupIds(_460,_461){
-var _462={};
-modifyObjectBaseProp(_462);
-_462.Type="Group";
+function __sp_contacts_getGroupIds(_464,_465){
+var _466={};
+modifyObjectBaseProp(_466);
+_466.Type="Group";
 try{
-if(!_460){
+if(!_464){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: getGroupIds: callback is missing");
 }else{
-if(typeof _460!="function"){
+if(typeof _464!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: getGroupIds: callback is invalid");
 }
 }
-if(_461){
-if(typeof (_461)!="function"){
+if(_465){
+if(typeof (_465)!="function"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: getGroupIds: ErrorCallback is invalid");
 }
 }
-temp_scb=_460;
-temp_ecb=_461;
-var rval=this.so.IDataSource.GetIds(_462,this.getGroupIdsCb);
+temp_scb=_464;
+temp_ecb=_465;
+var rval=this.so.IDataSource.GetIds(_466,this.getGroupIdsCb);
 if(rval.TransactionID){
-glob_obj.addToGlobalArray(rval.TransactionID,_460,_461);
+glob_obj.addToGlobalArray(rval.TransactionID,_464,_465);
 }
-if(_462){
-delete _462.Type;
+if(_466){
+delete _466.Type;
 }
 if(rval.ErrorCode!=0){
-var _464=mappingVerification(rval.ErrorCode);
-var _465=null;
+var _468=mappingVerification(rval.ErrorCode);
+var _469=null;
 if(rval.ErrorMessage){
-var _465=splitErrorMessage(rval.ErrorMessage);
+var _469=splitErrorMessage(rval.ErrorMessage);
 }
-if(_464){
+if(_468){
 switch(rval.ErrorCode){
 case this.error.MISSING_ARG_ERR:
 case this.error.INVALID_ARG_ERR:
 case this.error.NOT_SUPPORTED_ERR:
-if(_465){
-throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroupIds: "+_465);
+if(_469){
+throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroupIds: "+_469);
 }else{
 throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroupIds: Operation Failed");
 }
 break;
 default:
-if(_461!=undefined){
-if(_465){
-_461(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroupIds: "+_465));
+if(_465!=undefined){
+if(_469){
+_465(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroupIds: "+_469));
 }else{
-_461(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroupIds: Operation Failed"));
+_465(new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroupIds: Operation Failed"));
 }
 }else{
-if(_465){
-throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: Contacts: getGroupIds:"+_465);
+if(_469){
+throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: Contacts: getGroupIds:"+_469);
 }else{
 throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroupIds: Operation Failed");
 }
 }
 }
 }else{
-if(_461!=undefined){
-if(_465){
-_461(new DeviceException(rval.ErrorCode,"Contacts: getGroupIds: "+_465));
+if(_465!=undefined){
+if(_469){
+_465(new DeviceException(rval.ErrorCode,"Contacts: getGroupIds: "+_469));
 }else{
-_461(new DeviceException(rval.ErrorCode,"Contacts: getGroupIds: Operation Failed"));
+_465(new DeviceException(rval.ErrorCode,"Contacts: getGroupIds: Operation Failed"));
 }
 }else{
-if(_465){
-throw new DeviceException(rval.ErrorCode,"Contacts: Contacts: getGroupIds:"+_465);
+if(_469){
+throw new DeviceException(rval.ErrorCode,"Contacts: Contacts: getGroupIds:"+_469);
 }else{
 throw new DeviceException(rval.ErrorCode,"Contacts: getGroupIds: Operation Failed");
 }
@@ -8453,58 +8445,58 @@ catch(e){
 __device_handle_exception(e,"__sp_contacts_getGroupIds: "+e);
 }
 };
-function __sp_contacts_removeContactsFromGroup(_466,id){
+function __sp_contacts_removeContactsFromGroup(_46a,id){
 try{
-var _468={};
-modifyObjectBaseProp(_468);
-var _469=false;
-_468.Type="Group";
+var _46c={};
+modifyObjectBaseProp(_46c);
+var _46d=false;
+_46c.Type="Group";
 var map={};
 if(id!=undefined){
-var _46b=[];
+var _46f=[];
 if(typeof id=="object"){
 var i=0;
 for(var val in id){
-_46b[i]=id[val];
+_46f[i]=id[val];
 i++;
 }
 }else{
-_46b[0]=id;
+_46f[0]=id;
 }
-map.IdList=_46b;
-_469=true;
+map.IdList=_46f;
+_46d=true;
 }
-if(_466!=undefined){
-map.id=_466;
-_469=true;
+if(_46a!=undefined){
+map.id=_46a;
+_46d=true;
 }
-if(_469){
-_468.Data=map;
+if(_46d){
+_46c.Data=map;
 }
-_468.OperationType="Disassociate";
-var _46e=this.so.IDataSource.Organise(_468);
+_46c.OperationType="Disassociate";
+var _472=this.so.IDataSource.Organise(_46c);
 if(map){
 delete map.IdList;
 }
-if(_468){
-delete _468.Data;
-delete _468.OperationType;
-delete _468.Type;
+if(_46c){
+delete _46c.Data;
+delete _46c.OperationType;
+delete _46c.Type;
 }
-if(_46e.ErrorCode!=0){
-var _46f=mappingVerification(_46e.ErrorCode);
-if(_46e.ErrorMessage){
-var _470=splitErrorMessage(_46e.ErrorMessage);
-if(_46f){
-throw new DeviceException(MapErrorCode[_46e.ErrorCode],"Contacts: removeContactsFromGroup: "+_470);
+if(_472.ErrorCode!=0){
+var _473=mappingVerification(_472.ErrorCode);
+if(_472.ErrorMessage){
+var _474=splitErrorMessage(_472.ErrorMessage);
+if(_473){
+throw new DeviceException(MapErrorCode[_472.ErrorCode],"Contacts: removeContactsFromGroup: "+_474);
 }else{
-throw new DeviceException(_46e.ErrorCode,"Contacts: removeContactsFromGroup: "+_470);
+throw new DeviceException(_472.ErrorCode,"Contacts: removeContactsFromGroup: "+_474);
 }
 }else{
-if(_46f){
-throw new DeviceException(MapErrorCode[_46e.ErrorCode],"Contacts: removeContactsFromGroup: Operation Failed");
+if(_473){
+throw new DeviceException(MapErrorCode[_472.ErrorCode],"Contacts: removeContactsFromGroup: Operation Failed");
 }else{
-throw new DeviceException(_46e.ErrorCode,"Contacts: removeContactsFromGroup: Operation Failed");
+throw new DeviceException(_472.ErrorCode,"Contacts: removeContactsFromGroup: Operation Failed");
 }
 }
 }
@@ -8513,42 +8505,42 @@ catch(e){
 __device_handle_exception(e,"__sp_contacts_removeContactsFromGroup: "+e);
 }
 };
-function __sp_contacts_cancel(_471){
+function __sp_contacts_cancel(_475){
 try{
-var _472={};
-if((_471)==null){
+var _476={};
+if((_475)==null){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: cancel: transactionId is missing ");
 }
-if((_471)==undefined){
+if((_475)==undefined){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: cancel:transactionId is undefined ");
 }
-if((typeof _471)=="undefined"){
+if((typeof _475)=="undefined"){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: cancel: transactionId is undefined ");
 }
-if(((typeof _471)!="number")||(_471<=0)){
+if(((typeof _475)!="number")||(_475<=0)){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: cancel: transactionId is Invalid");
 }
-modifyObjectBaseProp(_472);
-_472.TransactionID=_471;
-var _473=this.so.IDataSource.Cancel(_472);
-if(_472){
-delete _472.TransactionID;
+modifyObjectBaseProp(_476);
+_476.TransactionID=_475;
+var _477=this.so.IDataSource.Cancel(_476);
+if(_476){
+delete _476.TransactionID;
 }
-var _474=_473["ErrorCode"];
-if(_474!=0){
-var _475=mappingVerification(_473.ErrorCode);
-if(_473["ErrorMessage"]){
-var _476=splitErrorMessage(_473.ErrorMessage);
-if(_475){
-throw new DeviceException(MapErrorCode[_474],"Contacts: cancel: "+_476);
+var _478=_477["ErrorCode"];
+if(_478!=0){
+var _479=mappingVerification(_477.ErrorCode);
+if(_477["ErrorMessage"]){
+var _47a=splitErrorMessage(_477.ErrorMessage);
+if(_479){
+throw new DeviceException(MapErrorCode[_478],"Contacts: cancel: "+_47a);
 }else{
-throw new DeviceException(_474,"Contacts: cancel: "+_476);
+throw new DeviceException(_478,"Contacts: cancel: "+_47a);
 }
 }else{
-if(_475){
-throw new DeviceException(MapErrorCode[_474],"Contacts: cancel: Operation Failed");
+if(_479){
+throw new DeviceException(MapErrorCode[_478],"Contacts: cancel: Operation Failed");
 }else{
-throw new DeviceException(_474,"Contacts: cancel: Operation Failed");
+throw new DeviceException(_478,"Contacts: cancel: Operation Failed");
 }
 }
 }
@@ -8557,58 +8549,58 @@ catch(e){
 __device_handle_exception(e,"__sp_contacts_cancel: "+e);
 }
 };
-function __sp_contacts_updateGroup(_477){
-if(!(_477)){
+function __sp_contacts_updateGroup(_47b){
+if(!(_47b)){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: updateGroup:Group Data is missing");
 }
-if((typeof _477)!="object"){
+if((typeof _47b)!="object"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: updateGroup:Invalid Group Data");
 }
-if(!(_477&&_477.groupId)){
+if(!(_47b&&_47b.groupId)){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: updateGroup: Group id is missing");
 }
-if(typeof _477.groupId!="string"){
+if(typeof _47b.groupId!="string"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: updateGroup:Invalid Group id input");
 }
 try{
-var _478={};
-modifyObjectBaseProp(_478);
-_478.Type="Group";
-var _479={};
-modifyObjectBaseProp(_479);
-if(_477!=undefined){
-if(_477.groupId!=undefined){
-_479["id"]=_477.groupId;
+var _47c={};
+modifyObjectBaseProp(_47c);
+_47c.Type="Group";
+var _47d={};
+modifyObjectBaseProp(_47d);
+if(_47b!=undefined){
+if(_47b.groupId!=undefined){
+_47d["id"]=_47b.groupId;
 }else{
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: updateGroup: Id input is mandatory");
 }
-if(_477.groupName!=undefined){
-_479["GroupLabel"]=_477.groupName;
+if(_47b.groupName!=undefined){
+_47d["GroupLabel"]=_47b.groupName;
 }
 }
-_478.Data=_479;
-var _47a=this.so.IDataSource.Add(_478);
-if(_479){
-delete _479.prototype;
+_47c.Data=_47d;
+var _47e=this.so.IDataSource.Add(_47c);
+if(_47d){
+delete _47d.prototype;
 }
-if(_478){
-delete _478.Data;
-delete _478.Type;
+if(_47c){
+delete _47c.Data;
+delete _47c.Type;
 }
-if(_47a.ErrorCode!=0){
-var _47b=mappingVerification(_47a.ErrorCode);
-if(_47a.ErrorMessage){
-var _47c=splitErrorMessage(_47a.ErrorMessage);
-if(_47b){
-throw new DeviceException(MapErrorCode[_47a.ErrorCode],"Contacts: updateGroup: "+_47c);
+if(_47e.ErrorCode!=0){
+var _47f=mappingVerification(_47e.ErrorCode);
+if(_47e.ErrorMessage){
+var _480=splitErrorMessage(_47e.ErrorMessage);
+if(_47f){
+throw new DeviceException(MapErrorCode[_47e.ErrorCode],"Contacts: updateGroup: "+_480);
 }else{
-throw new DeviceException(_47a.ErrorCode,"Contacts: updateGroup: "+_47c);
+throw new DeviceException(_47e.ErrorCode,"Contacts: updateGroup: "+_480);
 }
 }else{
-if(_47b){
-throw new DeviceException(MapErrorCode[_47a.ErrorCode],"Contacts: updateGroup: Operation Failed");
+if(_47f){
+throw new DeviceException(MapErrorCode[_47e.ErrorCode],"Contacts: updateGroup: Operation Failed");
 }else{
-throw new DeviceException(_47a.ErrorCode,"Contacts: updateGroup: Operation Failed");
+throw new DeviceException(_47e.ErrorCode,"Contacts: updateGroup: Operation Failed");
 }
 }
 }
@@ -8617,51 +8609,51 @@ catch(e){
 __device_handle_exception(e,"__sp_contacts_updateGroup: "+e);
 }
 };
-function __sp_contacts_getGroupInfo(_47d){
+function __sp_contacts_getGroupInfo(_481){
 try{
-var _47e={};
-modifyObjectBaseProp(_47e);
-_47e.Type="Group";
-_47e.Filter={};
-modifyObjectBaseProp(_47e.Filter);
-if(_47d==undefined){
+var _482={};
+modifyObjectBaseProp(_482);
+_482.Type="Group";
+_482.Filter={};
+modifyObjectBaseProp(_482.Filter);
+if(_481==undefined){
 throw new DeviceException(this.error.MISSING_ARG_ERR,"Contacts: getGroupInfo: Id input is mandatory");
 }
-if((typeof _47d)!="string"){
+if((typeof _481)!="string"){
 throw new DeviceException(this.error.INVALID_ARG_ERR,"Contacts: getGroupInfo: Id input is mandatory");
 }
-_47e.Filter.id=_47d;
-var rval=this.so.IDataSource.GetList(_47e);
-if(_47e.Filter){
-delete _47e.Filter.id;
+_482.Filter.id=_481;
+var rval=this.so.IDataSource.GetList(_482);
+if(_482.Filter){
+delete _482.Filter.id;
 }
-if(_47e){
-delete _47e.Filter;
-delete _47e.Type;
+if(_482){
+delete _482.Filter;
+delete _482.Type;
 }
 if(rval){
 if(rval.ErrorCode!=0){
-var _480=mappingVerification(rval.ErrorCode);
+var _484=mappingVerification(rval.ErrorCode);
 if(rval.ErrorMessage){
-var _481=splitErrorMessage(rval.ErrorMessage);
-if(_480){
-throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroupInfo: "+_481);
+var _485=splitErrorMessage(rval.ErrorMessage);
+if(_484){
+throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroupInfo: "+_485);
 }else{
-throw new DeviceException(rval.ErrorCode,"Contacts: getGroupInfo: "+_481);
+throw new DeviceException(rval.ErrorCode,"Contacts: getGroupInfo: "+_485);
 }
 }else{
-if(_480){
+if(_484){
 throw new DeviceException(MapErrorCode[rval.ErrorCode],"Contacts: getGroupInfo: Operation Failed");
 }else{
 throw new DeviceException(rval.ErrorCode,"Contacts: getGroupInfo: Operation Failed");
 }
 }
 }else{
-var _482={};
-modifyObjectBaseProp(_482);
-var _483=rval.ReturnValue.getNext();
-__sp_device_groupinfo_build(_483,_482);
-return _482;
+var _486={};
+modifyObjectBaseProp(_486);
+var _487=rval.ReturnValue.getNext();
+__sp_device_groupinfo_build(_487,_486);
+return _486;
 }
 }
 }
@@ -8669,8 +8661,8 @@ catch(e){
 __device_handle_exception(e,"__sp_contacts_getGroupInfo:"+e);
 }
 };
-function mappingVerification(_484){
-if(_484===1016||_484===1012||_484===1010||_484===1009||_484===1005||_484===1000||_484===1011||_484===1007||_484===1003||_484===1002){
+function mappingVerification(_488){
+if(_488===1016||_488===1012||_488===1010||_488===1009||_488===1005||_488===1000||_488===1011||_488===1007||_488===1003||_488===1002||_488===1004){
 return true;
 }else{
 return false;

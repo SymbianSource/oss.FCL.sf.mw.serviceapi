@@ -36,7 +36,7 @@ const TInt KLocSecond = 1000000;
 const TInt KLocUpdateInterval = KLocSecond;
 
 //Update time out
-const TInt KLocUpdateTimeOut = 15*KLocSecond;
+const TInt KLocUpdateTimeOut = 60*KLocSecond;
 
 //MaxAge
 const TInt KLocMaxAge = 0;
@@ -130,6 +130,7 @@ _LIT8(KPositionFieldHeading , "Heading") ;
 _LIT8(KPositionFieldHeadingError , "HeadingError") ;
 _LIT8(KPositionFieldMagneticHeading , "MagneticHeading") ;
 _LIT8(KPositionFieldMagneticHeadingError , "MagneticHeadingError") ;
+_LIT8(KTime , "timestamp") ;
   
 /**
  * Direction course information which will be part of outparm list
