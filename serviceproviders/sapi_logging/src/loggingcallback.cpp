@@ -427,17 +427,20 @@ void  LoggingInterfaceCB :: HandleReqeustL( TUint aTransId, TUint aStatus, CLogs
     }   
 
 
- void  LoggingInterfaceCB :: CancelNotifyL( TUint aTransid )
+ void  LoggingInterfaceCB :: CancelNotifyL( TUint aTransid ,TBool aFlag )
     {
-    CleanupStack :: PushL( this ) ;
-    CLiwGenericParamList *OutParm = CLiwGenericParamList :: NewL() ;
-    CleanupStack :: PushL( OutParm ) ;
-    CLiwGenericParamList *InParm = CLiwGenericParamList :: NewL() ;
-    CleanupStack :: PushL( InParm ) ;
-    OutParm->AppendL( TLiwGenericParam( KErrCode , TLiwVariant( ( TInt32 )SErrNone ) ) ) ;
-    iCallBack->HandleNotifyL( aTransid, KLiwEventCanceled, *OutParm, *InParm ) ;
-    CleanupStack::PopAndDestroy( InParm );
-    CleanupStack::PopAndDestroy( OutParm );
-    CleanupStack :: Pop( this ) ;
+    if(aFlag)
+        {
+        CleanupStack :: PushL( this ) ;
+        CLiwGenericParamList *OutParm = CLiwGenericParamList :: NewL() ;
+        CleanupStack :: PushL( OutParm ) ;
+        CLiwGenericParamList *InParm = CLiwGenericParamList :: NewL() ;
+        CleanupStack :: PushL( InParm ) ;
+        OutParm->AppendL( TLiwGenericParam( KErrCode , TLiwVariant( ( TInt32 )SErrNone ) ) ) ;
+        iCallBack->HandleNotifyL( aTransid, KLiwEventCanceled, *OutParm, *InParm ) ;
+        CleanupStack::PopAndDestroy( InParm );
+        CleanupStack::PopAndDestroy( OutParm );
+        CleanupStack :: Pop( this ) ;
+        }  
     delete this;
     }
