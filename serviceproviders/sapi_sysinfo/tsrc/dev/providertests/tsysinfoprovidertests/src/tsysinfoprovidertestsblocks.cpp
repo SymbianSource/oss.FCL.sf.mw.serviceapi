@@ -160,7 +160,7 @@ TInt  Ctsysinfoprovidertests::GetListofDrivesL(CStifItemParser& /*aItem*/)
 	else
 		{
 		const CLiwMap* outmap = ret_val->Value().AsMap();
-		const CLiwList* drvlist;
+		const CLiwList* drvlist = NULL;
 		TLiwVariant variant_drvlist;
 		
 		if( outmap->FindL(KDriveList,variant_drvlist) )
@@ -251,7 +251,7 @@ TInt  Ctsysinfoprovidertests::GetDriveInfoL(CStifItemParser& /*aItem*/)
 	else
 		{
 		const CLiwMap* outmap = ret_val->Value().AsMap();
-		const CLiwList* drvlist;
+		const CLiwList* drvlist = NULL;
 		TLiwVariant variant_drvlist;
 		
 		if( outmap->FindL(KDriveList,variant_drvlist) )
@@ -2718,9 +2718,9 @@ TInt Ctsysinfoprovidertests::SetDisplayLang(CStifItemParser& /*aItem*/)
         interface->Close();
 
         CleanupStack::PopAndDestroy(iServiceHandler);
-
-        return result;
         __UHEAP_MARKEND;
+        return result;
+
         }
     else
         {
@@ -3015,10 +3015,10 @@ TInt  Ctsysinfoprovidertests::SetInputLang(CStifItemParser& /*aItem*/)
 	interface->Close();
 	
 	CleanupStack::PopAndDestroy( iServiceHandler );
-	
+	__UHEAP_MARKEND;	
 	return result;	
 	
-	__UHEAP_MARKEND;
+
 
 
 	}
@@ -3324,7 +3324,7 @@ TInt  Ctsysinfoprovidertests::GetActiveConnectionsReqCancel(CStifItemParser& /*a
 //
 TInt Ctsysinfoprovidertests::GetCameraInfoTest(CStifItemParser& aItem)
     {
-    TInt retcode;
+    TInt retcode = 0;
     iLog->Log(_L("GetCameraInfoTest - Positive Test") );
 
     __UHEAP_MARK;

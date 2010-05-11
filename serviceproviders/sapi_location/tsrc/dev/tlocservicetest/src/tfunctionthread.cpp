@@ -350,7 +350,7 @@ TInt ServiceFailedFunctionL()
 
 TInt ServiceFailedTest(TAny */*Arg*/)
 {
-    TInt errRet;
+    TInt errRet = 0;
     CTrapCleanup* cleanup = CTrapCleanup::New();
     TRAPD(err , errRet = ServiceFailedFunctionL()) ;
     delete cleanup ;
@@ -394,7 +394,7 @@ TInt ConcurrentGetLocationCalls(TAny */*Arg*/)
 {
   
 	CTrapCleanup* cleanup = CTrapCleanup::New();
-	TInt  Val ;
+	TInt  Val = 0;
 	//Install a new active scheduler to this thread 
 	TRAPD(err ,( Val = ConcurrentGetLocCallsL()) );
 	delete cleanup ;
@@ -450,7 +450,7 @@ TInt ConcurrentTraceCalls(TAny */*Arg*/)
 {
   
 	CTrapCleanup* cleanup = CTrapCleanup::New();
-	TInt  Val ;
+	TInt  Val = 0;
 	//Install a new active scheduler to this thread 
 	TRAPD(err ,( Val = ConcurrentTraceCallsL()) );
 	delete cleanup ;
@@ -468,7 +468,7 @@ TInt TraceTimeOutFunc(TAny */*Arg*/)
     {
 
     CTrapCleanup* cleanup = CTrapCleanup::New();
-    TInt  Val ;
+    TInt  Val = 0;
     //Install a new active scheduler to this thread 
     TRAPD(err ,( Val = TraceTimeOutFuncL()) );
     delete cleanup ;

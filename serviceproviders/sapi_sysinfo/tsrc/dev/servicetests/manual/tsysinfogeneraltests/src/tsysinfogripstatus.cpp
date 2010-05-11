@@ -125,12 +125,17 @@ void CTestAsync6::TestFunc()
 	CSysData* data1 = NULL;
 	
 	TRAPD(err2,iSysInfoService->GetInfoL(KGeneral,KGripStatus,data1));
-		
+   iResult = err2;
+   if( err2 != KErrNone )		
+      return;
 	gripstatus = ((CStatus*)data1)->Status();
 	
 	CStatus* data2 = CStatus::NewL(!gripstatus);
 
 	TRAPD(err3,iSysInfoService->SetInfoL(KGeneral,KGripStatus,data2));
+   iResult = err3;
+   if( err3 != KErrNone )		
+      return;
 	delete data1;
 	delete data2;
 

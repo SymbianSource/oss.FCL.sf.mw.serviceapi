@@ -76,6 +76,7 @@ TInt CAppObserver :: HandleNotifyL( TInt /*aCmdId*/, TInt aEventId, CLiwGenericP
     
      
     iWait->AsyncStop();
+		return 0;
     }
 
 

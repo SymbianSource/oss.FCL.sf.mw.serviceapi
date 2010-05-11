@@ -814,6 +814,7 @@ TInt CTLocTest :: EmptyCancelTrace(CStifItemParser& /*aItem*/)
     
     delete CoreObj;
     __UHEAP_MARKEND ;
+    return error;
 }
 
 TInt CTLocTest :: EmptyCancelLocAsynch(CStifItemParser& /*aItem*/)

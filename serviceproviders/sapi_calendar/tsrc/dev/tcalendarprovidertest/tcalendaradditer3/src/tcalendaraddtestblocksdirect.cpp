@@ -81,7 +81,7 @@ public:
 	int UpdateInstanceWithRepeat();
 	int UpdateEntryWithRepeatAndExceptionDates();
 	int AddEntryWithVeryLongDescription();
-	TDesC& GetEntry(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC localuid, const TDesC& calname );
+	TDesC GetEntry(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC localuid, const TDesC& calname );
 	CTestSync();
 	~CTestSync();
 
@@ -1304,7 +1304,7 @@ int CTestSync::AddEntryWithVeryLongDescription()
 
 	}
 
-TDesC& CTestSync::GetEntry(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC globaluid, const TDesC& calname)
+TDesC CTestSync::GetEntry(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC globaluid, const TDesC& calname)
 	{
 	inparam->Reset();
 	outparam->Reset();

@@ -365,11 +365,11 @@ __UHEAP_MARK;
     delete icontactservice;
   __UHEAP_MARKEND;
     return KErrNone ;
-	    delete icallback;
-    delete icontactservice;
-  __UHEAP_MARKEND;
+	 //   delete icallback;
+    //delete icontactservice;
+  //__UHEAP_MARKEND;
     
-    return KErrGeneral;
+    //return KErrGeneral;
   
    
   }        
@@ -734,7 +734,7 @@ CleanupStack::PushL(xspid);
         _LIT( KLog4, "before calling add" );
     iLog->Log( KLog4 );
         /* Add the contactitem */
-        HBufC8* cntId;
+        HBufC8* cntId = NULL;
         TRAPD(err,cntId= icontactservice->AddL(singleContact));
        
         TPtr8 cntIdPtrVal(cntId->Des());
@@ -919,7 +919,7 @@ CleanupStack::PushL(xspid);
   //      aItem.GetNextInt(count) ;
 
         /* Add the contactitem */
-        HBufC8* cntId;
+        HBufC8* cntId = NULL;
         TRAPD(err,cntId= icontactservice->AddL(singleContact));
         TPtr8 cntIdPtrVal(cntId->Des());
         
@@ -941,7 +941,7 @@ delete cntId;
              return KErrGeneral ;
 			 }
          newFields = ETrue;
-         CContactIter* iterVal;
+         CContactIter* iterVal = NULL;
          
          TPtr8 cntIdPtr(cntId->Des());
          TRAPD(error, iterVal = icontactservice->GetListL(EContacts,cntIdPtr));  

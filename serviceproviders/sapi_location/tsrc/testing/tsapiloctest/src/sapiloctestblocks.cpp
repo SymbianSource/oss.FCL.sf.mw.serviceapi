@@ -3229,7 +3229,7 @@ class TraceLCallBackOpts3 : public MLocationCallBack
     TInt iRequestType;
     public :
         TInt HandleNotifyL(HPositionGenericInfo* aOutPos , TInt aError) ;
-        TraceLCallBackOpts3(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral){+
+        TraceLCallBackOpts3(TInt transId,TInt req) :iCount(0) , iRetStatus(KErrGeneral){
         iTransactionId = transId;
         iRequestType = req;
         }
@@ -3785,7 +3785,7 @@ TInt CSAPILocTest::GetPositionOpts( CStifItemParser& /*aItem*/ )
 //
 TInt CSAPILocTest::GetPositionOpts1( CStifItemParser& /*aItem*/ )
     {
-    TInt ret;
+    TInt ret = 0;
     TPositionInfo currPos;
     TPositionUpdateOptions options;
     TTimeIntervalMicroSeconds aTimeOut = 0;

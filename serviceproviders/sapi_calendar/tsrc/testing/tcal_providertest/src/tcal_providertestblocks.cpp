@@ -3664,7 +3664,7 @@ TInt RemoveProvCalendar(CLiwGenericParamList* inparam, CLiwGenericParamList* out
     TInt pos = 0 ;
 
     const TLiwGenericParam* output = outparam->FindFirst( pos,_L8("ErrorCode"));
-	TInt32 err;
+	TInt32 err = 0;
 	if(output)
 		{
 		err = output->Value().AsTInt32();
@@ -3707,7 +3707,7 @@ TInt AddProvCalendar(CLiwGenericParamList* inparam, CLiwGenericParamList* outpar
     TInt pos = 0 ;
 
     const TLiwGenericParam* output = outparam->FindFirst( pos,_L8("ErrorCode"));
-	TInt32 err;
+	TInt32 err = 0;
 	if(output)
 		{
 		err = output->Value().AsTInt32();
@@ -3776,7 +3776,7 @@ TInt AddProvAppointmentDailyRepeat(CLiwGenericParamList* inparam, CLiwGenericPar
     const TLiwGenericParam* output = outparam->FindFirst( pos,_L8("ErrorCode"));
 
 	cells = User::CountAllocCells();
-	TInt32 err;
+	TInt32 err = 0;
 	if(output)
 		{
 		err = output->Value().AsTInt32();
@@ -3963,7 +3963,7 @@ TInt AddAppointmentProvLocal(CLiwGenericParamList* inparam, CLiwGenericParamList
     const TLiwGenericParam* output = outparam->FindFirst( pos,_L8("ErrorCode"));
 
 	cells = User::CountAllocCells();
-	TInt32 err;
+	TInt32 err = 0;
 	if(output)
 		{
 		err = output->Value().AsTInt32();
@@ -4041,7 +4041,7 @@ TInt AddProvToDo(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, 
     const TLiwGenericParam* output = outparam->FindFirst( pos,_L8("ErrorCode"));
 
 	cells = User::CountAllocCells();
-	TInt32 err;
+	TInt32 err = 0;
 	if(output)
 		{
 		err = output->Value().AsTInt32();
@@ -4119,7 +4119,7 @@ TInt AddProvEvent(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam,
     const TLiwGenericParam* output = outparam->FindFirst( pos,_L8("ErrorCode"));
 
 	cells = User::CountAllocCells();
-	TInt32 err;
+	TInt32 err = 0;
 	if(output)
 		{
 		err = output->Value().AsTInt32();

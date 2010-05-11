@@ -75,7 +75,7 @@ TInt CAppObserver :: HandleNotifyL( TInt /*aCmdId*/, TInt aEventId, CLiwGenericP
         }
     
      
-  
+ 		return 0; 
     }
 
 
@@ -91,3 +91,5 @@ CAppObserver::CAppObserver(CActiveSchedulerWait * aWait )
 	 iReason = 10 ; //Reason of failure can be either 0 or some negative valuw which incater 
 	 //error but it cant be greater than 0 
 	}
+	
+	

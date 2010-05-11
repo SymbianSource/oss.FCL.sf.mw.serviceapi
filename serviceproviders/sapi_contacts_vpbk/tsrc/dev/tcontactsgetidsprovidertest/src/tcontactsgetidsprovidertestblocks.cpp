@@ -168,6 +168,7 @@ TInt Ctcontactsgetidsprovidertest::RunMethodL(CStifItemParser& aItem)
           User::Leave(KErrNotFound);
           }
       } */
+	return 0;
   }
  TInt Ctcontactsgetidsprovidertest::AddL( CStifItemParser& aItem )
      {  

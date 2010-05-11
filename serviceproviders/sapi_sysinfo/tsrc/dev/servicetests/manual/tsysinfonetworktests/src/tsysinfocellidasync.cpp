@@ -81,7 +81,8 @@ TInt CCellidAsync::Result()
 
 void CCellidAsync::TestFuncL()
 	{
-	const TTimeIntervalMicroSeconds32 OneMinute(60000000);
+	TInt64 x = 6000000000;
+  const TTimeIntervalMicroSeconds32 OneMinute = TTimeIntervalMicroSeconds32(x);
 	iTransId = 333;
 	TRAPD(err ,iSysInfoService->GetInfoL(KNetwork,KCellID,iTransId,this));
 	iResult  = err;

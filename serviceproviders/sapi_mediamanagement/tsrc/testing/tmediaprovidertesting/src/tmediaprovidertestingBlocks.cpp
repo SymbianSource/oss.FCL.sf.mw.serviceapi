@@ -123,6 +123,7 @@ TInt Ctmediaprovidertesting::RunMethodL(CStifItemParser& aItem)
           User::Leave(KErrNotFound);
           }
       }
+   return KErrNone;
   }
 
 /* --------------------------------------------------------------------------

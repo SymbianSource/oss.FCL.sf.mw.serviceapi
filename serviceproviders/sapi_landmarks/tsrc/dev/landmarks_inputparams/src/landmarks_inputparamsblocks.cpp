@@ -1220,7 +1220,7 @@ TInt Clandmarks_inputparams::CheckAscending(TType aType, CLiwIterable* aIter)
         variant.Reset();
         var.Reset();
     }
-    
+   return 0;    
     }
     
 TInt Clandmarks_inputparams::CheckDescending(TType aType, CLiwIterable* aIter)
@@ -1253,7 +1253,7 @@ TInt Clandmarks_inputparams::CheckDescending(TType aType, CLiwIterable* aIter)
         variant.Reset();
         var.Reset();
     }
-    
+   return 0;    
     }
 // ========================== OTHER EXPORTED FUNCTIONS =========================
 // None

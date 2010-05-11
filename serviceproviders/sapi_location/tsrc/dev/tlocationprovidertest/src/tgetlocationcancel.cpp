@@ -39,7 +39,7 @@ class GetLoctionCancel : public MLiwNotifyCallback
             CLiwGenericParamList& aEventParamList,
             const CLiwGenericParamList& aInParamList) 
 		    {
-		        
+            return 0;		        
 		    }
 
 		GetLoctionCancel() : iRetStatus(KErrGeneral)  //Default constructor 
@@ -151,7 +151,7 @@ TInt GetLocCancel(TAny * /*Arg*/)
 {
 //	__UHEAP_MARK;
 	CTrapCleanup* cleanup = CTrapCleanup::New();
-    TInt val ;
+    TInt val = 0;
     TRAPD(err , (val = GetLocCancelL() ) ) ;
     delete cleanup ;
  //    __UHEAP_MARKEND;   

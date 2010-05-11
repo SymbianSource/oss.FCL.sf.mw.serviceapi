@@ -135,7 +135,7 @@ TInt CIServiceTestModule :: HandleNotifyL(TInt /*aCmdId*/,
         if(code != iExpectedError)
             {                        
             iResult =  KErrGeneral;
-            return;    
+            return 0;    
             }
         } 
         
@@ -151,7 +151,7 @@ TInt CIServiceTestModule :: HandleNotifyL(TInt /*aCmdId*/,
             iResult = KErrNone;    
             }     
     	}                      
-    
+   return 0;    
     }
                     
 TInt CIServiceTestModule::LoadProviderTest(CStifItemParser& aItem)
@@ -513,6 +513,7 @@ TInt CIServiceTestModule::CancelInvalidTransID(CStifItemParser& aItem)
             
     Delete();
     __UHEAP_MARKEND;               
+    return 0;
     }
 
 
@@ -843,8 +844,8 @@ TBool CIServiceTestModule::CompareTRealResult(const TDesC8& aKey,
     TLiwVariant resValue; 
         
     TBool equal = EFalse; 
-    TReal expValueReal;
-    TReal resValueReal;
+    TReal expValueReal = 0;
+    TReal resValueReal = 0;
     
     if(!aExpectedMap->FindL(aKey, expValue))
         {

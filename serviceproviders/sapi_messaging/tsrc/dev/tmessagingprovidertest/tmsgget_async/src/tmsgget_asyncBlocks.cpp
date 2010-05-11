@@ -260,7 +260,7 @@ TInt Ctmsgget_async::HandleNotifyL(TInt aCmdId,
              else
              iResult= KErrGeneral;
            
-
+		return 0;
     }
 
 // -----------------------------------------------------------------------------

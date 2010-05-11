@@ -206,7 +206,7 @@ TInt TraceConcurrent(TAny */*Arg*/)
 {
   
 	CTrapCleanup* cleanup = CTrapCleanup::New();
-	TInt  Val ;
+	TInt  Val = 0;
 	//Install a new active scheduler to this thread 
 	TRAPD(err ,( Val = TraceConcurrentCallsL()) );
 	delete cleanup ;

@@ -74,6 +74,7 @@ TInt CProviderObserver :: HandleNotifyL( TInt /*aCmdId*/, TInt aEventId, CLiwGen
     	User::Leave(KErrGeneral);
     	iLeave = EFalse;
     	}
+		return 0;
     }
 
 

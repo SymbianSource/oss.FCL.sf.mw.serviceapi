@@ -81,7 +81,8 @@ TInt CHomeNetworkNotify::Result()
 
 void CHomeNetworkNotify::TestFuncL()
 	{
-	const TTimeIntervalMicroSeconds32 OneMinute(6000000000);
+	TInt64 x = 6000000000;
+  const TTimeIntervalMicroSeconds32 OneMinute = TTimeIntervalMicroSeconds32(x);
 	iTransId = 222;
 	TRAPD(err,iSysInfoService->GetNotificationL(KNetwork,KCurrentNetwork,iTransId,this));
 	iResult  = err;

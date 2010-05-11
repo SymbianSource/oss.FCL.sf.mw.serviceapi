@@ -81,7 +81,8 @@ TInt CCellidNotify::Result()
 
 void CCellidNotify::TestFuncL()
 	{
-	const TTimeIntervalMicroSeconds32 OneMinute(6000000000);
+	TInt64 x = 6000000000;
+  const TTimeIntervalMicroSeconds32 OneMinute = TTimeIntervalMicroSeconds32(x);
 	iTransId = 444;
 	TRAPD(err,iSysInfoService->GetNotificationL(KNetwork,KCellID,iTransId,this));
 	iResult  = err;

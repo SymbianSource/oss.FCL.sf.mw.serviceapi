@@ -299,7 +299,7 @@ TInt EnableHighAcc_PosBased(TAny *aFlag)
     {
 
     CTrapCleanup* cleanup = CTrapCleanup::New();
-    TInt  Val ;
+    TInt  Val = 0;
     TInt *flag = static_cast<TInt *>(aFlag);
     TInt err;
     //Install a new active scheduler to this thread
