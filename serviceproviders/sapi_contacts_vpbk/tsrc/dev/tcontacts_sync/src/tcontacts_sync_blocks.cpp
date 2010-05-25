@@ -23,7 +23,7 @@
 #include <StifParser.h>
 #include <StifTestInterface.h>
 #include <VPbkEng.rsg>
-
+#include <mmfcontrollerpluginresolver.h>
 #include <MVPbkContactFieldTextData.h>
 #include <MVPbkContactStoreList.h>
 #include <MVPbkContactOperationBase.h>
@@ -582,7 +582,8 @@ void CContactsUT::AddOneContactL(TDesC& aName)
     
 //Check for contact
 void CContactsUT::CheckContactsL(TInt& aCount,RPointerArray<TDesC8>& aIdArray)
-    {    
+    {  
+    CleanupResetAndDestroyPushL(aIdArray);  
     // Print to UI
     _LIT( KContactsTest, "ContactsUT" );
     _LIT( KExample, "In CheckContactsL" );
@@ -608,7 +609,8 @@ void CContactsUT::CheckContactsL(TInt& aCount,RPointerArray<TDesC8>& aIdArray)
         }
     delete iFindResults;
     iFindResults = NULL;
-   // __UHEAP_MARKENDC(aCount);          
+   // __UHEAP_MARKENDC(aCount);   
+   CleanupStack::Pop(&aIdArray);       
     }
     
 // -----------------------------------------------------------------------------

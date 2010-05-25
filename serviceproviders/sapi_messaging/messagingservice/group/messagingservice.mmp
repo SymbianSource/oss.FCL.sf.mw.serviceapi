@@ -59,7 +59,7 @@ LIBRARY        	apmime.lib
 LIBRARY         smcm.lib
 LIBRARY         charconv.lib
 LIBRARY         mtur.lib
-
+LIBRARY		gsmu.lib
  
 
 paged
