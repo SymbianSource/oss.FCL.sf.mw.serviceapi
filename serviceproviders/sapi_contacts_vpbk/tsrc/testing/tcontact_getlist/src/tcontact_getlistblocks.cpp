@@ -619,10 +619,6 @@ TInt Ctmanualcontacts::GetList_Test10L( CStifItemParser& aItem )
         
     CContactIter* iter = CContactIter::NewL();
     icontactservice->GetListL(*iter);
-    delete iter;
-	    delete icallback;
-    delete icontactservice;
-  __UHEAP_MARKEND;
     TPtrC buf(_L(""));
      
      iter->NextL(buf);
@@ -631,16 +627,15 @@ TInt Ctmanualcontacts::GetList_Test10L( CStifItemParser& aItem )
       {	  count++;
           iter->NextL(buf);
   	  } 
-	if(count==2)
-	{
+   delete iter;
+   delete icallback;
+   delete icontactservice;
+   __UHEAP_MARKEND;  
 
+   if(count==2)
     return KErrNone ;   
-	}
-delete iter;
-	    delete icallback;
-    delete icontactservice;
-  //__UHEAP_MARKEND;	
-	return KErrGeneral;
+   else 
+    return KErrGeneral;
 }
 
 /* get all contacts from the phonebook ie contacts.cdb,manual*/
