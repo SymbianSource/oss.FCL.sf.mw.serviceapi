@@ -96,10 +96,12 @@ void CSysInfoObserver::HandleResponseL(const TDesC& aEntity,const TDesC& aKey,
         eventParamList->AppendL(TLiwGenericParam(KErrorCode,TLiwVariant((TInt32)SapiErr)));
         CLiwMap* outparam=NULL;
 
-        if( (aOutput->DataType() == CSysData::EAccessoryList) ||
-                (aOutput->DataType() == CSysData::EConnectionList) )
-            ownership = ETrue;
-
+        if(aOutput)
+            {
+            if( (aOutput->DataType() == CSysData::EAccessoryList) ||
+                    (aOutput->DataType() == CSysData::EConnectionList) )
+                ownership = ETrue;
+            }
         CSysInfoInterface::ConvertSysData2AiwParamL(aOutput,outparam);
         //Add Entity and Key to the output map.
         if(outparam)

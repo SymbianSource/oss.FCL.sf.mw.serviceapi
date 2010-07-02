@@ -32,6 +32,7 @@ const TInt KArrayGranularity = 5;
 
 _LIT(KForeground ,"Foreground");
 _LIT(KStandalone,"Standalone");
+_LIT(KChained,"Chained");
 /**
 * This is an interface class which provides the information about the installed application or package as per 
 * content type.

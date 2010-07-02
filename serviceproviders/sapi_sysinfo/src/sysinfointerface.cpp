@@ -668,250 +668,253 @@ void CSysInfoInterface::ConvertSysData2AiwParamL(const CSysData* aInSysData,
     aOutMapParam = CLiwDefaultMap::NewL();
     CleanupClosePushL(*aOutMapParam);
     TInt count = 0;
-    switch (aInSysData->DataType())
+    if(aInSysData)
         {
-        case CSysData::EStatus:
+        switch (aInSysData->DataType())
             {
-            TInt32 status = ((CStatus*) aInSysData)->Status();
-            aOutMapParam->InsertL(KStatus,(TInt32)status);
-            }
-            break;
-        case CSysData::EVersion:
-            {
-            TBuf<KMaxVersionTxt> majortxt(KNullDesC);
-            TBuf<KMaxVersionTxt> minortxt(KNullDesC);
-            majortxt.FillZ(0);
-            minortxt.FillZ(0);
-            const CVersion* version = (CVersion*) aInSysData;
-            NumberConversion::AppendFormatNumber (majortxt, 
-                            version->MajorVersion(),EDigitTypeWestern);
-            aOutMapParam->InsertL(KMajorVersion,majortxt);
-            NumberConversion::AppendFormatNumber (minortxt, 
-                            version->MinorVersion(),EDigitTypeWestern);
-            aOutMapParam->InsertL(KMinorVersion,minortxt);
-            }
-            break;
-        case CSysData::EConnectionList:
-            {
-            CConnectionList* dataconnections = (CConnectionList*) aInSysData;
-            CSysInfoConnList* connlist = CSysInfoConnList::NewL(dataconnections);
-            CleanupClosePushL(*connlist);
-            aOutMapParam->InsertL(KConnectionList,connlist);
-            CleanupStack::PopAndDestroy(connlist);
-            }
-            break;
-        case CSysData::ENetworkInfo:
-            {
-            const CNetworkInfo* networkinfo = (CNetworkInfo*) aInSysData;
-            aOutMapParam->InsertL(KNetworkName,networkinfo->NetworkName());
-            aOutMapParam->InsertL(KNetworkStatus,
-                                        (TInt32)networkinfo->NetworkStatus());
-            aOutMapParam->InsertL(KNetworkMode,(TInt32)networkinfo->NetworkMode());
-            aOutMapParam->InsertL(KCountryCode,networkinfo->CountryCode());
-            aOutMapParam->InsertL(KNetworkCode,networkinfo->NetworkCode());
-            aOutMapParam->InsertL(KLocationStatus,
-                                        networkinfo->ValidLocationAreaCode());
-            aOutMapParam->InsertL(KAreaCode,(TInt32)networkinfo->LocationAreaCode());
-            aOutMapParam->InsertL(KCellId,(TInt32)networkinfo->CellId());
-            }
-            break;
-        case CSysData::EConnectionInfo:
-            {
-            const CConnectionInfo* connectioninfo = 
-                                            ((CConnectionInfo*) aInSysData);
-            aOutMapParam->InsertL(KIAPID,(TInt32)connectioninfo->IAPId());
-            aOutMapParam->InsertL(KIAPName,connectioninfo->IAPName());
-            aOutMapParam->InsertL(KIAPConnectionName,
-                                            connectioninfo->ConnectionName());
-            aOutMapParam->InsertL(KNetworkName,connectioninfo->NetworkName());
-            aOutMapParam->InsertL(KConnectionType,
-                                        (TInt32)connectioninfo->BearerType());
-            aOutMapParam->InsertL(KConnectionStatus,
-                                    (TInt32)connectioninfo->ConnectionState());
-            }
-            break;
-        case CSysData::EDriveInfo:	
-            {
-            const CDriveInfo* driveinfo = (CDriveInfo*) aInSysData;		
-            
-            TBuf<KMaxDriveLength> drive;
-            drive.FillZ();
-            drive.Append('A'+driveinfo->DriveNumber());
-            drive.Append(KDriveSeperator);
-            
-            aOutMapParam->InsertL(KDriveNo,drive);
-            aOutMapParam->InsertL(KCriticalSpace,
-                                        (TInt32)driveinfo->CriticalSpace());
-            aOutMapParam->InsertL(KMediaType,(TInt32)driveinfo->MediaType());
-            //totalspace and freespace converted to string .
-            TBuf<KMax64BitNumLen> string64bitnum(KNullDesC);
-            string64bitnum.FillZ(0);
-            string64bitnum.Num(driveinfo->TotalSpace());
-            aOutMapParam->InsertL(KTotalSpace,string64bitnum);
-            string64bitnum.FillZ(0);
-            string64bitnum.Num(driveinfo->FreeSpace());
-            aOutMapParam->InsertL(KFreeSpace,string64bitnum);
-            TPtrC drvname;
-            driveinfo->DriveName(drvname);
-            aOutMapParam->InsertL(KDriveName,drvname);
-            aOutMapParam->InsertL(KBatteryState,(TInt32)driveinfo->BatteryState());
-            }
-            break;
-            
-        case CSysData::EAccessoryInfo:
-            {
-            const CAccessoryInfo* accessoryinfo = ((CAccessoryInfo*) aInSysData);
-            aOutMapParam->InsertL(KAccessoryType,
-                                    (TInt32)accessoryinfo->AccessoryType());
-            aOutMapParam->InsertL(KAccessoryState,
-                                    (TInt32)accessoryinfo->ConnectionState());
-            }
-            break;
-        case CSysData::EResolution:
-            {
-            const CResolution* resolution = ((CResolution*) aInSysData);
-            aOutMapParam->InsertL(KXPixels,(TInt32)resolution->XPixels());
-            aOutMapParam->InsertL(KYPixels,(TInt32)resolution->YPixels());
-            }
-            break;
-        case CSysData::EStringData:
-            {
-            const CStringData* stringdata = ((CStringData*) aInSysData);
-            TPtrC string;
-            stringdata->StringData(string);
-            aOutMapParam->InsertL(KStringData,string);
-            }
-            break;
-        case CSysData::EAccessoryList:
-            {
-            CAccList* accessories = (CAccList*) aInSysData;
-            CSysInfoAccList* accessorylist = CSysInfoAccList::NewL(accessories);
-            CleanupClosePushL(*accessorylist);
-            aOutMapParam->InsertL(KAccessoryList,accessorylist);
-            CleanupStack::PopAndDestroy(accessorylist);
-            }
-            break;
-        case  CSysData::ELanguageList:
-            {
-            CLiwList* langlist = CLiwDefaultList::NewL();
-            CleanupClosePushL(*langlist);
-            const CLanguageList* languages = ((CLanguageList*) aInSysData);
-            count= languages->Count();
-            for(int index=0; index<count; index++ )
+            case CSysData::EStatus:
                 {
-                TInt language = 0;
-                languages->At(index,language);
-                langlist->AppendL(TLiwVariant(((TInt32)language)));
+                TInt32 status = ((CStatus*) aInSysData)->Status();
+                aOutMapParam->InsertL(KStatus,(TInt32)status);
                 }
-            aOutMapParam->InsertL(KLanguageList,langlist);
-            CleanupStack::PopAndDestroy(langlist);
-            }
-            break;
-
-        case  CSysData::EDriveList:
-            {
-            CLiwList* drivelist = CLiwDefaultList::NewL();
-            CleanupClosePushL(*drivelist);
-            const CDriveList* drives = ((CDriveList*) aInSysData);
-            count = drives->Count();
-            for(int index=0; index<count; index++ )
+                break;
+            case CSysData::EVersion:
                 {
-                TInt driveVal = 0;
-                drives->At(index,driveVal);
+                TBuf<KMaxVersionTxt> majortxt(KNullDesC);
+                TBuf<KMaxVersionTxt> minortxt(KNullDesC);
+                majortxt.FillZ(0);
+                minortxt.FillZ(0);
+                const CVersion* version = (CVersion*) aInSysData;
+                NumberConversion::AppendFormatNumber (majortxt, 
+                                version->MajorVersion(),EDigitTypeWestern);
+                aOutMapParam->InsertL(KMajorVersion,majortxt);
+                NumberConversion::AppendFormatNumber (minortxt, 
+                                version->MinorVersion(),EDigitTypeWestern);
+                aOutMapParam->InsertL(KMinorVersion,minortxt);
+                }
+                break;
+            case CSysData::EConnectionList:
+                {
+                CConnectionList* dataconnections = (CConnectionList*) aInSysData;
+                CSysInfoConnList* connlist = CSysInfoConnList::NewL(dataconnections);
+                CleanupClosePushL(*connlist);
+                aOutMapParam->InsertL(KConnectionList,connlist);
+                CleanupStack::PopAndDestroy(connlist);
+                }
+                break;
+            case CSysData::ENetworkInfo:
+                {
+                const CNetworkInfo* networkinfo = (CNetworkInfo*) aInSysData;
+                aOutMapParam->InsertL(KNetworkName,networkinfo->NetworkName());
+                aOutMapParam->InsertL(KNetworkStatus,
+                                            (TInt32)networkinfo->NetworkStatus());
+                aOutMapParam->InsertL(KNetworkMode,(TInt32)networkinfo->NetworkMode());
+                aOutMapParam->InsertL(KCountryCode,networkinfo->CountryCode());
+                aOutMapParam->InsertL(KNetworkCode,networkinfo->NetworkCode());
+                aOutMapParam->InsertL(KLocationStatus,
+                                            networkinfo->ValidLocationAreaCode());
+                aOutMapParam->InsertL(KAreaCode,(TInt32)networkinfo->LocationAreaCode());
+                aOutMapParam->InsertL(KCellId,(TInt32)networkinfo->CellId());
+                }
+                break;
+            case CSysData::EConnectionInfo:
+                {
+                const CConnectionInfo* connectioninfo = 
+                                                ((CConnectionInfo*) aInSysData);
+                aOutMapParam->InsertL(KIAPID,(TInt32)connectioninfo->IAPId());
+                aOutMapParam->InsertL(KIAPName,connectioninfo->IAPName());
+                aOutMapParam->InsertL(KIAPConnectionName,
+                                                connectioninfo->ConnectionName());
+                aOutMapParam->InsertL(KNetworkName,connectioninfo->NetworkName());
+                aOutMapParam->InsertL(KConnectionType,
+                                            (TInt32)connectioninfo->BearerType());
+                aOutMapParam->InsertL(KConnectionStatus,
+                                        (TInt32)connectioninfo->ConnectionState());
+                }
+                break;
+            case CSysData::EDriveInfo:	
+                {
+                const CDriveInfo* driveinfo = (CDriveInfo*) aInSysData;		
+                
                 TBuf<KMaxDriveLength> drive;
                 drive.FillZ();
-                drive.Append('A'+driveVal);
+                drive.Append('A'+driveinfo->DriveNumber());
                 drive.Append(KDriveSeperator);
-                drivelist->AppendL(TLiwVariant(drive));
-                }
-            aOutMapParam->InsertL(KDriveList,drivelist);
-            CleanupStack::PopAndDestroy(drivelist);
-            }
-            break;	
-
-        case  CSysData::EStringList:
-            {
-            CLiwList* stringlist = CLiwDefaultList::NewL();
-            CleanupClosePushL(*stringlist);
-            CStringList* strings = ((CStringList*) aInSysData);
-            count = strings->Count();
-            for(int index=0; index<count; index++ )
-                {
-                TPtrC string;
-                strings->At(index,string);
-                stringlist->AppendL(TLiwVariant(string));
-                }
-            aOutMapParam->InsertL(KStringList,stringlist);
-            CleanupStack::PopAndDestroy(stringlist);
-            }
-            break;	
-        case CSysData::ECameraInfo:
-            {
-            CLiwList* camResList = CLiwDefaultList::NewL();
-            CleanupClosePushL( *camResList );
-            CLiwList* camMimeTypesList = CLiwDefaultList::NewL();
-            CleanupClosePushL( *camMimeTypesList );
-            const CCameraInfo* camInfo = ((CCameraInfo*) aInSysData);
-            count = camInfo->ResolutionList()->Count();
-
-            for ( int index=0; index<count; index++ )
-                {
-                TInt val = 0;
-                CLiwMap* resMap = CLiwDefaultMap::NewL();
-                CleanupStack::PushL( resMap );
-                camInfo->ResolutionList()->At( index, 0, val );
-                resMap->InsertL( KXPixels, (TInt32)val );
-                camInfo->ResolutionList()->At( index, 1, val );
-                resMap->InsertL( KYPixels, (TInt32)val );
-                camResList->AppendL( resMap );
-                CleanupStack::Pop( resMap );
-                resMap->Close();
-                TPtrC string;
-                camInfo->MimeTypesList()->At( index, string );
-                camMimeTypesList->AppendL( string );
-                }
-            aOutMapParam->InsertL( KCamResList, camResList );
-            aOutMapParam->InsertL( KCamMimeTypesList, camMimeTypesList );
-            CleanupStack::PopAndDestroy( camMimeTypesList );
-            CleanupStack::PopAndDestroy( camResList );
-            }
-            break; 
-        case CSysData::EVideoDecList:
-            {
-            CLiwList* decResList = CLiwDefaultList::NewL();
-            CleanupClosePushL( *decResList );
-            const CVideoDecDataList* declist = ((CVideoDecDataList*) aInSysData);
-            count = declist->Count();
-            CVideoDecDataList::CVideoDecData * decinfo = NULL;
-            
-            for ( int index=0; index<count; index++ )
-                {
-                TInt val = 0;
-                CLiwMap* resMap = CLiwDefaultMap::NewL();
-                CleanupStack::PushL( resMap );
-                decinfo=(*declist)[index];
-                TPtrC temp;
-                temp.Set(*(decinfo->Manufacturer));
-                TPtrC temp1;
-                temp1.Set(*(decinfo->Identifier));
                 
-                resMap->InsertL( KDecManufacturer, temp );
-                resMap->InsertL( KIdentifier, temp1 );
-                resMap->InsertL( KMaxBitrate, (TInt32)decinfo->MaxBitrate );
-                resMap->InsertL( KAccelerated, (TBool)decinfo->Accelerated );
-                resMap->InsertL( KVersion, decinfo->Version );
-                
-                decResList->AppendL( resMap );
-                CleanupStack::Pop( resMap );
-                resMap->Close();
+                aOutMapParam->InsertL(KDriveNo,drive);
+                aOutMapParam->InsertL(KCriticalSpace,
+                                            (TInt32)driveinfo->CriticalSpace());
+                aOutMapParam->InsertL(KMediaType,(TInt32)driveinfo->MediaType());
+                //totalspace and freespace converted to string .
+                TBuf<KMax64BitNumLen> string64bitnum(KNullDesC);
+                string64bitnum.FillZ(0);
+                string64bitnum.Num(driveinfo->TotalSpace());
+                aOutMapParam->InsertL(KTotalSpace,string64bitnum);
+                string64bitnum.FillZ(0);
+                string64bitnum.Num(driveinfo->FreeSpace());
+                aOutMapParam->InsertL(KFreeSpace,string64bitnum);
+                TPtrC drvname;
+                driveinfo->DriveName(drvname);
+                aOutMapParam->InsertL(KDriveName,drvname);
+                aOutMapParam->InsertL(KBatteryState,(TInt32)driveinfo->BatteryState());
                 }
-            aOutMapParam->InsertL( KCapability, decResList );
-            CleanupStack::PopAndDestroy( decResList );
-            //aOutMapParam->InsertL( KCapability, 1 );
+                break;
+                
+            case CSysData::EAccessoryInfo:
+                {
+                const CAccessoryInfo* accessoryinfo = ((CAccessoryInfo*) aInSysData);
+                aOutMapParam->InsertL(KAccessoryType,
+                                        (TInt32)accessoryinfo->AccessoryType());
+                aOutMapParam->InsertL(KAccessoryState,
+                                        (TInt32)accessoryinfo->ConnectionState());
+                }
+                break;
+            case CSysData::EResolution:
+                {
+                const CResolution* resolution = ((CResolution*) aInSysData);
+                aOutMapParam->InsertL(KXPixels,(TInt32)resolution->XPixels());
+                aOutMapParam->InsertL(KYPixels,(TInt32)resolution->YPixels());
+                }
+                break;
+            case CSysData::EStringData:
+                {
+                const CStringData* stringdata = ((CStringData*) aInSysData);
+                TPtrC string;
+                stringdata->StringData(string);
+                aOutMapParam->InsertL(KStringData,string);
+                }
+                break;
+            case CSysData::EAccessoryList:
+                {
+                CAccList* accessories = (CAccList*) aInSysData;
+                CSysInfoAccList* accessorylist = CSysInfoAccList::NewL(accessories);
+                CleanupClosePushL(*accessorylist);
+                aOutMapParam->InsertL(KAccessoryList,accessorylist);
+                CleanupStack::PopAndDestroy(accessorylist);
+                }
+                break;
+            case  CSysData::ELanguageList:
+                {
+                CLiwList* langlist = CLiwDefaultList::NewL();
+                CleanupClosePushL(*langlist);
+                const CLanguageList* languages = ((CLanguageList*) aInSysData);
+                count= languages->Count();
+                for(int index=0; index<count; index++ )
+                    {
+                    TInt language = 0;
+                    languages->At(index,language);
+                    langlist->AppendL(TLiwVariant(((TInt32)language)));
+                    }
+                aOutMapParam->InsertL(KLanguageList,langlist);
+                CleanupStack::PopAndDestroy(langlist);
+                }
+                break;
+    
+            case  CSysData::EDriveList:
+                {
+                CLiwList* drivelist = CLiwDefaultList::NewL();
+                CleanupClosePushL(*drivelist);
+                const CDriveList* drives = ((CDriveList*) aInSysData);
+                count = drives->Count();
+                for(int index=0; index<count; index++ )
+                    {
+                    TInt driveVal = 0;
+                    drives->At(index,driveVal);
+                    TBuf<KMaxDriveLength> drive;
+                    drive.FillZ();
+                    drive.Append('A'+driveVal);
+                    drive.Append(KDriveSeperator);
+                    drivelist->AppendL(TLiwVariant(drive));
+                    }
+                aOutMapParam->InsertL(KDriveList,drivelist);
+                CleanupStack::PopAndDestroy(drivelist);
+                }
+                break;	
+    
+            case  CSysData::EStringList:
+                {
+                CLiwList* stringlist = CLiwDefaultList::NewL();
+                CleanupClosePushL(*stringlist);
+                CStringList* strings = ((CStringList*) aInSysData);
+                count = strings->Count();
+                for(int index=0; index<count; index++ )
+                    {
+                    TPtrC string;
+                    strings->At(index,string);
+                    stringlist->AppendL(TLiwVariant(string));
+                    }
+                aOutMapParam->InsertL(KStringList,stringlist);
+                CleanupStack::PopAndDestroy(stringlist);
+                }
+                break;	
+            case CSysData::ECameraInfo:
+                {
+                CLiwList* camResList = CLiwDefaultList::NewL();
+                CleanupClosePushL( *camResList );
+                CLiwList* camMimeTypesList = CLiwDefaultList::NewL();
+                CleanupClosePushL( *camMimeTypesList );
+                const CCameraInfo* camInfo = ((CCameraInfo*) aInSysData);
+                count = camInfo->ResolutionList()->Count();
+    
+                for ( int index=0; index<count; index++ )
+                    {
+                    TInt val = 0;
+                    CLiwMap* resMap = CLiwDefaultMap::NewL();
+                    CleanupStack::PushL( resMap );
+                    camInfo->ResolutionList()->At( index, 0, val );
+                    resMap->InsertL( KXPixels, (TInt32)val );
+                    camInfo->ResolutionList()->At( index, 1, val );
+                    resMap->InsertL( KYPixels, (TInt32)val );
+                    camResList->AppendL( resMap );
+                    CleanupStack::Pop( resMap );
+                    resMap->Close();
+                    TPtrC string;
+                    camInfo->MimeTypesList()->At( index, string );
+                    camMimeTypesList->AppendL( string );
+                    }
+                aOutMapParam->InsertL( KCamResList, camResList );
+                aOutMapParam->InsertL( KCamMimeTypesList, camMimeTypesList );
+                CleanupStack::PopAndDestroy( camMimeTypesList );
+                CleanupStack::PopAndDestroy( camResList );
+                }
+                break; 
+            case CSysData::EVideoDecList:
+                {
+                CLiwList* decResList = CLiwDefaultList::NewL();
+                CleanupClosePushL( *decResList );
+                const CVideoDecDataList* declist = ((CVideoDecDataList*) aInSysData);
+                count = declist->Count();
+                CVideoDecDataList::CVideoDecData * decinfo = NULL;
+                
+                for ( int index=0; index<count; index++ )
+                    {
+                    TInt val = 0;
+                    CLiwMap* resMap = CLiwDefaultMap::NewL();
+                    CleanupStack::PushL( resMap );
+                    decinfo=(*declist)[index];
+                    TPtrC temp;
+                    temp.Set(*(decinfo->Manufacturer));
+                    TPtrC temp1;
+                    temp1.Set(*(decinfo->Identifier));
+                    
+                    resMap->InsertL( KDecManufacturer, temp );
+                    resMap->InsertL( KIdentifier, temp1 );
+                    resMap->InsertL( KMaxBitrate, (TInt32)decinfo->MaxBitrate );
+                    resMap->InsertL( KAccelerated, (TBool)decinfo->Accelerated );
+                    resMap->InsertL( KVersion, decinfo->Version );
+                    
+                    decResList->AppendL( resMap );
+                    CleanupStack::Pop( resMap );
+                    resMap->Close();
+                    }
+                aOutMapParam->InsertL( KCapability, decResList );
+                CleanupStack::PopAndDestroy( decResList );
+                //aOutMapParam->InsertL( KCapability, 1 );
+                }
+                break; 
+            default:
+                User::Leave(KErrArgument);
             }
-            break; 
-        default:
-            User::Leave(KErrArgument);
         }
     CleanupStack::Pop(aOutMapParam);
     }

@@ -22,7 +22,7 @@
 #include <liwcommon.h>
 #include <liwbufferextension.h>
 #include <utf.h>
-
+#include <BAUTILS.H>
 #include "appmanagerinterface.h"
 #include "appmanagerservice.h"
 #include "appitemslist.h"
@@ -74,6 +74,11 @@ _LIT8(KErrorCode,"ErrorCode");
 _LIT8(KTransactionID,"TransactionID");
 
 
+_LIT(KRtspPrefix,"rtsp://");
+_LIT(KTempFile, "c:\\system\\temp\\tempvideo.ram");
+_LIT(KTempPath, "c:\\system\\temp\\");
+_LIT8(KRamMime, "application/ram");
+
 
 // -----------------------------------------------------------------------------
 // CAppManagerInterface::NewLC
@@ -96,6 +101,13 @@ CAppManagerInterface* CAppManagerInterface::NewL()
 // -----------------------------------------------------------------------------
 CAppManagerInterface::~CAppManagerInterface()
 	{
+    RFs fs;
+    User::LeaveIfError(fs.Connect());
+    if( BaflUtils::FileExists(fs,KTempFile) )
+        {
+        BaflUtils::DeleteFile(fs,KTempFile);
+        }
+    fs.Close() ;
      //Release the instance of core class
 	 delete iCoreClass;
      iCoreClass = NULL;
@@ -980,6 +992,27 @@ void CAppManagerInterface::LaunchDocL(const CLiwGenericParamList& aInParamList,
        TPtr8 mimetype8( heapBuffer->Des() );
        mimetype8.Copy( mimetype );
        TPtrC filename;
+       // RTSP handling       
+       if( ! document.iPath.Left(KRtspPrefix().Length()).CompareF(KRtspPrefix) )
+           {
+           RFs fs;
+           User::LeaveIfError(fs.Connect());
+           RFile file;
+           fs.MkDir( KTempPath );
+           file.Replace( fs, KTempFile, EFileWrite | EFileStreamText );  
+           HBufC8 *tempPath = HBufC8::NewLC( document.iPath.Length() );
+           tempPath->Des().Copy( document.iPath );
+           file.Write( *tempPath );
+           document.iPath.Set( KTempFile );
+           file.Close();
+           fs.Close();
+           HBufC8 *tempMime;
+           tempMime = KRamMime().AllocLC();
+           mimetype8.Set( tempMime->Des() );
+           CleanupStack::PopAndDestroy( tempMime );
+           CleanupStack::PopAndDestroy( tempPath );
+           }
+      
 
        if( aCallBack )
             {

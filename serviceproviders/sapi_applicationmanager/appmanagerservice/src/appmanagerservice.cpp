@@ -121,7 +121,14 @@ EXPORT_C void CAppManagerService::LaunchDocumentL( TDocument& aCriteria,
         {
         //Synchronous call
         __UHEAP_MARK;
-        iLauncher->LaunchDocumentL( aCriteria, aMimeType, aOptions, aFileName);
+        if( 0 == aOptions.iMode.CompareF( KChained ) )
+            {
+            iLauncher->LaunchDocumentL( aCriteria );
+            }
+        else
+            {
+            iLauncher->LaunchDocumentL( aCriteria, aMimeType, aOptions, aFileName);
+            }
         __UHEAP_MARKEND;
         }
     else

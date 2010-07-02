@@ -72,7 +72,7 @@ LIBRARY       swinstcli.lib
 LIBRARY 			sisregistryclient.lib
 LIBRARY       ws32.lib
 LIBRARY       cone.lib
-LIBRARY       efsrv.lib
+LIBRARY       efsrv.lib commonui.lib
 
 paged
 

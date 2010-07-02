@@ -70,6 +70,7 @@ LIBRARY         liwServicehandler.lib
 
 LIBRARY 		platformenv.lib
 LIBRARY	        ecom.lib
-LIBRARY	        appmanagerservice.lib
+LIBRARY	        appmanagerservice.lib bafl.lib
+
 
 paged
