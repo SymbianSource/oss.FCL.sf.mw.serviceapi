@@ -197,8 +197,7 @@ TInt Cteximport::Export_Test1L( CStifItemParser& aItem )
 	 TInt flag=0,cnt=0;
 	 
 	 /*call getlist to get the contactid for export */ \
-	 TInt err1 = 0;
-	 TInt err2 = 0;
+	 TInt err1, err2;
   TRAP(err1,icontactservice->GetListL(icallback,1,EContacts,KNullDesC8));
    CActiveScheduler::Start();
  	 
@@ -213,11 +212,10 @@ TInt Cteximport::Export_Test1L( CStifItemParser& aItem )
  /* verify whther export returns the expected error */	 
    aItem.GetNextInt(flag) ;
    if(icallback->iError)
-   	return KErrNone;
+   return KErrNone;
    if(icallback->iError == flag) 
-   	return KErrNone;
+   return KErrNone;
 
-	return 0;
  }   
 
 /* exporting 2 contacts */

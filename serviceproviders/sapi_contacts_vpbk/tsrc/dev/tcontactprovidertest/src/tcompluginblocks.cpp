@@ -295,7 +295,7 @@ TInt CTestProvider :: HandleNotifyL(TInt aCmdId,
     if(iCase == EModifyContactComplete)
         {
         //call the get list once again to check whether the contact is modified
-        CStifItemParser* stiff = NULL;
+        CStifItemParser* stiff;
         iCase = EModifyContactVerify;
         //this time call the getlist with the contact id to get only the modified contact
         GetContactALL(*stiff);    
@@ -576,7 +576,7 @@ TInt CTestProvider :: HandleNotifyL(TInt aCmdId,
         else if(aEventId == KLiwEventCompleted && code == KErrNone )
             {
             iCase = EVerifyGroupAdd;
-            CStifItemParser* stiff = NULL;
+            CStifItemParser* stiff;
             iIdArrayList.ResetAndDestroy();
             GetGroup(*stiff);            
             }
@@ -610,7 +610,7 @@ TInt CTestProvider :: HandleNotifyL(TInt aCmdId,
          else if(aEventId == KLiwEventCompleted && code == KErrNone )
             {
             iCase = EVerifyImport;
-            CStifItemParser* stiff = NULL;
+            CStifItemParser* stiff;
             GetContactALL(*stiff);
             }
         else
@@ -623,7 +623,7 @@ TInt CTestProvider :: HandleNotifyL(TInt aCmdId,
         if(aEventId == KLiwEventCompleted && code == KErrNone )
             {
             iCase = EVerifyOrganizeDelete;
-            CStifItemParser* stiff = NULL;
+            CStifItemParser* stiff;
             iIdArrayList.ResetAndDestroy();
             GetGroup(*stiff);
             }
@@ -714,7 +714,7 @@ TInt CTestProvider :: HandleNotifyL(TInt aCmdId,
                   if(firstName.CompareF(_L("Barbie")) != 0)       
                       {
                       iResult = KErrGeneral;
-                      return 0;
+                      return;
                       }    
                   
                   if(map->FindL(KSecondName,mapfield))
@@ -725,7 +725,7 @@ TInt CTestProvider :: HandleNotifyL(TInt aCmdId,
                   if(secName.CompareF(_L("Doll")) != 0)       
                       {
                       iResult = KErrGeneral;
-                      return 0;
+                      return;
                       }    
                   
                   if(map->FindL(KCallerObjImg,mapfield))
@@ -736,7 +736,7 @@ TInt CTestProvider :: HandleNotifyL(TInt aCmdId,
                     if(callerObjImg.CompareF(_L("C:\\data\\images\\pic.jpg")) != 0)       
                         {
                         iResult = KErrGeneral;
-                        return 0;
+                        return;
                         }
                     if(map->FindL(KNote,mapfield))
                     mapField = mapfield.AsMap();                
@@ -746,7 +746,7 @@ TInt CTestProvider :: HandleNotifyL(TInt aCmdId,
                     if(Note.CompareF(_L("Lead role in Barbie, the island princess")) != 0)       
                         {
                         iResult = KErrGeneral;
-                        return 0;
+                        return;
                         }
             
                     if(map->FindL(KXSPID,mapfield))
@@ -763,7 +763,7 @@ TInt CTestProvider :: HandleNotifyL(TInt aCmdId,
                         if(ptrVal.CompareF(_L("Yahoo:Barbie@yahoo.co.in")) != 0 && ptrVal.CompareF(_L("Google:Barbie@gmail.com")) != 0)
                         {
                             iResult = KErrGeneral;
-                            return 0;
+                            return;
                         }
                         }
                     }
@@ -775,7 +775,6 @@ TInt CTestProvider :: HandleNotifyL(TInt aCmdId,
           iResult = code;
           }
          }
-			return 0;
      }
 
 void CTestProvider::LoadService()
@@ -1401,7 +1400,7 @@ TInt CTestProvider :: GetDatabase(CStifItemParser& /*aItem*/)
     }
  
 TInt CTestProvider :: ModifyGroup(CStifItemParser& /*aItem*/)
-	{ return 0;
+	{
     }
 
 TInt CTestProvider :: ExportL( CStifItemParser& aItem )
@@ -1996,14 +1995,14 @@ TInt CTestProvider :: OrganiseDeletePosbased(CStifItemParser& /*aItem*/)
  */
  TInt CTestProvider :: ModifyContactPosBased(CStifItemParser& /*aItem*/)
      {
-			return 0;     	
+     	
      }
 /**
  * Math operation BearingTo Test
  */
  
  TInt CTestProvider ::ModifyGroupPosBased(CStifItemParser& /*aItem*/) 
-    { return 0;
+    {
     }
     
  TInt CTestProvider :: ExportPosBased(CStifItemParser& aItem)

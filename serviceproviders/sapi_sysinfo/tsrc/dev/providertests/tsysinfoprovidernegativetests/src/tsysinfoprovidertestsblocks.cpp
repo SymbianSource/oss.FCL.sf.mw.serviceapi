@@ -1723,8 +1723,9 @@ TInt Ctsysinfoprovidertests::SetDisplayLang(CStifItemParser& /*aItem*/)
         interface->Close();
 
         CleanupStack::PopAndDestroy(iServiceHandler);
-        __UHEAP_MARKEND;
+
         return result;
+        __UHEAP_MARKEND;
         }
     else
         {
@@ -2038,10 +2039,9 @@ TInt  Ctsysinfoprovidertests::SetInputLang(CStifItemParser& /*aItem*/)
 	
 	CleanupStack::PopAndDestroy( iServiceHandler );
 	
-	__UHEAP_MARKEND;
 	return result;	
 	
-
+	__UHEAP_MARKEND;
 
 
 	}
@@ -3803,7 +3803,7 @@ TInt  Ctsysinfoprovidertests::UserInactivityNotify(CStifItemParser& /*aItem*/)
 //
 TInt Ctsysinfoprovidertests::GetCameraInfoTestNegative(CStifItemParser& aItem)
     {
-    TInt retcode = 0;
+    TInt retcode;
     iLog->Log(_L("GetCameraInfoTest - Negative Test") );
 
     __UHEAP_MARK;
@@ -3976,7 +3976,7 @@ TInt Ctsysinfoprovidertests::GetCameraInfoTestNegative(CStifItemParser& aItem)
 TInt Ctsysinfoprovidertests::GetCameraInfoNegEntity(CStifItemParser& aItem)
     {
     _LIT8(KEntity1, "Entity1");
-    TInt retcode = 0;
+    TInt retcode;
     iLog->Log(_L("GetCameraInfoNegEntity - Negative Test") );
 
     __UHEAP_MARK;
@@ -4136,7 +4136,7 @@ TInt Ctsysinfoprovidertests::GetCameraInfoNegEntity(CStifItemParser& aItem)
 TInt Ctsysinfoprovidertests::GetCameraInfoNegKey(CStifItemParser& aItem)
     {
     _LIT8(KKey1, "Key1");
-    TInt retcode = 0;
+    TInt retcode;
     iLog->Log(_L("GetCameraInfoNegKey - Negative Test") );
 
     __UHEAP_MARK;

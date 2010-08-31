@@ -796,7 +796,7 @@ TInt CCalImpTestCases::TestImportCases3()
 	// Import with invalid luid
 	
 	new_expParams->AddLocalUid( 10000 );
-    new_expParams->AddLocalUid( 3000 );
+    new_expParams->AddLocalUid( -3000 );
     new_expParams->SetExportFileNameL(KVcalImportGuidsFile);
     delete buffer;
     buffer = NULL;
@@ -1153,7 +1153,7 @@ void CCalImpTestCases::ConstructL()
 	}
 	
 CCalImpTestCases::CCalImpTestCases( TInt& aResult, TInt aVCalOrICal): CActive(EPriorityStandard), iResult(aResult) ,
-														   iVCalOrICal(aVCalOrICal)	,iTestCaseType (KImportGuidAsync)
+														   iVCalOrICal(aVCalOrICal)	
 	{
 	
 	}

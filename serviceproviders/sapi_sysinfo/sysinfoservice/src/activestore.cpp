@@ -100,12 +100,10 @@ void CActiveRequest::CreateActiveRequestL(const TSysRequest& aSysRequest,
             aActiveObj = CPubSubNotifier::NewL(aSysRequest,
                                                 CPubSubNotifier::EInfraRed);
 
-        else if( (!Key.CompareF(SysInfo::KActiveConnections)) && (aSysRequest.RequestType() == TSysRequest::EASyncONESHOT) )
+        else if( (!Key.CompareF(SysInfo::KConnectionStatus)) 
+                        || (!Key.CompareF(SysInfo::KActiveConnections)))
             aActiveObj = CConnection::NewL(aSysRequest);
 
-        else if( (!Key.CompareF(SysInfo::KConnectionStatus)) && (aSysRequest.RequestType() == TSysRequest::ENotification) )
-            aActiveObj = CConnection::NewL(aSysRequest);
-        
         else
             User::Leave(KErrNotFound);
         }

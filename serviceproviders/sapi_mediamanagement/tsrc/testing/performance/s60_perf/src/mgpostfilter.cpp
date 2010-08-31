@@ -20,7 +20,7 @@
 
 #include <mclfitem.h>
 #include "mgpostfilter.h"
-#include <mmfcontrollerpluginresolver.h>
+
 const TInt32 KLargestSigned32 = 0x7fffffff;
 const TInt64 KLargestSigned64 = 0x7fffffffffffffff;
 
@@ -55,7 +55,6 @@ CPostFilter::~CPostFilter()
 void CPostFilter::FilterItemsL( const TArray<MCLFItem*>& aItemList,
                                 RPointerArray<MCLFItem>& aFilteredItemList )
     {
-    	CleanupResetAndDestroyPushL(aFilteredItemList);
 	// It will filter the Items
 	MCLFItem* item = NULL;
 
@@ -69,7 +68,6 @@ void CPostFilter::FilterItemsL( const TArray<MCLFItem*>& aItemList,
             aFilteredItemList.AppendL( item );
             }
         }
-        CleanupStack::Pop(&aFilteredItemList);
 	}
 
 // -----------------------------------------------------------------------------

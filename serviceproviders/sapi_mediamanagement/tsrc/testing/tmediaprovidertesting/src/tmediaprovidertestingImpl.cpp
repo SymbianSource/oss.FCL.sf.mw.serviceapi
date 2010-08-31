@@ -489,7 +489,6 @@ TBool Ctmediaprovidertesting::CompareTIntResult(const TDesC8& aKey,
     TInt expRes = expValue.AsTInt32();
     TInt resRes = resValue.AsTInt32();
     
-  
     expIntStr.AppendNum(expRes);
     resIntStr.AppendNum(resRes);
     

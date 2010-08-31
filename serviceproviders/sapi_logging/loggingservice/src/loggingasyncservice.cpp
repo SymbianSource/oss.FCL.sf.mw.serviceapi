@@ -112,7 +112,6 @@ void CAsyncWaiter::DoCancel()
 CLogAsyncService :: CLogAsyncService(): CActive(EPriorityStandard)
     {
     iTransId=0;
-    iFlagCancel=ETrue;
     }
 
 /**
@@ -309,9 +308,7 @@ void CLogAsyncService :: DoCancel()
             }
         }
     
-   
-   iCallback->CancelNotifyL( iTransId, iFlagCancel );
-   
+    iCallback->CancelNotifyL( iTransId );
     
     if(iUpdatedEvent)
         {

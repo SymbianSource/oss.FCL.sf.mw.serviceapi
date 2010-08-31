@@ -83,12 +83,9 @@ TInt getRecentList1(void)
 	 CLogIter *iter = LogService->GetListL(filter) ;
 	 
 	  
-	 while(1){ 
-	   events = iter->NextL();
-	   if(events)
+	 while (events = iter->NextL())
+	 	{
 	 	delete events ;
-	   else 
-	      break;
 	 	}
 	 	
 	 delete event ;

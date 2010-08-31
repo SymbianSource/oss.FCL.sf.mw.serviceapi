@@ -406,12 +406,7 @@ void CContactInterface::ProcessAddDataL(const CLiwMap* aMap,
     //iDburi = HBufC::NewL(VPbkContactStoreUris::DefaultCntDbUri().Length());    
     //set the DBUri to the default value.    
     //iDburi->Des().Copy(VPbkContactStoreUris::DefaultCntDbUri());
-    if(iDburi)
-    	{
-      delete iDburi;
-      iDburi=NULL;
-      }
-    iDburi = GetDefaultDBUri().AllocL();   
+    iDburi = GetDefaultDBUri().AllocLC();
     //get the number of entries in the map
     TInt keyCount = aMap->Count();
 
@@ -1783,7 +1778,7 @@ void CContactInterface::AddCommandL(const CLiwGenericParamList& aInParamList,
                     User::Leave(err);
                     }
                 } 
-            //CleanupStack::Pop();
+            CleanupStack::Pop();
             CleanupStack::Pop(contact);
             } //end of if pMap
         else

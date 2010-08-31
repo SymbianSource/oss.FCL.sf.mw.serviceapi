@@ -73,7 +73,7 @@ TInt CProviderObserver :: HandleNotifyL( TInt /*aCmdId*/, TInt aEventId, CLiwGen
   
         }
       
-    return 0;  
+      
     }
 
 

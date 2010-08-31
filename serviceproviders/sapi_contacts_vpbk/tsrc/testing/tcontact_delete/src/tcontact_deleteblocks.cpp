@@ -909,8 +909,7 @@ TInt Ctdeleteadd::Delete_Test12L( CStifItemParser& aItem )
     CleanupClosePushL(idArray);    
     //idArray.AppendL(contactId);    
     
-    TInt err1 = 0;
-    TInt err2 = 0;
+    TInt err1,err2;
     TRAP(err1,icontactservice->DeleteL(icallback,0,idArray));
     if (err1 || err2)
     {
@@ -963,8 +962,7 @@ TInt Ctdeleteadd::Delete_Test13L( CStifItemParser& aItem )
     CleanupClosePushL(idArray);    
     //idArray.AppendL(contactId);    
     
-    TInt err1 = 0;
-    TInt err2 = 0;
+    TInt err1,err2;
     TRAP(err1,icontactservice->DeleteL(icallback,0,idArray));
     if(err1 || err2)
     {

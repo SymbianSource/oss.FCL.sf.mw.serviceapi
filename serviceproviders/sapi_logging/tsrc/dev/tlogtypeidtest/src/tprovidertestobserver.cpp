@@ -68,7 +68,6 @@ TInt CProviderObserver :: HandleNotifyL( TInt /*aCmdId*/, TInt aEventId, CLiwGen
       
       if(iWait)
          iWait->AsyncStop();
-    return 0;
     }
 
 

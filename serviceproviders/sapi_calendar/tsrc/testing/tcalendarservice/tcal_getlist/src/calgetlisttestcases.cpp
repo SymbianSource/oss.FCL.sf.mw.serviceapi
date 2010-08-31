@@ -180,7 +180,7 @@ void CCalGetlistTestCases::ConstructL()
 	}
 	
 CCalGetlistTestCases::CCalGetlistTestCases( TInt& aResult, TBool aEntryArray) : CActive(EPriorityStandard), iResult(aResult),
-                                                    iEntryArray(aEntryArray),iTestCaseType( KGetlistGuidFilterAsync )
+                                                    iEntryArray(aEntryArray)
 	{
 
 	}
@@ -194,9 +194,9 @@ void CCalGetlistTestCases::DoCancel()
 _LIT(KSearchTexttest                 ,"Meeting");
 void CCalGetlistTestCases::RunL()
 	{	
-    CCalendarFilter *filter = NULL;
+    CCalendarFilter *filter;
     
-    CEntryAttributes* entryObj = NULL;
+    CEntryAttributes* entryObj;
     
     RPointerArray<TUIDSet> arruids(5);
     TUIDSet* uids = NULL;

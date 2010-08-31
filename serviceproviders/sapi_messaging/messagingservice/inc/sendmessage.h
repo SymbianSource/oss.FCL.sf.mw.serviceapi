@@ -21,12 +21,10 @@
 
 #include <rsendas.h>
 #include <rsendasmessage.h>
-#include <gsmumsg.h>
 
 class CMsvAttachment;
 class CRecipientList;
 class CMsgCallbackBase;
-class CSmsMessage;
 
 /**
  * This class provides functionality for sending SMS/MMS messages.

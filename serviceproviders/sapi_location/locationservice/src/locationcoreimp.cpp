@@ -172,7 +172,7 @@ TInt CGetLoc::GetLocationUpdates(CLocationService* aLocationService,MLocationCal
 
 	    // If position server could not get position
 	    // In two minutes it will terminate the position request
-	    // updateopts.SetUpdateTimeOut(TTimeIntervalMicroSeconds(KSUpdateTimeOut));
+	    //updateopts.SetUpdateTimeOut(TTimeIntervalMicroSeconds(KSUpdateTimeOut));
 
 	    // Positions which have time stamp below KMaxAge can be reused
 	    updateopts.SetMaxUpdateAge(TTimeIntervalMicroSeconds(KSMaxAge));

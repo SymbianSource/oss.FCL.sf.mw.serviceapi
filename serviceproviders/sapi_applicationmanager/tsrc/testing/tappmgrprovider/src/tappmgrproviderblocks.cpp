@@ -292,7 +292,7 @@ TInt CAppManagerTest::getlisttestL( CStifItemParser& aItem  )
     
     
     const TLiwGenericParam* p= NULL;
-    CLiwIterable* iter = NULL;
+    CLiwIterable* iter;
 	TLiwVariant Map;
 	const CLiwMap* infomap;
     TInt err= 0;
@@ -1410,7 +1410,7 @@ TInt CAppManagerTest::getlistnegativetestL( CStifItemParser& aItem  )
     
     
     const TLiwGenericParam* p= NULL;
-    CLiwIterable* iter = NULL;
+    CLiwIterable* iter;
 	TLiwVariant Map;
 	const CLiwMap* infomap;
     TInt err= 0;

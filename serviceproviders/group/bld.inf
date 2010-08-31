@@ -17,15 +17,15 @@
 
 #include <platform_paths.hrh>
 
-#include "../sapi_contacts_vpbk/group/bld.inf"
+//#include "../sapi_contacts_vpbk/group/bld.inf"
 #include "../sapi_location/group/bld.inf"
 #include "../sapi_mediamanagement/group/bld.inf"
 #include "../sapi_landmarks/group/bld.inf"
 //#include "../camera/group/bld.inf"
-#include "../sapi_messaging/group/bld.inf"
+//#include "../sapi_messaging/group/bld.inf"
 
-#include "../sapi_applicationmanager/group/bld.inf"
-#include "../sapi_calendar/group/bld.inf"
+//#include "../sapi_applicationmanager/group/bld.inf"
+//#include "../sapi_calendar/group/bld.inf"
 #include "../sapi_logging/group/bld.inf"
 #include "../sapi_sensor/group/bld.inf"
 #include "../sapi_sysinfo/group/bld.inf"

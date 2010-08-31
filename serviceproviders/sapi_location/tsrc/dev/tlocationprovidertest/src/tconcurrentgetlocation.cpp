@@ -173,7 +173,7 @@ TInt ConcurrentGetLocationCalls(TAny */*Arg*/)
 {
   
 	CTrapCleanup* cleanup = CTrapCleanup::New();
-	TInt  Val = 0;
+	TInt  Val ;
 	//Install a new active scheduler to this thread 
 	TRAPD(err ,( Val = ConcurrentGetLocCallsL()) );
 	delete cleanup ;

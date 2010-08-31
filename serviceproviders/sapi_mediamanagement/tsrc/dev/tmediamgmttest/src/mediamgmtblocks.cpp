@@ -244,6 +244,13 @@ TInt CMediaMgmt::GetFilesInfoL( CStifItemParser& aItem )
  		output->AppendL( responseTypeParam );
 
         }
+   	else
+   	    {
+		delete aListModel;
+		aListModel = NULL;
+		delete aOperationObserver;
+		aOperationObserver = NULL;
+	 	}
 
 
     	// call callback of consumer
@@ -428,7 +435,7 @@ TInt Callback:: HandleNotifyL(TInt aCmdId,TInt aEventId,CLiwGenericParamList& aO
 	CActiveScheduler :: Stop() ;
 	return KErrNone;
  	}
-   return KErrNone;
+
 }
 
 // -----------------------------------------------------------------------------
@@ -441,7 +448,7 @@ TInt ThreadFunction (TAny *a)
 	// Creating the Cleanup stack for this new thread
 	 CTrapCleanup* cleanup = CTrapCleanup::New();
 	 struct ParamPass* arg1 = (ParamPass*) a;
-	 TInt errorCode = KErrNone;
+	 TInt errorCode;
 	 TInt error = KErrNone;
 	 TRAP(error, errorCode = GetFilesAsynchL(a));
 	 delete cleanup;

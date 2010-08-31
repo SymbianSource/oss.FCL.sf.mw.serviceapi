@@ -372,8 +372,8 @@ int VibraNotification1(CStifLogger* aLog)
 	aLog->Log(_L("after  test->Result() Vibra:"));
 
 	delete test;
-	__UHEAP_MARKEND;
 	return retval;
+	__UHEAP_MARKEND;
 
 
 	}

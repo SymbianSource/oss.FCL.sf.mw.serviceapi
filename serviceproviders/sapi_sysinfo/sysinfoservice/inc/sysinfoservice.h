@@ -23,7 +23,6 @@
 #include "sysinfo.h"
 #include "sysrequest.h"
 #include "imagingconfigmanager.h"
-#include <mmf\devvideo\devvideoplay.h >
 
 // FORWORD CLASS DECLARATION
 class CSysData;
@@ -293,47 +292,6 @@ NONSHARABLE_CLASS(CSysInfoService) : public CBase
     CDeviceInfo*    iDeviceInfo;
     };
 
-/**
-*   @ref MMMFDevVideoPlayObserverImpl is used as video observer
-*
-*   @lib sysinfoservice
-*   @since S60 9.2
-*   @version $Revision: 1.0 $
-*/
-class MMMFDevVideoPlayObserverImpl : public MMMFDevVideoPlayObserver
-    {
-    public:
-
-    /*   Dummy implementation for virtual function  */
-    virtual void MdvpoNewBuffers() {}
-    /*   Dummy implementation for virtual function  */
-    virtual void MdvpoReturnPicture(TVideoPicture* ) {}
-    /*   Dummy implementation for virtual function  */
-    virtual void MdvpoSupplementalInformation(const TDesC8& , 
-                                              const TTimeIntervalMicroSeconds& , 
-                                              const TPictureId& ) {}
-    /*   Dummy implementation for virtual function  */
-    virtual void MdvpoPictureLoss() {}
-    /*   Dummy implementation for virtual function  */
-    virtual void MdvpoPictureLoss(const TArray<TPictureId>& ) {}
-    /*   Dummy implementation for virtual function  */
-    virtual void MdvpoSliceLoss(TUint , TUint , const TPictureId& ){}
-    /*   Dummy implementation for virtual function  */
-    virtual void MdvpoReferencePictureSelection(const TDesC8& ){}
-    /*   Dummy implementation for virtual function  */
-    virtual void MdvpoTimedSnapshotComplete(TInt , 
-                                            TPictureData* , 
-                                            const TTimeIntervalMicroSeconds& , 
-                                            const TPictureId& ){}
-    /*   Dummy implementation for virtual function  */
-    virtual void MdvpoNewPictures() {}
-    /*   Dummy implementation for virtual function  */
-    virtual void MdvpoFatalError(TInt ) {}
-    /*   Dummy implementation for virtual function  */
-    virtual void MdvpoInitComplete(TInt ) {}
-    /*   Dummy implementation for virtual function  */
-    virtual void MdvpoStreamEnd() {}
-    };
 
 #endif __CSYSINFOSERVICE_H__
 

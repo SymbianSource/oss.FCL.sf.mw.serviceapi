@@ -145,13 +145,6 @@ _LIT8(KDriveList,"DriveList");
 _LIT8(KCamResList,"ResolutionList");
 
 _LIT8(KCamMimeTypesList,"MimeTypeList");
-
-_LIT8(KCapability, "capability");
-_LIT8(KDecManufacturer, "manufacturer");
-_LIT8(KIdentifier, "identifier");
-_LIT8(KAccelerated, "accelerated");
-_LIT8(KMaxBitrate, "maxBitrate");
-_LIT8(KVersion, "version");
 }
 
 #endif //__SYSINFO_AIWPARAMS_HRH_

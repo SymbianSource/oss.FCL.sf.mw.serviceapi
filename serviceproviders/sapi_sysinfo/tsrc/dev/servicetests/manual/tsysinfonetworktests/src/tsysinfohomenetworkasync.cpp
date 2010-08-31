@@ -81,8 +81,7 @@ TInt CHomeNwAsync::Result()
 
 void CHomeNwAsync::TestFuncL()
 	{
-	TInt64 x = 6000000000;
-  const TTimeIntervalMicroSeconds32 OneMinute = TTimeIntervalMicroSeconds32(x);
+	const TTimeIntervalMicroSeconds32 OneMinute(6000000000);
 	iTransId = 1;
 	TRAPD(err,iSysInfoService->GetInfoL(KNetwork,KHomeNetwork,iTransId,this));
 	iResult  = err;

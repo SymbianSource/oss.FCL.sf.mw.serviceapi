@@ -363,8 +363,8 @@ int VibraNotification(CStifLogger* aLog)
 	test->Start();
 	TInt retval =	test->Result();
 	delete test;
-	__UHEAP_MARKEND;
 	return retval;
+	__UHEAP_MARKEND;
 
 
 	}

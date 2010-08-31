@@ -24,7 +24,7 @@
 #include <CalenInterimUtils2.h>
 #include <s32mem.h>
 #include <s32file.h>
-#include <mmfcontrollerpluginresolver.h>
+
 //User Include
 #include "calendarheader.h"
 #include "calendarconstants.h"
@@ -147,7 +147,6 @@ void CCalendarImport::ImportL( RPointerArray<TUIDSet>& aOutputUIDArray )
 //	
 void CCalendarImport::ImportFromStreamL(RReadStream& aStream,  RPointerArray<TUIDSet>& aOutputUIDArray )
 	{
-	CleanupResetAndDestroyPushL(aOutputUIDArray);
 	RPointerArray<CCalEntry> outputCalEntryArray;
 
 	CleanupStack::PushL( TCleanupItem(CleanupCCalEntryArray, &outputCalEntryArray) );
@@ -183,7 +182,6 @@ void CCalendarImport::ImportFromStreamL(RReadStream& aStream,  RPointerArray<TUI
 		}
 	
 	CleanupStack::PopAndDestroy( &outputCalEntryArray );
-	CleanupStack::Pop(&aOutputUIDArray);
 	}
 	
 

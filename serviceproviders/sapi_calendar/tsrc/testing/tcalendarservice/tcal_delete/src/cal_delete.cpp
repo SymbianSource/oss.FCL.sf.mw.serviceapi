@@ -586,8 +586,7 @@ void CCalDelTestCases::ConstructL()
 	iWaitSchedular = new(ELeave) CActiveSchedulerWait();
 	}
 	
-CCalDelTestCases::CCalDelTestCases( TInt& aResult) : CActive(EPriorityStandard),
-									 iResult(aResult),iTestCaseType(KDeleteUsingGuidsAsync)
+CCalDelTestCases::CCalDelTestCases( TInt& aResult) : CActive(EPriorityStandard), iResult(aResult)
 	{
 
 	}

@@ -94,7 +94,6 @@ TInt CCalCallback::HandleNotifyL(TInt aCmdId,
 		{
 		iWaitSchedular->AsyncStop();
 		}
-		return 0;
 }
 
 CTestAsync* CTestAsync::NewL(TInt type)

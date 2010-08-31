@@ -81,8 +81,7 @@ TInt CLacNotify::Result()
 
 void CLacNotify::TestFuncL()
 	{
-	TInt64 x = 6000000000;
-  const TTimeIntervalMicroSeconds32 OneMinute = TTimeIntervalMicroSeconds32(x);
+	const TTimeIntervalMicroSeconds32 OneMinute(6000000000);
 	iTransId = 8888;
 	TRAPD(err,iSysInfoService->GetNotificationL(KNetwork,KLocationArea,iTransId,this));
 	iResult  = err;

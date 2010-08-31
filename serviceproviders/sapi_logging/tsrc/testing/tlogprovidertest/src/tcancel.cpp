@@ -300,7 +300,7 @@ tcallback iCallback;
    	 a.ResetAndDestroy();
    	 a.Close();
    
-   return 0;   
+   
     }
 
 
@@ -568,7 +568,7 @@ tcallback iCallback;
    	 a.ResetAndDestroy();
    	 a.Close();
    
-   return 0;   
+   
     }
 
 

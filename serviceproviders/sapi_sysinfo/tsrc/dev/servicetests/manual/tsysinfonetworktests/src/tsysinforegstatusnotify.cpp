@@ -81,8 +81,7 @@ TInt CRegStatusNotify::Result()
 
 void CRegStatusNotify::TestFuncL()
 	{
-	TInt64 x = 6000000000;
-  const TTimeIntervalMicroSeconds32 OneMinute = TTimeIntervalMicroSeconds32(x);
+	const TTimeIntervalMicroSeconds32 OneMinute(6000000000);
 	TRAPD(err ,iSysInfoService->GetNotificationL(KNetwork,KRegistrationStatus,9999,this));
 	iResult = err ;
 	iTimer->After(OneMinute);

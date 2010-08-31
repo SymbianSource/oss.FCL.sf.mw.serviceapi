@@ -38,7 +38,7 @@ class WrongNotificationGetLoc : public MLiwNotifyCallback
             CLiwGenericParamList& aEventParamList,
             const CLiwGenericParamList& aInParamList) 
 		    {
-		        return 0;
+		        
 		    }
 
 		WrongNotificationGetLoc() : iRetStatus(KErrGeneral)  //Default constructor 
@@ -153,7 +153,7 @@ TInt GetLocWrongCancel(TAny * /*Arg*/)
 {
 //	__UHEAP_MARK;
 	CTrapCleanup* cleanup = CTrapCleanup::New();
-    TInt val = 0;
+    TInt val ;
     TRAPD(err , (val = GetLocWrongCancelL() ) ) ;
     delete cleanup ;
  //    __UHEAP_MARKEND;   

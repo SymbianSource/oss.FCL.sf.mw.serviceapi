@@ -675,20 +675,7 @@ void CSendMessage::SendSMSMessageL()
     CSmsHeader& smsHdr = clientMtm->SmsHeader();
     CSmsSettings* smsSetting = CSmsSettings::NewLC();
     smsSetting->CopyL(clientMtm->ServiceSettings());
-    TInt pdus;
-    TInt numberOfUnconvertedChars;
-    TInt numberOfDowngradedChars;
-    TInt freeUDUnitsInLastPDU;
-    CSmsMessage& smsMsg = smsHdr.Message();
-    smsMsg.GetEncodingInfoL(pdus, numberOfUnconvertedChars, numberOfDowngradedChars, freeUDUnitsInLastPDU );
-    if( numberOfUnconvertedChars || numberOfDowngradedChars )
-        {
     smsSetting->SetCharacterSet(TSmsDataCodingScheme::ESmsAlphabetUCS2);
-        }
-    else 
-        {
-        smsSetting->SetCharacterSet(TSmsDataCodingScheme::ESmsAlphabet7Bit);
-        }
     smsHdr.SetSmsSettingsL(*smsSetting);
     CleanupStack::PopAndDestroy(smsSetting);
 

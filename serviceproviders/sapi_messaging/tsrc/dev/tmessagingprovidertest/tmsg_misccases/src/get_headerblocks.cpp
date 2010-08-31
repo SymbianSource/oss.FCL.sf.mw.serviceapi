@@ -139,7 +139,6 @@ class CSendLiwNotify: public MLiwNotifyCallback
 		++i;
 		i++;
 		//CActiveScheduler::Stop();
-		return 0;
 		}
 	};
 	

@@ -700,7 +700,7 @@ TInt GetLocAsynchWrongValL()
     //TInt start = User::CountAllocCells();
 
     ASyncLocCB MyUpdates ;
-    TInt errRet = 0;
+    TInt errRet;
     _LIT8(KService, "Service.Location");
     _LIT8(KIDataSource,"ILocation");
 

@@ -291,9 +291,9 @@ TInt StrayTest(TAny */*Arg*/)
 	    {
 	     return err ;
 	    }
-	else 
+	 
 	return val ;   	
-
+	return 0 ;
 }
 
   

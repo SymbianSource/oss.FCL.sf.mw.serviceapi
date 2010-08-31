@@ -417,7 +417,7 @@ void CContactsUT::LoadService()
      file.Flush();  
     file.Close();
    CleanupStack::PopAndDestroy();
-	 return 0;	
+	 	
 	 }
 
 

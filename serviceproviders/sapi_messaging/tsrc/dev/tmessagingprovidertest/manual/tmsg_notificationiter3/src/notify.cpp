@@ -130,7 +130,6 @@ TInt CMsgCallback::HandleNotifyL(TInt aCmdId,
 		{
 		iWaitSchedular->AsyncStop();
 		}
-	return 0;
 	}
 
 

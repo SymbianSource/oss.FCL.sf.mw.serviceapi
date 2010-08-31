@@ -946,12 +946,11 @@ void CLandmarkInterface::ExportL( const CLiwGenericParamList& aInParamList,
                 landmarkIdArray.AppendL (lmid );
                 }
             }
-        TBuf<256> dbUri;
-      
+        TPtrC dbUri;
         if (ValidateParamL (KExport, KDbUri, exportData, LIW::EVariantTypeDesC,
                 EFalse, variant ) )
             {
-            dbUri.Append(variant.AsDes ( ) );
+            dbUri.Set (variant.AsDes ( ) );
             }
         ValidateParamL (KExport, KMimeType, exportData, LIW::EVariantTypeDesC,
                         ETrue, variant );

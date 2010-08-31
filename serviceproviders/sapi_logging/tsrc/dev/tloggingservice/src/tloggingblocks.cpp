@@ -489,12 +489,9 @@ TInt Ctlogging :: GetListSimpleL(CStifItemParser& aItem )
 	 CLogsEvent *aEvent ;
 	 
 	 
-	 while(1){ 
-	   aEvent = iter->NextL();
-	   if(aEvent)
+	 while(aEvent = iter->NextL())
+	 	{
 	 	 delete aEvent ;
-	   else 
-	      break;
 	 	}
 	 
 	 

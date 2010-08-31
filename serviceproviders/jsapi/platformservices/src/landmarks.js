@@ -15,8 +15,6 @@
 *
 */
 
-// Namepace: com.nokia.device.service
-
 var __device_landmarks_service_entry = {
     "name": null,
     "version": null,

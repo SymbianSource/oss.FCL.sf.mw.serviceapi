@@ -22,8 +22,6 @@
 #include <platform_paths.hrh>
 
 MW_LAYER_SYSTEMINCLUDE
-APP_LAYER_SYSTEMINCLUDE
-
 
 TARGET          tcalendarupdateiter1.dll
 TARGETTYPE      dll

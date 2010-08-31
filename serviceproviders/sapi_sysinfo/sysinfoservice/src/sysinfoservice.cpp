@@ -444,7 +444,7 @@ void CSysInfoService::GetNetworkInfoL(TPtrC aKey,CSysData*& aSysData)
         User::LeaveIfError(RProperty::Get(KPSUidNetworkInfo,
                                     KNWRegistrationStatus,status));
         }
-    else if( !aKey.CompareF(SysInfo::KNetworkMode) )
+    else if( !aKey.CompareF(KNetworkMode) )
         {
         User::LeaveIfError(RProperty::Get(KPSUidNetworkInfo,
                                     KNWTelephonyNetworkMode,status));
@@ -579,28 +579,6 @@ void CSysInfoService::GetFeatureInfoL(TPtrC aKey,CSysData*& aSysData)
         featureID = KFeatureIdSideVolumeKeys;
     else if( !aKey.CompareF(KVibra) )
         featureID = KFeatureIdVibra;
-    else if( !aKey.CompareF(KVideoDecoder) )
-        {
-        MMMFDevVideoPlayObserverImpl obsImpl;
-        RArray<TUid> aDecoders;
-        CMMFDevVideoPlay *videoPlay=CMMFDevVideoPlay::NewL(obsImpl);
-        //place object on cleanupstack.
-        CleanupStack::PushL(videoPlay);
-        
-        videoPlay->GetDecoderListL(aDecoders);
-        CVideoDecDataList *decDataList=CVideoDecDataList::NewL();
-        for(int i=0;i<aDecoders.Count();i++)
-            {
-            CVideoDecoderInfo *decoderInfo=videoPlay->VideoDecoderInfoLC(aDecoders[i]);
-            CVideoDecDataList::CVideoDecData *data=new CVideoDecDataList::CVideoDecData(decoderInfo->Manufacturer(),decoderInfo->Identifier(),decoderInfo->MaxBitrate(),decoderInfo->Accelerated(),decoderInfo->Version().Name());
-            decDataList->AppendL(data);
-            CleanupStack::PopAndDestroy(decoderInfo);
-            }
-        
-        aSysData = decDataList;
-        CleanupStack::PopAndDestroy(videoPlay);
-        return;     
-        }
     else
         User::Leave(KErrNotFound);
 
@@ -688,48 +666,6 @@ void CSysInfoService::GetConnectivittyInfoL(TPtrC aKey,CSysData*& aSysData)
             FormatedMacAddress.Append(FormatText);
             }  
         aSysData = CStringData::NewL(FormatedMacAddress);
-        }
-    else if( !aKey.CompareF(KWirelessConnSupport) )
-        {
-        CDesCArray*     connTypesDesArray;
-        connTypesDesArray = new (ELeave) CDesCArrayFlat(4);
-        CleanupStack::PushL(connTypesDesArray);
-
-         //Initialize the feature manager if not already done.
-         if (!iFeatureManagerInitialized)
-         {
-             FeatureManager::InitializeLibL();
-             iFeatureManagerInitialized = ETrue;
-         }
-         
-         if(FeatureManager::FeatureSupported(KFeatureIdBt))
-             {
-             connTypesDesArray->AppendL(KBT);
-             }
-         if(FeatureManager::FeatureSupported(KFeatureIdIrda))
-             {
-             connTypesDesArray->AppendL(KIrda);
-             }
-         if(FeatureManager::FeatureSupported(KFeatureIdProtocolWlan))
-             {
-             connTypesDesArray->AppendL(KWlan);
-             }
-         if(FeatureManager::FeatureSupported(KFeatureIdProtocolGsm))
-             {
-             connTypesDesArray->AppendL(KGsm);
-             }
-         if(FeatureManager::FeatureSupported(KFeatureIdProtocolWcdma))
-             {
-             connTypesDesArray->AppendL(KWcdma);
-             }
-         if(FeatureManager::FeatureSupported(KFeatureIdProtocolCdma))
-             {
-             connTypesDesArray->AppendL(KCdma);
-             }
-
-        //connTypesDesArray ownership passed to CStringList.
-        aSysData = CStringList::NewL(connTypesDesArray);
-        CleanupStack::Pop(connTypesDesArray);         
         }
     else
         User::Leave(KErrNotFound);

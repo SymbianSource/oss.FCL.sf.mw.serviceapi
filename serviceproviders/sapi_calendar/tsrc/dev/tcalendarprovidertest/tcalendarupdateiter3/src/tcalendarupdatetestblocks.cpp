@@ -81,7 +81,7 @@ public:
     int UpdateTodoEntryWithGlobalIdL();
     int UpdateAppointmentEntryWithNewTimeAndGlobalIdL();
 	
-	TDesC GetEntry(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC globaluid, const TDesC& calname);
+	TDesC& GetEntry(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC globaluid, const TDesC& calname);
 	CTestUpdateSync();
 	~CTestUpdateSync();
 
@@ -197,7 +197,7 @@ TInt  CTCalendarUpdateTest::UpdateAppointmentEntryL(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }
     
 TInt  CTCalendarUpdateTest::UpdateAppointmentEntryWithNewTimeL(CStifItemParser& /*aItem*/)
@@ -215,7 +215,7 @@ TInt  CTCalendarUpdateTest::UpdateAppointmentEntryWithNewTimeL(CStifItemParser& 
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }
     
 TInt  CTCalendarUpdateTest::UpdateAppointmentEntryWithNewAttendeesL(CStifItemParser& /*aItem*/)
@@ -233,7 +233,7 @@ TInt  CTCalendarUpdateTest::UpdateAppointmentEntryWithNewAttendeesL(CStifItemPar
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }
     
 
@@ -252,7 +252,7 @@ TInt  CTCalendarUpdateTest::UpdateAnniversaryL(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }
     
 TInt  CTCalendarUpdateTest::UpdateDayEventL(CStifItemParser& /*aItem*/)
@@ -270,7 +270,7 @@ TInt  CTCalendarUpdateTest::UpdateDayEventL(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }
     
 TInt  CTCalendarUpdateTest::UpdateReminderL(CStifItemParser& /*aItem*/)
@@ -288,7 +288,7 @@ TInt  CTCalendarUpdateTest::UpdateReminderL(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }   
 TInt  CTCalendarUpdateTest::UpdateTodoEntryL(CStifItemParser& /*aItem*/)
 	{
@@ -305,7 +305,7 @@ TInt  CTCalendarUpdateTest::UpdateTodoEntryL(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }   
 
 TInt  CTCalendarUpdateTest::UpdateAppointmentEntryWithNewRepeatL(CStifItemParser& /*aItem*/)
@@ -323,7 +323,7 @@ TInt  CTCalendarUpdateTest::UpdateAppointmentEntryWithNewRepeatL(CStifItemParser
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }   
 TInt  CTCalendarUpdateTest::UpdateAppointmentEntryWithGlobalIdL(CStifItemParser& /*aItem*/)
     {
@@ -340,7 +340,7 @@ TInt  CTCalendarUpdateTest::UpdateAppointmentEntryWithGlobalIdL(CStifItemParser&
     
     
 //  __UHEAP_MARKEND;
-//    return result;
+    return result;
     }
 
 TInt  CTCalendarUpdateTest::UpdateAnniversaryWithGlobalIdL(CStifItemParser& /*aItem*/)
@@ -358,7 +358,7 @@ TInt  CTCalendarUpdateTest::UpdateAnniversaryWithGlobalIdL(CStifItemParser& /*aI
     
     
 //  __UHEAP_MARKEND;
-    //return result;
+    return result;
     }
     
 TInt  CTCalendarUpdateTest::UpdateDayEventWithGlobalIdL(CStifItemParser& /*aItem*/)
@@ -376,7 +376,7 @@ TInt  CTCalendarUpdateTest::UpdateDayEventWithGlobalIdL(CStifItemParser& /*aItem
     
     
 //  __UHEAP_MARKEND;
-    //return result;
+    return result;
     }
     
 TInt  CTCalendarUpdateTest::UpdateReminderWithGlobalIdL(CStifItemParser& /*aItem*/)
@@ -394,7 +394,7 @@ TInt  CTCalendarUpdateTest::UpdateReminderWithGlobalIdL(CStifItemParser& /*aItem
     
     
 //  __UHEAP_MARKEND;
-    //return result;
+    return result;
     }   
 TInt  CTCalendarUpdateTest::UpdateTodoEntryWithGlobalIdL(CStifItemParser& /*aItem*/)
     {
@@ -411,7 +411,7 @@ TInt  CTCalendarUpdateTest::UpdateTodoEntryWithGlobalIdL(CStifItemParser& /*aIte
     
     
 //  __UHEAP_MARKEND;
-    //return result;
+    return result;
     }   
 TInt  CTCalendarUpdateTest::UpdateAppointmentEntryWithNewTimeAndGlobalIdL(CStifItemParser& /*aItem*/)
     {
@@ -428,7 +428,7 @@ TInt  CTCalendarUpdateTest::UpdateAppointmentEntryWithNewTimeAndGlobalIdL(CStifI
     
     
 //  __UHEAP_MARKEND;
-    //return result;
+    return result;
     }
 
 TInt CTestUpdateSync::UpdateAppointmentEntryL()
@@ -2655,7 +2655,7 @@ TInt CTestUpdateSync::UpdateAppointmentEntryWithNewTimeAndGlobalIdL()
     }
 
 
-TDesC CTestUpdateSync::GetEntry(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC globaluid, const TDesC& calname)
+TDesC& CTestUpdateSync::GetEntry(CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC globaluid, const TDesC& calname)
 	{
 	inparam->Reset();
 	outparam->Reset();

@@ -199,7 +199,7 @@ TInt Ctcal_getlist::EmptyGetList( CStifItemParser& /*aItem*/ )
 
 //	TInt Noofitems = allCalendarNames->Count();
 	
-	 CCalendarService* service = NULL;
+	 CCalendarService* service ;
 	 
 	 TRAPD(err_one,service = CCalendarService::NewL());
 	 
@@ -276,7 +276,7 @@ TInt Ctcal_getlist::AddGetList( CStifItemParser& /*aItem*/ )
 
 //	CDesCArray* allCalendarNames;
 	
-	 CCalendarService* service = NULL;
+	 CCalendarService* service ;
 	 
 	 TRAPD(err_one,service = CCalendarService::NewL());
 	 
@@ -370,7 +370,7 @@ TInt Ctcal_getlist::DeleteDefaultCalendar( CStifItemParser& /*aItem*/ )
 //	TInt Noofitems;
 	
 
-	 CCalendarService* service = NULL;
+	 CCalendarService* service ;
 	 
 	 TRAPD(err_one,service = CCalendarService::NewL());
 	
@@ -414,7 +414,7 @@ TInt Ctcal_getlist::GetDefaultCalendar( CStifItemParser& /*aItem*/ )
 
 //	CDesCArray* allCalendarNames;
 	
-	 CCalendarService* service = NULL;
+	 CCalendarService* service ;
 	 
 	TRAPD(err_one,service = CCalendarService::NewL());
 	 
@@ -521,7 +521,7 @@ TInt Ctcal_getlist::DefaultArgTest( CStifItemParser& /*aItem*/ )
 	
 	CDesCArray *allCalendarNames = NULL;
 	
- 	 CCalendarService* service = NULL;
+ 	 CCalendarService* service ;
 	 
 	 TRAPD(err_one,service = CCalendarService::NewL());
 	
@@ -575,7 +575,7 @@ TInt Ctcal_getlist::InvalidArgTest( CStifItemParser& /*aItem*/ )
     { 
 	__UHEAP_MARK;
 	 TInt result = KErrNone;
-	 TInt result_one = KErrNone;
+	 TInt result_one;
 	 TInt result_two = KErrNone;
 	 TInt result_three = KErrNone;
 	 TInt result_four = KErrNone;
@@ -595,7 +595,7 @@ TInt Ctcal_getlist::InvalidArgTest( CStifItemParser& /*aItem*/ )
 	RPointerArray<CCalEntry> entryArray(1);
 	TUIDSet* uids = NULL;
 		
-	CCalendarService* service = NULL;
+	CCalendarService* service ;
 	TRAPD(err_one,service = CCalendarService::NewL());	 
 	RemoveCalendarFile( service, KTestCal1File );
 	
@@ -653,7 +653,7 @@ TInt Ctcal_getlist::InvalidArgTest( CStifItemParser& /*aItem*/ )
 	    	result_two = err_three;
 	    
 	    
-	    TRAPD( err_four, service->GetListL( KTestCal1File, 2000000, entryArray ));
+	    TRAPD( err_four, service->GetListL( KTestCal1File, -2000000, entryArray ));
 	    if ( err_four == KErrNone )
 	    	{ 
 	    		if(entryArray.Count())

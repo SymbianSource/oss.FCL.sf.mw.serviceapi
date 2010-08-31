@@ -98,6 +98,6 @@ TInt NotifyCB :: HandleNotifyL(TInt aCmdId,TInt aEventId,
 		}		
 	iRetVal = KErrNone ;
 	
-   return 0;
+
 
 }

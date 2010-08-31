@@ -122,7 +122,7 @@ TInt StrayTestL()
 
 TInt StrayTest(TAny */*Arg*/)
     {
-    TInt errval = 0;
+    TInt errval;
     CTrapCleanup* cleanup = CTrapCleanup::New();
     //Install a new active scheduler to this thread 
     TRAPD(err , errval = StrayTestL()) ;

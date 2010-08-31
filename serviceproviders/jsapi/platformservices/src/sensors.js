@@ -15,9 +15,6 @@
 *
 */
 
-
-// sensors service interface
-
 var __device_sensors_service_entry = {"name": null, 
 				      "version": null,
 				      "proto": __device_sensors,

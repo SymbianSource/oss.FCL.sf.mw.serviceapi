@@ -30,8 +30,7 @@
 * Description:  ?Description
 *
 */
-MW_LAYER_SYSTEMINCLUDE
-APP_LAYER_SYSTEMINCLUDE
+
 #include "../../../../../group/sapiincludes.mmpi"
 
 TARGET          tcalprovider_combined.dll

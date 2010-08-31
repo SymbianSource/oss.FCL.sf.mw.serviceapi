@@ -692,5 +692,5 @@ CMediaObserver::~CMediaObserver()
 
   iFile.Write(_L8("End of observer"));
 
-   return KErrNone;
+
   }

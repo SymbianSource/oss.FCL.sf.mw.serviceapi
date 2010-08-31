@@ -59,7 +59,7 @@ TInt CCalCallbackLuid::HandleNotifyL(TInt aCmdId,
 						        CLiwGenericParamList& aEventParamList,
 						        const CLiwGenericParamList& aInParamList)
 	{
-	TInt32 errCode = 0;
+	TInt32 errCode;
 	TInt pos = 0;
 
 	// Traiverse the List and Fill in the Log Files
@@ -305,7 +305,7 @@ void CTestAsyncLuid::TestFunc()
 		{
 			TRAPD(err1 ,interface->ExecuteCmdL(KCmd, *inparam, *outparam));
 			const TLiwGenericParam* p = outparam->FindFirst(pos, KErrorCode); // Finding Error Code
-	        TInt errCode = 0;
+	        TInt errCode;
 			if( p )
 				{
 				errCode = p->Value().AsTInt32();

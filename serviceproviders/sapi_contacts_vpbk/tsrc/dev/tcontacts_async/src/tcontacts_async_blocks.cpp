@@ -23,7 +23,7 @@
 #include <StifParser.h>
 #include <StifTestInterface.h>
 #include <VPbkEng.rsg>
-#include <mmfcontrollerpluginresolver.h>
+
 #include <MVPbkContactFieldTextData.h>
 #include <MVPbkContactStoreList.h>
 #include <MVPbkContactOperationBase.h>
@@ -112,11 +112,7 @@ TInt CContactsUT::RunMethodL(
     }
 void CContactsUT::HandleReturnId( const TInt& aError, HBufC8* acntId, TInt aTransId )
     {
-    delete acntId;
     CActiveScheduler::Stop();
-    if(aError == KErrNone)
-        iErr = KErrNone;
-
     }
 
 void CContactsUT::HandleReturnArray(const TInt& aError, RPointerArray<HBufC8>& aArray, TInt aTransId )
@@ -207,11 +203,10 @@ void CContactsUT::HandleReturnIter(const TInt& aError, CContactIter* aIter, TInt
                         iLog->Log(_L("Phone Contact Field modified \n"));
                         __UHEAP_MARK;
                         iServiceHandle->AddL(this,0,singleContact);
-                        __UHEAP_MARKEND;
-
                         iLog->Log(_L("AddL called\n"));
                         iLog->Log(_L("Start Active Scheduler\n"));
                         CActiveScheduler::Start(); 
+                        __UHEAP_MARKEND;
                         break;                        
                         }
                     }
@@ -665,7 +660,7 @@ void CContactsUT::DeleteAllL()
 
     iErr = KErrNone;
        
-  //  __UHEAP_MARK;    
+    __UHEAP_MARK;    
     iOp = iContactManager->MatchPhoneNumberL(
         KPhoneNumber, KPhoneNumber().Length(), *this );    
     CActiveScheduler::Start();
@@ -691,7 +686,7 @@ void CContactsUT::DeleteAllL()
     iContactToDelete = NULL;
          
     
- //   __UHEAP_MARKEND;          
+    __UHEAP_MARKEND;          
     }
     
 //Add 1 contact
@@ -745,8 +740,7 @@ void CContactsUT::AddOneContactL(TDesC& aName)
     
 //Check for contact
 void CContactsUT::CheckContactsL(TInt& aCount,RPointerArray<TDesC8>& aIdArray)
-    { 
-    CleanupResetAndDestroyPushL(aIdArray);   
+    {    
     // Print to UI
     _LIT( KContactsTest, "ContactsUT" );
     _LIT( KExample, "In CheckContactsL" );
@@ -772,8 +766,7 @@ void CContactsUT::CheckContactsL(TInt& aCount,RPointerArray<TDesC8>& aIdArray)
         }
     delete iFindResults;
     iFindResults = NULL;
-   // __UHEAP_MARKENDC(aCount);
-   CleanupStack::Pop(&aIdArray);          
+   // __UHEAP_MARKENDC(aCount);          
     }
     
 // -----------------------------------------------------------------------------
@@ -3161,7 +3154,7 @@ TInt CContactsUT::ModifyL( CStifItemParser& aItem )
         {        
         while(count)
             { 
-            __UHEAP_MARK;           
+            //__UHEAP_MARK;           
             iBuffer = (const_cast<MVPbkContactLink&>(iFindResults->At(--count))).PackLC();
             CleanupStack::Pop();//iBuffer            
             iServiceHandle = CContactService::NewL();
@@ -3176,7 +3169,7 @@ TInt CContactsUT::ModifyL( CStifItemParser& aItem )
             delete iServiceHandle;//serviceHandle   
             iServiceHandle = NULL;
             iLog->Log( KServiceClose );
-            __UHEAP_MARKEND;
+            //__UHEAP_MARKEND;
             }       
         
         }

@@ -158,7 +158,7 @@ return;
          TPtrC  value(KNullDesC);       
      //CContactCallback* callbk=new(ELeave) CContactCallback;
      TPtr8 cntIdPtrVal(acntId->Des());
-     CContactIter* iterVal = NULL;
+     CContactIter* iterVal;
      TRAPD(err, iterVal = cntservice->GetListL(EContacts,cntIdPtrVal));
      if(err != KErrNone)
          {
@@ -967,7 +967,7 @@ CleanupStack::PushL(singleContactField);
    aItem.GetNextInt(count) ;
    
    /*Add group1 to phonebook */
-   TInt err1 = 0;
+   TInt err1;
    TRAPD(err,icontactservice->AddL(icallback,0,singleContact,KNullDesC8,KGroup));
    if(err || err1)
    {
@@ -1361,7 +1361,7 @@ TInt count =KErrGeneral ;
 
 	icontactservice=CContactService::NewL();
     /* Add the contactitem */
-    HBufC8* cntId = NULL;
+    HBufC8* cntId;
     TRAPD(error,cntId= icontactservice->AddL(singleContact));
 	   
     
@@ -1441,7 +1441,7 @@ icallback=new(ELeave) CContactCallback;
   // Print to log file
   iLog->Log( KExample );
   
-  HBufC8* grpId = NULL;
+  HBufC8* grpId;
   TInt count;
  
  /* Group1 to add to phonebook */      

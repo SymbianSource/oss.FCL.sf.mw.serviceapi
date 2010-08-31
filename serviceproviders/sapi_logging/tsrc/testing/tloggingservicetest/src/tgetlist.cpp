@@ -183,14 +183,10 @@ TUid tuid = KLogCallEventTypeUid;
 	iter = iLoggingService->GetListL(filter) ;
 	CLogsEvent *iterevents ;
 	
-	while (1){
-	   iterevents = iter->NextL();
-		if(iterevents){
+	while (iterevents = iter->NextL())
+		{
 		iLoggingService->DeleteEventL(iterevents->Id()) ;
 		    delete iterevents ;
-		   }
-		else
-		   break;
 		}
 	
 	iter->DoCancel();

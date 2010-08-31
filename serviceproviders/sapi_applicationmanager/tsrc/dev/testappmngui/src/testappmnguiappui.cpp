@@ -186,6 +186,5 @@ TInt CtestappmnguiAppUi::GetBufferFromFile(HBufC8*& aBuffer, const TDesC& aFileN
 			return error;
 	    }
 
-	return 0;
 	}
 

@@ -218,7 +218,7 @@ TInt TraceTO(TAny */*Arg*/)
 {
   
     CTrapCleanup* cleanup = CTrapCleanup::New();
-    TInt  Val = 0;
+    TInt  Val ;
     //Install a new active scheduler to this thread 
     TRAPD(err ,( Val = TraceTOL()) );
     delete cleanup ;

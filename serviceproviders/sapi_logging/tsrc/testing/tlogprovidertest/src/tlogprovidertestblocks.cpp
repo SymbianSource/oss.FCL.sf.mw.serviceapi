@@ -1364,7 +1364,6 @@ TInt Ctlogprovidertest::cancel2L( CStifItemParser& aItem )
  __UHEAP_MARKEND;
  if(ret == KErrArgument)	
  return KErrNone;
-   return ret;
  }   
        
       

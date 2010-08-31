@@ -195,8 +195,7 @@ void CTestBTCancel::TestFunc()
 		TRAPD(err1,	interface->ExecuteCmdL(KGetNotification,*inparam,*outparam,KLiwOptASyncronous,this));
 		iResult = err1;
 		iLog->Log(_L("after getnotification vibra Active:"));
-		TInt pos = 0;
-		TInt transactionid = 0;
+		TInt pos = 0, transactionid ;
 		const TLiwGenericParam* output2 = outparam->FindFirst( pos,KTransactionId );
 		iLog->Log(_L("after FindFirst vibra Active:"));
 

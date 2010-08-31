@@ -185,7 +185,7 @@ TInt CTCalendarAddTest::InterfaceClassL( CStifItemParser& aItem )
     {
     return KErrGeneral;
     }
-    if( errorcode == res )
+    if( errorcode = res )
     	res = KErrNone;
 	return res;
 
@@ -225,7 +225,7 @@ TInt  CTCalendarAddTest::AddApptWithDailyRepeat(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-	//return result;
+	return result;
     }
 TInt  CTCalendarAddTest::AddApptWithWeeklyRepeat(CStifItemParser& /*aItem*/)
 	{
@@ -242,7 +242,7 @@ TInt  CTCalendarAddTest::AddApptWithWeeklyRepeat(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }
 TInt  CTCalendarAddTest::AddApptWithMonthlyRepeat(CStifItemParser& /*aItem*/)
 	{
@@ -259,7 +259,7 @@ TInt  CTCalendarAddTest::AddApptWithMonthlyRepeat(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }
 TInt  CTCalendarAddTest::AddApptWithAttendees(CStifItemParser& /*aItem*/)
 	{
@@ -276,7 +276,7 @@ TInt  CTCalendarAddTest::AddApptWithAttendees(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }    
 TInt  CTCalendarAddTest::AddNewAnniversary(CStifItemParser& /*aItem*/)
 	{
@@ -293,7 +293,7 @@ TInt  CTCalendarAddTest::AddNewAnniversary(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }  
 TInt  CTCalendarAddTest::AddNewDayEvent(CStifItemParser& /*aItem*/)
 	{
@@ -310,7 +310,7 @@ TInt  CTCalendarAddTest::AddNewDayEvent(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     } 
 TInt  CTCalendarAddTest::AddNewReminder(CStifItemParser& /*aItem*/)
 	{
@@ -327,7 +327,7 @@ TInt  CTCalendarAddTest::AddNewReminder(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }  
 TInt  CTCalendarAddTest::AddNewTodo(CStifItemParser& /*aItem*/)
 	{
@@ -344,7 +344,7 @@ TInt  CTCalendarAddTest::AddNewTodo(CStifItemParser& /*aItem*/)
 	
 	
 //	__UHEAP_MARKEND;
-//	return result;
+	return result;
     }      
 
 TInt  CTCalendarAddTest::AddAll(CStifItemParser& aItem)

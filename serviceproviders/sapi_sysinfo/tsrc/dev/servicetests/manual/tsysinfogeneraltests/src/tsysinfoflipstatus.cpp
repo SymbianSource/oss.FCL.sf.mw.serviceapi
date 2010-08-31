@@ -124,18 +124,12 @@ void CTestAsync5::TestFunc()
 	CSysData* data1 = NULL;
 	
 	TRAPD(err2,iSysInfoService->GetInfoL(KGeneral,KFlipStatus,data1));
-   iResult = err2;
-   if(err2 != KErrNone)
-      return;
 		
 	flipstatus = ((CStatus*)data1)->Status();
 	
 	CStatus* data2 = CStatus::NewL(!flipstatus);
 
 	TRAPD(err3,iSysInfoService->SetInfoL(KGeneral,KFlipStatus,data2));
-	iResult = err3;
-	if( err3 != KErrNone )
-      return;
 	delete data1;
 	delete data2;
 

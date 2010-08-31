@@ -85,9 +85,9 @@ else {
 nokia.device = {
     load: __device_service_load,
     listInterfaces: __device_service_interfaces,
-	getSystemProperties: __device_getSystemProperties,
-	getLibraryVersion: __device_getLibraryVersion,
-    version: 2.0
+	   getSystemProperties: __device_getSystemProperties,
+	   getLibraryVersion: __device_getLibraryVersion,
+      version: 2.0
 };
 
 function __device_getLibraryVersion(){

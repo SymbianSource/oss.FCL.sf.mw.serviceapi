@@ -81,10 +81,9 @@ class LoggingInterfaceCB : public MLoggingCallback
         * Implementation of CancelNotifyL method, derived from MLoggingCB
         *
         * @param aTransid, Transaction id
-        * @param aFlag, Flag for notification to LiwBinding
         */
         
-        void CancelNotifyL( TUint aTransid , TBool aFlag );
+        void CancelNotifyL( TUint aTransid );
         
         /**
         * GetRequestType
