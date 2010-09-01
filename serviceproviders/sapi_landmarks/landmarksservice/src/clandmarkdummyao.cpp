@@ -74,20 +74,20 @@ void CLandmarkDummyAO::RunL()
 	    }
 	else*/
 	    //{
-	switch(iCmd)
-	 {
-	 case EAdd: TRAP_IGNORE(iObserver->HandleAddItemsL(iId,iTransactionId,iStatus.Int()));
-				break;
-	 case EUpdate:
-	 case ERemove: TRAP_IGNORE(iObserver->HandleItemsL(iTransactionId,iStatus.Int()));
-	 				break;
-	 default:
-		 break;
-	 }
-	
-	if (!iManageObjects->IsActive())
-		{
-		iManageObjects->Start();
+        switch(iCmd)
+         {
+         case EAdd: TRAP_IGNORE(iObserver->HandleAddItemsL(iId,iTransactionId,iStatus.Int()));
+                    break;
+         case EUpdate:
+         case ERemove: TRAP_IGNORE(iObserver->HandleItemsL(iTransactionId,iStatus.Int()));
+                        break;
+         default:
+             break;
+         }
+        
+        if (!iManageObjects->IsActive())
+            {
+            iManageObjects->Start();
             }
        // }
 	}

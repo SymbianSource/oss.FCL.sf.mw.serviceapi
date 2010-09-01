@@ -132,7 +132,14 @@ class CLogAsyncService : public CActive
             {
             iInterval = aInterval ;
             }
-
+        /**
+        * Sets the boolean flag iFlagCancel
+        */        
+        inline void SetCancelFlag(TBool aValue) 
+            {
+            iFlagCancel = aValue;
+            }
+        
         /**
         * Default Desturctor
         */
@@ -195,6 +202,7 @@ class CLogAsyncService : public CActive
         TTimeIntervalMicroSeconds32 iInterval ;
         CLogViewEvent* iLogViewEvent;
         CLogFilter* iFilter;
+		TBool              iFlagCancel;
 
     };
 
@@ -230,9 +238,10 @@ class MLoggingCallback
         * methods
         *
         * @param aTransId , Transaction id
+        * @param aFlag, Flag for notification to LiwBinding
         */
 
-        virtual void CancelNotifyL(TUint aTransid) = 0 ;
+        virtual void CancelNotifyL(TUint aTransid ,TBool aFlag) = 0 ;
 
         /**
         * Default Desturctor

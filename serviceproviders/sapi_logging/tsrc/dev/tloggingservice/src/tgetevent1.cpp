@@ -87,9 +87,12 @@ TInt getEvent1(void)
 	CLogIter *iter = LogService->GetListL(filter) ;
 	CLogsEvent *iterevents ;
 	
-	while(iterevents = iter->NextL())
-		{
+	 while(1){ 
+	   iterevents = iter->NextL();
+	   if(iterevents)
 		 delete iterevents ;
+	   else 
+	      break;
 		}
 	
 	delete updatedEvent ;

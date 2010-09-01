@@ -43,7 +43,7 @@ TInt AddAppointmentProvLocal(CLiwGenericParamList* inparam, CLiwGenericParamList
 
 void GetLocalUid( const TDesC& aLocalUid, TCalLocalUid& aOutLocalUid );
 void GetGlobalUid( const TDesC& aGlobalUid, TDes8& aOutGlobalUid );
-TDesC& GetEntry(MLiwInterface* interface, CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC globaluid, const TDesC& calname);
+TDesC GetEntry(MLiwInterface* interface, CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC globaluid, const TDesC& calname);
 
 class CCalGetListCallback : public MLiwNotifyCallback
     {
@@ -1988,7 +1988,7 @@ void GetGlobalUid( const TDesC& aGlobalUid, TDes8& aOutGlobalUid )
 	aOutGlobalUid.Copy( aGlobalUid );
 	}
 
-TDesC& GetEntry(MLiwInterface* interface, CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC globaluid, const TDesC& calname)
+TDesC GetEntry(MLiwInterface* interface, CLiwGenericParamList* inparam, CLiwGenericParamList* outparam, TPtrC globaluid, const TDesC& calname)
 	{
 	inparam->Reset();
 	outparam->Reset();

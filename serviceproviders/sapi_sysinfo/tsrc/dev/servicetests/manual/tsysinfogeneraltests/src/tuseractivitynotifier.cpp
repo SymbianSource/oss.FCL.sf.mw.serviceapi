@@ -55,8 +55,8 @@ void CTestUserActivity::ConstructL()
 CTestUserActivity::CTestUserActivity(CStifLogger* aLog,TInt aTimeOut,
 									Test_Type aType) :
 								CActive(EPriorityStandard),
-								iLog(aLog),
 								iInactivityTimeOut(aTimeOut),
+								iLog(aLog),
 								iTestType(aType)
 	{
 	}

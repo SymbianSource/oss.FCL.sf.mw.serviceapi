@@ -18,7 +18,7 @@
 
 #include <MVPbkFieldType.h>
 #include <MVPbkContactFieldTextData.h>
-
+#include <mmfcontrollerpluginresolver.h>
 #include "singlecontact.h"
 #include "singlecontactfield.h"
 
@@ -143,6 +143,7 @@ EXPORT_C void CSingleContactField::
 
 EXPORT_C void CSingleContactField::GetUriFieldParamL(RPointerArray<HBufC>& axspidArray)
     {
+    CleanupResetAndDestroyPushL(axspidArray);
     TInt count = iidArray.Count();
     if(count != 0)
             {
@@ -155,7 +156,8 @@ EXPORT_C void CSingleContactField::GetUriFieldParamL(RPointerArray<HBufC>& axspi
         else
             {
             User::Leave(KErrNotFound);    
-            }       
+            }   
+    CleanupStack::Pop(&axspidArray);     
 	}
 
 //Gets the Group Data and returns them as output parameters
@@ -233,6 +235,7 @@ EXPORT_C void CSingleContactField::SetXspidDataL(const TDesC8& aFieldKey,
 
 EXPORT_C void CSingleContactField::GetXspidDataL(RPointerArray<HBufC>& axspidArray)
     {
+    CleanupResetAndDestroyPushL(axspidArray);
     TInt count = iArrayValue.Count();
     if(count != 0)
             {
@@ -247,7 +250,8 @@ EXPORT_C void CSingleContactField::GetXspidDataL(RPointerArray<HBufC>& axspidArr
         else
             {
             User::Leave(KErrNotFound);    
-            }       
+            } 
+    CleanupStack::Pop(&axspidArray);       
     }
 CSingleContactField::~CSingleContactField()
     {

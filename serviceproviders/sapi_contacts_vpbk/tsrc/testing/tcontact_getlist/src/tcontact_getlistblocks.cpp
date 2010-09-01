@@ -365,11 +365,11 @@ __UHEAP_MARK;
     delete icontactservice;
   __UHEAP_MARKEND;
     return KErrNone ;
-	    delete icallback;
-    delete icontactservice;
-  __UHEAP_MARKEND;
+	 //   delete icallback;
+    //delete icontactservice;
+  //__UHEAP_MARKEND;
     
-    return KErrGeneral;
+    //return KErrGeneral;
   
    
   }        
@@ -619,10 +619,6 @@ TInt Ctmanualcontacts::GetList_Test10L( CStifItemParser& aItem )
         
     CContactIter* iter = CContactIter::NewL();
     icontactservice->GetListL(*iter);
-    delete iter;
-	    delete icallback;
-    delete icontactservice;
-  __UHEAP_MARKEND;
     TPtrC buf(_L(""));
      
      iter->NextL(buf);
@@ -631,16 +627,15 @@ TInt Ctmanualcontacts::GetList_Test10L( CStifItemParser& aItem )
       {	  count++;
           iter->NextL(buf);
   	  } 
-	if(count==2)
-	{
+   delete iter;
+   delete icallback;
+   delete icontactservice;
+   __UHEAP_MARKEND;  
 
+   if(count==2)
     return KErrNone ;   
-	}
-delete iter;
-	    delete icallback;
-    delete icontactservice;
-  //__UHEAP_MARKEND;	
-	return KErrGeneral;
+   else 
+    return KErrGeneral;
 }
 
 /* get all contacts from the phonebook ie contacts.cdb,manual*/
@@ -734,7 +729,7 @@ CleanupStack::PushL(xspid);
         _LIT( KLog4, "before calling add" );
     iLog->Log( KLog4 );
         /* Add the contactitem */
-        HBufC8* cntId;
+        HBufC8* cntId = NULL;
         TRAPD(err,cntId= icontactservice->AddL(singleContact));
        
         TPtr8 cntIdPtrVal(cntId->Des());
@@ -919,7 +914,7 @@ CleanupStack::PushL(xspid);
   //      aItem.GetNextInt(count) ;
 
         /* Add the contactitem */
-        HBufC8* cntId;
+        HBufC8* cntId = NULL;
         TRAPD(err,cntId= icontactservice->AddL(singleContact));
         TPtr8 cntIdPtrVal(cntId->Des());
         
@@ -941,7 +936,7 @@ delete cntId;
              return KErrGeneral ;
 			 }
          newFields = ETrue;
-         CContactIter* iterVal;
+         CContactIter* iterVal = NULL;
          
          TPtr8 cntIdPtr(cntId->Des());
          TRAPD(error, iterVal = icontactservice->GetListL(EContacts,cntIdPtr));  

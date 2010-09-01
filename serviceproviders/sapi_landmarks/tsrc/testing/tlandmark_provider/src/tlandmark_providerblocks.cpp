@@ -4256,7 +4256,7 @@ TInt Ctlandmark_provider::TestAddSyncAsyncbitcheck( CStifItemParser& aItem )
 	
 	TLiwGenericParam param;
 	TInt index = 0;	 
-	CActiveSchedulerWait* WaitSchedular;
+	CActiveSchedulerWait* WaitSchedular = NULL;
 	CLiwMap* landmarkMap = CLiwDefaultMap::NewL();
     TInt32 test_val = KErrGeneral;
       

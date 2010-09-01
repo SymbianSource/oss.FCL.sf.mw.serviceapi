@@ -87,10 +87,14 @@ TInt DeleteEventsync(void)
 	iter = LogService->GetListL(filter) ;
 	
 	
-	while (aEvent = iter->NextL())
-	{
+	while (1){
+	   aEvent = iter->NextL();
+	   if(aEvent){
 	    LogService->DeleteEventL(aEvent->Id()) ;
 	    delete aEvent ;
+	   }
+	   else
+	      break;
 	}
 	
 	delete iter ;

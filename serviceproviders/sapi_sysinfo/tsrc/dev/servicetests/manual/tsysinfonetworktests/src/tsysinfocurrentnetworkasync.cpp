@@ -81,7 +81,8 @@ TInt CCurrentNetAsync::Result()
 
 void CCurrentNetAsync::TestFuncL()
 	{
-	const TTimeIntervalMicroSeconds32 OneMinute(6000000000);
+	TInt64 x = 6000000000;
+  const TTimeIntervalMicroSeconds32 OneMinute = TTimeIntervalMicroSeconds32(x);
 	iTransId = 5555;
 	TRAPD(err,iSysInfoService->GetInfoL(KNetwork,KCurrentNetwork,iTransId,this));
 	iResult  = err;

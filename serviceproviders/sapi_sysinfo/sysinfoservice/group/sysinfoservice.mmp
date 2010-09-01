@@ -66,7 +66,7 @@ LIBRARY		    aknswallpaperutils.lib
 LIBRARY	  		PlatformEnv.lib
 LIBRARY			ImagingConfigManager.lib
 LIBRARY                   Avkon.lib  // PhoneLanguage
-LIBRARY                   estlib.lib  //strlen function
+LIBRARY                   estlib.lib devvideo.lib  //strlen function
 
 paged
 

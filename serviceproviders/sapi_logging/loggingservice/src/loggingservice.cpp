@@ -47,6 +47,7 @@ CLoggingService :: ~CLoggingService()
      */
     for(TInt iter = 0 ; iter < iRegTable.Count() ; ++iter)
         {
+        iRegTable[iter]->GetActiveObj()->SetCancelFlag(EFalse);
         delete iRegTable[iter] ;
         }
     delete iLogService;

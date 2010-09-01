@@ -161,7 +161,7 @@ delete ServiceHandler;
    	 a.ResetAndDestroy();
    	 a.Close();
    
-   
+   return 0;   
     }
 
 
@@ -297,7 +297,7 @@ delete ServiceHandler;
    	 a.ResetAndDestroy();
    	 a.Close();
    
-   
+      return 0;   
     }
 
 
@@ -408,7 +408,7 @@ delete ServiceHandler;
    	 a.ResetAndDestroy();
    	 a.Close();
    
-   
+   return 0;   
     }
 
 

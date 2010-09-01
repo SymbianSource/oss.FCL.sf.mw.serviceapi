@@ -256,7 +256,7 @@ CLiwServiceHandler* ServiceHandler = CLiwServiceHandler::NewL();
    	 a.ResetAndDestroy();
    	 a.Close();
     
-   
+   return 0;   
     } 
    
     
@@ -514,7 +514,7 @@ CLiwServiceHandler* ServiceHandler = CLiwServiceHandler::NewL();
    	 a.ResetAndDestroy();
    	 a.Close();
     
-   
+   return 0;   
     } 
    
     
@@ -742,7 +742,7 @@ CLiwServiceHandler* ServiceHandler = CLiwServiceHandler::NewL();
    	 a.ResetAndDestroy();
    	 a.Close();
     
-   
+   return 0;   
     } 
    
     

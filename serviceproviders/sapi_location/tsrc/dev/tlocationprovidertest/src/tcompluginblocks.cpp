@@ -2200,7 +2200,7 @@ TInt CTestProvider :: CancelWithInvalidTransId(CStifItemParser& /*aItem*/)
 
     outputlist->Reset() ;
     inputlist->Reset() ;
-    ASyncLocCBF* callBack ;
+    ASyncLocCBF* callBack = NULL;
 
     locinterface->ExecuteCmdL(CmdBuf , *inputlist , *outputlist,KLiwOptASyncronous, callBack);
 
@@ -2958,9 +2958,9 @@ TInt  CTestProvider ::ServiceNotAvailable(CStifItemParser& /*aItem*/)
 
     _LIT8(KService, "Service.Location");
     _LIT8(KIDataSource,"ILocation");
-
+    __UHEAP_MARKEND ;
     return KErrNone ; //Manual test case 
-    CLiwServiceHandler* ServiceHandler = CLiwServiceHandler::NewL();
+    /*CLiwServiceHandler* ServiceHandler = CLiwServiceHandler::NewL();
 
     // Input and output parameter list
     CLiwGenericParamList* inputlist = &(ServiceHandler->InParamListL());
@@ -3041,9 +3041,9 @@ TInt  CTestProvider ::ServiceNotAvailable(CStifItemParser& /*aItem*/)
     delete ServiceHandler ;
 
     a.ResetAndDestroy() ;
-    //	delete  OutParmList ;
-    __UHEAP_MARKEND ;
-    return result  ;
+    //	delete  OutParmList ;*/
+
+    //return result  ;
 
     }
 
@@ -3063,7 +3063,7 @@ TInt CTestProvider :: ServiceFailed(CStifItemParser& /*aItem*/)
     iLog->Log(KTLocTest) ;
 
     return KErrNone ; //Manual test case 
-    TRequestStatus Status = KRequestPending  ;
+    /*TRequestStatus Status = KRequestPending  ;
     RThread FunctionThread ;
 
     TInt ret =  FunctionThread.Create(_L("ServiceFailed Thread") , ServiceFailedTest ,KDefaultStackSize , 
@@ -3091,7 +3091,7 @@ TInt CTestProvider :: ServiceFailed(CStifItemParser& /*aItem*/)
                 }
 
 
-            return ret;	
+            return ret;	*/
     }
 
 
@@ -3229,7 +3229,7 @@ TInt CTestProvider :: ConcurrentCallsTrace (CStifItemParser& /*aItem*/)
         }	
     return KErrNone ;
 
-    return KErrGeneral; 
+    //return KErrGeneral; 
     }
 
 
@@ -3575,7 +3575,7 @@ TInt CTestProvider :: GetLocationTimedOut(CStifItemParser& /*aItem*/)
     iLog->Log(KTLocTest) ;
 
     return KErrNone ; //This is a manul test case
-    CLiwServiceHandler* ServiceHandler = CLiwServiceHandler::NewL();
+    /*CLiwServiceHandler* ServiceHandler = CLiwServiceHandler::NewL();
 
     // Input and output parameter list
     CLiwGenericParamList* inputlist = &(ServiceHandler->InParamListL());
@@ -3658,7 +3658,7 @@ TInt CTestProvider :: GetLocationTimedOut(CStifItemParser& /*aItem*/)
 
     _LIT(Kerr , "Time out value not set correctly") ;    
     return KErrNone ;
-
+   */
     }
 
 /**
@@ -6511,7 +6511,7 @@ TInt CTestProvider ::CancelWithoutTransId(CStifItemParser& /*aItem*/)
 
     outputlist->Reset() ;
     inputlist->Reset() ;
-    ASyncLocCBF* callBack ;
+    ASyncLocCBF* callBack = NULL;
 
     locinterface->ExecuteCmdL(CmdBuf , *inputlist , *outputlist,KLiwOptASyncronous, callBack);
 
@@ -6795,7 +6795,7 @@ TInt CTestProvider::GetLocPosBasedWrongVal(CStifItemParser& /*aItem*/)
 TInt CTestProvider::GetLocPosBasedWrongVal1(CStifItemParser& /*aItem*/)
     {
     //currently not needed
-
+   return 0;
     }
 
 

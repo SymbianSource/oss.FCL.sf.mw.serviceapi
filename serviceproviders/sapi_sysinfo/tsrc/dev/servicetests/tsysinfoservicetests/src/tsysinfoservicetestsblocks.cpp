@@ -2366,7 +2366,7 @@ TInt  Ctsysinfoservicetests::SupportedLang(CStifItemParser& /*aItem*/)
 	{
 
 	TInt result = KErrNone;
-	TInt newDisplayLang;
+	TInt newDisplayLang = 0;
 
 	__UHEAP_MARK;
 	

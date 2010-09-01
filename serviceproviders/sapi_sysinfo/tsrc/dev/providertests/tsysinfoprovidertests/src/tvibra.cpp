@@ -325,8 +325,9 @@ int VibraNotification(int, char**)
 	test->Start();
 	TInt retval =	test->Result();
 	delete test;
-	return retval;
 	__UHEAP_MARKEND;
+	return retval;
+
 
 
 	}

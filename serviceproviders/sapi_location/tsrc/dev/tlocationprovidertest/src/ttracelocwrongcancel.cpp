@@ -38,7 +38,7 @@ class WrongNotificationTraceLoc : public MLiwNotifyCallback
             CLiwGenericParamList& aEventParamList,
             const CLiwGenericParamList& aInParamList) 
 		    {
-		        
+            return 0;		        
 		    }
 
 		WrongNotificationTraceLoc() : iRetStatus(KErrGeneral)  //Default constructor 
@@ -158,7 +158,7 @@ TInt TraceLocWrongCancel(TAny * /*Arg*/)
 {
 //	__UHEAP_MARK;
 	CTrapCleanup* cleanup = CTrapCleanup::New();
-    TInt val ;
+    TInt val = 0;
     TRAPD(err , (val = TraceLocWrongCancelL() ) ) ;
     delete cleanup ;
  //    __UHEAP_MARKEND;   

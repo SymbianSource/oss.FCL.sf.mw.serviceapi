@@ -59,7 +59,7 @@ TInt CCalCallback::HandleNotifyL(TInt aCmdId,
 						        CLiwGenericParamList& aEventParamList,
 						        const CLiwGenericParamList& aInParamList)
 	{
-	TInt32 errCode;
+	TInt32 errCode = 0;
 	TInt pos = 0;
 
 	// Traiverse the List and Fill in the Log Files
@@ -313,7 +313,7 @@ int CTestAsync::TestFunc()
 		{
 		TRAPD(err1 ,interface->ExecuteCmdL(KCmd, *inparam, *outparam));
 		const TLiwGenericParam* p = outparam->FindFirst(pos, KErrorCode); // Finding Error Code
-        TInt errCode;
+        TInt errCode = 0;
 		if( p )
 			{
 			errCode = p->Value().AsTInt32();
@@ -387,6 +387,7 @@ int CTestAsync::TestFunc()
 			iResult = errCode;
 			return errCode;
 			}
+	return 0;
 	}
 
 	
@@ -567,7 +568,7 @@ int CTestSync::DeleteDefaultCalendar()
     filterMap->InsertL(KCalendarName,TLiwVariant(_L("C:Calendar")));
 	    
 	TRAPD(err1 ,interface->ExecuteCmdL(KCmd, *inparam, *outparam/*, KLiwOptASyncronous, iCallback*/));
-	TInt errCode;
+	TInt errCode = 0;
 	const TLiwGenericParam* p = outparam->FindFirst(pos, KErrorCode); // Finding Error Code
 	if( p )
 		{
@@ -624,7 +625,7 @@ int CTestSync::DeleteWrongCal()
     filterMap->InsertL(KCalendarName,TLiwVariant(_L("C:CalendarFileZ")));
 	    
 	TRAPD(err1 ,interface->ExecuteCmdL(KCmd, *inparam, *outparam/*, KLiwOptASyncronous, iCallback*/));
-	TInt errCode;
+	TInt errCode = 0;
 	const TLiwGenericParam* p = outparam->FindFirst(pos, KErrorCode); // Finding Error Code
 	if( p )
 		{

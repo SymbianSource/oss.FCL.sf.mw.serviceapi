@@ -1386,5 +1386,75 @@ EXPORT_C CStringList* CCameraInfo::MimeTypesList() const
     {
     return iMimeTypesList;
     }
-	
+
+// --------------------------------------------------------------------
+// CVideoDecDataList::CVideoDecDataList()
+// Constructor.
+// --------------------------------------------------------------------
+//
+CVideoDecDataList::CVideoDecDataList():CSysData(EVideoDecList)
+    {
+    }
+
+// --------------------------------------------------------------------
+// CDriveList::~CDriveList()
+// Destructor
+// --------------------------------------------------------------------
+//
+CVideoDecDataList::~CVideoDecDataList()
+    {
+    for(int i=0;i<iDecData.Count();i++)
+        delete iDecData[i];
+    }
+
+// --------------------------------------------------------------------
+// CDriveList::NewL()
+// Two-phased constructor. returns new instance of this class.
+// --------------------------------------------------------------------
+//
+CVideoDecDataList* CVideoDecDataList::NewL()
+    {
+    CVideoDecDataList* self;
+    self = new (ELeave) CVideoDecDataList();
+    CleanupStack::PushL(self);
+    self->ConstructL();
+    CleanupStack::Pop(self);
+    return self;
+    }
+
+// --------------------------------------------------------------------
+// CDriveList::ConstructL()
+// 2nd phase construtor
+// --------------------------------------------------------------------
+//
+void CVideoDecDataList::ConstructL()
+    {
+    }
+
+void CVideoDecDataList::AppendL(CVideoDecData *entry)
+    {
+    iDecData.AppendL(entry);
+    }
+// --------------------------------------------------------------------
+// CDriveList::[]
+// gets drive number at specified index.
+// --------------------------------------------------------------------
+//
+EXPORT_C CVideoDecDataList::CVideoDecData *CVideoDecDataList::operator[](TInt aIndex) const
+    {
+    if(0 <= aIndex && aIndex<iDecData.Count())
+        return iDecData[aIndex];
+    else
+        return NULL;
+    }
+
+// --------------------------------------------------------------------
+// CDriveList::Count
+// returns number of drives.
+// --------------------------------------------------------------------
+//
+EXPORT_C TInt CVideoDecDataList::Count() const
+    {
+    return iDecData.Count();
+    }
 // End of file.		

@@ -56,7 +56,7 @@ TInt CallBack :: HandleNotifyL(
   	TInt Index = 0 ;
   	const TLiwGenericParam *GenericParam = aEventParamList.FindFirst(Index , KErrorCode );
   	
-  	TInt error ;
+  	TInt error = 0;
   	
   	if(GenericParam)
 			{

@@ -297,7 +297,7 @@ void CTestAsyncGuid::TestFunc()
 		{
 		TRAPD(err1 ,interface->ExecuteCmdL(KCmd, *inparam, *outparam));
 		const TLiwGenericParam* p = outparam->FindFirst(pos, KErrorCode); // Finding Error Code
-        TInt errCode;
+        TInt errCode = 0;
 		if( p )
 			{
 			errCode = p->Value().AsTInt32();
@@ -373,9 +373,10 @@ int DeleteGuidAsync(int flag, TBool async)
 	CTestAsyncGuid* test = CTestAsyncGuid::NewL();
 	int res = test->Start(flag, async);
 	delete test;
+    __UHEAP_MARKEND;
 	return res;
 
-    __UHEAP_MARKEND;
+
 	
 	}
 

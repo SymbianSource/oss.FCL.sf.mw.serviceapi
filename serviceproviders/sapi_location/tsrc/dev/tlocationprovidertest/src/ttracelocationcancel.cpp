@@ -38,7 +38,7 @@ class TraceLoctionCancel : public MLiwNotifyCallback
             CLiwGenericParamList& aEventParamList,
             const CLiwGenericParamList& aInParamList) 
 		    {
-		        
+            return 0;		        
 		    }
 
 		TraceLoctionCancel() : iRetStatus(KErrGeneral)  //Default constructor 
@@ -150,7 +150,7 @@ TInt TraceLocCancel(TAny * /*Arg*/)
 {
 //	__UHEAP_MARK;
 	CTrapCleanup* cleanup = CTrapCleanup::New();
-    TInt val ;
+    TInt val = 0;
     TRAPD(err , (val = TraceLocCancelL() ) ) ;
     delete cleanup ;
  //    __UHEAP_MARKEND;   

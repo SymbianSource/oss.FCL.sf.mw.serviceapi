@@ -278,7 +278,7 @@ _LIT8(KEventIdKey , "EventId");
    a.ResetAndDestroy() ;
    a.Close() ;
  
-  
+   return 0;  
 }
 
 
@@ -505,7 +505,7 @@ TLiwVariant   EventDetails ;
    a.ResetAndDestroy() ;
    a.Close() ;
  
-  
+   return 0;  
 }
 
 

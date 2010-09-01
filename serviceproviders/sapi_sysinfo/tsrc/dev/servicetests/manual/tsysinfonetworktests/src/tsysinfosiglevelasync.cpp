@@ -81,7 +81,8 @@ TInt CSigLevelAsync::Result()
 
 void CSigLevelAsync::TestFuncL()
 	{
-	const TTimeIntervalMicroSeconds32 OneMinute(6000000000);
+	TInt64 x = 6000000000;
+  const TTimeIntervalMicroSeconds32 OneMinute = TTimeIntervalMicroSeconds32(x);
 	iTransId = 3333;
 	TRAPD(err,iSysInfoService->GetInfoL(KNetwork,KSignalLevel,iTransId,this));
 	iResult  = err;

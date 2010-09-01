@@ -62,7 +62,7 @@ _LIT(KInfraRed,			"InfraRed");
 _LIT(KActiveConnections,"ActiveConnections");
 _LIT(KConnectionStatus,	"ConnectionStatus");
 _LIT(KWLanMacAddress,	"WLanMacAddress");
-
+_LIT(KWirelessConnSupport, "WirelessConnSupport");
 
 _LIT(KCamera,			"Camera");
 _LIT(KMemoryCard,		"MemoryCard");
@@ -75,7 +75,14 @@ _LIT(KLED,				"LED");
 _LIT(KCoverUI,			"CoverUI");
 _LIT(KSideVolumeKeys,	"SideVolumeKeys");
 _LIT(KVibra,			"Vibra");
+_LIT(KVideoDecoder,     "VideoDecoder");
 
+_LIT(KBT, "Bluetooth");
+_LIT(KIrda, "Irda");
+_LIT(KWlan, "Wlan");
+_LIT(KGsm, "Gsm");
+_LIT(KWcdma, "Wcdma");
+_LIT(KCdma, "Cdma");
 
 _LIT(KBrightness,		"Brightness");
 _LIT(KPowerSaverTimeOut,"PowerSaverTimeOut");

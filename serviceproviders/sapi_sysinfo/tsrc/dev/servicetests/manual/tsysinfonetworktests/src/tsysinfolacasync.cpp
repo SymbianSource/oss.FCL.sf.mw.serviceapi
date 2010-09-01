@@ -81,7 +81,8 @@ TInt CLacAsync::Result()
 
 void CLacAsync::TestFuncL()
 	{
-	const TTimeIntervalMicroSeconds32 OneMinute(6000000000);
+	TInt64 x = 6000000000;
+  const TTimeIntervalMicroSeconds32 OneMinute = TTimeIntervalMicroSeconds32(x);
 	iTransId = 7777;
 	TRAPD(err,iSysInfoService->GetInfoL(KNetwork,KLocationArea,iTransId,this));
 	iResult  = err;
