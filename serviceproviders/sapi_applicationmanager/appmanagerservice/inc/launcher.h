@@ -24,7 +24,7 @@ class TOptions;
 class RApaLsSession;
 class CLauncherObserver;
 class TDocument;
-
+class CDocumentHandler;
 
 /**
 * This Class provides the core functionality of launching 
@@ -73,7 +73,17 @@ class CLauncher : public CBase
        	                            const TDesC8& aMimeType, 
        	                            const TOptions& aProperties , 
        	                            TDesC& aFileName );
-
+       	
+        /**
+        * This function Launch the Given Document. This function is written to support the requirement of webtv widget .
+        * This is applicable only to synchronous chained mode version of launchdocument.
+        * succeed.
+        * @since  Series60 v3.2
+        * @param  aCriteria Document to be launch 
+        * 
+        */
+       	
+       	void LaunchDocumentL( TDocument& aCriteria );
         
         /**
         * Destructor
@@ -128,7 +138,8 @@ class CLauncher : public CBase
      	*/
       
         RApaLsSession& iApaLsSession;
-
+        CDocumentHandler* iDocHandler; // this handler wiil be created only in the chained mode and destroyed in dtor.
+        
       };
 
 #endif __LAUNCHER_H

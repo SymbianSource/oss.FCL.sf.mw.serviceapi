@@ -25,14 +25,15 @@
 #include <eikenv.h>
 #include <e32base.h>
 #include <f32file.h>
-//#include <documenthandler.h>
+#include <documenthandler.h>
 
 #include "launcher.h"
 #include "launcherobserver.h"
 #include "appmanagerservice.h"
 
+
 _LIT(KBackground ,"Background");
-_LIT(KChained,"Chained");
+//_LIT(KChained,"Chained");
 _LIT(KScheme,"s60uid://0x");
 const TInt KDocMaxDigitsInHexString = 8; // 32 bits.
 
@@ -151,7 +152,19 @@ CLauncher* CLauncher::NewL( RApaLsSession& aSession )
     return threadNotUsed;
     }
 
-
+ // -----------------------------------------------------------------------------
+ // CLauncher::LaunchDocumentL
+ // This function Launch the Given Document in synchronous chained mode
+ // -----------------------------------------------------------------------------
+ void CLauncher::LaunchDocumentL( TDocument& aCriteria ) 
+     {
+     if( !iDocHandler )
+         {
+         iDocHandler = CDocumentHandler::NewL();
+         }
+     TDataType dataType;
+     User::LeaveIfError(iDocHandler->OpenFileEmbeddedL(aCriteria.iPath, dataType));
+     }
 // -----------------------------------------------------------------------------
 // CLauncher::LaunchDocumentL
 // This function Launch the Given Document
@@ -400,7 +413,10 @@ CLauncher::CLauncher( RApaLsSession& aSession ): iApaLsSession( aSession )
 CLauncher::~CLauncher( )
 
 	{
-
+    if( iDocHandler )
+        {
+        delete iDocHandler;
+        }
 	}
 
 

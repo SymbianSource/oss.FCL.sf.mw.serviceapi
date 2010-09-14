@@ -106,6 +106,12 @@ void CActiveRequest::CreateActiveRequestL(const TSysRequest& aSysRequest,
         else if( (!Key.CompareF(SysInfo::KConnectionStatus)) && (aSysRequest.RequestType() == TSysRequest::ENotification) )
             aActiveObj = CConnection::NewL(aSysRequest);
         
+        else if( (!Key.CompareF(SysInfo::KConnectionStatus)) && (aSysRequest.RequestType() == TSysRequest::EASyncONESHOT) ){
+            TSysRequest systemRequest(aSysRequest.Entity(),SysInfo::KActiveConnections,aSysRequest.SystemData(),aSysRequest.TransactionID(),aSysRequest.Observer(),
+                                                TSysRequest::EASyncONESHOT);
+            aActiveObj = CConnection::NewL(systemRequest);
+        }
+            
         else
             User::Leave(KErrNotFound);
         }

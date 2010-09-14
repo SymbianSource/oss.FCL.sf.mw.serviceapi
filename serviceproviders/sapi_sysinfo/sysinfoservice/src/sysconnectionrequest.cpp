@@ -164,14 +164,23 @@ void CConnection::HandleConnectionInfoL(CConnectionInfo*& aInfo,TInt error)
     TInt32 transId = this->TransactionID();
     iReadConnectionInfo = NULL;
 
-    if(TSysRequest::ENotification == RequestType())
+    if(TSysRequest::ENotification == RequestType() )
         {
-        iConnectionInfoArray.AppendL(aInfo);
-        if( !iConnectionInit )
+        if(!error)
             {
-            CConnectionInfo* conninfo = aInfo->CopyL();
+            iConnectionInfoArray.AppendL(aInfo);
+            if( !iConnectionInit )
+                {
+                CConnectionInfo* conninfo = aInfo->CopyL();
+                TRAP_IGNORE(SystemObserver()->HandleResponseL(*iEntity, *iKey,
+                                        conninfo, transId, RequestType(), error));
+                }
+            }
+        else
+            {
             TRAP_IGNORE(SystemObserver()->HandleResponseL(*iEntity, *iKey,
-                                    conninfo, transId, RequestType(), error));
+                            NULL, transId, RequestType(), error));
+        
             }
         }
     else
@@ -238,6 +247,7 @@ void CConnection::EventL(const CConnMonEventBase& aEvent)
     {
     TUint connectionId =0;
     CReadConnectionInfo* rdConnectionInfo = NULL;
+    
     switch( aEvent.EventType() )
         {
         case EConnMonCreateConnection:
@@ -355,7 +365,7 @@ void CReadConnectionInfo::RunL()
 
     TInt error(iStatus.Int());
     if(error >= KErrNone)
-        {
+    {
         switch(iState)
             {
             case EInitial:
