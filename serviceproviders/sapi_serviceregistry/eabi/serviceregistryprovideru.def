@@ -1,7 +1,0 @@
-EXPORTS
-	_Z24ImplementationGroupProxyRi @ 1 NONAME
-	_ZTI17CServiceInterface @ 2 NONAME ; #<TI>#
-	_ZTI30CServiceRegistryServiceHandler @ 3 NONAME ; #<TI>#
-	_ZTV17CServiceInterface @ 4 NONAME ; #<VT>#
-	_ZTV30CServiceRegistryServiceHandler @ 5 NONAME ; #<VT>#
-

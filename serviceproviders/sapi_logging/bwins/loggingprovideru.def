@@ -1,7 +1,0 @@
-EXPORTS
-	?ImplementationGroupProxy@@YAPBUTImplementationProxy@@AAH@Z @ 1 NONAME ; struct TImplementationProxy const * ImplementationGroupProxy(int &)
-	??8CLiwLogIter@@UAEHAAVCLiwIterable@@@Z @ 2 NONAME ; int CLiwLogIter::operator==(class CLiwIterable &)
-	?NewL@CLogServiceHandler@@SAPAV1@XZ @ 3 NONAME ; class CLogServiceHandler * CLogServiceHandler::NewL(void)
-	?NextL@CLiwLogIter@@UAEHAAVTLiwVariant@@@Z @ 4 NONAME ; int CLiwLogIter::NextL(class TLiwVariant &)
-	?Reset@CLiwLogIter@@UAEXXZ @ 5 NONAME ; void CLiwLogIter::Reset(void)
-

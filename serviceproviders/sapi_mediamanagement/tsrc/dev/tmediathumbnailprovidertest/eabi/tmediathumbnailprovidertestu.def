@@ -1,7 +1,0 @@
-EXPORTS
-	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
-	_ZTI18CThumbnailObserver @ 2 NONAME ; #<TI>#
-	_ZTV18CThumbnailObserver @ 3 NONAME ; #<VT>#
-	_ZTI16CImageResolution @ 4 NONAME ; #<TI>#
-	_ZTV16CImageResolution @ 5 NONAME ; #<VT>#
-

@@ -1,7 +1,0 @@
-EXPORTS
-	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
-	_ZTI12Cheader_test @ 2 NONAME ; #<TI>#
-	_ZTI18CMsgCallbackHeader @ 3 NONAME ; #<TI>#
-	_ZTV12Cheader_test @ 4 NONAME ; #<VT>#
-	_ZTV18CMsgCallbackHeader @ 5 NONAME ; #<VT>#
-

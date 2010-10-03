@@ -1,7 +1,0 @@
-EXPORTS
-	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
-	_ZTI13CXmlConvertor @ 2 NONAME ; #<TI>#
-	_ZTI17CProviderObserver @ 3 NONAME ; #<TI>#
-	_ZTV13CXmlConvertor @ 4 NONAME ; #<VT>#
-	_ZTV17CProviderObserver @ 5 NONAME ; #<VT>#
-

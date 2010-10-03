@@ -1,5 +1,0 @@
-EXPORTS
-	?ImplementationGroupProxy@@YAPBUTImplementationProxy@@AAH@Z @ 1 NONAME ; struct TImplementationProxy const * ImplementationGroupProxy(int &)
-	?ExecuteCmdL@CContactInterface@@UAEXABVTDesC8@@ABVCLiwGenericParamList@@AAV3@IPAVMLiwNotifyCallback@@@Z @ 2 NONAME ; void CContactInterface::ExecuteCmdL(class TDesC8 const &, class CLiwGenericParamList const &, class CLiwGenericParamList &, unsigned int, class MLiwNotifyCallback *)
-	?NewL@CContactInterface@@SAPAV1@XZ @ 3 NONAME ; class CContactInterface * CContactInterface::NewL(void)
-

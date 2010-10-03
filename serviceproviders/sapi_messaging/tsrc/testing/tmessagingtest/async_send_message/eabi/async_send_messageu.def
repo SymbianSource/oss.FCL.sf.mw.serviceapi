@@ -1,5 +1,0 @@
-EXPORTS
-	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
-	_ZTI12Cheader_test @ 2 NONAME ; #<TI>#
-	_ZTV12Cheader_test @ 3 NONAME ; #<VT>#
-

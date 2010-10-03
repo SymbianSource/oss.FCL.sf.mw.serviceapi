@@ -1,5 +1,0 @@
-EXPORTS
-	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
-	_ZTI17LocUpdateCallBack @ 2 NONAME ; #<TI>#
-	_ZTV17LocUpdateCallBack @ 3 NONAME ; #<VT>#
-

@@ -1,5 +1,0 @@
-EXPORTS
-	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
-	_ZTI15CTestUpdateSync @ 2 NONAME ; #<TI>#
-	_ZTV15CTestUpdateSync @ 3 NONAME ; #<VT>#
-

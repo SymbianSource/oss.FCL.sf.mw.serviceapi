@@ -1,5 +1,0 @@
-EXPORTS
-	?LibEntryL@@YAPAVCScriptBase@@AAVCTestModuleIf@@@Z @ 1 NONAME ; class CScriptBase * LibEntryL(class CTestModuleIf &)
-	?NewL@CEventDetails@@SAPAV1@XZ @ 2 NONAME ; class CEventDetails * CEventDetails::NewL(void)
-	?NewL@CFilterDetails@@SAPAV1@XZ @ 3 NONAME ; class CFilterDetails * CFilterDetails::NewL(void)
-

@@ -1,5 +1,0 @@
-EXPORTS
-	_Z9LibEntryLR13CTestModuleIf @ 1 NONAME
-	_ZTI19CLandmarkAsyncTests @ 2 NONAME ; #<TI>#
-	_ZTV19CLandmarkAsyncTests @ 3 NONAME ; #<VT>#
-
